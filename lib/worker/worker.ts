@@ -11,15 +11,13 @@ export default {
     init: function () {
         dotenv.config();
         const app: Express = express();
-        const port: String | undefined = process.env.PORT;
+        const port: String | undefined = process.env.PORT || "3000";
         const server: Server = http.createServer(app);
 
         app.get('/', (req: Request, res: Response) => {
             console.log(new Date(), pid, bingoProcess);
-            res.end(`<html>Express + TypeScript Server ${pid}<script>window.location = window.location</script></html>`);
-            setTimeout(() => {
-                process.exit(0);
-            }, 100);
+            res.end(`<html>Express + TypeScript Server ${pid}</html>`);
+            process.exit(0)
         });
 
         app.listen(port, () => {
