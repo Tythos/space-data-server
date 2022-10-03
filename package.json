@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "type": "module",
+  "standardsPath": "./lib/class/standards",
   "scripts": {
     "postinstall": "git submodule init && git submodule update && npm run build:standards",
     "build": "npx tsc",

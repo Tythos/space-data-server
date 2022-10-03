@@ -1,5 +1,5 @@
 import { readdirSync } from "fs";
-let standards = readdirSync("./lib/class/");
+let standards = readdirSync("./lib/class/standards");
 export default (req, res, next) => {
     if (!req.params.standard) {
         res.send(standards);
