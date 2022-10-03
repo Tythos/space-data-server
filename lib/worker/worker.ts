@@ -3,9 +3,8 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import http, { Server } from "http"; import { cpus } from "os";
 import { pid } from "process";
-import spacedata from "../routes/spacedata.js";
+import spacedata from "../routes/spacedata/spacedata.js";
 const totalCPUs = cpus().length;
-
 let bingoProcess: Number = 0;
 
 export default {

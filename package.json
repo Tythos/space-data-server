@@ -3,14 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
-  "type": "module",
   "standardsPath": "./lib/class/standards",
   "scripts": {
     "postinstall": "git submodule init && git submodule update && npm run build:standards",
     "build": "npx tsc",
     "build:standards": "node ./lib/utility/generator.js",
     "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"PORT=3000 nodemon -q dist/index.js\"",
+    "dev": "PORT=3000 nodemon",
     "dev:standards": "nodemon ./lib/utility/generator.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,12 +18,15 @@
   "license": "ISC",
   "dependencies": {
     "@noble/secp256k1": "^1.7.0",
+    "body-parser": "^1.20.0",
     "dotenv": "^16.0.2",
     "ethers": "^5.7.1",
     "express": "^4.18.1",
     "flatbuffers": "^2.0.7",
     "jose": "^4.9.3",
     "node-red": "^3.0.2",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.5.0",
     "web3-token": "^1.0.2"
   },
   "devDependencies": {
@@ -32,6 +34,8 @@
     "@types/node": "^18.7.18",
     "@types/node-red": "^1.2.1",
     "concurrently": "^7.4.0",
+    "esbuild": "^0.15.10",
+    "esbuild-node-tsc": "^2.0.4",
     "nodemon": "^2.0.20",
     "typescript": "^4.8.3"
   }
