@@ -5,7 +5,9 @@
   "main": "index.ts",
   "type": "module",
   "scripts": {
+    "postinstall": "git submodule init && git submodule update && npm run build:standards",
     "build": "npx tsc",
+    "build:standards": "node ./lib/utility/generator.js",
     "start": "node dist/index.js",
     "dev": "concurrently \"npx tsc --watch\" \"PORT=3000 nodemon -q dist/index.js\"",
     "dev:standards": "nodemon ./lib/utility/generator.js",
