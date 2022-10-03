@@ -3,6 +3,7 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import http, { Server } from "http"; import { cpus } from "os";
 import { pid } from "process";
+import spacedata from "../routes/spacedata.js";
 const totalCPUs = cpus().length;
 
 let bingoProcess: Number = 0;
@@ -14,12 +15,12 @@ export default {
         const port: String | undefined = process.env.PORT || "3000";
         const server: Server = http.createServer(app);
 
-        app.get('/', (req: Request, res: Response) => {
+        app.get("/", (req: Request, res: Response) => {
             console.log(new Date(), pid, bingoProcess);
             res.end(`<html>Express + TypeScript Server ${pid}</html>`);
             process.exit(0)
         });
-
+        app.get("/spacedata/:standard?", spacedata);
         app.listen(port, () => {
             console.log(`⚡️[child process ${pid} server]: Server is running at https://localhost:${port}`);
         });
