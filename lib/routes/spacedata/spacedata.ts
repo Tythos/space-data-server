@@ -10,9 +10,9 @@ export default (req: Request, res: Response, next: Function) => {
         let dClass: any;
         if (dClass = standards[predicate as keyof typeof standards]) {
             let tt = new dClass();
-            res.send(`<div>${JSON.stringify(tt, null, 4)}</div>`);
+            res.write(`<div>${JSON.stringify(tt, null, 4)}</div>`);
         }
-        res.send(`<script>setTimeout(()=>window.location = window.location, 1000)</script>`);
+        res.end(`<script>setTimeout(()=>window.location = window.location, 1000)</script>`);
     }
 
     next();
