@@ -1,0 +1,7 @@
+{
+  "watch": ["lib", "index.ts"],
+  "ignore": ["packages"],
+  "ext": "ts,mjs,js,json,graphql",
+  "exec": "node ./lib/utility/generator.js",
+  "legacyWatch": true
+}

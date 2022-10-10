@@ -15,9 +15,7 @@ export default {
         const server: Server = http.createServer(app);
 
         app.get("/", (req: Request, res: Response) => {
-            console.log(new Date(), pid, bingoProcess);
             res.end(`<html>Express + TypeScript Server ${pid}</html>`);
-            process.exit(0)
         });
         app.get("/spacedata/:standard?", spacedata);
         app.listen(port, () => {
