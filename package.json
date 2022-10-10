@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "git submodule init && git submodule update && npm run build:standards",
     "build": "npx tsc",
-    "build:standards": "node ./lib/utility/generator.js",
+    "build:standards": "node ./lib/utility/generator.mjs",
     "start": "node dist/index.js",
     "dev": "PORT=3000 nodemon",
     "dev:standards": "nodemon --config nodemon.generator.json",
