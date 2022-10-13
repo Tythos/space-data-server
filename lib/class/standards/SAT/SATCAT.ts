@@ -3,6 +3,7 @@
 import * as flatbuffers from 'flatbuffers';
 
 import { dataStatusCode } from './dataStatusCode';
+import { massType } from './massType';
 import { objectType } from './objectType';
 import { opsStatusCode } from './opsStatusCode';
 import { orbitType } from './orbitType';
@@ -129,8 +130,35 @@ ORBIT_TYPE():orbitType {
   return offset ? this.bb!.readInt8(this.bb_pos + offset) : orbitType.ORBIT;
 }
 
+DEPLOYMENT_DATE():string|null
+DEPLOYMENT_DATE(optionalEncoding:flatbuffers.Encoding):string|Uint8Array|null
+DEPLOYMENT_DATE(optionalEncoding?:any):string|Uint8Array|null {
+  const offset = this.bb!.__offset(this.bb_pos, 38);
+  return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
+}
+
+MANEUVERABLE():boolean {
+  const offset = this.bb!.__offset(this.bb_pos, 40);
+  return offset ? !!this.bb!.readInt8(this.bb_pos + offset) : false;
+}
+
+SIZE():number {
+  const offset = this.bb!.__offset(this.bb_pos, 42);
+  return offset ? this.bb!.readFloat64(this.bb_pos + offset) : 0.0;
+}
+
+MASS():number {
+  const offset = this.bb!.__offset(this.bb_pos, 44);
+  return offset ? this.bb!.readFloat64(this.bb_pos + offset) : 0.0;
+}
+
+MASS_TYPE():massType {
+  const offset = this.bb!.__offset(this.bb_pos, 46);
+  return offset ? this.bb!.readInt8(this.bb_pos + offset) : massType.DRY;
+}
+
 static startSATCAT(builder:flatbuffers.Builder) {
-  builder.startObject(17);
+  builder.startObject(22);
 }
 
 static addOBJECT_NAME(builder:flatbuffers.Builder, OBJECT_NAMEOffset:flatbuffers.Offset) {
@@ -201,6 +229,26 @@ static addORBIT_TYPE(builder:flatbuffers.Builder, ORBIT_TYPE:orbitType) {
   builder.addFieldInt8(16, ORBIT_TYPE, orbitType.ORBIT);
 }
 
+static addDEPLOYMENT_DATE(builder:flatbuffers.Builder, DEPLOYMENT_DATEOffset:flatbuffers.Offset) {
+  builder.addFieldOffset(17, DEPLOYMENT_DATEOffset, 0);
+}
+
+static addMANEUVERABLE(builder:flatbuffers.Builder, MANEUVERABLE:boolean) {
+  builder.addFieldInt8(18, +MANEUVERABLE, +false);
+}
+
+static addSIZE(builder:flatbuffers.Builder, SIZE:number) {
+  builder.addFieldFloat64(19, SIZE, 0.0);
+}
+
+static addMASS(builder:flatbuffers.Builder, MASS:number) {
+  builder.addFieldFloat64(20, MASS, 0.0);
+}
+
+static addMASS_TYPE(builder:flatbuffers.Builder, MASS_TYPE:massType) {
+  builder.addFieldInt8(21, MASS_TYPE, massType.DRY);
+}
+
 static endSATCAT(builder:flatbuffers.Builder):flatbuffers.Offset {
   const offset = builder.endObject();
   return offset;
@@ -214,7 +262,7 @@ static finishSizePrefixedSATCATBuffer(builder:flatbuffers.Builder, offset:flatbu
   builder.finish(offset, '$SAT', true);
 }
 
-static createSATCAT(builder:flatbuffers.Builder, OBJECT_NAMEOffset:flatbuffers.Offset, OBJECT_IDOffset:flatbuffers.Offset, NORAD_CAT_ID:number, OBJECT_TYPE:objectType, OPS_STATUS_CODE:opsStatusCode, OWNEROffset:flatbuffers.Offset, LAUNCH_DATEOffset:flatbuffers.Offset, LAUNCH_SITEOffset:flatbuffers.Offset, DECAY_DATEOffset:flatbuffers.Offset, PERIOD:number, INCLINATION:number, APOGEE:number, PERIGEE:number, RCS:number, DATA_STATUS_CODE:dataStatusCode, ORBIT_CENTEROffset:flatbuffers.Offset, ORBIT_TYPE:orbitType):flatbuffers.Offset {
+static createSATCAT(builder:flatbuffers.Builder, OBJECT_NAMEOffset:flatbuffers.Offset, OBJECT_IDOffset:flatbuffers.Offset, NORAD_CAT_ID:number, OBJECT_TYPE:objectType, OPS_STATUS_CODE:opsStatusCode, OWNEROffset:flatbuffers.Offset, LAUNCH_DATEOffset:flatbuffers.Offset, LAUNCH_SITEOffset:flatbuffers.Offset, DECAY_DATEOffset:flatbuffers.Offset, PERIOD:number, INCLINATION:number, APOGEE:number, PERIGEE:number, RCS:number, DATA_STATUS_CODE:dataStatusCode, ORBIT_CENTEROffset:flatbuffers.Offset, ORBIT_TYPE:orbitType, DEPLOYMENT_DATEOffset:flatbuffers.Offset, MANEUVERABLE:boolean, SIZE:number, MASS:number, MASS_TYPE:massType):flatbuffers.Offset {
   SATCAT.startSATCAT(builder);
   SATCAT.addOBJECT_NAME(builder, OBJECT_NAMEOffset);
   SATCAT.addOBJECT_ID(builder, OBJECT_IDOffset);
@@ -233,6 +281,11 @@ static createSATCAT(builder:flatbuffers.Builder, OBJECT_NAMEOffset:flatbuffers.O
   SATCAT.addDATA_STATUS_CODE(builder, DATA_STATUS_CODE);
   SATCAT.addORBIT_CENTER(builder, ORBIT_CENTEROffset);
   SATCAT.addORBIT_TYPE(builder, ORBIT_TYPE);
+  SATCAT.addDEPLOYMENT_DATE(builder, DEPLOYMENT_DATEOffset);
+  SATCAT.addMANEUVERABLE(builder, MANEUVERABLE);
+  SATCAT.addSIZE(builder, SIZE);
+  SATCAT.addMASS(builder, MASS);
+  SATCAT.addMASS_TYPE(builder, MASS_TYPE);
   return SATCAT.endSATCAT(builder);
 }
 
@@ -254,7 +307,12 @@ unpack(): SATCATT {
     this.RCS(),
     this.DATA_STATUS_CODE(),
     this.ORBIT_CENTER(),
-    this.ORBIT_TYPE()
+    this.ORBIT_TYPE(),
+    this.DEPLOYMENT_DATE(),
+    this.MANEUVERABLE(),
+    this.SIZE(),
+    this.MASS(),
+    this.MASS_TYPE()
   );
 }
 
@@ -277,6 +335,11 @@ unpackTo(_o: SATCATT): void {
   _o.DATA_STATUS_CODE = this.DATA_STATUS_CODE();
   _o.ORBIT_CENTER = this.ORBIT_CENTER();
   _o.ORBIT_TYPE = this.ORBIT_TYPE();
+  _o.DEPLOYMENT_DATE = this.DEPLOYMENT_DATE();
+  _o.MANEUVERABLE = this.MANEUVERABLE();
+  _o.SIZE = this.SIZE();
+  _o.MASS = this.MASS();
+  _o.MASS_TYPE = this.MASS_TYPE();
 }
 }
 
@@ -298,7 +361,12 @@ constructor(
   public RCS: number = 0.0,
   public DATA_STATUS_CODE: dataStatusCode = dataStatusCode.NO_CURRENT_ELEMENTS,
   public ORBIT_CENTER: string|Uint8Array|null = null,
-  public ORBIT_TYPE: orbitType = orbitType.ORBIT
+  public ORBIT_TYPE: orbitType = orbitType.ORBIT,
+  public DEPLOYMENT_DATE: string|Uint8Array|null = null,
+  public MANEUVERABLE: boolean = false,
+  public SIZE: number = 0.0,
+  public MASS: number = 0.0,
+  public MASS_TYPE: massType = massType.DRY
 ){}
 
 
@@ -310,6 +378,7 @@ pack(builder:flatbuffers.Builder): flatbuffers.Offset {
   const LAUNCH_SITE = (this.LAUNCH_SITE !== null ? builder.createString(this.LAUNCH_SITE!) : 0);
   const DECAY_DATE = (this.DECAY_DATE !== null ? builder.createString(this.DECAY_DATE!) : 0);
   const ORBIT_CENTER = (this.ORBIT_CENTER !== null ? builder.createString(this.ORBIT_CENTER!) : 0);
+  const DEPLOYMENT_DATE = (this.DEPLOYMENT_DATE !== null ? builder.createString(this.DEPLOYMENT_DATE!) : 0);
 
   return SATCAT.createSATCAT(builder,
     OBJECT_NAME,
@@ -328,7 +397,12 @@ pack(builder:flatbuffers.Builder): flatbuffers.Offset {
     this.RCS,
     this.DATA_STATUS_CODE,
     ORBIT_CENTER,
-    this.ORBIT_TYPE
+    this.ORBIT_TYPE,
+    DEPLOYMENT_DATE,
+    this.MANEUVERABLE,
+    this.SIZE,
+    this.MASS,
+    this.MASS_TYPE
   );
 }
 }

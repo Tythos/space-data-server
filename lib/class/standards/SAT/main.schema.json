@@ -74,18 +74,6 @@
               },
         "ORBIT_TYPE" : {
                 "$ref" : "#/definitions/orbitType"
-              }
-      },
-      "additionalProperties" : false
-    },
-    "PAYLOAD" : {
-      "type" : "object",
-      "properties" : {
-        "OBJECT_ID" : {
-                "type" : "string"
-              },
-        "OBJECT_NAME" : {
-                "type" : "string"
               },
         "DEPLOYMENT_DATE" : {
                 "type" : "string"

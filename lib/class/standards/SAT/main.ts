@@ -1,4 +1,3 @@
-export { PAYLOAD, PAYLOADT } from './PAYLOAD';
 export { SATCAT, SATCATT } from './SATCAT';
 export { SATCATCOLLECTION, SATCATCOLLECTIONT } from './SATCATCOLLECTION';
 export { dataStatusCode } from './dataStatusCode';
