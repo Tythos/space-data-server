@@ -1,7 +1,0 @@
-namespace TypeChecker;
-table TypeCheck {
-  byte:int8;
-  ubyte:uint8;
-  short:short;
-}
-root_type TypeCheck;
