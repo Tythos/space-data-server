@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "definitions": {
+    "TypeChecker_TypeCheck" : {
+      "type" : "object",
+      "properties" : {
+        "byte" : {
+                "type" : "integer", "minimum" : -128, "maximum" : 127
+              },
+        "ubyte" : {
+                "type" : "integer", "minimum" : 0, "maximum" :255
+              },
+        "short" : {
+                "type" : "integer", "minimum" : -32768, "maximum" : 32767
+              }
+      },
+      "additionalProperties" : false
+    }
+  },
+  "$ref" : "#/definitions/TypeChecker_TypeCheck"
+}

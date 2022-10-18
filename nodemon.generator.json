@@ -2,6 +2,6 @@
   "watch": ["./lib/utility/"],
   "ignore": ["packages"],
   "ext": "ts,mjs,js,json,graphql",
-  "exec": "node --inspect-brk ./lib/utility/generator.mjs",
+  "exec": "node --inspect ./lib/utility/generator.mjs",
   "legacyWatch": true
 }
