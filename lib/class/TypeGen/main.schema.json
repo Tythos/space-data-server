@@ -66,6 +66,9 @@
               },
         "float64" : {
                 "type" : "number"
+              },
+        "string" : {
+                "type" : "string"
               }
       },
       "additionalProperties" : false
