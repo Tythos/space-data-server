@@ -1,0 +1,25 @@
+namespace TypeChecker;
+table TypeCheck {
+  byte:byte;
+  int8:int8;
+  ubyte:ubyte;
+  uint8:uint8;
+  bool:bool;
+  short:short;
+  int16:int16;
+  ushort:ushort;
+  uint16:uint16;
+  int:int;
+  int32:int32;
+  uint:uint;
+  uint32:uint32;
+  float:float;
+  float32:float32;
+  long:long;
+  int64:int64;
+  ulong:ulong;
+  uint64:uint64;
+  double:double;
+  float64:float64;
+}
+root_type TypeCheck;
