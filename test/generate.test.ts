@@ -1,15 +1,22 @@
-import { describe, expect, test } from "@jest/globals";
+import { describe, expect, test, beforeAll } from "@jest/globals";
 import { generateDatabase, refRootName } from "../lib/database/generateTables"
 import knex from "knex";
 import { readFileSync } from "fs";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
+import * as standards from "../lib/standards/standards";
+
+const filename = "./test/output/standards.sqlite";
+const sqlfilename = "./test/output/standards.sql";
+
+beforeAll(async () => {
+    await generateDatabase(standardsJSON, filename, sqlfilename);
+});
 
 describe('Test Generation', () => {
     test('Generate Database With Correct Tables', async () => {
-        await generateDatabase(standardsJSON, "./test/output/standards.sqlite", "./test/output/standards.sql");
         var knexConnection = knex({
             client: 'better-sqlite3',
-            connection: { filename: "./test/output/standards.sqlite" },
+            connection: { filename },
             useNullAsDefault: true
         });
 
@@ -19,4 +26,11 @@ describe('Test Generation', () => {
             expect(Object.keys(cI).length).toBeGreaterThan(0);
         }
     });
+});
+
+describe('Test Data Entry', () => {
+    test('Enter Data For Each Data Type', async () => {
+        console.log(standards)
+        expect(1).toEqual(1);
+    })
 });
