@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import packageJSON from "@/package.json";
-import * as standards from "./standards.js";
+import * as standards from "@/lib/standards/standards";
 import * as flatbuffers from "flatbuffers";
 import { Parser } from "json2csv";
 

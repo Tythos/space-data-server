@@ -1,1 +1,1 @@
-export { TypeCheck, TypeCheckT } from './TypeChecker/TypeCheck';
+export { TypeCheck, TypeCheckT } from './TypeCheck';

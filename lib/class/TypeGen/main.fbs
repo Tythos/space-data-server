@@ -1,4 +1,4 @@
-namespace TypeChecker;
+
 table TypeCheck {
   byte:byte;
   int8:int8;
