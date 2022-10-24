@@ -1,8 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import { generateDatabase, refRootName } from "../lib/database/generateTables"
 import knex from "knex";
-import { readFileSync, readdirSync } from "fs";
-import { table } from "console";
+import { readFileSync } from "fs";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
 
 describe('Test Generation', () => {
