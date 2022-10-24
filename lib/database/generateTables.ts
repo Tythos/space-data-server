@@ -20,8 +20,7 @@ const foreignTypes = ["object", "array", "union"];
 
 const fTCheck = (ftPredicate: string) => ~foreignTypes.indexOf(ftPredicate);
 
-const refName = ($ref: string = ""): any => $ref.split("/").pop();
-
+export const refRootName = ($ref: string = ""): any => $ref.split("/").pop();
 
 let resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema4 => {
     let { $ref, $$ref } = prop;
@@ -53,7 +52,7 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
         );
     } else if (type === "object") {
         if (predicateName !== rootPredicate) {
-            predicateName = refName($$ref);
+            predicateName = refRootName($$ref);
         }
         finalJSON[rootPredicate][predicateName] = {
             type: predicate.type,
@@ -74,10 +73,10 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
                     foreignKeys[predicateName] = foreignKeys[predicateName] || {};
                     foreignKeys[predicateName][prop] = {
                         type: pprop.type,
-                        tableName: refName(pprop.$$ref),
+                        tableName: refRootName(pprop.$$ref),
                     };
                 } else {
-                    let pTableName = refName(pprop.$$ref);
+                    let pTableName = refRootName(pprop.$$ref);
                     foreignKeys[pTableName] = foreignKeys[pTableName] || {};
                     foreignKeys[pTableName][predicateName] = {
                         type: pprop.type,
@@ -188,7 +187,7 @@ export const generateDatabase = (
     for (let j = 0; j < jsonSchemas.length; j++) {
         const jsonSchema = jsonSchemas[j];
         let { $ref, definitions } = jsonSchema;
-        let rootType = refName($ref);
+        let rootType = refRootName($ref);
 
         for (let rootPredicate in definitions) {
             const prop = definitions[rootPredicate];
