@@ -1,12 +1,15 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
-import { generateDatabase, refRootName } from "../lib/database/generateTables"
+import { fTCheck, generateDatabase, refRootName } from "../lib/database/generateTables"
 import knex from "knex";
 import { readFileSync } from "fs";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
 import * as standards from "../lib/standards/standards";
+import { faker } from '@faker-js/faker';
 
 const filename = "./test/output/standards.sqlite";
 const sqlfilename = "./test/output/standards.sql";
+const fDT = faker.datatype;
+
 let knexConnection: any;
 
 beforeAll(async () => {
@@ -34,25 +37,43 @@ describe('Test Data Entry', () => {
     test('Enter Data For Each Data Type', async () => {
         let standard: keyof typeof standards;
         for (standard in standards) {
-            console.log(standard, ":");
             for (let s = 0; s < standardsJSON.length; s++) {
-                let tableName = refRootName(standardsJSON[s].$ref);
+                let currentStandard = standardsJSON[s];
+                let tableName = refRootName(currentStandard.$ref);
                 let pClassName: keyof typeof standards = `${tableName}_STANDARD` as unknown as any;
                 let parentClass: any = standards[pClassName];
-                console.log(parentClass);
                 let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
                 let standardCollection = new parentClass[cClassName];
-                standardCollection.RECORDS.push(new parentClass[tableName])
-                console.log(standardCollection);
+                for (let i = 0; i < 1; i++) {
+                    let newObject = new parentClass[tableName];
+                    let classDef = currentStandard.definitions[tableName].properties;
+
+                    for (let x in classDef) {
+                        if (classDef[x]?.type && !fTCheck(classDef[x].type)) {
+                            let { type, minimum: min, maximum: max } = (classDef[x]);
+                            let fakerValue: any = null;
+
+                            if (type === "integer") {
+                                fakerValue = fDT.number({ min, max })
+                            } else if (type === "number") {
+                                fakerValue = fDT.float();
+                            } else if (type === "boolean") {
+                                fakerValue = fDT.boolean();
+                            } else if (type === "string") {
+                                if (~x.indexOf("_DATE") || ~x.indexOf("EPOCH")) {
+                                    fakerValue = fDT.datetime().toISOString();
+                                } else {
+                                    fakerValue = fDT.string();
+                                }
+                            }
+                            newObject[x] = fakerValue;
+                        }
+                    }
+                    standardCollection.RECORDS.push(newObject);
+                }
+
+                console.log(tableName, JSON.stringify(standardCollection, null, 4));
             }
-
-
-            /*
-           let standardClass: string;
-            for (standardClass in standards[standard]) {
-                console.log(standardClass);
-            }*/
-
         }
         expect(1).toEqual(1);
     })

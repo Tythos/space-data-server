@@ -18,7 +18,7 @@ const knexNumberTypes: KeyValueDataStructure = {
 
 const foreignTypes = ["object", "array", "union"];
 
-const fTCheck = (ftPredicate: string) => ~foreignTypes.indexOf(ftPredicate);
+export const fTCheck = (ftPredicate: string) => ~foreignTypes.indexOf(ftPredicate);
 
 export const refRootName = ($ref: string = ""): any => $ref.split("/").pop();
 
