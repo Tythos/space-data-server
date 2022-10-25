@@ -42,7 +42,8 @@ describe('Test Data Entry', () => {
                 console.log(parentClass);
                 let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
                 let standardCollection = new parentClass[cClassName];
-                console.log(cClassName, parentClass[cClassName]);
+                standardCollection.RECORDS.push(new parentClass[tableName])
+                console.log(standardCollection);
             }
 
 
