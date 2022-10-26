@@ -22,7 +22,7 @@ export const fTCheck = (ftPredicate: string) => ~foreignTypes.indexOf(ftPredicat
 
 export const refRootName = ($ref: string = ""): any => $ref.split("/").pop();
 
-let resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema4 => {
+export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema4 => {
     let { $ref, $$ref } = prop;
     if ($ref) {
         let rpath = $ref.split("/").slice(1);
