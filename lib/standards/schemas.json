@@ -1,5 +1,5 @@
-[
-    {
+{
+    "CAT": {
         "$schema": "https://json-schema.org/draft/2019-09/schema",
         "definitions": {
             "objectType": {
@@ -50,7 +50,7 @@
                     "WET"
                 ]
             },
-            "SATCAT": {
+            "CAT": {
                 "type": "object",
                 "properties": {
                     "OBJECT_NAME": {
@@ -124,22 +124,22 @@
                 },
                 "additionalProperties": false
             },
-            "SATCATCOLLECTION": {
+            "CATCOLLECTION": {
                 "type": "object",
                 "properties": {
                     "RECORDS": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/definitions/SATCAT"
+                            "$ref": "#/definitions/CAT"
                         }
                     }
                 },
                 "additionalProperties": false
             }
         },
-        "$ref": "#/definitions/SATCAT"
+        "$ref": "#/definitions/CAT"
     },
-    {
+    "OMM": {
         "$schema": "https://json-schema.org/draft/2019-09/schema",
         "definitions": {
             "referenceFrame": {
@@ -455,7 +455,7 @@
         },
         "$ref": "#/definitions/OMM"
     },
-    {
+    "CDM": {
         "$schema": "https://json-schema.org/draft/2019-09/schema",
         "definitions": {
             "referenceFrame": {
@@ -892,7 +892,7 @@
         },
         "$ref": "#/definitions/CDM"
     },
-    {
+    "OPM": {
         "$schema": "https://json-schema.org/draft/2019-09/schema",
         "definitions": {
             "referenceFrame": {
@@ -1163,7 +1163,7 @@
         },
         "$ref": "#/definitions/OPM"
     },
-    {
+    "OEM": {
         "$schema": "https://json-schema.org/draft/2019-09/schema",
         "definitions": {
             "referenceFrame": {
@@ -1413,4 +1413,4 @@
         },
         "$ref": "#/definitions/OEM"
     }
-]
+}
