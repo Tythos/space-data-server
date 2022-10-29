@@ -14,21 +14,23 @@ const fDT = faker.datatype;
 
 let knexConnection: any;
 
+let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON);
+
 beforeAll(async () => {
-    await generateDatabase(standardsJSON, filename, sqlfilename);
     knexConnection = knex({
         client: 'better-sqlite3',
         connection: { filename },
         useNullAsDefault: true
     });
+    await generateDatabase(standardsArray, filename, sqlfilename, knexConnection);
+    await knexConnection("CAT").select("*");
 });
 
 describe('Test Generation', () => {
     test('Generate Database With Correct Tables', async () => {
 
-
-        for (let s = 0; s < standardsJSON.length; s++) {
-            let tableName = refRootName(standardsJSON[s].$ref);
+        for (let s = 0; s < standardsArray.length; s++) {
+            let tableName = refRootName(standardsArray[s].$ref);
             let cI = await knexConnection(tableName).columnInfo();
             expect(Object.keys(cI).length).toBeGreaterThan(0);
         }
@@ -50,7 +52,7 @@ describe('Test Data Entry', () => {
         } else if (type === "boolean") {
             fakerValue = fDT.boolean();
         } else if (type === "string") {
-            if (~propName.indexOf("_DATE") || ~propName.indexOf("EPOCH")) {
+            if (~propName.indexOf("_DATE") || ~propName.indexOf("EPOCH") || propName.indexOf("TIME") > 0) {
                 fakerValue = fDT.datetime().toISOString();
             } else if (~propName.indexOf("ORIGINATOR")) {
                 fakerValue = faker.company.name();
@@ -64,7 +66,7 @@ describe('Test Data Entry', () => {
                     "TDR",
                     "GRC"]);
             } else {
-                fakerValue = fDT.string();
+                fakerValue = faker.datatype.hexadecimal();
             }
         }
         return fakerValue;
@@ -109,7 +111,20 @@ describe('Test Data Entry', () => {
                 let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
                 standardCollection.RECORDS.push(newObject);
             }
-            console.log(tableName, JSON.stringify(standardCollection, null, 4));
+
+
+            for (let i = 0; i < standardCollection.RECORDS.length; i++) {
+                let { bb, bb_pos, ...record } = standardCollection.RECORDS[i];
+                for (let x in record) {
+                    if (Object.prototype.toString.call(record[x]) === "[object Object]" || Array.isArray(record[x])) {
+                        delete record[x];
+                    }
+                }
+                let rID = await knexConnection(tableName).insert(record);
+                console.log(await knexConnection(tableName).select("*"));
+            }
+            
+            // console.log(tableName, JSON.stringify(standardCollection, null, 4));
         }
         expect(1).toEqual(1);
     })

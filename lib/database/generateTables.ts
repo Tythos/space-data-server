@@ -1,4 +1,4 @@
-import knexInit, { knex, Knex } from "knex";
+import { knex, Knex } from "knex";
 import { writeFileSync, rmSync, existsSync } from "fs";
 import { JSONSchema4 } from "json-schema";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
@@ -164,13 +164,7 @@ export const generateDatabase = (
     jsonSchemas: Array<JSONSchema4>,
     filename: string = ".tmp/standards.sqlite",
     sqlFilename: string = ".tmp/standards.sql",
-    connection: Knex.Config = {
-        client: "better-sqlite3",
-        useNullAsDefault: true,
-        connection: {
-            filename,
-        },
-    }
+    knexConnection: any
 ) => {
 
     if (existsSync(filename)) {
@@ -181,9 +175,7 @@ export const generateDatabase = (
         rmSync(sqlFilename);
     }
 
-    let knexInstance: any = knexInit(connection);
-    tSchema = knexInstance.schema;
-
+    tSchema = knexConnection.schema;
     for (let j = 0; j < jsonSchemas.length; j++) {
         const jsonSchema = jsonSchemas[j];
         let { $ref, definitions } = jsonSchema;
