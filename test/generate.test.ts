@@ -102,7 +102,6 @@ describe('Test Data Entry', () => {
         let { maxID } = await knexConnection(tableName).max('id as maxID').first();
         for (let i = 0; i < queryArray.length; i++) {
             queryArray[i].id = (maxID ? maxID : 0) + i;
-            queryArray[i].created_at = 
         }
         let numRows = await knexConnection(tableName).insert(queryArray);
         return numRows;

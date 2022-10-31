@@ -1,11 +1,7 @@
 create table `CAT` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `OBJECT_NAME` text,
  `OBJECT_ID` text,
  `NORAD_CAT_ID` integer,
@@ -31,13 +27,9 @@ create table `CAT` (
 
 
 create table `OMM` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `CCSDS_OMM_VERS` float,
  `CREATION_DATE` text,
  `ORIGINATOR` text,
@@ -101,13 +93,9 @@ create table `OMM` (
 
 
 create table `CDM` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `CCSDS_CDM_VERS` float,
  `CREATION_DATE` text,
  `ORIGINATOR` text,
@@ -132,25 +120,13 @@ create table `CDM` (
  `SCREEN_ENTRY_TIME` text,
  `SCREEN_EXIT_TIME` text,
  `COLLISION_PROBABILITY` float,
- `COLLISION_PROBABILITY_METHOD` text,
- `OBJECT1` integer,
- `OBJECT2` integer,
- foreign key(
- `OBJECT1`) references `CDMObject`(
- `id`) on delete CASCADE,
- foreign key(
- `OBJECT2`) references `CDMObject`(
- `id`) on delete CASCADE);
+ `COLLISION_PROBABILITY_METHOD` text);
 
 
 create table `CDMObject` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `COMMENT` text,
  `OBJECT` text,
  `OBJECT_DESIGNATOR` text,
@@ -242,13 +218,9 @@ create table `CDMObject` (
 
 
 create table `OPM` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `CCSDS_OPM_VERS` float,
  `CREATION_DATE` text,
  `ORIGINATOR` text,
@@ -305,21 +277,13 @@ create table `OPM` (
  `USER_DEFINED_OBJECT_DESIGNATOR` text,
  `USER_DEFINED_EARTH_MODEL` text,
  `USER_DEFINED_EPOCH_TIMESTAMP` float,
- `USER_DEFINED_EPOCH_MICROSECONDS` float,
- `MANEUVERS` integer,
- foreign key(
- `MANEUVERS`) references `maneuverParameters`(
- `id`) on delete CASCADE);
+ `USER_DEFINED_EPOCH_MICROSECONDS` float);
 
 
 create table `maneuverParameters` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `MAN_EPOCH_IGNITION` text,
  `MAN_DURATION` float,
  `MAN_DELTA_MASS` float,
@@ -330,30 +294,18 @@ create table `maneuverParameters` (
 
 
 create table `OEM` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `CCSDS_OEM_VERS` float,
  `CREATION_DATE` text,
- `ORIGINATOR` text,
- `EPHEMERIS_DATA_BLOCK` integer,
- foreign key(
- `EPHEMERIS_DATA_BLOCK`) references `ephemerisDataBlock`(
- `id`) on delete CASCADE);
+ `ORIGINATOR` text);
 
 
 create table `ephemerisDataBlock` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `COMMENT` text,
  `OBJECT_NAME` text,
  `OBJECT_ID` text,
@@ -366,25 +318,13 @@ create table `ephemerisDataBlock` (
  `USEABLE_STOP_TIME` text,
  `STOP_TIME` text,
  `INTERPOLATION` text,
- `INTERPOLATION_DEGREE` integer,
- `EPHEMERIS_DATA_LINES` integer,
- `COVARIANCE_MATRIX_LINES` integer,
- foreign key(
- `EPHEMERIS_DATA_LINES`) references `ephemerisDataLine`(
- `id`) on delete CASCADE,
- foreign key(
- `COVARIANCE_MATRIX_LINES`) references `covarianceMatrixLine`(
- `id`) on delete CASCADE);
+ `INTERPOLATION_DEGREE` integer);
 
 
 create table `ephemerisDataLine` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `EPOCH` text,
  `X` float,
  `Y` float,
@@ -398,13 +338,9 @@ create table `ephemerisDataLine` (
 
 
 create table `covarianceMatrixLine` (
- `id` integer not null primary key autoincrement,
- `created_at` datetime,
- `updated_at` datetime,
- `created_by` varchar(
- 255) not null default '0',
- `updated_by` varchar(
- 255) not null default '0',
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `EPOCH` text,
  `COV_REF_FRAME` text,
  `CX_X` float,

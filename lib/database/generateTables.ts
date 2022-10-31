@@ -101,10 +101,8 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
     if (~builtTables.indexOf(rootTableName)) return;
 
     tSchema.createTable(rootTableName, function (table: any) {
-        table.increments();
-        table.timestamps();
-        table.string("created_by").notNullable().defaultTo(0);
-        table.string("updated_by").notNullable().defaultTo(0);
+        table.integer("id").notNullable().unsigned();
+        table.timestamps(true, true);
         for (let predicate in tableSchema) {
             const _predicate = tableSchema[predicate];
             if (!_predicate) continue;
@@ -132,7 +130,7 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
         ) {
             for (let fProperty in foreignKeys[rootTableName]) {
                 const { type, tableName } = foreignKeys[rootTableName][fProperty];
-                if (type === "object") {
+                /*if (type === "object") {
                     table.integer(fProperty).unsigned();
                     table
                         .foreign(fProperty)
@@ -146,7 +144,7 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
                         .inTable(fProperty)
                         .notNullable()
                         .onDelete("CASCADE");
-                }
+                }*/
             }
         }
         builtTables.push(rootTableName);
