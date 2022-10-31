@@ -52,9 +52,14 @@ describe('Test Data Entry', () => {
         } else if (type === "boolean") {
             fakerValue = fDT.boolean();
         } else if (type === "string") {
-            if (~propName.indexOf("_DATE") || ~propName.indexOf("EPOCH") || propName.indexOf("TIME") > 0) {
+            if (
+                ~propName.indexOf("_DATE") ||
+                ~propName.indexOf("EPOCH") ||
+                propName.indexOf("TIME") > 0 ||
+                ~propName.indexOf("TCA")
+            ) {
                 fakerValue = fDT.datetime().toISOString();
-            } else if (~propName.indexOf("ORIGINATOR")) {
+            } else if (~propName.indexOf("ORIGINATOR") || ~propName.indexOf("MESSAGE_FOR")) {
                 fakerValue = faker.company.name();
             } else if (~propName.indexOf("REF_FRAME")) {
                 faker.helpers.arrayElement(["ICRF",
@@ -98,10 +103,14 @@ describe('Test Data Entry', () => {
         return newObject;
     }
 
-    const buildQuery = async (tableName: string, queryArray: Array<any>) => {
+    const buildQuery = async (tableName: string, queryArray: Array<any>, foreignObjectKeys: Array<any>) => {
         let { maxID } = await knexConnection(tableName).max('id as maxID').first();
         for (let i = 0; i < queryArray.length; i++) {
             queryArray[i].id = (maxID ? maxID : 0) + i;
+            for (let f = 0; f < foreignObjectKeys.length; f++) {
+                queryArray[i][foreignObjectKeys[f]] = 0;
+                console.log(foreignObjectKeys[f]);
+            }
         }
         let numRows = await knexConnection(tableName).insert(queryArray);
         return numRows;
@@ -110,6 +119,7 @@ describe('Test Data Entry', () => {
     test('Enter Data For Each Data Type', async () => {
         let standard: keyof typeof standards;
         for (standard in standards) {
+            if (standard !== "CDM") continue
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
@@ -122,16 +132,21 @@ describe('Test Data Entry', () => {
             }
 
             let records = [];
+            let foreignObjectKeys = [];
             for (let i = 0; i < standardCollection.RECORDS.length; i++) {
                 let { bb, bb_pos, ...record } = standardCollection.RECORDS[i];
+
                 for (let x in record) {
-                    if (Object.prototype.toString.call(record[x]) === "[object Object]" || Array.isArray(record[x])) {
+                    if (Object.prototype.toString.call(record[x]) === "[object Object]") {
+                        foreignObjectKeys.push(x)
+                    }
+                    if (Array.isArray(record[x])) {
                         delete record[x];
                     }
                 }
                 records.push(record);
             }
-            let rowNum = await buildQuery(tableName, records);
+            let rowNum = await buildQuery(tableName, records, foreignObjectKeys);
             console.log(rowNum, await knexConnection(tableName).select("*"));
         }
         expect(1).toEqual(1);

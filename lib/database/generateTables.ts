@@ -130,14 +130,14 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
         ) {
             for (let fProperty in foreignKeys[rootTableName]) {
                 const { type, tableName } = foreignKeys[rootTableName][fProperty];
-                /*if (type === "object") {
+                if (type === "object") {
                     table.integer(fProperty).unsigned();
                     table
                         .foreign(fProperty)
                         .references(`${tableName}.id`)
                         .deferrable("deferred")
                         .onDelete("CASCADE");
-                } else if (type === "array") {
+                } /*else if (type === "array") {
                     table
                         .integer(`${fProperty}_id`)
                         .references('id')
