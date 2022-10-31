@@ -98,6 +98,16 @@ describe('Test Data Entry', () => {
         return newObject;
     }
 
+    const buildQuery = async (tableName: string, queryArray: Array<any>) => {
+        let { maxID } = await knexConnection(tableName).max('id as maxID').first();
+        for (let i = 0; i < queryArray.length; i++) {
+            queryArray[i].id = (maxID ? maxID : 0) + i;
+            queryArray[i].created_at = 
+        }
+        let numRows = await knexConnection(tableName).insert(queryArray);
+        return numRows;
+    }
+
     test('Enter Data For Each Data Type', async () => {
         let standard: keyof typeof standards;
         for (standard in standards) {
@@ -107,12 +117,12 @@ describe('Test Data Entry', () => {
             let parentClass: any = standards[pClassName];
             let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
             let standardCollection = new parentClass[cClassName];
-            for (let i = 0; i < 1; i++) {
+            for (let i = 0; i < 10; i++) {
                 let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
                 standardCollection.RECORDS.push(newObject);
             }
 
-
+            let records = [];
             for (let i = 0; i < standardCollection.RECORDS.length; i++) {
                 let { bb, bb_pos, ...record } = standardCollection.RECORDS[i];
                 for (let x in record) {
@@ -120,11 +130,10 @@ describe('Test Data Entry', () => {
                         delete record[x];
                     }
                 }
-                let rID = await knexConnection(tableName).insert(record);
-                console.log(await knexConnection(tableName).select("*"));
+                records.push(record);
             }
-            
-            // console.log(tableName, JSON.stringify(standardCollection, null, 4));
+            let rowNum = await buildQuery(tableName, records);
+            console.log(rowNum, await knexConnection(tableName).select("*"));
         }
         expect(1).toEqual(1);
     })
