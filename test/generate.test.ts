@@ -103,14 +103,32 @@ describe('Test Data Entry', () => {
         return newObject;
     }
 
-    const runQuery = async (tableName: string, queryArray: Array<any>, foreignObjectTables: Object) => {
-        let { maxID } = await knexConnection(tableName).max('id as maxID').first();
-        for (let i = 0; i < queryArray.length; i++) {
-            queryArray[i].id = (maxID ? maxID : 0) + i;
-            console.log(foreignObjectTables);
+    const runQuery = async (tableName: string, queryArray: Array<any>, standardsSchema: JSONSchema4, startID?: number): Promise<any> => {
+
+        if (!startID) {
+            ({ startID } = await knexConnection(tableName).max('id as startID').first());
         }
-        let numRows = await knexConnection(tableName).insert(queryArray);
-        return numRows;
+
+        //determine foreignKey requirements for this level in object
+        let tableDefinition = standardsSchema.definitions ? standardsSchema.definitions[tableName] : null;
+        if (!tableDefinition) {
+            throw Error(`Attempted to Run Query on non-existent table definition: ${tableName}`);
+        }
+        for (let prop in tableDefinition.properties) {
+            console.log(prop, resolver(tableDefinition.properties[prop], standardsSchema).type);
+        }
+
+        for (let i = 0; i < queryArray.length; i++) {
+            delete queryArray[i].bb;
+            delete queryArray[i].bb_pos;
+
+            queryArray[i].id = (startID ? startID : 0) + i;
+        }
+
+        //console.log("Do Query", tableName, queryArray);
+        //let numRows = await knexConnection(tableName).insert(queryArray);
+        //return numRows;
+        return queryArray;
     }
 
     test('Enter Data For Each Data Type', async () => {
@@ -123,28 +141,12 @@ describe('Test Data Entry', () => {
             let parentClass: any = standards[pClassName];
             let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
             let standardCollection = new parentClass[cClassName];
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 1; i++) {
                 let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
                 standardCollection.RECORDS.push(newObject);
             }
-
-            let records = [];
-            let foreignObjectTables: KeyValueDataStructure = {};
-            for (let i = 0; i < standardCollection.RECORDS.length; i++) {
-                let { bb, bb_pos, ...record } = standardCollection.RECORDS[i];
-
-                for (let x in record) {
-                    if (Object.prototype.toString.call(record[x]) === "[object Object]") {
-                        foreignObjectTables[x] = record[x].constructor.name;
-                    }
-                    if (Array.isArray(record[x])) {
-                        delete record[x];
-                    }
-                }
-                records.push(record);
-            }
-            let rowNum = await runQuery(tableName, records, foreignObjectTables);
-            console.log(rowNum, await knexConnection(tableName).select("*"));
+            await runQuery(tableName, standardCollection.RECORDS, currentStandard);
+            //console.log(await knexConnection(tableName).select("*"));
         }
         expect(1).toEqual(1);
     })
