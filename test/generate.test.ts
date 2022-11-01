@@ -103,14 +103,11 @@ describe('Test Data Entry', () => {
         return newObject;
     }
 
-    const buildQuery = async (tableName: string, queryArray: Array<any>, foreignObjectKeys: Array<any>) => {
+    const runQuery = async (tableName: string, queryArray: Array<any>, foreignObjectTables: Object) => {
         let { maxID } = await knexConnection(tableName).max('id as maxID').first();
         for (let i = 0; i < queryArray.length; i++) {
             queryArray[i].id = (maxID ? maxID : 0) + i;
-            for (let f = 0; f < foreignObjectKeys.length; f++) {
-                queryArray[i][foreignObjectKeys[f]] = 0;
-                console.log(foreignObjectKeys[f]);
-            }
+            console.log(foreignObjectTables);
         }
         let numRows = await knexConnection(tableName).insert(queryArray);
         return numRows;
@@ -132,13 +129,13 @@ describe('Test Data Entry', () => {
             }
 
             let records = [];
-            let foreignObjectKeys = [];
+            let foreignObjectTables: KeyValueDataStructure = {};
             for (let i = 0; i < standardCollection.RECORDS.length; i++) {
                 let { bb, bb_pos, ...record } = standardCollection.RECORDS[i];
 
                 for (let x in record) {
                     if (Object.prototype.toString.call(record[x]) === "[object Object]") {
-                        foreignObjectKeys.push(x)
+                        foreignObjectTables[x] = record[x].constructor.name;
                     }
                     if (Array.isArray(record[x])) {
                         delete record[x];
@@ -146,7 +143,7 @@ describe('Test Data Entry', () => {
                 }
                 records.push(record);
             }
-            let rowNum = await buildQuery(tableName, records, foreignObjectKeys);
+            let rowNum = await runQuery(tableName, records, foreignObjectTables);
             console.log(rowNum, await knexConnection(tableName).select("*"));
         }
         expect(1).toEqual(1);
