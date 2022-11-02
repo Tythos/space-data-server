@@ -149,11 +149,14 @@ describe('Test Data Entry', () => {
                     }
                 } else if (pType === "array") {
                     for (let fieldName in fields) {
+                        for (let a = 0; a < queryArray[i][fieldName].length; a++) {
+                            queryArray[i][fieldName][a][`${tableName}_id`] = queryArray[i].id;
+                        } 
+                        console.log(queryArray[i][fieldName]);
                         delete queryArray[i][fieldName];
-                        /*for (let i = 0; i < queryArray[i][fieldName].length; i++) {
 
-                        }*/
                     }
+
                 }
                 resultObject = await buildQuery(fTable, resultObject[fTable], standardsSchema, resultObject, false);
             }
