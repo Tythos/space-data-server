@@ -23,7 +23,9 @@ create table `CAT` (
  `MANEUVERABLE` boolean,
  `SIZE` float,
  `MASS` float,
- `MASS_TYPE` text);
+ `MASS_TYPE` text,
+ primary key (
+ `id`));
 
 
 create table `OMM` (
@@ -89,7 +91,9 @@ create table `OMM` (
  `USER_DEFINED_OBJECT_DESIGNATOR` text,
  `USER_DEFINED_EARTH_MODEL` text,
  `USER_DEFINED_EPOCH_TIMESTAMP` float,
- `USER_DEFINED_MICROSECONDS` float);
+ `USER_DEFINED_MICROSECONDS` float,
+ primary key (
+ `id`));
 
 
 create table `CDM` (
@@ -128,7 +132,9 @@ create table `CDM` (
  `id`) on delete CASCADE,
  foreign key(
  `OBJECT2`) references `CDMObject`(
- `id`) on delete CASCADE);
+ `id`) on delete CASCADE,
+ primary key (
+ `id`));
 
 
 create table `CDMObject` (
@@ -222,7 +228,9 @@ create table `CDMObject` (
  `CTHR_NDOT` float,
  `CTHR_DRG` float,
  `CTHR_SRP` float,
- `CTHR_THR` float);
+ `CTHR_THR` float,
+ primary key (
+ `id`));
 
 
 create table `OPM` (
@@ -289,7 +297,9 @@ create table `OPM` (
  `MANEUVERS` integer,
  foreign key(
  `MANEUVERS`) references `maneuverParameters`(
- `id`) on delete CASCADE);
+ `id`) on delete CASCADE,
+ primary key (
+ `id`));
 
 
 create table `maneuverParameters` (
@@ -302,7 +312,9 @@ create table `maneuverParameters` (
  `MAN_REF_FRAME` text,
  `MAN_DV_1` float,
  `MAN_DV_2` float,
- `MAN_DV_3` float);
+ `MAN_DV_3` float,
+ primary key (
+ `id`));
 
 
 create table `OEM` (
@@ -315,7 +327,9 @@ create table `OEM` (
  `EPHEMERIS_DATA_BLOCK` integer,
  foreign key(
  `EPHEMERIS_DATA_BLOCK`) references `ephemerisDataBlock`(
- `id`) on delete CASCADE);
+ `id`) on delete CASCADE,
+ primary key (
+ `id`));
 
 
 create table `ephemerisDataBlock` (
@@ -342,7 +356,9 @@ create table `ephemerisDataBlock` (
  `id`) on delete CASCADE,
  foreign key(
  `COVARIANCE_MATRIX_LINES`) references `covarianceMatrixLine`(
- `id`) on delete CASCADE);
+ `id`) on delete CASCADE,
+ primary key (
+ `id`));
 
 
 create table `ephemerisDataLine` (
@@ -358,7 +374,9 @@ create table `ephemerisDataLine` (
  `Z_DOT` float,
  `X_DDOT` float,
  `Y_DDOT` float,
- `Z_DDOT` float);
+ `Z_DDOT` float,
+ primary key (
+ `id`));
 
 
 create table `covarianceMatrixLine` (
@@ -387,4 +405,6 @@ create table `covarianceMatrixLine` (
  `CZ_DOT_Z` float,
  `CZ_DOT_X_DOT` float,
  `CZ_DOT_Y_DOT` float,
- `CZ_DOT_Z_DOT` float)
+ `CZ_DOT_Z_DOT` float,
+ primary key (
+ `id`))

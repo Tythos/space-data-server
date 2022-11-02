@@ -16,9 +16,9 @@ const knexNumberTypes: KeyValueDataStructure = {
     18446744073709551615: "bigint",
 };
 
-const foreignTypes = ["object", "array", "union"];
+const foreignTypes: Array<any> = ["object", "array", "union"];
 
-export const fTCheck = (ftPredicate: string) => ~foreignTypes.indexOf(ftPredicate);
+export const fTCheck = (ftPredicate: string | undefined) => ~foreignTypes.indexOf(ftPredicate);
 
 export const refRootName = ($ref: string = ""): any => $ref.split("/").pop();
 
@@ -101,7 +101,7 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
     if (~builtTables.indexOf(rootTableName)) return;
 
     tSchema.createTable(rootTableName, function (table: any) {
-        table.integer("id").notNullable().unsigned();
+        table.integer("id").notNullable().unsigned().primary();
         table.timestamps(true, true);
         for (let predicate in tableSchema) {
             const _predicate = tableSchema[predicate];
