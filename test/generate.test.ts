@@ -88,7 +88,7 @@ describe('Test Data Entry', () => {
                 newObject[x] = buildObject(resolvedProp.properties, parentClass, refRootName(resolvedProp.$$ref), jsonSchema);
             } else if (classProperties[x]?.type === "array") {
                 newObject[x] = [];
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < 2; i++) {
                     let aObject = !fTCheck(resolvedProp?.type) ?
                         buildProp(resolvedProp, x) :
                         buildObject(
@@ -104,7 +104,7 @@ describe('Test Data Entry', () => {
     }
 
     const buildQuery = async (tableName: string, queryArray: Array<any>, standardsSchema: JSONSchema4, resultObject: KeyValueDataStructure = { tableOrder: [] }, runQuery: boolean = true): Promise<any> => {
-
+        console.log("entry", tableName, queryArray);
         if (!tableName) {
             throw Error(`Missing Table Name for Data Like: ${JSON.stringify(queryArray[0], null, 4)}`);
         }
@@ -124,7 +124,7 @@ describe('Test Data Entry', () => {
             const { type: pType } = tableDefinition.properties[prop];
             const { type, $$ref } = resolver(tableDefinition.properties[prop], standardsSchema);
             if (fTCheck(type as string)) {
-                foreignProperties[refRootName($$ref)] = foreignProperties[refRootName($$ref)] || { records: [], fields: {}, fStartID: null, type, pType };
+                foreignProperties[refRootName($$ref)] = foreignProperties[refRootName($$ref)] || { fields: {}, fStartID: null, type, pType };
                 foreignProperties[refRootName($$ref)].fields[prop] = {};
             }
         }
@@ -135,7 +135,7 @@ describe('Test Data Entry', () => {
         for (let i = 0; i < queryArray.length; i++) {
             delete queryArray[i].bb;
             delete queryArray[i].bb_pos;
-            queryArray[i].id = (startID ? startID : 0) + i;
+            queryArray[i].id = queryArray[i].id > -1 ? queryArray[i].id : (startID ? startID : 0) + i;
             resultObject[tableName].push(queryArray[i]);
             for (let fTable in foreignProperties) {
                 resultObject[fTable] = resultObject[fTable] || [];
@@ -149,14 +149,15 @@ describe('Test Data Entry', () => {
                     }
                 } else if (pType === "array") {
                     for (let fieldName in fields) {
+                        if (!queryArray[i][fieldName]?.length) {
+                            throw Error(`${fieldName} ${JSON.stringify(queryArray[i], null, 4)} ${JSON.stringify(foreignProperties, null, 4)}`);
+                        }
+
                         for (let a = 0; a < queryArray[i][fieldName].length; a++) {
                             queryArray[i][fieldName][a][`${tableName}_id`] = queryArray[i].id;
-                        } 
-                        console.log(queryArray[i][fieldName]);
-                        delete queryArray[i][fieldName];
-
+                            resultObject[fTable].push({ ...queryArray[i][fieldName][a] });
+                        }
                     }
-
                 }
                 resultObject = await buildQuery(fTable, resultObject[fTable], standardsSchema, resultObject, false);
             }
@@ -166,7 +167,6 @@ describe('Test Data Entry', () => {
         if (runQuery) {
             for (let t = 0; t < resultObject.tableOrder.length; t++) {
                 const nTable = resultObject.tableOrder[t];
-
                 for (let x = 0; x < resultObject[nTable].length; x += pageSize) {
                     await knexConnection(nTable).insert(resultObject[nTable].slice(x, x + pageSize));
                 }
