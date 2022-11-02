@@ -104,6 +104,10 @@ describe('Test Data Entry', () => {
     }
 
     const buildQuery = async (tableName: string, queryArray: Array<any>, standardsSchema: JSONSchema4, resultObject: KeyValueDataStructure = { tableOrder: [] }, runQuery: boolean = true): Promise<any> => {
+
+        if (!tableName) {
+            throw Error(`Missing Table Name for Data Like: ${JSON.stringify(queryArray[0], null, 4)}`);
+        }
         if (!~resultObject.tableOrder.indexOf(tableName)) {
             resultObject.tableOrder.unshift(tableName);
         }
@@ -117,9 +121,10 @@ describe('Test Data Entry', () => {
         }
 
         for (let prop in tableDefinition.properties) {
+            const { type: pType } = tableDefinition.properties[prop];
             const { type, $$ref } = resolver(tableDefinition.properties[prop], standardsSchema);
             if (fTCheck(type as string)) {
-                foreignProperties[refRootName($$ref)] = foreignProperties[refRootName($$ref)] || { records: [], fields: {}, fStartID: null };
+                foreignProperties[refRootName($$ref)] = foreignProperties[refRootName($$ref)] || { records: [], fields: {}, fStartID: null, type, pType };
                 foreignProperties[refRootName($$ref)].fields[prop] = {};
             }
         }
@@ -127,7 +132,6 @@ describe('Test Data Entry', () => {
         for (let fTable in foreignProperties) {
             foreignProperties[fTable].fStartID = await knexConnection(fTable).max('id as fStartID').first().fStartID || 0;
         }
-
         for (let i = 0; i < queryArray.length; i++) {
             delete queryArray[i].bb;
             delete queryArray[i].bb_pos;
@@ -135,11 +139,21 @@ describe('Test Data Entry', () => {
             resultObject[tableName].push(queryArray[i]);
             for (let fTable in foreignProperties) {
                 resultObject[fTable] = resultObject[fTable] || [];
-                let { fields } = foreignProperties[fTable];
-                for (let fieldName in fields) {
-                    queryArray[i][fieldName].id = foreignProperties[fTable].fStartID++;
-                    resultObject[fTable].push({ ...queryArray[i][fieldName] });
-                    queryArray[i][fieldName] = queryArray[i][fieldName].id;
+                let { fields, type: fType, pType } = foreignProperties[fTable];
+                if (pType === "object") {
+                    for (let fieldName in fields) {
+                        queryArray[i][fieldName].id = foreignProperties[fTable].fStartID++;
+                        resultObject[fTable].push({ ...queryArray[i][fieldName] });
+                        queryArray[i][fieldName] = queryArray[i][fieldName].id;
+
+                    }
+                } else if (pType === "array") {
+                    for (let fieldName in fields) {
+                        delete queryArray[i][fieldName];
+                        /*for (let i = 0; i < queryArray[i][fieldName].length; i++) {
+
+                        }*/
+                    }
                 }
                 resultObject = await buildQuery(fTable, resultObject[fTable], standardsSchema, resultObject, false);
             }
@@ -161,10 +175,10 @@ describe('Test Data Entry', () => {
 
     test('Enter Data For Each Data Type', async () => {
         let standard: keyof typeof standards;
-        let total = 1000;
+        let total = 3;
         let returnCount = 0;
         for (standard in standards) {
-            if (standard !== "CDM") continue
+            if (standard !== "OEM") continue
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
@@ -177,17 +191,18 @@ describe('Test Data Entry', () => {
             }
             await buildQuery(tableName, standardCollection.RECORDS, currentStandard);
             let resultQuery = await knexConnection(tableName).select("*");
-            let foreignKeys = ["OBJECT1", "OBJECT2"];
-
-            let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
-            let CDMObjectsHash: KeyValueDataStructure = {};
-            for (let c = 0; c < CDMObjects.length; c++) {
-                CDMObjectsHash[CDMObjects[c].id] = CDMObjects[c];
-            }
-            for (let t = 0; t < resultQuery.length; t++) {
-                //Build Objects From Schemas Here!!
-                for (let fK = 0; fK < foreignKeys.length; fK++) {
-                    resultQuery[t][foreignKeys[fK]] = CDMObjectsHash[resultQuery[t][foreignKeys[fK]]];
+            if (standard.indexOf("CDM") === 0) {
+                let foreignKeys = ["OBJECT1", "OBJECT2"];
+                let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
+                let CDMObjectsHash: KeyValueDataStructure = {};
+                for (let c = 0; c < CDMObjects.length; c++) {
+                    CDMObjectsHash[CDMObjects[c].id] = CDMObjects[c];
+                }
+                for (let t = 0; t < resultQuery.length; t++) {
+                    //Build Objects From Schemas Here!!
+                    for (let fK = 0; fK < foreignKeys.length; fK++) {
+                        resultQuery[t][foreignKeys[fK]] = CDMObjectsHash[resultQuery[t][foreignKeys[fK]]];
+                    }
                 }
             }
             returnCount += resultQuery.length;

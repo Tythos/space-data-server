@@ -23,6 +23,7 @@ export const fTCheck = (ftPredicate: string | undefined) => ~foreignTypes.indexO
 export const refRootName = ($ref: string = ""): any => $ref.split("/").pop();
 
 export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema4 => {
+    prop = prop?.items || prop;
     let { $ref, $$ref } = prop;
     if ($ref) {
         let rpath = $ref.split("/").slice(1);
@@ -137,14 +138,14 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
                         .references(`${tableName}.id`)
                         .deferrable("deferred")
                         .onDelete("CASCADE");
-                } /*else if (type === "array") {
+                } else if (type === "array") {
                     table
                         .integer(`${fProperty}_id`)
                         .references('id')
                         .inTable(fProperty)
                         .notNullable()
                         .onDelete("CASCADE");
-                }*/
+                }
             }
         }
         builtTables.push(rootTableName);
