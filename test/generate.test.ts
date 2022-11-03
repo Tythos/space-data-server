@@ -104,7 +104,6 @@ describe('Test Data Entry', () => {
     }
 
     const buildQuery = async (tableName: string, queryArray: Array<any>, standardsSchema: JSONSchema4, resultObject: KeyValueDataStructure = { tableOrder: [] }, runQuery: boolean = true): Promise<any> => {
-        console.log("entry", tableName, queryArray);
         if (!tableName) {
             throw Error(`Missing Table Name for Data Like: ${JSON.stringify(queryArray[0], null, 4)}`);
         }
@@ -121,10 +120,9 @@ describe('Test Data Entry', () => {
         }
 
         for (let prop in tableDefinition.properties) {
-            const { type: pType } = tableDefinition.properties[prop];
-            const { type, $$ref } = resolver(tableDefinition.properties[prop], standardsSchema);
+            const { type, $type, $$ref } = resolver(tableDefinition.properties[prop], standardsSchema);
             if (fTCheck(type as string)) {
-                foreignProperties[refRootName($$ref)] = foreignProperties[refRootName($$ref)] || { fields: {}, fStartID: null, type, pType };
+                foreignProperties[refRootName($$ref)] = foreignProperties[refRootName($$ref)] || { fields: {}, fStartID: null, type, $type };
                 foreignProperties[refRootName($$ref)].fields[prop] = {};
             }
         }
@@ -139,15 +137,16 @@ describe('Test Data Entry', () => {
             resultObject[tableName].push(queryArray[i]);
             for (let fTable in foreignProperties) {
                 resultObject[fTable] = resultObject[fTable] || [];
-                let { fields, type: fType, pType } = foreignProperties[fTable];
-                if (pType === "object") {
+                let { fields, type, $type } = foreignProperties[fTable];
+                $type = $type || type;
+                if ($type === "object") {
                     for (let fieldName in fields) {
                         queryArray[i][fieldName].id = foreignProperties[fTable].fStartID++;
                         resultObject[fTable].push({ ...queryArray[i][fieldName] });
                         queryArray[i][fieldName] = queryArray[i][fieldName].id;
 
                     }
-                } else if (pType === "array") {
+                } else if ($type === "array") {
                     for (let fieldName in fields) {
                         if (!queryArray[i][fieldName]?.length) {
                             throw Error(`${fieldName} ${JSON.stringify(queryArray[i], null, 4)} ${JSON.stringify(foreignProperties, null, 4)}`);

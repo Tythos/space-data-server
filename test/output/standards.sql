@@ -125,14 +125,6 @@ create table `CDM` (
  `SCREEN_EXIT_TIME` text,
  `COLLISION_PROBABILITY` float,
  `COLLISION_PROBABILITY_METHOD` text,
- `OBJECT1` integer,
- `OBJECT2` integer,
- foreign key(
- `OBJECT1`) references `CDMObject`(
- `id`) on delete CASCADE,
- foreign key(
- `OBJECT2`) references `CDMObject`(
- `id`) on delete CASCADE,
  primary key (
  `id`));
 
@@ -294,9 +286,9 @@ create table `OPM` (
  `USER_DEFINED_EARTH_MODEL` text,
  `USER_DEFINED_EPOCH_TIMESTAMP` float,
  `USER_DEFINED_EPOCH_MICROSECONDS` float,
- `MANEUVERS` integer,
+ `MANEUVERS_id` integer not null,
  foreign key(
- `MANEUVERS`) references `maneuverParameters`(
+ `MANEUVERS_id`) references `MANEUVERS`(
  `id`) on delete CASCADE,
  primary key (
  `id`));
@@ -324,9 +316,9 @@ create table `OEM` (
  `CCSDS_OEM_VERS` float,
  `CREATION_DATE` text,
  `ORIGINATOR` text,
- `EPHEMERIS_DATA_BLOCK` integer,
+ `EPHEMERIS_DATA_BLOCK_id` integer not null,
  foreign key(
- `EPHEMERIS_DATA_BLOCK`) references `ephemerisDataBlock`(
+ `EPHEMERIS_DATA_BLOCK_id`) references `EPHEMERIS_DATA_BLOCK`(
  `id`) on delete CASCADE,
  primary key (
  `id`));
@@ -349,13 +341,13 @@ create table `ephemerisDataBlock` (
  `STOP_TIME` text,
  `INTERPOLATION` text,
  `INTERPOLATION_DEGREE` integer,
- `EPHEMERIS_DATA_LINES` integer,
- `COVARIANCE_MATRIX_LINES` integer,
+ `EPHEMERIS_DATA_LINES_id` integer not null,
+ `COVARIANCE_MATRIX_LINES_id` integer not null,
  foreign key(
- `EPHEMERIS_DATA_LINES`) references `ephemerisDataLine`(
+ `EPHEMERIS_DATA_LINES_id`) references `EPHEMERIS_DATA_LINES`(
  `id`) on delete CASCADE,
  foreign key(
- `COVARIANCE_MATRIX_LINES`) references `covarianceMatrixLine`(
+ `COVARIANCE_MATRIX_LINES_id`) references `COVARIANCE_MATRIX_LINES`(
  `id`) on delete CASCADE,
  primary key (
  `id`));

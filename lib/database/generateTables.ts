@@ -2,6 +2,7 @@ import { knex, Knex } from "knex";
 import { writeFileSync, rmSync, existsSync } from "fs";
 import { JSONSchema4 } from "json-schema";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
+import { type } from "os";
 
 let tSchema: Knex.SchemaBuilder;
 
@@ -24,7 +25,7 @@ export const refRootName = ($ref: string = ""): any => $ref.split("/").pop();
 
 export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema4 => {
     prop = prop?.items || prop;
-    let { $ref, $$ref } = prop;
+    let { $ref, $$ref, $type } = prop;
     if ($ref) {
         let rpath = $ref.split("/").slice(1);
         let fprop = jsonSchema;
@@ -36,6 +37,7 @@ export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema
             }
         }
         fprop.$$ref = $ref || $$ref;
+        fprop.$type = $type || type;
         return resolver(fprop, jsonSchema);
     } else {
         return prop;
@@ -43,7 +45,11 @@ export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema
 };
 
 const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSONSchema4, rootPredicate: string): any => {
-    const { type, $ref, $$ref, properties, items } = predicate;
+    if (predicateName === "EPHEMERIS_DATA_BLOCK") {
+        console.log(predicateName, predicate)
+    }
+    let { type, $type, $ref, $$ref, properties, items } = predicate;
+
     if ($ref) {
         return builder(
             predicateName,
@@ -69,11 +75,13 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
              * - union: same as object
              *
              */
+
             if (fTCheck(pprop.type)) {
                 if (pprop.type === "object") {
                     foreignKeys[predicateName] = foreignKeys[predicateName] || {};
                     foreignKeys[predicateName][prop] = {
                         type: pprop.type,
+                        $type: pprop.$type,
                         tableName: refRootName(pprop.$$ref),
                     };
                 } else {
@@ -81,15 +89,16 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
                     foreignKeys[pTableName] = foreignKeys[pTableName] || {};
                     foreignKeys[pTableName][predicateName] = {
                         type: pprop.type,
+                        $type: pprop.$type,
                         parentTable: predicateName
                     };
                 }
             }
             finalJSON[rootPredicate][predicateName][prop] = pprop;
         }
-        return { type, $ref, $$ref };
+        return { $type, type, $ref, $$ref };
     } else if (type === "array") {
-        return builder(predicateName, items || {}, jsonSchema, rootPredicate);
+        return builder(predicateName, { ...items, $type: "array" } || {}, jsonSchema, rootPredicate);
     } else {
         return predicate;
     }
@@ -130,15 +139,16 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
             Object.keys(foreignKeys[rootTableName])
         ) {
             for (let fProperty in foreignKeys[rootTableName]) {
-                const { type, tableName } = foreignKeys[rootTableName][fProperty];
-                if (type === "object") {
+                let { type, $type, tableName } = foreignKeys[rootTableName][fProperty];
+                $type = $type || type;
+                if ($type === "object") {
                     table.integer(fProperty).unsigned();
                     table
                         .foreign(fProperty)
                         .references(`${tableName}.id`)
                         .deferrable("deferred")
                         .onDelete("CASCADE");
-                } else if (type === "array") {
+                } else if ($type === "array") {
                     table
                         .integer(`${fProperty}_id`)
                         .references('id')
