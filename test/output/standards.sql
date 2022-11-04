@@ -286,10 +286,6 @@ create table `OPM` (
  `USER_DEFINED_EARTH_MODEL` text,
  `USER_DEFINED_EPOCH_TIMESTAMP` float,
  `USER_DEFINED_EPOCH_MICROSECONDS` float,
- `MANEUVERS_id` integer not null,
- foreign key(
- `MANEUVERS_id`) references `MANEUVERS`(
- `id`) on delete CASCADE,
  primary key (
  `id`));
 
@@ -298,6 +294,7 @@ create table `maneuverParameters` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `OPM_id` integer,
  `MAN_EPOCH_IGNITION` text,
  `MAN_DURATION` float,
  `MAN_DELTA_MASS` float,
@@ -305,6 +302,9 @@ create table `maneuverParameters` (
  `MAN_DV_1` float,
  `MAN_DV_2` float,
  `MAN_DV_3` float,
+ foreign key(
+ `OPM_id`) references `OPM`(
+ `id`),
  primary key (
  `id`));
 
@@ -316,10 +316,6 @@ create table `OEM` (
  `CCSDS_OEM_VERS` float,
  `CREATION_DATE` text,
  `ORIGINATOR` text,
- `EPHEMERIS_DATA_BLOCK_id` integer not null,
- foreign key(
- `EPHEMERIS_DATA_BLOCK_id`) references `EPHEMERIS_DATA_BLOCK`(
- `id`) on delete CASCADE,
  primary key (
  `id`));
 
@@ -328,6 +324,7 @@ create table `ephemerisDataBlock` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `OEM_id` integer,
  `COMMENT` text,
  `OBJECT_NAME` text,
  `OBJECT_ID` text,
@@ -341,14 +338,9 @@ create table `ephemerisDataBlock` (
  `STOP_TIME` text,
  `INTERPOLATION` text,
  `INTERPOLATION_DEGREE` integer,
- `EPHEMERIS_DATA_LINES_id` integer not null,
- `COVARIANCE_MATRIX_LINES_id` integer not null,
  foreign key(
- `EPHEMERIS_DATA_LINES_id`) references `EPHEMERIS_DATA_LINES`(
- `id`) on delete CASCADE,
- foreign key(
- `COVARIANCE_MATRIX_LINES_id`) references `COVARIANCE_MATRIX_LINES`(
- `id`) on delete CASCADE,
+ `OEM_id`) references `OEM`(
+ `id`),
  primary key (
  `id`));
 
@@ -357,6 +349,7 @@ create table `ephemerisDataLine` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `ephemerisDataBlock_id` integer,
  `EPOCH` text,
  `X` float,
  `Y` float,
@@ -367,6 +360,9 @@ create table `ephemerisDataLine` (
  `X_DDOT` float,
  `Y_DDOT` float,
  `Z_DDOT` float,
+ foreign key(
+ `ephemerisDataBlock_id`) references `ephemerisDataBlock`(
+ `id`),
  primary key (
  `id`));
 
@@ -375,6 +371,7 @@ create table `covarianceMatrixLine` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `ephemerisDataBlock_id` integer,
  `EPOCH` text,
  `COV_REF_FRAME` text,
  `CX_X` float,
@@ -398,5 +395,8 @@ create table `covarianceMatrixLine` (
  `CZ_DOT_X_DOT` float,
  `CZ_DOT_Y_DOT` float,
  `CZ_DOT_Z_DOT` float,
+ foreign key(
+ `ephemerisDataBlock_id`) references `ephemerisDataBlock`(
+ `id`),
  primary key (
  `id`))

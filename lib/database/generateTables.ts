@@ -2,12 +2,12 @@ import { knex, Knex } from "knex";
 import { writeFileSync, rmSync, existsSync } from "fs";
 import { JSONSchema4 } from "json-schema";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
-import { type } from "os";
 
 let tSchema: Knex.SchemaBuilder;
 
 let finalJSON: KeyValueDataStructure = {};
 let foreignKeys: KeyValueDataStructure = {};
+let arrayParentReference: KeyValueDataStructure = {};
 
 const knexNumberTypes: KeyValueDataStructure = {
     255: "tinyint",
@@ -25,7 +25,7 @@ export const refRootName = ($ref: string = ""): any => $ref.split("/").pop();
 
 export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema4 => {
     prop = prop?.items || prop;
-    let { $ref, $$ref, $type } = prop;
+    let { $ref, $$ref } = prop;
     if ($ref) {
         let rpath = $ref.split("/").slice(1);
         let fprop = jsonSchema;
@@ -37,18 +37,14 @@ export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema
             }
         }
         fprop.$$ref = $ref || $$ref;
-        fprop.$type = $type || type;
         return resolver(fprop, jsonSchema);
     } else {
         return prop;
     }
 };
 
-const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSONSchema4, rootPredicate: string): any => {
-    if (predicateName === "EPHEMERIS_DATA_BLOCK") {
-        console.log(predicateName, predicate)
-    }
-    let { type, $type, $ref, $$ref, properties, items } = predicate;
+const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSONSchema4, rootPredicate: string, parentPredicate?: string): any => {
+    let { type, $ref, $$ref, properties, items } = predicate;
 
     if ($ref) {
         return builder(
@@ -62,12 +58,11 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
             predicateName = refRootName($$ref);
         }
         finalJSON[rootPredicate][predicateName] = {
-            type: predicate.type,
-            $$ref,
-            $ref,
+            ...predicate,
+            rootPredicate
         };
         for (let prop in properties) {
-            let pprop = builder(prop, properties[prop], jsonSchema, rootPredicate);
+            let pprop = builder(prop, properties[prop], jsonSchema, rootPredicate, predicateName);
             /**
              * Check each property to see if it is one of the types used to create a foreign key relationship:
              * - object: Create a one to one relationship, child foreign key ID stored in parent table row
@@ -81,7 +76,6 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
                     foreignKeys[predicateName] = foreignKeys[predicateName] || {};
                     foreignKeys[predicateName][prop] = {
                         type: pprop.type,
-                        $type: pprop.$type,
                         tableName: refRootName(pprop.$$ref),
                     };
                 } else {
@@ -89,31 +83,40 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
                     foreignKeys[pTableName] = foreignKeys[pTableName] || {};
                     foreignKeys[pTableName][predicateName] = {
                         type: pprop.type,
-                        $type: pprop.$type,
                         parentTable: predicateName
                     };
                 }
             }
             finalJSON[rootPredicate][predicateName][prop] = pprop;
         }
-        return { $type, type, $ref, $$ref };
+        return { type, $ref, $$ref };
     } else if (type === "array") {
-        return builder(predicateName, { ...items, $type: "array" } || {}, jsonSchema, rootPredicate);
+        let tableName = refRootName((predicate?.items as unknown as any)?.$ref);
+        let parentTableName = parentPredicate;
+        arrayParentReference[tableName] = parentTableName;
+        return builder(predicateName, { ...items }, jsonSchema, rootPredicate);
     } else {
         return predicate;
     }
 };
 
-const builtTables: Array<string> = [];
 
 const buildTable = (rootTableName: string, tableSchema: any) => {
-
-    if (~builtTables.indexOf(rootTableName)) return;
-
+    //console.log(tableSchema);
+    const { rootPredicate } = tableSchema;
     tSchema.createTable(rootTableName, function (table: any) {
+
         table.integer("id").notNullable().unsigned().primary();
         table.timestamps(true, true);
+        if (arrayParentReference[rootTableName]) {
+            const fProperty = `${arrayParentReference[rootTableName]}_id`;
+            table.integer(fProperty).unsigned();
+            table
+                .foreign(fProperty)
+                .references(`${arrayParentReference[rootTableName]}.id`);
+        }
         for (let predicate in tableSchema) {
+            if (predicate === "properties") continue;
             const _predicate = tableSchema[predicate];
             if (!_predicate) continue;
             const { type, minimum, maximum } = _predicate;
@@ -134,31 +137,51 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
             }
         }
 
-        if (
-            foreignKeys[rootTableName] &&
-            Object.keys(foreignKeys[rootTableName])
-        ) {
-            for (let fProperty in foreignKeys[rootTableName]) {
-                let { type, $type, tableName } = foreignKeys[rootTableName][fProperty];
-                $type = $type || type;
-                if ($type === "object") {
-                    table.integer(fProperty).unsigned();
-                    table
-                        .foreign(fProperty)
-                        .references(`${tableName}.id`)
-                        .deferrable("deferred")
-                        .onDelete("CASCADE");
-                } else if ($type === "array") {
-                    table
-                        .integer(`${fProperty}_id`)
-                        .references('id')
-                        .inTable(fProperty)
-                        .notNullable()
-                        .onDelete("CASCADE");
-                }
-            }
-        }
-        builtTables.push(rootTableName);
+        /*
+ if (tableSchema.$type === "array") {
+ const fProperty = `${rootPredicate}_id`;
+ table.integer(fProperty).unsigned();
+ table
+ .foreign(fProperty)
+ .references(`${rootPredicate}.id`);
+ }
+ for (let predicate in tableSchema) {
+ const _predicate = tableSchema[predicate];
+ if (!_predicate) continue;
+ const { type, minimum, maximum } = _predicate;
+ 
+ if (~["integer", "number"].indexOf(type)) {
+ let numType = "double";
+ if (!isNaN(minimum) && !isNaN(maximum)) {
+ numType = knexNumberTypes[maximum - minimum];
+ }
+ let column = table[numType](predicate);
+ if (minimum === 0) {
+ column.unsigned();
+ }
+ } else if (~["bool", "boolean"].indexOf(type)) {
+ table.boolean(predicate);
+ } else if (type === "string") {
+ table.text(predicate);
+ }
+ }
+ 
+ if (
+ foreignKeys[rootTableName] &&
+ Object.keys(foreignKeys[rootTableName])
+ ) {
+ for (let fProperty in foreignKeys[rootTableName]) {
+ let { type, $type, tableName } = foreignKeys[rootTableName][fProperty];
+ if (type === "object" && $type !== "array") {
+ table.integer(fProperty).unsigned();
+ table
+   .foreign(fProperty)
+   .references(`${tableName}.id`)
+   .deferrable("deferred")
+   .onDelete("CASCADE");
+ }
+ }
+ }*/
     });
 }
 
