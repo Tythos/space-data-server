@@ -136,52 +136,22 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
                 table.text(predicate);
             }
         }
-
-        /*
- if (tableSchema.$type === "array") {
- const fProperty = `${rootPredicate}_id`;
- table.integer(fProperty).unsigned();
- table
- .foreign(fProperty)
- .references(`${rootPredicate}.id`);
- }
- for (let predicate in tableSchema) {
- const _predicate = tableSchema[predicate];
- if (!_predicate) continue;
- const { type, minimum, maximum } = _predicate;
- 
- if (~["integer", "number"].indexOf(type)) {
- let numType = "double";
- if (!isNaN(minimum) && !isNaN(maximum)) {
- numType = knexNumberTypes[maximum - minimum];
- }
- let column = table[numType](predicate);
- if (minimum === 0) {
- column.unsigned();
- }
- } else if (~["bool", "boolean"].indexOf(type)) {
- table.boolean(predicate);
- } else if (type === "string") {
- table.text(predicate);
- }
- }
- 
- if (
- foreignKeys[rootTableName] &&
- Object.keys(foreignKeys[rootTableName])
- ) {
- for (let fProperty in foreignKeys[rootTableName]) {
- let { type, $type, tableName } = foreignKeys[rootTableName][fProperty];
- if (type === "object" && $type !== "array") {
- table.integer(fProperty).unsigned();
- table
-   .foreign(fProperty)
-   .references(`${tableName}.id`)
-   .deferrable("deferred")
-   .onDelete("CASCADE");
- }
- }
- }*/
+        if (
+            foreignKeys[rootTableName] &&
+            Object.keys(foreignKeys[rootTableName])
+        ) {
+            for (let fProperty in foreignKeys[rootTableName]) {
+                let { type, tableName } = foreignKeys[rootTableName][fProperty];
+                if (type === "object") {
+                    table.integer(fProperty).unsigned();
+                    table
+                        .foreign(fProperty)
+                        .references(`${tableName}.id`)
+                        .deferrable("deferred")
+                        .onDelete("CASCADE");
+                }
+            }
+        }
     });
 }
 
