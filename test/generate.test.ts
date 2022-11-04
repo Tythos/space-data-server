@@ -167,7 +167,7 @@ describe('Test Data Entry', () => {
                 const nTable = resultObject.tableOrder[t];
                 console.log(nTable, resultObject[nTable]);
                 for (let x = 0; x < resultObject[nTable].length; x += pageSize) {
-                    //  await knexConnection(nTable).insert(resultObject[nTable].slice(x, x + pageSize));
+                    await knexConnection(nTable).insert(resultObject[nTable].slice(x, x + pageSize));
                 }
             }
         }
