@@ -138,13 +138,23 @@ describe('Test Data Entry', () => {
             for (let fTable in foreignProperties) {
                 resultObject[fTable] = resultObject[fTable] || [];
                 let { fields, pType } = foreignProperties[fTable];
-                if (pType === "object") {
+                if (pType === "array") {
                     for (let fieldName in fields) {
-                        if(fieldName === "EPHEMERIS")
+                        if (Array.isArray(queryArray[i][fieldName]) && queryArray[i][fieldName].length) {
+                            let fTableRows = [...queryArray[i][fieldName]];
+                            for (let eRow = 0; eRow < fTableRows.length; eRow++) {
+                                fTableRows[eRow][`${tableName}_id`] = queryArray[i].id;
+                            }
+                            resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, false);
+                            delete queryArray[i][fieldName];
+                        }
+                    }
+
+                } else if (pType === "object") {
+                    for (let fieldName in fields) {
                         queryArray[i][fieldName].id = foreignProperties[fTable].fStartID++;
                         resultObject[fTable].push({ ...queryArray[i][fieldName] });
-                        queryArray[i][fieldName] = queryArray[i][fieldName].id;
-
+                        //queryArray[i][fieldName] = queryArray[i][fieldName].id;
                     }
                 }
                 resultObject = await buildQuery(fTable, resultObject[fTable], standardsSchema, resultObject, false);
@@ -155,8 +165,9 @@ describe('Test Data Entry', () => {
         if (runQuery) {
             for (let t = 0; t < resultObject.tableOrder.length; t++) {
                 const nTable = resultObject.tableOrder[t];
+                console.log(nTable, resultObject[nTable]);
                 for (let x = 0; x < resultObject[nTable].length; x += pageSize) {
-                    await knexConnection(nTable).insert(resultObject[nTable].slice(x, x + pageSize));
+                    //  await knexConnection(nTable).insert(resultObject[nTable].slice(x, x + pageSize));
                 }
             }
         }

@@ -142,7 +142,7 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
         ) {
             for (let fProperty in foreignKeys[rootTableName]) {
                 let { type, tableName } = foreignKeys[rootTableName][fProperty];
-                if (type === "object") {
+                if (type === "object" && !arrayParentReference[tableName]) {
                     table.integer(fProperty).unsigned();
                     table
                         .foreign(fProperty)

@@ -294,10 +294,6 @@ create table `OPM` (
  `USER_DEFINED_EARTH_MODEL` text,
  `USER_DEFINED_EPOCH_TIMESTAMP` float,
  `USER_DEFINED_EPOCH_MICROSECONDS` float,
- `MANEUVERS` integer,
- foreign key(
- `MANEUVERS`) references `maneuverParameters`(
- `id`) on delete CASCADE,
  primary key (
  `id`));
 
@@ -328,10 +324,6 @@ create table `OEM` (
  `CCSDS_OEM_VERS` float,
  `CREATION_DATE` text,
  `ORIGINATOR` text,
- `EPHEMERIS_DATA_BLOCK` integer,
- foreign key(
- `EPHEMERIS_DATA_BLOCK`) references `ephemerisDataBlock`(
- `id`) on delete CASCADE,
  primary key (
  `id`));
 
@@ -354,17 +346,9 @@ create table `ephemerisDataBlock` (
  `STOP_TIME` text,
  `INTERPOLATION` text,
  `INTERPOLATION_DEGREE` integer,
- `EPHEMERIS_DATA_LINES` integer,
- `COVARIANCE_MATRIX_LINES` integer,
  foreign key(
  `OEM_id`) references `OEM`(
  `id`),
- foreign key(
- `EPHEMERIS_DATA_LINES`) references `ephemerisDataLine`(
- `id`) on delete CASCADE,
- foreign key(
- `COVARIANCE_MATRIX_LINES`) references `covarianceMatrixLine`(
- `id`) on delete CASCADE,
  primary key (
  `id`));
 
