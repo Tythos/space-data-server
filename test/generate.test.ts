@@ -130,46 +130,54 @@ describe('Test Data Entry', () => {
         for (let fTable in foreignProperties) {
             foreignProperties[fTable].fStartID = await knexConnection(fTable).max('id as fStartID').first().fStartID || 0;
         }
-        for (let i = 0; i < queryArray.length; i++) {
-            delete queryArray[i].bb;
-            delete queryArray[i].bb_pos;
-            queryArray[i].id = queryArray[i].id > -1 ? queryArray[i].id : (startID ? startID : 0) + i;
-            resultObject[tableName].push(queryArray[i]);
-            for (let fTable in foreignProperties) {
-                resultObject[fTable] = resultObject[fTable] || [];
-                let { fields, pType } = foreignProperties[fTable];
-                if (pType === "array") {
-                    for (let fieldName in fields) {
-                        if (Array.isArray(queryArray[i][fieldName]) && queryArray[i][fieldName].length) {
-                            let fTableRows = [...queryArray[i][fieldName]];
-                            for (let eRow = 0; eRow < fTableRows.length; eRow++) {
-                                fTableRows[eRow][`${tableName}_id`] = queryArray[i].id;
+
+        const queryLoop = async (queryBatchInput: Array<any>, page?: Number) => {
+            for (let i = 0; i < queryBatchInput.length; i++) {
+                delete queryArray[i].bb;
+                delete queryArray[i].bb_pos;
+                queryArray[i].id = queryArray[i].id > -1 ? queryArray[i].id : (startID ? startID : 0) + i;
+                resultObject[tableName].push(queryArray[i]);
+                for (let fTable in foreignProperties) {
+                    resultObject[fTable] = resultObject[fTable] || [];
+                    let { fields, pType } = foreignProperties[fTable];
+                    if (pType === "array") {
+                        for (let fieldName in fields) {
+                            if (Array.isArray(queryArray[i][fieldName]) && queryArray[i][fieldName].length) {
+                                let fTableRows = [...queryArray[i][fieldName]];
+                                for (let eRow = 0; eRow < fTableRows.length; eRow++) {
+                                    fTableRows[eRow][`${tableName}_id`] = queryArray[i].id;
+                                }
+                                resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, false);
+                                delete queryArray[i][fieldName];
                             }
-                            resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, false);
-                            delete queryArray[i][fieldName];
+                        }
+
+                    } else if (pType === "object") {
+                        for (let fieldName in fields) {
+                            queryArray[i][fieldName].id = foreignProperties[fTable].fStartID++;
+                            resultObject[fTable].push({ ...queryArray[i][fieldName] });
+                            //queryArray[i][fieldName] = queryArray[i][fieldName].id;
                         }
                     }
-
-                } else if (pType === "object") {
-                    for (let fieldName in fields) {
-                        queryArray[i][fieldName].id = foreignProperties[fTable].fStartID++;
-                        resultObject[fTable].push({ ...queryArray[i][fieldName] });
-                        //queryArray[i][fieldName] = queryArray[i][fieldName].id;
-                    }
+                    resultObject = await buildQuery(fTable, resultObject[fTable], standardsSchema, resultObject, false);
                 }
-                resultObject = await buildQuery(fTable, resultObject[fTable], standardsSchema, resultObject, false);
+            }
+            if (runQuery) {
+                console.log('runit', queryBatchInput.length, tableName, page);
+                //    await knexConnection(nTable).insert(resultObject[nTable].slice(x, x + pageSize));
             }
         }
-        //TODO Global PageSize
-        let pageSize = 100;
         if (runQuery) {
-            for (let t = 0; t < resultObject.tableOrder.length; t++) {
-                const nTable = resultObject.tableOrder[t];
-                console.log(nTable, resultObject[nTable]);
-                for (let x = 0; x < resultObject[nTable].length; x += pageSize) {
-                    await knexConnection(nTable).insert(resultObject[nTable].slice(x, x + pageSize));
-                }
+            //TODO Global PageSize
+            let pageSize = 100;
+            let total = queryArray.length;
+            for (let page = 0; page < total; page += pageSize) {
+                console.log("X", total, page, queryArray.slice(page, page + pageSize).length);
+                // await queryLoop(queryArray.slice(page, page + pageSize), page);
+
             }
+        } else {
+            queryLoop(queryArray);
         }
 
         return resultObject;
@@ -177,7 +185,7 @@ describe('Test Data Entry', () => {
 
     test('Enter Data For Each Data Type', async () => {
         let standard: keyof typeof standards;
-        let total = 3;
+        let total = 1000;
         let returnCount = 0;
         for (standard in standards) {
             if (standard !== "OEM") continue
