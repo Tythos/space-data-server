@@ -9,6 +9,8 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 import { JSONSchema4 } from "json-schema";
 const filename = "./test/output/standards.sqlite";
 const sqlfilename = "./test/output/standards.sql";
+import toposort from "toposort";
+
 const fDT = faker.datatype;
 
 let knexConnection: any;
@@ -22,7 +24,6 @@ beforeAll(async () => {
         useNullAsDefault: true
     });
     await generateDatabase(standardsArray, filename, sqlfilename, knexConnection);
-    await knexConnection("CAT").select("*");
 });
 
 describe('Test Generation', () => {
@@ -75,6 +76,7 @@ describe('Test Data Entry', () => {
         }
         return fakerValue;
     }
+
     const buildObject = (classProperties: KeyValueDataStructure, parentClass: any, tableName: string, jsonSchema: JSONSchema4) => {
         let newObject = new parentClass[tableName];
         for (let x in classProperties) {
@@ -101,7 +103,7 @@ describe('Test Data Entry', () => {
     }
     const getID = () => Math.floor(Math.random() * 1_000_000_000_000_000);
 
-    const buildQuery = async (tableName: string, queryArray: Array<any>, standardsSchema: JSONSchema4, resultObject: KeyValueDataStructure = {}, runQuery: boolean = true): Promise<any> => {
+    const buildQuery = async (tableName: string, queryArray: Array<any>, standardsSchema: JSONSchema4, resultObject: KeyValueDataStructure = {}, tableTopo: any = [], runQuery: boolean = true): Promise<any> => {
 
         if (!tableName) {
             throw Error(`Missing Table Name for Data Like: ${JSON.stringify(queryArray[0], null, 4)}`);
@@ -133,19 +135,24 @@ describe('Test Data Entry', () => {
                 for (let fTable in foreignProperties) {
                     let { fields, pType } = foreignProperties[fTable];
                     if (pType === "array") {
+                        tableTopo.push([tableName, fTable]);
                         for (let fieldName in fields) {
                             let fTableRows = [...queryBatchInput[i][fieldName]];
                             for (let eRow = 0; eRow < fTableRows.length; eRow++) {
                                 fTableRows[eRow][`${tableName}_id`] = queryBatchInput[i].id;
                                 fTableRows[eRow].id = getID();
                             }
-                            resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, false);
+                            resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, tableTopo, false);
                             delete queryBatchInput[i][fieldName];
                         }
-                    } else if (pType === "object") {
+                    } else {
+                        tableTopo.push([fTable, tableName]);
                         for (let fieldName in fields) {
-                            queryBatchInput[i][fieldName].id = getID();
-                            resultObject[fTable].push({ ...queryBatchInput[i][fieldName] });
+                            let objectRecord = { ...queryBatchInput[i][fieldName] };
+                            objectRecord.id = getID();
+                            resultObject = await buildQuery(fTable, [objectRecord], standardsSchema, resultObject, tableTopo, false);
+                            queryBatchInput[i][fieldName] = objectRecord.id;
+                            //delete queryBatchInput[i][fieldName];
                         }
                     }
                 }
@@ -153,12 +160,19 @@ describe('Test Data Entry', () => {
             }
             if (runQuery) {
                 try {
-                    for (let nTable in resultObject) {
-                        await knexConnection.transaction(async (trx: any) => {
-                            await knexConnection(nTable).insert(resultObject[nTable]).transacting(trx);
+                    await knexConnection.transaction(async (trx: any) => {
+                        let nTables = toposort(tableTopo);
+                        nTables = nTables.length ? nTables : [tableName];
+                        for (let nT = 0; nT < nTables.length; nT++) {
+                            const nTable = nTables[nT];
+                            await trx(nTable).insert(resultObject[nTable]);
                             resultObject[nTable] = [];
-                        });
-                    }
+                        }
+
+                    });
+
+
+
                 } catch (e) {
                     console.error(e);
                 }
@@ -180,10 +194,10 @@ describe('Test Data Entry', () => {
 
     test('Enter Data For Each Data Type', async () => {
         let standard: keyof typeof standards;
-        let total = 10000;
+        let total = 10;
         let returnCount = 0;
         for (standard in standards) {
-            if (standard !== "OEM") continue
+            //if (standard !== "CDM") continue
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
@@ -197,8 +211,8 @@ describe('Test Data Entry', () => {
             await buildQuery(tableName, standardCollection.RECORDS, currentStandard);
             let resultQuery = await knexConnection(tableName).select("*");
             console.log("TABLENAME", tableName, resultQuery.length);
-            console.log("ephemBplca", await knexConnection("ephemerisDataBlock").whereIn("OEM_id", resultQuery.map((e: any) => e.id)));
-            /*  if (standard.indexOf("CDM") === 0) {
+            /*console.log("ephemBplca", await knexConnection("ephemerisDataBlock").whereIn("OEM_id", resultQuery.map((e: any) => e.id)));
+              if (standard.indexOf("CDM") === 0) {
                   let foreignKeys = ["OBJECT1", "OBJECT2"];
                   let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
                   let CDMObjectsHash: KeyValueDataStructure = {};
