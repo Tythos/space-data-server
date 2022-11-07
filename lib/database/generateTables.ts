@@ -113,7 +113,8 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
             table.integer(fProperty).unsigned();
             table
                 .foreign(fProperty)
-                .references(`${arrayParentReference[rootTableName]}.id`);
+                .references(`${arrayParentReference[rootTableName]}.id`)
+                .deferrable("deferred");
         }
         for (let predicate in tableSchema) {
             if (predicate === "properties") continue;

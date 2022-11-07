@@ -7,6 +7,7 @@ import * as standards from "../lib/standards/standards";
 import { faker } from '@faker-js/faker';
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { JSONSchema4 } from "json-schema";
+import e from "express";
 
 const filename = "./test/output/standards.sqlite";
 const sqlfilename = "./test/output/standards.sql";
@@ -86,7 +87,7 @@ describe('Test Data Entry', () => {
                 newObject[x] = buildObject(resolvedProp.properties, parentClass, refRootName(resolvedProp.$$ref), jsonSchema);
             } else if (classProperties[x]?.type === "array") {
                 newObject[x] = [];
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < 1; i++) {
                     let aObject = !fTCheck(resolvedProp?.type) ?
                         buildProp(resolvedProp, x) :
                         buildObject(
@@ -107,8 +108,7 @@ describe('Test Data Entry', () => {
             throw Error(`Missing Table Name for Data Like: ${JSON.stringify(queryArray[0], null, 4)}`);
         }
 
-        resultObject[tableName] = [];
-        const { startID } = await knexConnection(tableName).max('id as startID').first();
+        resultObject[tableName] = resultObject[tableName] || [];
         const foreignProperties: KeyValueDataStructure = {};
         //determine foreignKey requirements for this level in object
         let tableDefinition = standardsSchema.definitions ? standardsSchema.definitions[tableName] : null;
@@ -130,38 +130,63 @@ describe('Test Data Entry', () => {
         }
 
         const queryLoop = async (queryBatchInput: Array<any>, page?: Number) => {
+            const { startID } = await knexConnection(tableName).max('id as startID').first();
             for (let i = 0; i < queryBatchInput.length; i++) {
-                delete queryArray[i].bb;
-                delete queryArray[i].bb_pos;
-                queryArray[i].id = queryArray[i].id > -1 ? queryArray[i].id : (startID ? startID : 0) + i;
-                resultObject[tableName].push(queryArray[i]);
+                delete queryBatchInput[i].bb;
+                delete queryBatchInput[i].bb_pos;
+                queryBatchInput[i].id = (startID > -1 ? startID : 0) + i;
                 for (let fTable in foreignProperties) {
-                    resultObject[fTable] = resultObject[fTable] || [];
                     let { fields, pType } = foreignProperties[fTable];
                     if (pType === "array") {
                         for (let fieldName in fields) {
-                            if (Array.isArray(queryArray[i][fieldName]) && queryArray[i][fieldName].length) {
-                                let fTableRows = [...queryArray[i][fieldName]];
-                                for (let eRow = 0; eRow < fTableRows.length; eRow++) {
-                                    fTableRows[eRow][`${tableName}_id`] = queryArray[i].id;
-                                }
-                                resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, false);
-                                //delete queryArray[i][fieldName];
+                            let fTableRows = [...queryBatchInput[i][fieldName]];
+                            for (let eRow = 0; eRow < fTableRows.length; eRow++) {
+                                fTableRows[eRow][`${tableName}_id`] = queryBatchInput[i].id;
                             }
-                        }
-
-                    } else if (pType === "object") {
-                        for (let fieldName in fields) {
-                            queryArray[i][fieldName].id = foreignProperties[fTable].fStartID++;
-                            resultObject[fTable].push({ ...queryArray[i][fieldName] });
+                            console.log("ROWS", fTable, fTableRows);
+                            resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, false);
                         }
                     }
-                    resultObject = await buildQuery(fTable, resultObject[fTable], standardsSchema, resultObject, false);
                 }
+                resultObject[tableName].push(queryBatchInput[i]);
+
+                /*queryBatchInput[i].id = queryBatchInput[i].id > -1 ? queryBatchInput[i].id : (startID ? startID : 0) + i;
+                    console.log(queryBatchInput)
+                    resultObject[tableName].push(queryBatchInput[i]);
+                    for (let fTable in foreignProperties) {
+                        resultObject[fTable] = resultObject[fTable] || [];
+                        let { fields, pType } = foreignProperties[fTable];
+                        if (pType === "array") {
+                            for (let fieldName in fields) {
+                                if (Array.isArray(queryBatchInput[i][fieldName]) && queryBatchInput[i][fieldName].length) {
+                                    let fTableRows = [...queryBatchInput[i][fieldName]];
+                                    for (let eRow = 0; eRow < fTableRows.length; eRow++) {
+                                        fTableRows[eRow][`${tableName}_id`] = queryBatchInput[i].id;
+                                    }
+                                    resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, false);
+                                    delete queryBatchInput[i][fieldName];
+                                }
+                            }
+    
+                        } else if (pType === "object") {
+                            for (let fieldName in fields) {
+                                queryBatchInput[i][fieldName].id = foreignProperties[fTable].fStartID++;
+                                resultObject[fTable].push({ ...queryBatchInput[i][fieldName] });
+                            }
+                        }
+                        //resultObject = await buildQuery(fTable, resultObject[fTable], standardsSchema, resultObject, false);
+                    }*/
             }
             if (runQuery) {
-                console.log('runit', resultObject);
-                //    await knexConnection(nTable).insert(resultObject[nTable].slice(x, x + pageSize));
+                console.log(resultObject);
+                try {
+                    for (let nTable in resultObject) {
+                        await knexConnection(nTable).insert(resultObject[nTable]);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+
             }
         }
         if (runQuery) {
@@ -169,7 +194,6 @@ describe('Test Data Entry', () => {
             let pageSize = 100;
             let total = queryArray.length;
             for (let page = 0; page < total; page += pageSize) {
-                console.log("X", total, page, queryArray.slice(page, page + pageSize));
                 await queryLoop(queryArray.slice(page, page + pageSize), page);
 
             }
@@ -198,7 +222,9 @@ describe('Test Data Entry', () => {
             }
             await buildQuery(tableName, standardCollection.RECORDS, currentStandard);
             let resultQuery = await knexConnection(tableName).select("*");
-            if (standard.indexOf("CDM") === 0) {
+            console.log(resultQuery);
+            // console.log(await knexConnection("ephemerisDataBlock"));//.whereIn("OEM_id", resultQuery.map((e: any) => e.id)));
+            /*if (standard.indexOf("CDM") === 0) {
                 let foreignKeys = ["OBJECT1", "OBJECT2"];
                 let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
                 let CDMObjectsHash: KeyValueDataStructure = {};
@@ -211,9 +237,9 @@ describe('Test Data Entry', () => {
                         resultQuery[t][foreignKeys[fK]] = CDMObjectsHash[resultQuery[t][foreignKeys[fK]]];
                     }
                 }
-            }
-            returnCount += resultQuery.length;
+            }*/
+            // returnCount += resultQuery.length;
         }
-        expect(returnCount).toEqual(0);//otal * Object.keys(standards).length);
+        expect(returnCount).toEqual(total);// * Object.keys(standards).length);
     })
 });
