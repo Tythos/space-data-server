@@ -7,8 +7,6 @@ import * as standards from "../lib/standards/standards";
 import { faker } from '@faker-js/faker';
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { JSONSchema4 } from "json-schema";
-import e from "express";
-
 const filename = "./test/output/standards.sqlite";
 const sqlfilename = "./test/output/standards.sql";
 const fDT = faker.datatype;
@@ -101,6 +99,7 @@ describe('Test Data Entry', () => {
         }
         return newObject;
     }
+    const getID = () => Math.floor(Math.random() * 1_000_000_000_000_000);
 
     const buildQuery = async (tableName: string, queryArray: Array<any>, standardsSchema: JSONSchema4, resultObject: KeyValueDataStructure = {}, runQuery: boolean = true): Promise<any> => {
 
@@ -120,21 +119,17 @@ describe('Test Data Entry', () => {
             const { type: pType } = tableDefinition.properties[prop];
             const { type, $$ref } = resolver(tableDefinition.properties[prop], standardsSchema);
             if (fTCheck(type as string)) {
-                foreignProperties[refRootName($$ref)] = foreignProperties[refRootName($$ref)] || { fields: {}, fStartID: null, type, pType };
+                foreignProperties[refRootName($$ref)] = foreignProperties[refRootName($$ref)] || { fields: {}, type, pType };
                 foreignProperties[refRootName($$ref)].fields[prop] = {};
             }
         }
 
-        for (let fTable in foreignProperties) {
-            foreignProperties[fTable].fStartID = await knexConnection(fTable).max('id as fStartID').first().fStartID || 0;
-        }
-
         const queryLoop = async (queryBatchInput: Array<any>, page?: Number) => {
-            const { startID } = await knexConnection(tableName).max('id as startID').first();
+
             for (let i = 0; i < queryBatchInput.length; i++) {
                 delete queryBatchInput[i].bb;
                 delete queryBatchInput[i].bb_pos;
-                queryBatchInput[i].id = (startID > -1 ? startID : 0) + i;
+                queryBatchInput[i].id = getID();
                 for (let fTable in foreignProperties) {
                     let { fields, pType } = foreignProperties[fTable];
                     if (pType === "array") {
@@ -142,51 +137,31 @@ describe('Test Data Entry', () => {
                             let fTableRows = [...queryBatchInput[i][fieldName]];
                             for (let eRow = 0; eRow < fTableRows.length; eRow++) {
                                 fTableRows[eRow][`${tableName}_id`] = queryBatchInput[i].id;
+                                fTableRows[eRow].id = getID();
                             }
-                            console.log("ROWS", fTable, fTableRows);
                             resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, false);
+                            delete queryBatchInput[i][fieldName];
+                        }
+                    } else if (pType === "object") {
+                        for (let fieldName in fields) {
+                            queryBatchInput[i][fieldName].id = getID();
+                            resultObject[fTable].push({ ...queryBatchInput[i][fieldName] });
                         }
                     }
                 }
                 resultObject[tableName].push(queryBatchInput[i]);
-
-                /*queryBatchInput[i].id = queryBatchInput[i].id > -1 ? queryBatchInput[i].id : (startID ? startID : 0) + i;
-                    console.log(queryBatchInput)
-                    resultObject[tableName].push(queryBatchInput[i]);
-                    for (let fTable in foreignProperties) {
-                        resultObject[fTable] = resultObject[fTable] || [];
-                        let { fields, pType } = foreignProperties[fTable];
-                        if (pType === "array") {
-                            for (let fieldName in fields) {
-                                if (Array.isArray(queryBatchInput[i][fieldName]) && queryBatchInput[i][fieldName].length) {
-                                    let fTableRows = [...queryBatchInput[i][fieldName]];
-                                    for (let eRow = 0; eRow < fTableRows.length; eRow++) {
-                                        fTableRows[eRow][`${tableName}_id`] = queryBatchInput[i].id;
-                                    }
-                                    resultObject = await buildQuery(fTable, fTableRows, standardsSchema, resultObject, false);
-                                    delete queryBatchInput[i][fieldName];
-                                }
-                            }
-    
-                        } else if (pType === "object") {
-                            for (let fieldName in fields) {
-                                queryBatchInput[i][fieldName].id = foreignProperties[fTable].fStartID++;
-                                resultObject[fTable].push({ ...queryBatchInput[i][fieldName] });
-                            }
-                        }
-                        //resultObject = await buildQuery(fTable, resultObject[fTable], standardsSchema, resultObject, false);
-                    }*/
             }
             if (runQuery) {
-                console.log(resultObject);
                 try {
                     for (let nTable in resultObject) {
-                        await knexConnection(nTable).insert(resultObject[nTable]);
+                        await knexConnection.transaction(async (trx: any) => {
+                            await knexConnection(nTable).insert(resultObject[nTable]).transacting(trx);
+                            resultObject[nTable] = [];
+                        });
                     }
                 } catch (e) {
                     console.error(e);
                 }
-
             }
         }
         if (runQuery) {
@@ -195,7 +170,6 @@ describe('Test Data Entry', () => {
             let total = queryArray.length;
             for (let page = 0; page < total; page += pageSize) {
                 await queryLoop(queryArray.slice(page, page + pageSize), page);
-
             }
         } else {
             await queryLoop(queryArray);
@@ -206,7 +180,7 @@ describe('Test Data Entry', () => {
 
     test('Enter Data For Each Data Type', async () => {
         let standard: keyof typeof standards;
-        let total = 3;
+        let total = 10000;
         let returnCount = 0;
         for (standard in standards) {
             if (standard !== "OEM") continue
@@ -222,24 +196,24 @@ describe('Test Data Entry', () => {
             }
             await buildQuery(tableName, standardCollection.RECORDS, currentStandard);
             let resultQuery = await knexConnection(tableName).select("*");
-            console.log(resultQuery);
-            // console.log(await knexConnection("ephemerisDataBlock"));//.whereIn("OEM_id", resultQuery.map((e: any) => e.id)));
-            /*if (standard.indexOf("CDM") === 0) {
-                let foreignKeys = ["OBJECT1", "OBJECT2"];
-                let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
-                let CDMObjectsHash: KeyValueDataStructure = {};
-                for (let c = 0; c < CDMObjects.length; c++) {
-                    CDMObjectsHash[CDMObjects[c].id] = CDMObjects[c];
-                }
-                for (let t = 0; t < resultQuery.length; t++) {
-                    //Build Objects From Schemas Here!!
-                    for (let fK = 0; fK < foreignKeys.length; fK++) {
-                        resultQuery[t][foreignKeys[fK]] = CDMObjectsHash[resultQuery[t][foreignKeys[fK]]];
-                    }
-                }
-            }*/
-            // returnCount += resultQuery.length;
+            console.log("TABLENAME", tableName, resultQuery.length);
+            console.log("ephemBplca", await knexConnection("ephemerisDataBlock").whereIn("OEM_id", resultQuery.map((e: any) => e.id)));
+            /*  if (standard.indexOf("CDM") === 0) {
+                  let foreignKeys = ["OBJECT1", "OBJECT2"];
+                  let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
+                  let CDMObjectsHash: KeyValueDataStructure = {};
+                  for (let c = 0; c < CDMObjects.length; c++) {
+                      CDMObjectsHash[CDMObjects[c].id] = CDMObjects[c];
+                  }
+                  for (let t = 0; t < resultQuery.length; t++) {
+                      //Build Objects From Schemas Here!!
+                      for (let fK = 0; fK < foreignKeys.length; fK++) {
+                          resultQuery[t][foreignKeys[fK]] = CDMObjectsHash[resultQuery[t][foreignKeys[fK]]];
+                      }
+                  }
+              }*/
+            returnCount += resultQuery.length;
         }
-        expect(returnCount).toEqual(total);// * Object.keys(standards).length);
+        expect(returnCount).toEqual(total);
     })
 });
