@@ -8,7 +8,14 @@ import knex from "knex";
 
 const knexConnection: any = knex(databaseConfig);
 
-const insertData = async (tableName: string, queryArray: Array<any>, standardsSchema: JSONSchema4, resultObject: KeyValueDataStructure = {}, tableTopo: any = [], runQuery: boolean = true): Promise<any> => {
+const insertData = async (
+    tableName: string,
+    queryArray: Array<any>,
+    standardsSchema: JSONSchema4,
+    resultObject: KeyValueDataStructure = {},
+    tableTopo: any = [],
+    runQuery: boolean = true): Promise<any> => {
+        
     let nTables: Array<string> | null = null;
     if (!tableName) {
         throw Error(`Missing Table Name for Data Like: ${JSON.stringify(queryArray[0], null, 4)}`);

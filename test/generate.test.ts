@@ -9,7 +9,8 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 import { JSONSchema4 } from "json-schema";
 import databaseConfig, { filename as databaseFilename } from "@/lib/database/config/default";
 const sqlfilename = "./test/output/standards.sql";
-import insertData from "@/lib/database/insertData";
+import create from "@/lib/database/create";
+import read from "@/lib/database/read";
 
 const fDT = faker.datatype;
 
@@ -112,10 +113,28 @@ describe('Test Data Entry', () => {
                 let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
                 standardCollection.RECORDS.push(newObject);
             }
-            await insertData(tableName, standardCollection.RECORDS, currentStandard);
+            await create(tableName, standardCollection.RECORDS, currentStandard);
             let resultQuery = await knexConnection(tableName).select("*");
-            console.log("TABLENAME", tableName, resultQuery.length);
             writeFileSync(`.tmp/${standard}.results.json`, JSON.stringify(resultQuery, null, 4));
+
+            const results = await read(tableName, currentStandard);
+            console.log("TABLENAME", tableName, resultQuery.length, results.length);
+
+            /*console.log("ephemBplca", await knexConnection("ephemerisDataBlock").whereIn("OEM_id", resultQuery.map((e: any) => e.id)));
+              if (standard.indexOf("CDM") === 0) {
+                  let foreignKeys = ["OBJECT1", "OBJECT2"];
+                  let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
+                  let CDMObjectsHash: KeyValueDataStructure = {};
+                  for (let c = 0; c < CDMObjects.length; c++) {
+                      CDMObjectsHash[CDMObjects[c].id] = CDMObjects[c];
+                  }
+                  for (let t = 0; t < resultQuery.length; t++) {
+                      //Build Objects From Schemas Here!!
+                      for (let fK = 0; fK < foreignKeys.length; fK++) {
+                          resultQuery[t][foreignKeys[fK]] = CDMObjectsHash[resultQuery[t][foreignKeys[fK]]];
+                      }
+                  }
+              }*/
             returnCount += resultQuery.length;
         }
         expect(returnCount).toEqual(total * Object.keys(standards).length);
