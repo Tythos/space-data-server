@@ -1,4 +1,4 @@
-import { knex, Knex } from "knex";
+import { Knex } from "knex";
 import { writeFileSync, rmSync, existsSync } from "fs";
 import { JSONSchema4 } from "json-schema";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
@@ -166,7 +166,7 @@ const buildDatabase = async (namespace: string) => {
 export const generateDatabase = (
     jsonSchemas: Array<JSONSchema4>,
     filename: string = ".tmp/standards.sqlite",
-    sqlFilename: string = ".tmp/standards.sql",
+    sqlFilename: string = "",
     knexConnection: any
 ) => {
 
@@ -196,14 +196,16 @@ export const generateDatabase = (
     }
 
     return tSchema.then(() => {
-        writeFileSync(
-            sqlFilename,
-            tSchema
-                .toString()
-                .replaceAll(",", ",\n")
-                .replaceAll(";", ";\n\n")
-                .replaceAll("(", "(\n ")
-        );
+        if (sqlFilename.length) {
+            writeFileSync(
+                sqlFilename,
+                tSchema
+                    .toString()
+                    .replaceAll(",", ",\n")
+                    .replaceAll(";", ";\n\n")
+                    .replaceAll("(", "(\n ")
+            );
+        }
     });
 
 };
