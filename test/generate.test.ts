@@ -12,6 +12,7 @@ const sqlfilename = "./test/output/standards.sql";
 import create from "@/lib/database/create";
 import read from "@/lib/database/read";
 import { execSync } from "child_process";
+import exportFlatbuffer from "@/lib/utility/exportFlatbuffer";
 
 const fDT: any = faker.datatype;
 
@@ -28,7 +29,6 @@ beforeAll(async () => {
 
 describe('Test Generation', () => {
     test('Generate Database With Correct Tables', async () => {
-
         for (let s = 0; s < standardsArray.length; s++) {
             let tableName = refRootName(standardsArray[s].$ref);
             let cI = await knexConnection(tableName).columnInfo();
@@ -38,7 +38,6 @@ describe('Test Generation', () => {
 });
 
 describe('Test Data Entry', () => {
-
     const buildProp = (prop: any, propName: string) => {
         let { type, minimum: min, maximum: max } = (prop);
         let fakerValue: any = null;
@@ -75,8 +74,8 @@ describe('Test Data Entry', () => {
         return fakerValue;
     }
 
-    const buildObject = (classProperties: KeyValueDataStructure, parentClass: any, tableName: string, jsonSchema: JSONSchema4) => {
-        let newObject = new parentClass[tableName];
+    const buildObject = (classProperties: KeyValueDataStructure, parentClass: any, tableName: string, jsonSchema: JSONSchema4, topLevel: Boolean = false) => {
+        let newObject = new parentClass[`${tableName}T`];
         for (let x in classProperties) {
             let resolvedProp: any = resolver(classProperties[x]?.items || classProperties[x], jsonSchema);
             if (!fTCheck(resolvedProp?.type)) {
@@ -105,6 +104,7 @@ describe('Test Data Entry', () => {
         let total = 10;
 
         for (standard in standards) {
+            if (standard !== "CDM") continue;
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
@@ -112,7 +112,7 @@ describe('Test Data Entry', () => {
             let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
             let input = new parentClass[cClassName];
             for (let i = 0; i < total; i++) {
-                let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
+                let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard, true);
                 input.RECORDS.push(newObject);
             }
 
@@ -121,6 +121,8 @@ describe('Test Data Entry', () => {
 
             const output = await read(standard, currentStandard);
             writeFileSync(`${dataPath}/${tableName}.results.json`, JSON.stringify(output, null, 4));
+            writeFileSync(`${dataPath}/${tableName}.results.fbs`, exportFlatbuffer(output));
+
             expect(input.length).toEqual(output.length);
         }
 

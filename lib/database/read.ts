@@ -8,9 +8,8 @@ const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "u
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 
 const knexConnection: any = knex(databaseConfig);
-const debugProperties: boolean = false;
 const toRemoveDefault: Array<string> = ["created_at", "updated_at"];
-const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: KeyValueDataStructure, parentArray: any, tableQuery?: any, toRemove: Array<string> = toRemoveDefault) => {
+const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: KeyValueDataStructure, parentArray: any, tableQuery?: any, toRemove: Array<string> = toRemoveDefault, debugProperties: boolean = false) => {
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);
         for (let x in query) {
@@ -25,15 +24,15 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
     const records: any = await tableQuery;
 
     for (let r = 0; r < records.length; r++) {
-        let n = new parentClass[tableName];
+        let n = new parentClass[`${tableName}T`]();
         for (let x in records[r]) {
-            if (!~toRemove.indexOf(x)) {
+            if (!~toRemove.indexOf(x) || debugProperties) {
                 n[x] = records[r][x];
             }
         }
         parentArray.push(n);
     }
-    const foreignProperties: KeyValueDataStructure = {};
+
     //determine foreignKey requirements for this level in object
     let tableDefinition = standardsSchema.definitions ? standardsSchema.definitions[tableName] : null;
     if (!tableDefinition) {
@@ -41,8 +40,10 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
     }
 
     for (let prop in tableDefinition.properties) {
-        const { type: pType } = tableDefinition.properties[prop];
-        const { $$ref } = resolver(tableDefinition.properties[prop], standardsSchema);
+        const { type } = tableDefinition.properties[prop];
+        const { $$ref, type: rType } = resolver(tableDefinition.properties[prop], standardsSchema);
+
+        const pType = type || rType;
 
         if (pType === "array") {
             for (let p = 0; p < parentArray.length; p++) {
@@ -68,7 +69,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
                         parentClass,
                         refRootName($$ref),
                         standardsSchema,
-                        { select: "*", where, first: "" }/*TODO subquery*/,
+                        { select: "*", where, limit: 1 }/*TODO subquery*/,
                         [], null, toRemoveDefault)
                 )[0];
 
