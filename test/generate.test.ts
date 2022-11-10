@@ -12,7 +12,7 @@ const sqlfilename = "./test/output/standards.sql";
 import create from "@/lib/database/create";
 import read from "@/lib/database/read";
 import { execSync } from "child_process";
-import exportFlatbuffer from "@/lib/utility/exportFlatbuffer";
+import { readFB, writeFB } from "@/lib/utility/flatbufferConversion";
 
 const fDT: any = faker.datatype;
 
@@ -120,8 +120,8 @@ describe('Test Data Entry', () => {
 
             const output = await read(standard, currentStandard);
             writeFileSync(`${dataPath}/${tableName}.results.json`, JSON.stringify(output, null, 4));
-            writeFileSync(`${dataPath}/${tableName}.results.fbs`, exportFlatbuffer(output));
-
+            writeFileSync(`${dataPath}/${tableName}.results.fbs`, writeFB(output));
+            writeFileSync(`${dataPath}/${tableName}.fbs.conversion.json`, JSON.stringify(readFB(readFileSync(`${dataPath}/${tableName}.results.fbs`), tableName, parentClass), null, 4));
             expect(input.length).toEqual(output.length);
         }
 

@@ -7,9 +7,9 @@
             "OBJECT_NAME": "0xA",
             "OBJECT_ID": "0xc",
             "CENTER_NAME": "0xe",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "1999-12-03T00:05:42.901Z",
-            "TIME_SYSTEM": "0xA",
+            "TIME_SYSTEM": 10,
             "COMMENT": "0x0",
             "EPOCH": "2055-09-13T19:17:41.592Z",
             "X": 14619.65,
@@ -31,7 +31,7 @@
             "SOLAR_RAD_COEFF": 86763.27,
             "DRAG_AREA": 82368.46,
             "DRAG_COEFF": 64426.86,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 77609.25,
             "CY_X": 43422.68,
             "CY_Y": 81649.97,
@@ -58,29 +58,26 @@
                     "MAN_EPOCH_IGNITION": "2048-10-27T06:02:47.381Z",
                     "MAN_DURATION": 77985.93,
                     "MAN_DELTA_MASS": 8327.41,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 76669.06,
                     "MAN_DV_2": 11811.24,
-                    "MAN_DV_3": 10571.08,
-                    "id": 694628778532479
+                    "MAN_DV_3": 10571.08
                 },
                 {
                     "MAN_EPOCH_IGNITION": "2044-12-20T13:16:29.572Z",
                     "MAN_DURATION": 22543.38,
                     "MAN_DELTA_MASS": 20287.81,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 23638.14,
                     "MAN_DV_2": 35737.34,
-                    "MAN_DV_3": 82092.8,
-                    "id": 697111197353321
+                    "MAN_DV_3": 82092.8
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 4251580813,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0x0",
             "USER_DEFINED_EARTH_MODEL": "0x9",
             "USER_DEFINED_EPOCH_TIMESTAMP": 97342.17,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 2220,
-            "id": 69771655102532
+            "USER_DEFINED_EPOCH_MICROSECONDS": 2220
         },
         {
             "CCSDS_OPM_VERS": 69089.28,
@@ -89,9 +86,9 @@
             "OBJECT_NAME": "0xf",
             "OBJECT_ID": "0x2",
             "CENTER_NAME": "0x0",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "2079-07-21T09:42:07.991Z",
-            "TIME_SYSTEM": "0x1",
+            "TIME_SYSTEM": 1,
             "COMMENT": "0xF",
             "EPOCH": "2015-01-24T00:11:19.868Z",
             "X": 97708.73,
@@ -113,7 +110,7 @@
             "SOLAR_RAD_COEFF": 84809.26,
             "DRAG_AREA": 99326.64,
             "DRAG_COEFF": 24606.69,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 34188.7,
             "CY_X": 25318.29,
             "CY_Y": 20020.93,
@@ -140,29 +137,26 @@
                     "MAN_EPOCH_IGNITION": "2054-08-12T01:20:10.594Z",
                     "MAN_DURATION": 78004.11,
                     "MAN_DELTA_MASS": 44839.11,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 60844.16,
                     "MAN_DV_2": 51203.81,
-                    "MAN_DV_3": 56405.26,
-                    "id": 835303571083368
+                    "MAN_DV_3": 56405.26
                 },
                 {
                     "MAN_EPOCH_IGNITION": "2023-09-27T08:09:44.054Z",
                     "MAN_DURATION": 34653.45,
                     "MAN_DELTA_MASS": 24245.07,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 20247.43,
                     "MAN_DV_2": 38948.25,
-                    "MAN_DV_3": 57404.8,
-                    "id": 855143399325082
+                    "MAN_DV_3": 57404.8
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 4266528943,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0x4",
             "USER_DEFINED_EARTH_MODEL": "0xC",
             "USER_DEFINED_EPOCH_TIMESTAMP": 35743.86,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 96582.88,
-            "id": 191936749344032
+            "USER_DEFINED_EPOCH_MICROSECONDS": 96582.88
         },
         {
             "CCSDS_OPM_VERS": 91994.68,
@@ -171,9 +165,9 @@
             "OBJECT_NAME": "0xD",
             "OBJECT_ID": "0xc",
             "CENTER_NAME": "0xb",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "2099-10-20T18:12:07.979Z",
-            "TIME_SYSTEM": "0x0",
+            "TIME_SYSTEM": 0,
             "COMMENT": "0x7",
             "EPOCH": "2028-08-12T06:19:06.964Z",
             "X": 10987.43,
@@ -195,7 +189,7 @@
             "SOLAR_RAD_COEFF": 1884.07,
             "DRAG_AREA": 11184.03,
             "DRAG_COEFF": 18236.58,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 71699.09,
             "CY_X": 77828.5,
             "CY_Y": 89318.42,
@@ -222,29 +216,26 @@
                     "MAN_EPOCH_IGNITION": "2038-01-17T12:20:44.566Z",
                     "MAN_DURATION": 74152.56,
                     "MAN_DELTA_MASS": 60171.42,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 73706.23,
                     "MAN_DV_2": 61474.44,
-                    "MAN_DV_3": 36861.84,
-                    "id": 561919258594838
+                    "MAN_DV_3": 36861.84
                 },
                 {
                     "MAN_EPOCH_IGNITION": "2055-07-08T15:53:43.234Z",
                     "MAN_DURATION": 86706.76,
                     "MAN_DELTA_MASS": 29610.55,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 44957.91,
                     "MAN_DV_2": 22212.36,
-                    "MAN_DV_3": 1444.97,
-                    "id": 841413905207853
+                    "MAN_DV_3": 1444.97
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 1350550432,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0xF",
             "USER_DEFINED_EARTH_MODEL": "0x1",
             "USER_DEFINED_EPOCH_TIMESTAMP": 18138.03,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 91782.73,
-            "id": 336028404025782
+            "USER_DEFINED_EPOCH_MICROSECONDS": 91782.73
         },
         {
             "CCSDS_OPM_VERS": 77952.23,
@@ -253,9 +244,9 @@
             "OBJECT_NAME": "0xf",
             "OBJECT_ID": "0x3",
             "CENTER_NAME": "0x6",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "2021-03-22T10:43:51.020Z",
-            "TIME_SYSTEM": "0xb",
+            "TIME_SYSTEM": 11,
             "COMMENT": "0x0",
             "EPOCH": "2076-08-23T18:06:16.407Z",
             "X": 10195.3,
@@ -277,7 +268,7 @@
             "SOLAR_RAD_COEFF": 18008.06,
             "DRAG_AREA": 3290.92,
             "DRAG_COEFF": 14520.02,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 56549.74,
             "CY_X": 36450.28,
             "CY_Y": 84716.47,
@@ -304,29 +295,26 @@
                     "MAN_EPOCH_IGNITION": "2030-11-03T05:24:20.930Z",
                     "MAN_DURATION": 70781.19,
                     "MAN_DELTA_MASS": 53364.1,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 44383.87,
                     "MAN_DV_2": 83968.24,
-                    "MAN_DV_3": 24278.69,
-                    "id": 593814469857361
+                    "MAN_DV_3": 24278.69
                 },
                 {
                     "MAN_EPOCH_IGNITION": "2033-11-02T14:20:30.164Z",
                     "MAN_DURATION": 58276.96,
                     "MAN_DELTA_MASS": 84289.84,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 23030.22,
                     "MAN_DV_2": 71106.43,
-                    "MAN_DV_3": 25862.21,
-                    "id": 600425951238694
+                    "MAN_DV_3": 25862.21
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 2053529839,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0x8",
             "USER_DEFINED_EARTH_MODEL": "0xe",
             "USER_DEFINED_EPOCH_TIMESTAMP": 83627.74,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 64430.51,
-            "id": 415096765549760
+            "USER_DEFINED_EPOCH_MICROSECONDS": 64430.51
         },
         {
             "CCSDS_OPM_VERS": 65147.43,
@@ -335,9 +323,9 @@
             "OBJECT_NAME": "0x5",
             "OBJECT_ID": "0x5",
             "CENTER_NAME": "0x0",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "2037-08-24T06:38:22.071Z",
-            "TIME_SYSTEM": "0x6",
+            "TIME_SYSTEM": 6,
             "COMMENT": "0x8",
             "EPOCH": "2053-02-28T08:36:32.796Z",
             "X": 85283.09,
@@ -359,7 +347,7 @@
             "SOLAR_RAD_COEFF": 39764.29,
             "DRAG_AREA": 58832.43,
             "DRAG_COEFF": 53567.92,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 40995.39,
             "CY_X": 85627.58,
             "CY_Y": 24870.2,
@@ -386,29 +374,26 @@
                     "MAN_EPOCH_IGNITION": "2026-09-11T06:17:02.117Z",
                     "MAN_DURATION": 73363.65,
                     "MAN_DELTA_MASS": 85218.81,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 95844.93,
                     "MAN_DV_2": 82002.1,
-                    "MAN_DV_3": 45719.47,
-                    "id": 250336550940504
+                    "MAN_DV_3": 45719.47
                 },
                 {
                     "MAN_EPOCH_IGNITION": "2072-04-09T05:21:38.660Z",
                     "MAN_DURATION": 38564.65,
                     "MAN_DELTA_MASS": 68783.23,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 3653.18,
                     "MAN_DV_2": 89513.02,
-                    "MAN_DV_3": 14917.48,
-                    "id": 342260639599944
+                    "MAN_DV_3": 14917.48
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 164693610,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0x5",
             "USER_DEFINED_EARTH_MODEL": "0x9",
             "USER_DEFINED_EPOCH_TIMESTAMP": 45697.08,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 56807.24,
-            "id": 432235493583966
+            "USER_DEFINED_EPOCH_MICROSECONDS": 56807.24
         },
         {
             "CCSDS_OPM_VERS": 85971.19,
@@ -417,9 +402,9 @@
             "OBJECT_NAME": "0x2",
             "OBJECT_ID": "0xE",
             "CENTER_NAME": "0xA",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "2042-11-22T22:07:31.295Z",
-            "TIME_SYSTEM": "0x7",
+            "TIME_SYSTEM": 7,
             "COMMENT": "0xB",
             "EPOCH": "1993-12-11T07:14:44.954Z",
             "X": 65499.6,
@@ -441,7 +426,7 @@
             "SOLAR_RAD_COEFF": 84862.85,
             "DRAG_AREA": 99421.23,
             "DRAG_COEFF": 79480.93,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 59526.64,
             "CY_X": 98419.91,
             "CY_Y": 713.9,
@@ -468,29 +453,26 @@
                     "MAN_EPOCH_IGNITION": "2072-12-24T13:36:54.194Z",
                     "MAN_DURATION": 26525.33,
                     "MAN_DELTA_MASS": 98821.72,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 11871.62,
                     "MAN_DV_2": 50643.56,
-                    "MAN_DV_3": 63110.87,
-                    "id": 63675827085881
+                    "MAN_DV_3": 63110.87
                 },
                 {
                     "MAN_EPOCH_IGNITION": "2001-11-25T18:59:03.002Z",
                     "MAN_DURATION": 65860.65,
                     "MAN_DELTA_MASS": 25610.08,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 70580.49,
                     "MAN_DV_2": 88091.4,
-                    "MAN_DV_3": 87367.04,
-                    "id": 462247957786597
+                    "MAN_DV_3": 87367.04
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 3465770915,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0x7",
             "USER_DEFINED_EARTH_MODEL": "0xf",
             "USER_DEFINED_EPOCH_TIMESTAMP": 65993.99,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 42142.19,
-            "id": 484569016573920
+            "USER_DEFINED_EPOCH_MICROSECONDS": 42142.19
         },
         {
             "CCSDS_OPM_VERS": 53568.61,
@@ -499,9 +481,9 @@
             "OBJECT_NAME": "0xb",
             "OBJECT_ID": "0xe",
             "CENTER_NAME": "0xc",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "2097-12-29T12:04:26.384Z",
-            "TIME_SYSTEM": "0xA",
+            "TIME_SYSTEM": 10,
             "COMMENT": "0xe",
             "EPOCH": "2003-03-09T21:20:18.899Z",
             "X": 96714.5,
@@ -523,7 +505,7 @@
             "SOLAR_RAD_COEFF": 29454.28,
             "DRAG_AREA": 53754.39,
             "DRAG_COEFF": 63748.4,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 81977.48,
             "CY_X": 13192.21,
             "CY_Y": 57506.41,
@@ -550,29 +532,26 @@
                     "MAN_EPOCH_IGNITION": "1993-01-05T07:49:39.258Z",
                     "MAN_DURATION": 86197.45,
                     "MAN_DELTA_MASS": 89902.37,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 46483.21,
                     "MAN_DV_2": 47789.57,
-                    "MAN_DV_3": 90710.21,
-                    "id": 158941286528332
+                    "MAN_DV_3": 90710.21
                 },
                 {
                     "MAN_EPOCH_IGNITION": "2094-02-10T04:50:50.785Z",
                     "MAN_DURATION": 10825.08,
                     "MAN_DELTA_MASS": 79454.26,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 67838.29,
                     "MAN_DV_2": 4130.5,
-                    "MAN_DV_3": 8570,
-                    "id": 827501900108211
+                    "MAN_DV_3": 8570
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 76388748,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0x1",
             "USER_DEFINED_EARTH_MODEL": "0x7",
             "USER_DEFINED_EPOCH_TIMESTAMP": 53321.28,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 371.46,
-            "id": 503410581501498
+            "USER_DEFINED_EPOCH_MICROSECONDS": 371.46
         },
         {
             "CCSDS_OPM_VERS": 53078.49,
@@ -581,9 +560,9 @@
             "OBJECT_NAME": "0xE",
             "OBJECT_ID": "0x7",
             "CENTER_NAME": "0xD",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "2030-01-01T03:59:28.573Z",
-            "TIME_SYSTEM": "0x4",
+            "TIME_SYSTEM": 4,
             "COMMENT": "0x5",
             "EPOCH": "2024-10-26T04:28:37.706Z",
             "X": 35739.92,
@@ -605,7 +584,7 @@
             "SOLAR_RAD_COEFF": 28375.29,
             "DRAG_AREA": 97663.53,
             "DRAG_COEFF": 10141.59,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 53407.06,
             "CY_X": 40001.57,
             "CY_Y": 48342.92,
@@ -632,29 +611,26 @@
                     "MAN_EPOCH_IGNITION": "2014-07-18T13:22:46.641Z",
                     "MAN_DURATION": 55383.8,
                     "MAN_DELTA_MASS": 68018.74,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 46321.51,
                     "MAN_DV_2": 61083.24,
-                    "MAN_DV_3": 83763.22,
-                    "id": 118368343691765
+                    "MAN_DV_3": 83763.22
                 },
                 {
                     "MAN_EPOCH_IGNITION": "2018-04-15T19:04:52.290Z",
                     "MAN_DURATION": 33415.55,
                     "MAN_DELTA_MASS": 49292.83,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 37431.51,
                     "MAN_DV_2": 4235.11,
-                    "MAN_DV_3": 4690.4,
-                    "id": 588188939936485
+                    "MAN_DV_3": 4690.4
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 3160421983,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0x1",
             "USER_DEFINED_EARTH_MODEL": "0x3",
             "USER_DEFINED_EPOCH_TIMESTAMP": 85956.66,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 40589.24,
-            "id": 652428824558775
+            "USER_DEFINED_EPOCH_MICROSECONDS": 40589.24
         },
         {
             "CCSDS_OPM_VERS": 67370.51,
@@ -663,9 +639,9 @@
             "OBJECT_NAME": "0x3",
             "OBJECT_ID": "0x8",
             "CENTER_NAME": "0xD",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "2015-03-07T10:45:39.846Z",
-            "TIME_SYSTEM": "0xa",
+            "TIME_SYSTEM": 10,
             "COMMENT": "0xA",
             "EPOCH": "2088-11-08T20:36:24.088Z",
             "X": 78158.58,
@@ -687,7 +663,7 @@
             "SOLAR_RAD_COEFF": 54748.34,
             "DRAG_AREA": 46588.88,
             "DRAG_COEFF": 37958.8,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 9629.05,
             "CY_X": 95950.14,
             "CY_Y": 26013.93,
@@ -714,29 +690,26 @@
                     "MAN_EPOCH_IGNITION": "2003-12-30T03:34:08.126Z",
                     "MAN_DURATION": 30138.84,
                     "MAN_DELTA_MASS": 64515.79,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 19082.5,
                     "MAN_DV_2": 2182.54,
-                    "MAN_DV_3": 56125.85,
-                    "id": 352264725525665
+                    "MAN_DV_3": 56125.85
                 },
                 {
                     "MAN_EPOCH_IGNITION": "1997-12-01T15:30:49.270Z",
                     "MAN_DURATION": 75619.65,
                     "MAN_DELTA_MASS": 99177.81,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 65961.26,
                     "MAN_DV_2": 7479.65,
-                    "MAN_DV_3": 79910.19,
-                    "id": 510790934318883
+                    "MAN_DV_3": 79910.19
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 2916733101,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0xC",
             "USER_DEFINED_EARTH_MODEL": "0xD",
             "USER_DEFINED_EPOCH_TIMESTAMP": 49877.06,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 32913.89,
-            "id": 785944295684102
+            "USER_DEFINED_EPOCH_MICROSECONDS": 32913.89
         },
         {
             "CCSDS_OPM_VERS": 57031.32,
@@ -745,9 +718,9 @@
             "OBJECT_NAME": "0xD",
             "OBJECT_ID": "0xa",
             "CENTER_NAME": "0x3",
-            "REF_FRAME": null,
+            "REF_FRAME": 0,
             "REF_FRAME_EPOCH": "2017-08-11T00:25:25.516Z",
-            "TIME_SYSTEM": "0xD",
+            "TIME_SYSTEM": 13,
             "COMMENT": "0xD",
             "EPOCH": "2050-07-19T05:40:31.190Z",
             "X": 61588.09,
@@ -769,7 +742,7 @@
             "SOLAR_RAD_COEFF": 62997.29,
             "DRAG_AREA": 3428.16,
             "DRAG_COEFF": 55320.89,
-            "COV_REF_FRAME": null,
+            "COV_REF_FRAME": 0,
             "CX_X": 697.11,
             "CY_X": 67078.78,
             "CY_Y": 18883.83,
@@ -796,29 +769,26 @@
                     "MAN_EPOCH_IGNITION": "2076-07-17T00:57:19.749Z",
                     "MAN_DURATION": 17827.25,
                     "MAN_DELTA_MASS": 47648.61,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 88549.09,
                     "MAN_DV_2": 90686.28,
-                    "MAN_DV_3": 13618.54,
-                    "id": 201524773928799
+                    "MAN_DV_3": 13618.54
                 },
                 {
                     "MAN_EPOCH_IGNITION": "2056-09-28T00:38:48.798Z",
                     "MAN_DURATION": 5442.07,
                     "MAN_DELTA_MASS": 61526.88,
-                    "MAN_REF_FRAME": null,
+                    "MAN_REF_FRAME": 0,
                     "MAN_DV_1": 22136.81,
                     "MAN_DV_2": 30161.45,
-                    "MAN_DV_3": 90601.01,
-                    "id": 264639644634913
+                    "MAN_DV_3": 90601.01
                 }
             ],
             "USER_DEFINED_BIP_0044_TYPE": 3301426805,
             "USER_DEFINED_OBJECT_DESIGNATOR": "0x9",
             "USER_DEFINED_EARTH_MODEL": "0xE",
             "USER_DEFINED_EPOCH_TIMESTAMP": 27639.51,
-            "USER_DEFINED_EPOCH_MICROSECONDS": 80793.2,
-            "id": 928070271928341
+            "USER_DEFINED_EPOCH_MICROSECONDS": 80793.2
         }
     ]
 }

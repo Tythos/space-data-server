@@ -10,9 +10,9 @@
                     "OBJECT_NAME": "0x5",
                     "OBJECT_ID": "0x1",
                     "CENTER_NAME": "0x7",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2007-02-18T16:07:41.772Z",
-                    "TIME_SYSTEM": "0x1",
+                    "TIME_SYSTEM": 1,
                     "START_TIME": "2029-02-02T12:49:33.964Z",
                     "USEABLE_START_TIME": "2028-10-04T11:17:09.167Z",
                     "USEABLE_STOP_TIME": "2033-08-07T04:35:03.647Z",
@@ -30,8 +30,7 @@
                             "Z_DOT": 18988.51,
                             "X_DDOT": 2501.43,
                             "Y_DDOT": 11638.55,
-                            "Z_DDOT": 40579.52,
-                            "id": 109480921607925
+                            "Z_DDOT": 40579.52
                         },
                         {
                             "EPOCH": "2007-01-30T05:50:15.847Z",
@@ -43,14 +42,13 @@
                             "Z_DOT": 48743.85,
                             "X_DDOT": 16610.42,
                             "Y_DDOT": 46231.07,
-                            "Z_DDOT": 12069.83,
-                            "id": 647769867742724
+                            "Z_DDOT": 12069.83
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2081-02-14T05:11:18.552Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 24605.17,
                             "CY_X": 69277.46,
                             "CY_Y": 99951.78,
@@ -71,12 +69,11 @@
                             "CZ_DOT_Z": 94540.17,
                             "CZ_DOT_X_DOT": 55602,
                             "CZ_DOT_Y_DOT": 33035.74,
-                            "CZ_DOT_Z_DOT": 88600.55,
-                            "id": 91345572465328
+                            "CZ_DOT_Z_DOT": 88600.55
                         },
                         {
                             "EPOCH": "2088-02-14T01:59:05.046Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 26159.09,
                             "CY_X": 70689.52,
                             "CY_Y": 38097.46,
@@ -97,20 +94,18 @@
                             "CZ_DOT_Z": 58931.29,
                             "CZ_DOT_X_DOT": 38574.19,
                             "CZ_DOT_Y_DOT": 18197.6,
-                            "CZ_DOT_Z_DOT": 78558.89,
-                            "id": 493715103727249
+                            "CZ_DOT_Z_DOT": 78558.89
                         }
-                    ],
-                    "id": 712450705252684
+                    ]
                 },
                 {
                     "COMMENT": "0xf",
                     "OBJECT_NAME": "0xF",
                     "OBJECT_ID": "0x2",
                     "CENTER_NAME": "0xf",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2020-10-07T18:44:34.928Z",
-                    "TIME_SYSTEM": "0xD",
+                    "TIME_SYSTEM": 13,
                     "START_TIME": "1993-11-08T19:01:58.926Z",
                     "USEABLE_START_TIME": "2043-05-26T16:19:18.888Z",
                     "USEABLE_STOP_TIME": "2031-12-21T22:00:19.496Z",
@@ -128,8 +123,7 @@
                             "Z_DOT": 72412.42,
                             "X_DDOT": 51108.87,
                             "Y_DDOT": 2423.92,
-                            "Z_DDOT": 45203.4,
-                            "id": 549747560109141
+                            "Z_DDOT": 45203.4
                         },
                         {
                             "EPOCH": "1999-07-20T21:15:11.240Z",
@@ -141,14 +135,13 @@
                             "Z_DOT": 8146.05,
                             "X_DDOT": 33023.15,
                             "Y_DDOT": 42456.28,
-                            "Z_DDOT": 41940.23,
-                            "id": 970614245033062
+                            "Z_DDOT": 41940.23
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2002-07-01T13:21:47.051Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 17323.09,
                             "CY_X": 30626.59,
                             "CY_Y": 32022.35,
@@ -169,12 +162,11 @@
                             "CZ_DOT_Z": 57253.5,
                             "CZ_DOT_X_DOT": 31821.03,
                             "CZ_DOT_Y_DOT": 13694.67,
-                            "CZ_DOT_Z_DOT": 88935.32,
-                            "id": 433827241307585
+                            "CZ_DOT_Z_DOT": 88935.32
                         },
                         {
                             "EPOCH": "2098-11-24T17:05:26.300Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 25615.47,
                             "CY_X": 82544.35,
                             "CY_Y": 70639.12,
@@ -195,14 +187,11 @@
                             "CZ_DOT_Z": 59646.98,
                             "CZ_DOT_X_DOT": 75385.55,
                             "CZ_DOT_Y_DOT": 35937.84,
-                            "CZ_DOT_Z_DOT": 6990.2,
-                            "id": 464434509062025
+                            "CZ_DOT_Z_DOT": 6990.2
                         }
-                    ],
-                    "id": 862279000004113
+                    ]
                 }
-            ],
-            "id": 177270920939911
+            ]
         },
         {
             "CCSDS_OEM_VERS": 84956.41,
@@ -214,9 +203,9 @@
                     "OBJECT_NAME": "0x3",
                     "OBJECT_ID": "0xC",
                     "CENTER_NAME": "0x4",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "1998-05-07T15:58:01.284Z",
-                    "TIME_SYSTEM": "0xD",
+                    "TIME_SYSTEM": 13,
                     "START_TIME": "2028-06-12T03:40:08.179Z",
                     "USEABLE_START_TIME": "1993-10-15T16:52:43.599Z",
                     "USEABLE_STOP_TIME": "2028-03-19T17:02:46.418Z",
@@ -234,8 +223,7 @@
                             "Z_DOT": 26225.84,
                             "X_DDOT": 70279.82,
                             "Y_DDOT": 30333.55,
-                            "Z_DDOT": 49878.83,
-                            "id": 183062459501009
+                            "Z_DDOT": 49878.83
                         },
                         {
                             "EPOCH": "2024-12-02T10:45:46.862Z",
@@ -247,14 +235,13 @@
                             "Z_DOT": 76049.32,
                             "X_DDOT": 47471.4,
                             "Y_DDOT": 25687.8,
-                            "Z_DDOT": 64928.76,
-                            "id": 650598832788127
+                            "Z_DDOT": 64928.76
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2027-09-29T18:45:41.173Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 11913.87,
                             "CY_X": 32119.66,
                             "CY_Y": 27969.06,
@@ -275,12 +262,11 @@
                             "CZ_DOT_Z": 85930.21,
                             "CZ_DOT_X_DOT": 37242.8,
                             "CZ_DOT_Y_DOT": 85815.85,
-                            "CZ_DOT_Z_DOT": 91157.48,
-                            "id": 153831381813932
+                            "CZ_DOT_Z_DOT": 91157.48
                         },
                         {
                             "EPOCH": "2047-08-08T01:56:08.485Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 21797.02,
                             "CY_X": 51912.22,
                             "CY_Y": 25294.95,
@@ -301,20 +287,18 @@
                             "CZ_DOT_Z": 94472.41,
                             "CZ_DOT_X_DOT": 34831.66,
                             "CZ_DOT_Y_DOT": 78208.17,
-                            "CZ_DOT_Z_DOT": 44849.62,
-                            "id": 327988913828855
+                            "CZ_DOT_Z_DOT": 44849.62
                         }
-                    ],
-                    "id": 141214222913201
+                    ]
                 },
                 {
                     "COMMENT": "0xd",
                     "OBJECT_NAME": "0xb",
                     "OBJECT_ID": "0x2",
                     "CENTER_NAME": "0xA",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2052-09-04T08:36:38.968Z",
-                    "TIME_SYSTEM": "0xc",
+                    "TIME_SYSTEM": 12,
                     "START_TIME": "2097-12-26T12:12:28.436Z",
                     "USEABLE_START_TIME": "2054-02-17T16:58:56.883Z",
                     "USEABLE_STOP_TIME": "2031-11-20T17:34:19.097Z",
@@ -332,8 +316,7 @@
                             "Z_DOT": 13455.59,
                             "X_DDOT": 90710.99,
                             "Y_DDOT": 97840.68,
-                            "Z_DDOT": 53361.91,
-                            "id": 658390492116339
+                            "Z_DDOT": 53361.91
                         },
                         {
                             "EPOCH": "2029-05-15T10:27:09.610Z",
@@ -345,14 +328,13 @@
                             "Z_DOT": 16611.92,
                             "X_DDOT": 74444.38,
                             "Y_DDOT": 26218.09,
-                            "Z_DDOT": 28594.29,
-                            "id": 701227759051069
+                            "Z_DDOT": 28594.29
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2096-11-25T22:25:51.172Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 96752.87,
                             "CY_X": 21168.49,
                             "CY_Y": 19454.84,
@@ -373,12 +355,11 @@
                             "CZ_DOT_Z": 54249.85,
                             "CZ_DOT_X_DOT": 73510.53,
                             "CZ_DOT_Y_DOT": 88746.12,
-                            "CZ_DOT_Z_DOT": 36857.12,
-                            "id": 393158961496105
+                            "CZ_DOT_Z_DOT": 36857.12
                         },
                         {
                             "EPOCH": "2049-10-08T16:50:15.353Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 92752.66,
                             "CY_X": 58748.04,
                             "CY_Y": 91986.55,
@@ -399,14 +380,11 @@
                             "CZ_DOT_Z": 39797.2,
                             "CZ_DOT_X_DOT": 27674.08,
                             "CZ_DOT_Y_DOT": 67479.96,
-                            "CZ_DOT_Z_DOT": 75945.7,
-                            "id": 508099273566024
+                            "CZ_DOT_Z_DOT": 75945.7
                         }
-                    ],
-                    "id": 807010505391699
+                    ]
                 }
-            ],
-            "id": 185073403641362
+            ]
         },
         {
             "CCSDS_OEM_VERS": 82808.04,
@@ -418,9 +396,9 @@
                     "OBJECT_NAME": "0xb",
                     "OBJECT_ID": "0xA",
                     "CENTER_NAME": "0x4",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2075-06-27T09:49:58.440Z",
-                    "TIME_SYSTEM": "0xF",
+                    "TIME_SYSTEM": 15,
                     "START_TIME": "2005-08-29T04:37:18.646Z",
                     "USEABLE_START_TIME": "2006-05-29T11:07:28.399Z",
                     "USEABLE_STOP_TIME": "2048-04-22T06:01:55.840Z",
@@ -438,8 +416,7 @@
                             "Z_DOT": 65738.95,
                             "X_DDOT": 94442.48,
                             "Y_DDOT": 98710.62,
-                            "Z_DDOT": 56556.16,
-                            "id": 452121950892491
+                            "Z_DDOT": 56556.16
                         },
                         {
                             "EPOCH": "2059-05-07T18:21:20.859Z",
@@ -451,14 +428,13 @@
                             "Z_DOT": 83495.6,
                             "X_DDOT": 260.23,
                             "Y_DDOT": 26205.94,
-                            "Z_DDOT": 82312.92,
-                            "id": 709562162934801
+                            "Z_DDOT": 82312.92
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2016-01-28T19:10:34.190Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 78114.12,
                             "CY_X": 7981.89,
                             "CY_Y": 31433.84,
@@ -479,12 +455,11 @@
                             "CZ_DOT_Z": 20103.35,
                             "CZ_DOT_X_DOT": 70890.6,
                             "CZ_DOT_Y_DOT": 45726.11,
-                            "CZ_DOT_Z_DOT": 87310.63,
-                            "id": 534560772302745
+                            "CZ_DOT_Z_DOT": 87310.63
                         },
                         {
                             "EPOCH": "2006-06-20T01:08:54.036Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 32954.77,
                             "CY_X": 66741.25,
                             "CY_Y": 69502.88,
@@ -505,20 +480,18 @@
                             "CZ_DOT_Z": 72169,
                             "CZ_DOT_X_DOT": 14700.8,
                             "CZ_DOT_Y_DOT": 54507.78,
-                            "CZ_DOT_Z_DOT": 81777.25,
-                            "id": 671420769533905
+                            "CZ_DOT_Z_DOT": 81777.25
                         }
-                    ],
-                    "id": 574121005789020
+                    ]
                 },
                 {
                     "COMMENT": "0x9",
                     "OBJECT_NAME": "0xc",
                     "OBJECT_ID": "0x3",
                     "CENTER_NAME": "0x8",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2084-09-13T02:50:33.185Z",
-                    "TIME_SYSTEM": "0xB",
+                    "TIME_SYSTEM": 11,
                     "START_TIME": "2006-02-16T04:33:41.422Z",
                     "USEABLE_START_TIME": "2043-05-01T10:19:35.785Z",
                     "USEABLE_STOP_TIME": "2074-09-11T15:44:12.982Z",
@@ -536,8 +509,7 @@
                             "Z_DOT": 2642.54,
                             "X_DDOT": 91208.6,
                             "Y_DDOT": 31538.85,
-                            "Z_DDOT": 17402.9,
-                            "id": 86383463184885
+                            "Z_DDOT": 17402.9
                         },
                         {
                             "EPOCH": "2007-10-15T22:44:33.151Z",
@@ -549,14 +521,13 @@
                             "Z_DOT": 90838.56,
                             "X_DDOT": 49491.81,
                             "Y_DDOT": 54892.82,
-                            "Z_DDOT": 39092.6,
-                            "id": 904675771737608
+                            "Z_DDOT": 39092.6
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2098-11-21T22:06:19.127Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 20004.46,
                             "CY_X": 63439.84,
                             "CY_Y": 7009.03,
@@ -577,12 +548,11 @@
                             "CZ_DOT_Z": 18644.57,
                             "CZ_DOT_X_DOT": 89711.75,
                             "CZ_DOT_Y_DOT": 32001.8,
-                            "CZ_DOT_Z_DOT": 41104.63,
-                            "id": 373677074337409
+                            "CZ_DOT_Z_DOT": 41104.63
                         },
                         {
                             "EPOCH": "2047-05-10T03:30:55.173Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 9305.95,
                             "CY_X": 66959.37,
                             "CY_Y": 95064.1,
@@ -603,14 +573,11 @@
                             "CZ_DOT_Z": 91869.16,
                             "CZ_DOT_X_DOT": 17752.69,
                             "CZ_DOT_Y_DOT": 74864.44,
-                            "CZ_DOT_Z_DOT": 63134.93,
-                            "id": 760607187854351
+                            "CZ_DOT_Z_DOT": 63134.93
                         }
-                    ],
-                    "id": 709417650382322
+                    ]
                 }
-            ],
-            "id": 281823870502265
+            ]
         },
         {
             "CCSDS_OEM_VERS": 43373.5,
@@ -622,9 +589,9 @@
                     "OBJECT_NAME": "0xA",
                     "OBJECT_ID": "0x3",
                     "CENTER_NAME": "0x3",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2023-05-08T08:38:21.986Z",
-                    "TIME_SYSTEM": "0xC",
+                    "TIME_SYSTEM": 12,
                     "START_TIME": "2094-02-22T06:39:39.017Z",
                     "USEABLE_START_TIME": "2067-06-02T15:50:27.973Z",
                     "USEABLE_STOP_TIME": "2062-08-28T23:16:10.359Z",
@@ -642,8 +609,7 @@
                             "Z_DOT": 42193.52,
                             "X_DDOT": 18634.33,
                             "Y_DDOT": 52449.95,
-                            "Z_DDOT": 55896.27,
-                            "id": 469011579865234
+                            "Z_DDOT": 55896.27
                         },
                         {
                             "EPOCH": "2097-03-03T22:38:25.088Z",
@@ -655,14 +621,13 @@
                             "Z_DOT": 10425.75,
                             "X_DDOT": 91780.85,
                             "Y_DDOT": 68262.68,
-                            "Z_DDOT": 43354.71,
-                            "id": 789071112519510
+                            "Z_DDOT": 43354.71
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2056-05-23T17:35:42.013Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 39301.21,
                             "CY_X": 26262.37,
                             "CY_Y": 30118.17,
@@ -683,12 +648,11 @@
                             "CZ_DOT_Z": 14908.39,
                             "CZ_DOT_X_DOT": 48384.66,
                             "CZ_DOT_Y_DOT": 85213.61,
-                            "CZ_DOT_Z_DOT": 23405.28,
-                            "id": 192611698831068
+                            "CZ_DOT_Z_DOT": 23405.28
                         },
                         {
                             "EPOCH": "2073-07-16T13:46:29.207Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 30863.69,
                             "CY_X": 72803.1,
                             "CY_Y": 62233.86,
@@ -709,20 +673,18 @@
                             "CZ_DOT_Z": 61108.12,
                             "CZ_DOT_X_DOT": 13469.76,
                             "CZ_DOT_Y_DOT": 78704.57,
-                            "CZ_DOT_Z_DOT": 49232.67,
-                            "id": 841480212528431
+                            "CZ_DOT_Z_DOT": 49232.67
                         }
-                    ],
-                    "id": 142428790434467
+                    ]
                 },
                 {
                     "COMMENT": "0xe",
                     "OBJECT_NAME": "0x6",
                     "OBJECT_ID": "0x9",
                     "CENTER_NAME": "0xF",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2009-10-29T11:14:19.867Z",
-                    "TIME_SYSTEM": "0xF",
+                    "TIME_SYSTEM": 15,
                     "START_TIME": "2023-02-14T00:18:22.369Z",
                     "USEABLE_START_TIME": "2044-09-07T06:01:35.324Z",
                     "USEABLE_STOP_TIME": "2094-01-26T08:07:59.273Z",
@@ -740,8 +702,7 @@
                             "Z_DOT": 85265.81,
                             "X_DDOT": 82974.92,
                             "Y_DDOT": 79033.65,
-                            "Z_DDOT": 49352.76,
-                            "id": 359638366649952
+                            "Z_DDOT": 49352.76
                         },
                         {
                             "EPOCH": "2022-04-26T18:19:58.324Z",
@@ -753,14 +714,13 @@
                             "Z_DOT": 13813.47,
                             "X_DDOT": 21209.52,
                             "Y_DDOT": 13585.36,
-                            "Z_DDOT": 98702.31,
-                            "id": 710059369983221
+                            "Z_DDOT": 98702.31
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "1997-11-07T04:15:02.707Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 35114.11,
                             "CY_X": 49323.27,
                             "CY_Y": 82233.78,
@@ -781,12 +741,11 @@
                             "CZ_DOT_Z": 80632.16,
                             "CZ_DOT_X_DOT": 94872.29,
                             "CZ_DOT_Y_DOT": 36742.05,
-                            "CZ_DOT_Z_DOT": 95518.34,
-                            "id": 566299706362957
+                            "CZ_DOT_Z_DOT": 95518.34
                         },
                         {
                             "EPOCH": "2046-01-01T16:28:50.514Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 93115.4,
                             "CY_X": 13355.8,
                             "CY_Y": 18556.28,
@@ -807,14 +766,11 @@
                             "CZ_DOT_Z": 77753.53,
                             "CZ_DOT_X_DOT": 18734.46,
                             "CZ_DOT_Y_DOT": 83207.13,
-                            "CZ_DOT_Z_DOT": 22208.12,
-                            "id": 995993114926274
+                            "CZ_DOT_Z_DOT": 22208.12
                         }
-                    ],
-                    "id": 527858713599844
+                    ]
                 }
-            ],
-            "id": 302010920725981
+            ]
         },
         {
             "CCSDS_OEM_VERS": 32768.1,
@@ -826,9 +782,9 @@
                     "OBJECT_NAME": "0x6",
                     "OBJECT_ID": "0xc",
                     "CENTER_NAME": "0xc",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2097-06-06T00:27:06.145Z",
-                    "TIME_SYSTEM": "0xe",
+                    "TIME_SYSTEM": 14,
                     "START_TIME": "2065-07-16T10:54:24.320Z",
                     "USEABLE_START_TIME": "1992-10-24T12:00:31.264Z",
                     "USEABLE_STOP_TIME": "2092-07-26T20:38:41.167Z",
@@ -846,8 +802,7 @@
                             "Z_DOT": 92896.78,
                             "X_DDOT": 2086.16,
                             "Y_DDOT": 85005.96,
-                            "Z_DDOT": 80019.55,
-                            "id": 21613201603883
+                            "Z_DDOT": 80019.55
                         },
                         {
                             "EPOCH": "1997-07-24T02:33:27.371Z",
@@ -859,14 +814,13 @@
                             "Z_DOT": 32282.7,
                             "X_DDOT": 91809.12,
                             "Y_DDOT": 21622.53,
-                            "Z_DDOT": 94950.17,
-                            "id": 417573128186980
+                            "Z_DDOT": 94950.17
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2072-08-17T14:53:02.824Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 76783.55,
                             "CY_X": 88745.74,
                             "CY_Y": 47554.84,
@@ -887,12 +841,11 @@
                             "CZ_DOT_Z": 9616.62,
                             "CZ_DOT_X_DOT": 8044.16,
                             "CZ_DOT_Y_DOT": 2358.68,
-                            "CZ_DOT_Z_DOT": 98798.03,
-                            "id": 820747873441140
+                            "CZ_DOT_Z_DOT": 98798.03
                         },
                         {
                             "EPOCH": "2036-08-17T12:35:44.946Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 6823.31,
                             "CY_X": 48612.74,
                             "CY_Y": 38639.74,
@@ -913,20 +866,18 @@
                             "CZ_DOT_Z": 63310.1,
                             "CZ_DOT_X_DOT": 28496.2,
                             "CZ_DOT_Y_DOT": 85193.8,
-                            "CZ_DOT_Z_DOT": 69889.09,
-                            "id": 856882468607135
+                            "CZ_DOT_Z_DOT": 69889.09
                         }
-                    ],
-                    "id": 353833670154692
+                    ]
                 },
                 {
                     "COMMENT": "0xB",
                     "OBJECT_NAME": "0x5",
                     "OBJECT_ID": "0xE",
                     "CENTER_NAME": "0x9",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2016-04-25T10:07:20.365Z",
-                    "TIME_SYSTEM": "0xF",
+                    "TIME_SYSTEM": 15,
                     "START_TIME": "2026-07-30T01:50:06.548Z",
                     "USEABLE_START_TIME": "1990-04-07T05:35:04.633Z",
                     "USEABLE_STOP_TIME": "2008-04-30T07:13:29.823Z",
@@ -944,8 +895,7 @@
                             "Z_DOT": 57072.51,
                             "X_DDOT": 41494.11,
                             "Y_DDOT": 92029.23,
-                            "Z_DDOT": 99790.38,
-                            "id": 456877544282762
+                            "Z_DDOT": 99790.38
                         },
                         {
                             "EPOCH": "2087-01-03T07:39:06.986Z",
@@ -957,14 +907,13 @@
                             "Z_DOT": 63988.3,
                             "X_DDOT": 89484.81,
                             "Y_DDOT": 51992.29,
-                            "Z_DDOT": 10532.63,
-                            "id": 999629294984489
+                            "Z_DDOT": 10532.63
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2075-04-24T08:15:37.862Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 51935.55,
                             "CY_X": 46291.87,
                             "CY_Y": 81868.2,
@@ -985,12 +934,11 @@
                             "CZ_DOT_Z": 66127.13,
                             "CZ_DOT_X_DOT": 72432.96,
                             "CZ_DOT_Y_DOT": 25359.37,
-                            "CZ_DOT_Z_DOT": 79729.82,
-                            "id": 159868796797996
+                            "CZ_DOT_Z_DOT": 79729.82
                         },
                         {
                             "EPOCH": "2096-11-27T17:36:01.204Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 42211.33,
                             "CY_X": 9508.11,
                             "CY_Y": 19522.45,
@@ -1011,14 +959,11 @@
                             "CZ_DOT_Z": 92335,
                             "CZ_DOT_X_DOT": 70644.55,
                             "CZ_DOT_Y_DOT": 12994.07,
-                            "CZ_DOT_Z_DOT": 56683.83,
-                            "id": 526985088260833
+                            "CZ_DOT_Z_DOT": 56683.83
                         }
-                    ],
-                    "id": 543565453217876
+                    ]
                 }
-            ],
-            "id": 451576581873891
+            ]
         },
         {
             "CCSDS_OEM_VERS": 5263.54,
@@ -1030,9 +975,9 @@
                     "OBJECT_NAME": "0xb",
                     "OBJECT_ID": "0xe",
                     "CENTER_NAME": "0xF",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2023-06-29T17:41:35.587Z",
-                    "TIME_SYSTEM": "0x4",
+                    "TIME_SYSTEM": 4,
                     "START_TIME": "2060-01-22T11:18:22.115Z",
                     "USEABLE_START_TIME": "2096-06-16T04:10:21.975Z",
                     "USEABLE_STOP_TIME": "2048-07-17T21:39:56.912Z",
@@ -1050,8 +995,7 @@
                             "Z_DOT": 65882.15,
                             "X_DDOT": 37032.9,
                             "Y_DDOT": 42400.52,
-                            "Z_DDOT": 36280.91,
-                            "id": 263380335902980
+                            "Z_DDOT": 36280.91
                         },
                         {
                             "EPOCH": "1999-09-19T14:28:30.303Z",
@@ -1063,14 +1007,13 @@
                             "Z_DOT": 50570.86,
                             "X_DDOT": 57634.29,
                             "Y_DDOT": 88785.54,
-                            "Z_DDOT": 92093.82,
-                            "id": 544873504682216
+                            "Z_DDOT": 92093.82
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2037-12-01T05:45:34.370Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 76909.72,
                             "CY_X": 25297.31,
                             "CY_Y": 26656.01,
@@ -1091,12 +1034,11 @@
                             "CZ_DOT_Z": 30162.87,
                             "CZ_DOT_X_DOT": 4412.41,
                             "CZ_DOT_Y_DOT": 63450.3,
-                            "CZ_DOT_Z_DOT": 48280.25,
-                            "id": 343076058577073
+                            "CZ_DOT_Z_DOT": 48280.25
                         },
                         {
                             "EPOCH": "2085-09-22T20:02:06.793Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 23025.42,
                             "CY_X": 64569.17,
                             "CY_Y": 90626.67,
@@ -1117,20 +1059,18 @@
                             "CZ_DOT_Z": 61397.88,
                             "CZ_DOT_X_DOT": 48941.66,
                             "CZ_DOT_Y_DOT": 47635.69,
-                            "CZ_DOT_Z_DOT": 17769.39,
-                            "id": 900193933356689
+                            "CZ_DOT_Z_DOT": 17769.39
                         }
-                    ],
-                    "id": 859408241282840
+                    ]
                 },
                 {
                     "COMMENT": "0x6",
                     "OBJECT_NAME": "0x9",
                     "OBJECT_ID": "0xa",
                     "CENTER_NAME": "0xf",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2009-05-04T04:40:13.499Z",
-                    "TIME_SYSTEM": "0xb",
+                    "TIME_SYSTEM": 11,
                     "START_TIME": "2063-07-24T21:55:05.020Z",
                     "USEABLE_START_TIME": "2092-12-20T22:06:45.096Z",
                     "USEABLE_STOP_TIME": "2083-06-01T09:03:44.263Z",
@@ -1148,8 +1088,7 @@
                             "Z_DOT": 91260.13,
                             "X_DDOT": 11699.37,
                             "Y_DDOT": 17383.19,
-                            "Z_DDOT": 36908.64,
-                            "id": 396265322704143
+                            "Z_DDOT": 36908.64
                         },
                         {
                             "EPOCH": "2058-05-09T09:03:36.028Z",
@@ -1161,14 +1100,13 @@
                             "Z_DOT": 8697.65,
                             "X_DDOT": 7593.44,
                             "Y_DDOT": 75702.81,
-                            "Z_DDOT": 84971.66,
-                            "id": 703420397579134
+                            "Z_DDOT": 84971.66
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2095-02-15T00:13:41.115Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 45027.44,
                             "CY_X": 26761.2,
                             "CY_Y": 93904.89,
@@ -1189,12 +1127,11 @@
                             "CZ_DOT_Z": 99268.89,
                             "CZ_DOT_X_DOT": 16410.37,
                             "CZ_DOT_Y_DOT": 36126.35,
-                            "CZ_DOT_Z_DOT": 89000.22,
-                            "id": 471258128083310
+                            "CZ_DOT_Z_DOT": 89000.22
                         },
                         {
                             "EPOCH": "2037-11-03T16:39:44.973Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 74862.78,
                             "CY_X": 53328.2,
                             "CY_Y": 48168.89,
@@ -1215,14 +1152,11 @@
                             "CZ_DOT_Z": 91645.29,
                             "CZ_DOT_X_DOT": 36886.03,
                             "CZ_DOT_Y_DOT": 87322.48,
-                            "CZ_DOT_Z_DOT": 34162.47,
-                            "id": 491133743319320
+                            "CZ_DOT_Z_DOT": 34162.47
                         }
-                    ],
-                    "id": 905297000109371
+                    ]
                 }
-            ],
-            "id": 466368538049077
+            ]
         },
         {
             "CCSDS_OEM_VERS": 53482.13,
@@ -1234,9 +1168,9 @@
                     "OBJECT_NAME": "0x7",
                     "OBJECT_ID": "0xc",
                     "CENTER_NAME": "0xE",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2071-07-14T03:14:50.131Z",
-                    "TIME_SYSTEM": "0x8",
+                    "TIME_SYSTEM": 8,
                     "START_TIME": "2080-07-31T11:35:46.601Z",
                     "USEABLE_START_TIME": "2042-08-13T04:00:25.754Z",
                     "USEABLE_STOP_TIME": "2073-04-27T00:50:31.168Z",
@@ -1254,8 +1188,7 @@
                             "Z_DOT": 28054.45,
                             "X_DDOT": 67.18,
                             "Y_DDOT": 9932.03,
-                            "Z_DDOT": 56197.05,
-                            "id": 214344663361136
+                            "Z_DDOT": 56197.05
                         },
                         {
                             "EPOCH": "1992-06-10T12:22:42.163Z",
@@ -1267,14 +1200,13 @@
                             "Z_DOT": 64707.94,
                             "X_DDOT": 80233.36,
                             "Y_DDOT": 54843.99,
-                            "Z_DDOT": 48112.31,
-                            "id": 491696746231487
+                            "Z_DDOT": 48112.31
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2031-12-26T21:14:21.252Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 93204.73,
                             "CY_X": 35402.8,
                             "CY_Y": 27357.72,
@@ -1295,12 +1227,11 @@
                             "CZ_DOT_Z": 82743.23,
                             "CZ_DOT_X_DOT": 31497.09,
                             "CZ_DOT_Y_DOT": 46432.33,
-                            "CZ_DOT_Z_DOT": 48015.42,
-                            "id": 978085296011894
+                            "CZ_DOT_Z_DOT": 48015.42
                         },
                         {
                             "EPOCH": "2068-06-12T11:47:29.679Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 22160.64,
                             "CY_X": 51138.46,
                             "CY_Y": 39641.81,
@@ -1321,20 +1252,18 @@
                             "CZ_DOT_Z": 26526.02,
                             "CZ_DOT_X_DOT": 50728.2,
                             "CZ_DOT_Y_DOT": 61149.89,
-                            "CZ_DOT_Z_DOT": 53499.42,
-                            "id": 997145732801422
+                            "CZ_DOT_Z_DOT": 53499.42
                         }
-                    ],
-                    "id": 809324250837046
+                    ]
                 },
                 {
                     "COMMENT": "0xE",
                     "OBJECT_NAME": "0x2",
                     "OBJECT_ID": "0xE",
                     "CENTER_NAME": "0xD",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2014-03-25T23:05:04.241Z",
-                    "TIME_SYSTEM": "0xa",
+                    "TIME_SYSTEM": 10,
                     "START_TIME": "2002-03-20T18:43:34.632Z",
                     "USEABLE_START_TIME": "2005-06-15T21:41:52.002Z",
                     "USEABLE_STOP_TIME": "2014-03-14T12:00:27.789Z",
@@ -1352,8 +1281,7 @@
                             "Z_DOT": 81120.64,
                             "X_DDOT": 35557.74,
                             "Y_DDOT": 41946.31,
-                            "Z_DDOT": 33821.55,
-                            "id": 260484052810560
+                            "Z_DDOT": 33821.55
                         },
                         {
                             "EPOCH": "2056-03-04T13:35:47.221Z",
@@ -1365,14 +1293,13 @@
                             "Z_DOT": 64924.93,
                             "X_DDOT": 69319.51,
                             "Y_DDOT": 82492.83,
-                            "Z_DDOT": 13965.76,
-                            "id": 294612663244801
+                            "Z_DDOT": 13965.76
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2030-07-02T07:34:07.321Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 54471.21,
                             "CY_X": 79547.95,
                             "CY_Y": 30005.17,
@@ -1393,12 +1320,11 @@
                             "CZ_DOT_Z": 45660.72,
                             "CZ_DOT_X_DOT": 83537.74,
                             "CZ_DOT_Y_DOT": 69275.8,
-                            "CZ_DOT_Z_DOT": 35601.16,
-                            "id": 603608825497406
+                            "CZ_DOT_Z_DOT": 35601.16
                         },
                         {
                             "EPOCH": "2033-02-21T15:31:05.891Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 66938.53,
                             "CY_X": 86743.46,
                             "CY_Y": 85006.28,
@@ -1419,14 +1345,11 @@
                             "CZ_DOT_Z": 94882.54,
                             "CZ_DOT_X_DOT": 15606.02,
                             "CZ_DOT_Y_DOT": 72187.04,
-                            "CZ_DOT_Z_DOT": 91707.12,
-                            "id": 739145343403691
+                            "CZ_DOT_Z_DOT": 91707.12
                         }
-                    ],
-                    "id": 965484612648199
+                    ]
                 }
-            ],
-            "id": 520781456084635
+            ]
         },
         {
             "CCSDS_OEM_VERS": 58532.62,
@@ -1438,9 +1361,9 @@
                     "OBJECT_NAME": "0xc",
                     "OBJECT_ID": "0x6",
                     "CENTER_NAME": "0xA",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2012-10-26T15:12:23.353Z",
-                    "TIME_SYSTEM": "0x4",
+                    "TIME_SYSTEM": 4,
                     "START_TIME": "2031-10-18T17:44:46.909Z",
                     "USEABLE_START_TIME": "2015-08-20T20:45:02.517Z",
                     "USEABLE_STOP_TIME": "2001-05-01T05:39:45.555Z",
@@ -1458,8 +1381,7 @@
                             "Z_DOT": 6803.31,
                             "X_DDOT": 13675.13,
                             "Y_DDOT": 31252.97,
-                            "Z_DDOT": 17058.12,
-                            "id": 707931256370340
+                            "Z_DDOT": 17058.12
                         },
                         {
                             "EPOCH": "2039-08-20T20:24:26.246Z",
@@ -1471,14 +1393,13 @@
                             "Z_DOT": 28947.6,
                             "X_DDOT": 2595.4,
                             "Y_DDOT": 95647.66,
-                            "Z_DDOT": 49631.73,
-                            "id": 926454693411717
+                            "Z_DDOT": 49631.73
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2073-09-17T13:22:31.277Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 26502.32,
                             "CY_X": 20113.97,
                             "CY_Y": 17554.3,
@@ -1499,12 +1420,11 @@
                             "CZ_DOT_Z": 4086.82,
                             "CZ_DOT_X_DOT": 90875.97,
                             "CZ_DOT_Y_DOT": 54122.35,
-                            "CZ_DOT_Z_DOT": 92728.9,
-                            "id": 922337531377725
+                            "CZ_DOT_Z_DOT": 92728.9
                         },
                         {
                             "EPOCH": "2030-09-13T11:48:59.252Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 67995.55,
                             "CY_X": 16299.11,
                             "CY_Y": 43040.29,
@@ -1525,20 +1445,18 @@
                             "CZ_DOT_Z": 19666.5,
                             "CZ_DOT_X_DOT": 5292.13,
                             "CZ_DOT_Y_DOT": 81727.89,
-                            "CZ_DOT_Z_DOT": 98952.23,
-                            "id": 970723917395373
+                            "CZ_DOT_Z_DOT": 98952.23
                         }
-                    ],
-                    "id": 800214805122489
+                    ]
                 },
                 {
                     "COMMENT": "0x7",
                     "OBJECT_NAME": "0x7",
                     "OBJECT_ID": "0xA",
                     "CENTER_NAME": "0x6",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2096-08-20T00:18:06.254Z",
-                    "TIME_SYSTEM": "0xA",
+                    "TIME_SYSTEM": 10,
                     "START_TIME": "2003-03-03T15:20:09.326Z",
                     "USEABLE_START_TIME": "2023-08-17T16:56:28.769Z",
                     "USEABLE_STOP_TIME": "2046-06-29T07:43:18.549Z",
@@ -1556,8 +1474,7 @@
                             "Z_DOT": 8367.51,
                             "X_DDOT": 22752.14,
                             "Y_DDOT": 83796.26,
-                            "Z_DDOT": 18821.69,
-                            "id": 396610593033599
+                            "Z_DDOT": 18821.69
                         },
                         {
                             "EPOCH": "2074-11-03T08:01:54.211Z",
@@ -1569,14 +1486,13 @@
                             "Z_DOT": 97598.03,
                             "X_DDOT": 99465.96,
                             "Y_DDOT": 29053.22,
-                            "Z_DDOT": 23346.28,
-                            "id": 477952618772467
+                            "Z_DDOT": 23346.28
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2010-07-19T14:38:16.294Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 61620.92,
                             "CY_X": 3311.03,
                             "CY_Y": 9933.96,
@@ -1597,12 +1513,11 @@
                             "CZ_DOT_Z": 1723.92,
                             "CZ_DOT_X_DOT": 25679.44,
                             "CZ_DOT_Y_DOT": 55915.65,
-                            "CZ_DOT_Z_DOT": 57929.91,
-                            "id": 401219162791187
+                            "CZ_DOT_Z_DOT": 57929.91
                         },
                         {
                             "EPOCH": "2075-07-04T09:17:17.679Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 73536.94,
                             "CY_X": 93619.97,
                             "CY_Y": 98911.14,
@@ -1623,14 +1538,11 @@
                             "CZ_DOT_Z": 61087.45,
                             "CZ_DOT_X_DOT": 33282.27,
                             "CZ_DOT_Y_DOT": 49548.03,
-                            "CZ_DOT_Z_DOT": 44882.27,
-                            "id": 978755312912352
+                            "CZ_DOT_Z_DOT": 44882.27
                         }
-                    ],
-                    "id": 863089302731440
+                    ]
                 }
-            ],
-            "id": 595544783077087
+            ]
         },
         {
             "CCSDS_OEM_VERS": 79603.74,
@@ -1642,9 +1554,9 @@
                     "OBJECT_NAME": "0x9",
                     "OBJECT_ID": "0x5",
                     "CENTER_NAME": "0x8",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "1994-06-22T10:50:45.662Z",
-                    "TIME_SYSTEM": "0x4",
+                    "TIME_SYSTEM": 4,
                     "START_TIME": "2019-01-03T13:02:31.817Z",
                     "USEABLE_START_TIME": "2089-01-28T19:12:43.622Z",
                     "USEABLE_STOP_TIME": "2026-07-14T08:23:05.104Z",
@@ -1662,8 +1574,7 @@
                             "Z_DOT": 59015.13,
                             "X_DDOT": 65929.24,
                             "Y_DDOT": 77952.45,
-                            "Z_DDOT": 38834.49,
-                            "id": 805296791946505
+                            "Z_DDOT": 38834.49
                         },
                         {
                             "EPOCH": "1997-07-01T15:51:26.789Z",
@@ -1675,14 +1586,13 @@
                             "Z_DOT": 87183.41,
                             "X_DDOT": 1425.79,
                             "Y_DDOT": 22218.62,
-                            "Z_DDOT": 97241.55,
-                            "id": 878525888291065
+                            "Z_DDOT": 97241.55
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "1992-04-20T23:02:44.399Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 36149.39,
                             "CY_X": 1491.26,
                             "CY_Y": 6093.23,
@@ -1703,12 +1613,11 @@
                             "CZ_DOT_Z": 60992.17,
                             "CZ_DOT_X_DOT": 44072.09,
                             "CZ_DOT_Y_DOT": 25523.29,
-                            "CZ_DOT_Z_DOT": 29693.05,
-                            "id": 423244174417542
+                            "CZ_DOT_Z_DOT": 29693.05
                         },
                         {
                             "EPOCH": "2090-04-03T23:36:52.656Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 14965.16,
                             "CY_X": 1171.11,
                             "CY_Y": 29487.87,
@@ -1729,20 +1638,18 @@
                             "CZ_DOT_Z": 13958.75,
                             "CZ_DOT_X_DOT": 79425.77,
                             "CZ_DOT_Y_DOT": 6705.49,
-                            "CZ_DOT_Z_DOT": 7769.19,
-                            "id": 711908480433067
+                            "CZ_DOT_Z_DOT": 7769.19
                         }
-                    ],
-                    "id": 520642853570067
+                    ]
                 },
                 {
                     "COMMENT": "0xd",
                     "OBJECT_NAME": "0xc",
                     "OBJECT_ID": "0xd",
                     "CENTER_NAME": "0x5",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2074-05-26T19:43:15.424Z",
-                    "TIME_SYSTEM": "0x0",
+                    "TIME_SYSTEM": 0,
                     "START_TIME": "2014-08-15T10:00:15.767Z",
                     "USEABLE_START_TIME": "2000-08-31T15:23:54.318Z",
                     "USEABLE_STOP_TIME": "2097-07-26T11:47:39.009Z",
@@ -1760,8 +1667,7 @@
                             "Z_DOT": 17491.04,
                             "X_DDOT": 26181.68,
                             "Y_DDOT": 91903.36,
-                            "Z_DDOT": 72859.76,
-                            "id": 422179488082446
+                            "Z_DDOT": 72859.76
                         },
                         {
                             "EPOCH": "2088-07-26T15:49:59.812Z",
@@ -1773,14 +1679,13 @@
                             "Z_DOT": 58158.94,
                             "X_DDOT": 8706.6,
                             "Y_DDOT": 30353.43,
-                            "Z_DDOT": 54204.58,
-                            "id": 656758732379860
+                            "Z_DDOT": 54204.58
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2042-07-20T12:39:51.231Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 40184.91,
                             "CY_X": 33972.82,
                             "CY_Y": 6588.62,
@@ -1801,12 +1706,11 @@
                             "CZ_DOT_Z": 83304.07,
                             "CZ_DOT_X_DOT": 37656.26,
                             "CZ_DOT_Y_DOT": 99664.2,
-                            "CZ_DOT_Z_DOT": 9533.58,
-                            "id": 647204225204723
+                            "CZ_DOT_Z_DOT": 9533.58
                         },
                         {
                             "EPOCH": "2080-08-20T10:49:10.232Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 44174.77,
                             "CY_X": 46139.34,
                             "CY_Y": 43709.56,
@@ -1827,14 +1731,11 @@
                             "CZ_DOT_Z": 34687.25,
                             "CZ_DOT_X_DOT": 34986.4,
                             "CZ_DOT_Y_DOT": 92657.07,
-                            "CZ_DOT_Z_DOT": 77609.33,
-                            "id": 793781630991543
+                            "CZ_DOT_Z_DOT": 77609.33
                         }
-                    ],
-                    "id": 596678645745862
+                    ]
                 }
-            ],
-            "id": 676757489847140
+            ]
         },
         {
             "CCSDS_OEM_VERS": 80320.53,
@@ -1846,9 +1747,9 @@
                     "OBJECT_NAME": "0xB",
                     "OBJECT_ID": "0xB",
                     "CENTER_NAME": "0x7",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2019-06-16T00:39:18.294Z",
-                    "TIME_SYSTEM": "0x0",
+                    "TIME_SYSTEM": 0,
                     "START_TIME": "1991-10-02T05:16:31.188Z",
                     "USEABLE_START_TIME": "2071-04-23T22:19:15.069Z",
                     "USEABLE_STOP_TIME": "2083-10-16T06:31:00.754Z",
@@ -1866,8 +1767,7 @@
                             "Z_DOT": 17951.05,
                             "X_DDOT": 73575.04,
                             "Y_DDOT": 55140.3,
-                            "Z_DDOT": 77485.87,
-                            "id": 468139223158167
+                            "Z_DDOT": 77485.87
                         },
                         {
                             "EPOCH": "2029-12-26T18:26:24.105Z",
@@ -1879,14 +1779,13 @@
                             "Z_DOT": 81448.24,
                             "X_DDOT": 1206,
                             "Y_DDOT": 95261.54,
-                            "Z_DDOT": 27737.86,
-                            "id": 825917408566504
+                            "Z_DDOT": 27737.86
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2097-06-11T07:52:00.369Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 69362.53,
                             "CY_X": 83185.99,
                             "CY_Y": 72682.62,
@@ -1907,12 +1806,11 @@
                             "CZ_DOT_Z": 30622.05,
                             "CZ_DOT_X_DOT": 8813.57,
                             "CZ_DOT_Y_DOT": 60587.67,
-                            "CZ_DOT_Z_DOT": 65300.35,
-                            "id": 180285359124942
+                            "CZ_DOT_Z_DOT": 65300.35
                         },
                         {
                             "EPOCH": "2080-02-16T07:42:05.577Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 72055.1,
                             "CY_X": 4934.87,
                             "CY_Y": 70414.47,
@@ -1933,20 +1831,18 @@
                             "CZ_DOT_Z": 16354.2,
                             "CZ_DOT_X_DOT": 14544.36,
                             "CZ_DOT_Y_DOT": 89766.29,
-                            "CZ_DOT_Z_DOT": 8546.82,
-                            "id": 690814224529623
+                            "CZ_DOT_Z_DOT": 8546.82
                         }
-                    ],
-                    "id": 180026388059036
+                    ]
                 },
                 {
                     "COMMENT": "0x4",
                     "OBJECT_NAME": "0xc",
                     "OBJECT_ID": "0xe",
                     "CENTER_NAME": "0xA",
-                    "REF_FRAME": null,
+                    "REF_FRAME": 0,
                     "REF_FRAME_EPOCH": "2052-08-24T14:35:04.654Z",
-                    "TIME_SYSTEM": "0xA",
+                    "TIME_SYSTEM": 10,
                     "START_TIME": "2063-03-14T08:11:40.039Z",
                     "USEABLE_START_TIME": "2009-05-11T09:48:45.036Z",
                     "USEABLE_STOP_TIME": "1995-02-16T03:28:13.411Z",
@@ -1964,8 +1860,7 @@
                             "Z_DOT": 7499.85,
                             "X_DDOT": 16830.66,
                             "Y_DDOT": 29664.41,
-                            "Z_DDOT": 42833.89,
-                            "id": 488925337131716
+                            "Z_DDOT": 42833.89
                         },
                         {
                             "EPOCH": "2033-01-15T00:29:16.437Z",
@@ -1977,14 +1872,13 @@
                             "Z_DOT": 73754.43,
                             "X_DDOT": 35875.82,
                             "Y_DDOT": 20242.77,
-                            "Z_DDOT": 32627.27,
-                            "id": 811226067056250
+                            "Z_DDOT": 32627.27
                         }
                     ],
                     "COVARIANCE_MATRIX_LINES": [
                         {
                             "EPOCH": "2006-05-31T08:32:30.363Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 56923.32,
                             "CY_X": 75959.53,
                             "CY_Y": 92489.82,
@@ -2005,12 +1899,11 @@
                             "CZ_DOT_Z": 55670.95,
                             "CZ_DOT_X_DOT": 44888.91,
                             "CZ_DOT_Y_DOT": 94783.9,
-                            "CZ_DOT_Z_DOT": 20112.92,
-                            "id": 194262956423148
+                            "CZ_DOT_Z_DOT": 20112.92
                         },
                         {
                             "EPOCH": "2072-03-14T20:52:52.566Z",
-                            "COV_REF_FRAME": null,
+                            "COV_REF_FRAME": 0,
                             "CX_X": 11903.78,
                             "CY_X": 84898.08,
                             "CY_Y": 33410.07,
@@ -2031,14 +1924,11 @@
                             "CZ_DOT_Z": 51095.92,
                             "CZ_DOT_X_DOT": 72058.5,
                             "CZ_DOT_Y_DOT": 28926.8,
-                            "CZ_DOT_Z_DOT": 51166.92,
-                            "id": 825161285114201
+                            "CZ_DOT_Z_DOT": 51166.92
                         }
-                    ],
-                    "id": 372982695117151
+                    ]
                 }
-            ],
-            "id": 972043856704579
+            ]
         }
     ]
 }
