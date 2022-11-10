@@ -36,7 +36,9 @@ const buildStatement = async (tableName: string, standardsSchema: JSONSchema4, q
             for (let r = 0; r < records.length; r++) {
                 let n = new parentClass[tableName];
                 for (let x in records[r]) {
-                    n[x] = records[r];
+                    if (n[x]) {
+                        n[x] = records[r][x];
+                    }
                 }
                 standardCollection.RECORDS.push(n);
             }
