@@ -104,7 +104,6 @@ describe('Test Data Entry', () => {
         let total = 10;
 
         for (standard in standards) {
-            if (standard !== "CDM") continue;
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
