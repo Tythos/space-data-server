@@ -8,9 +8,9 @@ const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "u
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 
 const knexConnection: any = knex(databaseConfig);
-let debugProperties: boolean = true;
-const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: KeyValueDataStructure, parentArray: any, parentObject?: any, tableQuery?: any) => {
-
+const debugProperties: boolean = false;
+const toRemoveDefault: Array<string> = ["created_at", "updated_at"];
+const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: KeyValueDataStructure, parentArray: any, tableQuery?: any, toRemove: Array<string> = toRemoveDefault) => {
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);
         for (let x in query) {
@@ -27,7 +27,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
     for (let r = 0; r < records.length; r++) {
         let n = new parentClass[tableName];
         for (let x in records[r]) {
-            if (n.hasOwnProperty(x) || debugProperties) {
+            if (!~toRemove.indexOf(x)) {
                 n[x] = records[r][x];
             }
         }
@@ -47,19 +47,34 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
         if (pType === "array") {
             for (let p = 0; p < parentArray.length; p++) {
                 let where: KeyValueDataStructure = {};
-                where[`${tableName}_id`] = parentArray[p].id;
-                parentArray[p][prop] = await buildStatement(parentClass, refRootName($$ref), standardsSchema, { select: "*", where }/*TODO subquery*/, [])
+                const fID: string = `${tableName}_id`;
+                where[fID] = parentArray[p].id;
+                parentArray[p][prop] =
+                    await buildStatement(
+                        parentClass,
+                        refRootName($$ref),
+                        standardsSchema,
+                        { select: "*", where }/*TODO subquery*/,
+                        [],
+                        null,
+                        [fID, ...toRemoveDefault]);
             }
         } else if (pType === "object") {
             for (let p = 0; p < parentArray.length; p++) {
                 let where: KeyValueDataStructure = {};
                 where[`id`] = parentArray[p][prop];
-                parentArray[p][prop] = (await buildStatement(parentClass, refRootName($$ref), standardsSchema, { select: "*", where, first: "" }/*TODO subquery*/, []))[0];
+                parentArray[p][prop] = (
+                    await buildStatement(
+                        parentClass,
+                        refRootName($$ref),
+                        standardsSchema,
+                        { select: "*", where, first: "" }/*TODO subquery*/,
+                        [], null, toRemoveDefault)
+                )[0];
 
             }
         }
     }
-
     return parentArray;
 }
 const read = async (standard: string, standardsSchema: JSONSchema4, query: KeyValueDataStructure = { select: "*" }) => {

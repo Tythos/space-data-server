@@ -104,25 +104,25 @@ describe('Test Data Entry', () => {
         let total = 10;
         let returnCount = 0;
         for (standard in standards) {
-            //if (standard !== "OPM") continue
+            if (standard !== "OPM") continue
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
             let parentClass: any = standards[pClassName];
             let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
-            let standardCollection = new parentClass[cClassName];
+            let input = new parentClass[cClassName];
             for (let i = 0; i < total; i++) {
                 let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
-                standardCollection.RECORDS.push(newObject);
+                input.RECORDS.push(newObject);
             }
-            writeFileSync(`.tmp/${standard}.input.json`, JSON.stringify(standardCollection, null, 4));
-            await create(tableName, standardCollection.RECORDS, currentStandard);
 
-            const results = await read(standard, currentStandard);
-            console.log("TABLENAME", tableName, results.RECORDS.length);
-            writeFileSync(`.tmp/${tableName}.results.json`, JSON.stringify(results, null, 4));
-            returnCount += results.RECORDS.length;
+            writeFileSync(`.tmp/${standard}.input.json`, JSON.stringify(input, null, 4));
+            await create(tableName, input.RECORDS, currentStandard);
+
+            const output = await read(standard, currentStandard);
+            writeFileSync(`.tmp/${tableName}.results.json`, JSON.stringify(output, null, 4));
+            expect(input).toMatchObject(output);
         }
-        expect(returnCount).toEqual(total * Object.keys(standards).length);
+
     })
 });
