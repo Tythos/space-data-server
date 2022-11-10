@@ -103,9 +103,8 @@ describe('Test Data Entry', () => {
     test('Enter Data For Each Data Type', async () => {
         let standard: keyof typeof standards;
         let total = 10;
-        let returnCount = 0;
+
         for (standard in standards) {
-            //if (standard !== "OPM") continue
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
