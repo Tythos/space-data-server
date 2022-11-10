@@ -13,8 +13,23 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);
         for (let x in query) {
-            tableQuery[x](query[x]);
+            if (Array.isArray(query[x])) {
+                tableQuery[x].apply(tableQuery, query[x]);
+            } else {
+                tableQuery[x](query[x]);
+            }
         }
+    }
+    console.log(tableQuery.toString());
+    const records = await tableQuery;
+    for (let r = 0; r < records.length; r++) {
+        let n = new parentClass[tableName];
+        for (let x in records[r]) {
+            if (n[x]) {
+                n[x] = records[r][x];
+            }
+        }
+        parentArray.push(n);
     }
     const foreignProperties: KeyValueDataStructure = {};
     //determine foreignKey requirements for this level in object
@@ -32,17 +47,14 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
         foreignProperties[refRootName($$ref)].fields[prop] = {};
         */
         if (pType === "array") {
-            let records = await tableQuery;
-            for (let r = 0; r < records.length; r++) {
-                let n = new parentClass[tableName];
-                for (let x in records[r]) {
-                    if (n[x]) {
-                        n[x] = records[r][x];
-                    }
-                }
-                parentArray.push(n);
+            for (let p = 0; p < parentArray.length; p++) {
+                let where: KeyValueDataStructure = {};
+                where[`${tableName}_id`] = parentArray[p].id;
+                parentArray[p][prop] = await buildStatement(parentClass, refRootName($$ref), standardsSchema, { where }/*TODO subquery*/, [])
             }
-            tableQuery = console.log(refRootName($$ref), prop)
+            //console.log("array", refRootName($$ref), prop);
+        } else if (pType === "object") {
+            //console.log("object", refRootName($$ref), prop);
         }
     }
 

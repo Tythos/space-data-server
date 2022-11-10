@@ -1,7 +1,7 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { fTCheck, generateDatabase, refRootName, resolver } from "../lib/database/generateTables";
 import knex from "knex";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFile, writeFileSync } from "fs";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
 import * as standards from "../lib/standards/standards";
 import { faker } from '@faker-js/faker';
@@ -82,7 +82,7 @@ describe('Test Data Entry', () => {
                 newObject[x] = buildObject(resolvedProp.properties, parentClass, refRootName(resolvedProp.$$ref), jsonSchema);
             } else if (classProperties[x]?.type === "array") {
                 newObject[x] = [];
-                for (let i = 0; i < 1; i++) {
+                for (let i = 0; i < 10; i++) {
                     let aObject = !fTCheck(resolvedProp?.type) ?
                         buildProp(resolvedProp, x) :
                         buildObject(
@@ -102,7 +102,7 @@ describe('Test Data Entry', () => {
         let total = 10;
         let returnCount = 0;
         for (standard in standards) {
-            //if (standard !== "CDM") continue
+            if (standard !== "OEM") continue
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
@@ -113,30 +113,29 @@ describe('Test Data Entry', () => {
                 let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
                 standardCollection.RECORDS.push(newObject);
             }
+            writeFileSync(`.tmp/${standard}.input.json`, JSON.stringify(standardCollection, null, 4));
             await create(tableName, standardCollection.RECORDS, currentStandard);
-            let resultQuery = await knexConnection(tableName).select("*");
-            writeFileSync(`.tmp/${standard}.results.json`, JSON.stringify(resultQuery, null, 4));
 
             const results = await read(standard, currentStandard);
-            console.log("TABLENAME", tableName, resultQuery.length, results.RECORDS.length);
-
+            console.log("TABLENAME", tableName, results.RECORDS.length);
+            writeFileSync(`.tmp/${tableName}.results.json`, JSON.stringify(results, null, 4));
             /*console.log("ephemBplca", await knexConnection("ephemerisDataBlock").whereIn("OEM_id", resultQuery.map((e: any) => e.id)));
-              if (standard.indexOf("CDM") === 0) {
-                  let foreignKeys = ["OBJECT1", "OBJECT2"];
-                  let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
-                  let CDMObjectsHash: KeyValueDataStructure = {};
-                  for (let c = 0; c < CDMObjects.length; c++) {
-                      CDMObjectsHash[CDMObjects[c].id] = CDMObjects[c];
-                  }
-                  for (let t = 0; t < resultQuery.length; t++) {
-                      //Build Objects From Schemas Here!!
-                      for (let fK = 0; fK < foreignKeys.length; fK++) {
-                          resultQuery[t][foreignKeys[fK]] = CDMObjectsHash[resultQuery[t][foreignKeys[fK]]];
-                      }
-                  }
-              }*/
-            returnCount += resultQuery.length;
+               if (standard.indexOf("CDM") === 0) {
+                   let foreignKeys = ["OBJECT1", "OBJECT2"];
+                   let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
+                   let CDMObjectsHash: KeyValueDataStructure = {};
+                   for (let c = 0; c < CDMObjects.length; c++) {
+                       CDMObjectsHash[CDMObjects[c].id] = CDMObjects[c];
+                   }
+                   for (let t = 0; t < resultQuery.length; t++) {
+                       //Build Objects From Schemas Here!!
+                       for (let fK = 0; fK < foreignKeys.length; fK++) {
+                           resultQuery[t][foreignKeys[fK]] = CDMObjectsHash[resultQuery[t][foreignKeys[fK]]];
+                       }
+                   }
+               }*/
+            returnCount += 10;// results.RECORDS.length;
         }
-        expect(returnCount).toEqual(total * Object.keys(standards).length);
+        expect(returnCount).toEqual(10);//total * Object.keys(standards).length);
     })
 });

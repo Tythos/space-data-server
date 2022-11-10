@@ -7,6 +7,7 @@ import databaseConfig from "@/lib/database/config/config"
 import knex from "knex";
 
 const knexConnection: any = knex(databaseConfig);
+let pageSize = 10;
 
 const insertData = async (
     tableName: string,
@@ -15,7 +16,7 @@ const insertData = async (
     resultObject: KeyValueDataStructure = {},
     tableTopo: any = [],
     runQuery: boolean = true): Promise<any> => {
-        
+
     let nTables: Array<string> | null = null;
     if (!tableName) {
         throw Error(`Missing Table Name for Data Like: ${JSON.stringify(queryArray[0], null, 4)}`);
@@ -76,7 +77,10 @@ const insertData = async (
                     nTables = nTables.length ? nTables : [tableName];
                     for (let nT = 0; nT < nTables.length; nT++) {
                         const nTable = nTables[nT];
-                        await trx(nTable).insert(resultObject[nTable]);
+                        const total = resultObject[nTable].length;
+                        for (let page = 0; page < total; page += pageSize) {
+                            await trx(nTable).insert(resultObject[nTable].slice(page, page + pageSize));
+                        }
                         resultObject[nTable] = [];
                     }
                 });
@@ -87,7 +91,7 @@ const insertData = async (
     }
     if (runQuery) {
         //TODO Global PageSize
-        let pageSize = 100;
+
         let total = queryArray.length;
         for (let page = 0; page < total; page += pageSize) {
             await queryLoop(queryArray.slice(page, page + pageSize), page);

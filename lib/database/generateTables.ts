@@ -107,10 +107,13 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
     tSchema.createTable(rootTableName, function (table: any) {
 
         table.integer("id").notNullable().unsigned().primary();
+        table.index('id');
         table.timestamps(true, true);
         if (arrayParentReference[rootTableName]) {
             const fProperty = `${arrayParentReference[rootTableName]}_id`;
+            console.log(fProperty)
             table.integer(fProperty).unsigned();
+            table.index(fProperty);
             table
                 .foreign(fProperty)
                 .references(`${arrayParentReference[rootTableName]}.id`)
@@ -145,6 +148,7 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
                 let { type, tableName } = foreignKeys[rootTableName][fProperty];
                 if (type === "object" && !arrayParentReference[tableName]) {
                     table.integer(fProperty).unsigned();
+                    table.index(fProperty);
                     table
                         .foreign(fProperty)
                         .references(`${tableName}.id`)

@@ -28,6 +28,10 @@ create table `CAT` (
  `id`));
 
 
+create index `cat_id_index` on `CAT` (
+ `id`);
+
+
 create table `OMM` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
@@ -96,6 +100,10 @@ create table `OMM` (
  `id`));
 
 
+create index `omm_id_index` on `OMM` (
+ `id`);
+
+
 create table `CDM` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
@@ -135,6 +143,18 @@ create table `CDM` (
  `id`) on delete CASCADE,
  primary key (
  `id`));
+
+
+create index `cdm_id_index` on `CDM` (
+ `id`);
+
+
+create index `cdm_object1_index` on `CDM` (
+ `OBJECT1`);
+
+
+create index `cdm_object2_index` on `CDM` (
+ `OBJECT2`);
 
 
 create table `CDMObject` (
@@ -233,6 +253,10 @@ create table `CDMObject` (
  `id`));
 
 
+create index `cdmobject_id_index` on `CDMObject` (
+ `id`);
+
+
 create table `OPM` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
@@ -298,6 +322,10 @@ create table `OPM` (
  `id`));
 
 
+create index `opm_id_index` on `OPM` (
+ `id`);
+
+
 create table `maneuverParameters` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
@@ -317,6 +345,14 @@ create table `maneuverParameters` (
  `id`));
 
 
+create index `maneuverparameters_id_index` on `maneuverParameters` (
+ `id`);
+
+
+create index `maneuverparameters_opm_id_index` on `maneuverParameters` (
+ `OPM_id`);
+
+
 create table `OEM` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
@@ -326,6 +362,10 @@ create table `OEM` (
  `ORIGINATOR` text,
  primary key (
  `id`));
+
+
+create index `oem_id_index` on `OEM` (
+ `id`);
 
 
 create table `ephemerisDataBlock` (
@@ -353,6 +393,14 @@ create table `ephemerisDataBlock` (
  `id`));
 
 
+create index `ephemerisdatablock_id_index` on `ephemerisDataBlock` (
+ `id`);
+
+
+create index `ephemerisdatablock_oem_id_index` on `ephemerisDataBlock` (
+ `OEM_id`);
+
+
 create table `ephemerisDataLine` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
@@ -373,6 +421,14 @@ create table `ephemerisDataLine` (
  `id`),
  primary key (
  `id`));
+
+
+create index `ephemerisdataline_id_index` on `ephemerisDataLine` (
+ `id`);
+
+
+create index `ephemerisdataline_ephemerisdatablock_id_index` on `ephemerisDataLine` (
+ `ephemerisDataBlock_id`);
 
 
 create table `covarianceMatrixLine` (
@@ -407,4 +463,12 @@ create table `covarianceMatrixLine` (
  `ephemerisDataBlock_id`) references `ephemerisDataBlock`(
  `id`),
  primary key (
- `id`))
+ `id`));
+
+
+create index `covariancematrixline_id_index` on `covarianceMatrixLine` (
+ `id`);
+
+
+create index `covariancematrixline_ephemerisdatablock_id_index` on `covarianceMatrixLine` (
+ `ephemerisDataBlock_id`)
