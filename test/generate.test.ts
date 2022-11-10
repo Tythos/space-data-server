@@ -117,8 +117,8 @@ describe('Test Data Entry', () => {
             let resultQuery = await knexConnection(tableName).select("*");
             writeFileSync(`.tmp/${standard}.results.json`, JSON.stringify(resultQuery, null, 4));
 
-            const results = await read(tableName, currentStandard);
-            console.log("TABLENAME", tableName, resultQuery.length, results.length);
+            const results = await read(standard, currentStandard);
+            console.log("TABLENAME", tableName, resultQuery.length, results.RECORDS.length);
 
             /*console.log("ephemBplca", await knexConnection("ephemerisDataBlock").whereIn("OEM_id", resultQuery.map((e: any) => e.id)));
               if (standard.indexOf("CDM") === 0) {
