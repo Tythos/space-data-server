@@ -11,6 +11,7 @@ import databaseConfig, { filename as databaseFilename } from "@/lib/database/con
 const sqlfilename = "./test/output/standards.sql";
 import create from "@/lib/database/create";
 import read from "@/lib/database/read";
+import { execSync } from "child_process";
 
 const fDT = faker.datatype;
 
@@ -19,6 +20,7 @@ let knexConnection: any;
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON);
 
 beforeAll(async () => {
+    execSync("rm -rf .tmp/*.json");
     knexConnection = knex(databaseConfig);
     await generateDatabase(standardsArray, databaseFilename, sqlfilename, knexConnection);
 });
@@ -82,7 +84,7 @@ describe('Test Data Entry', () => {
                 newObject[x] = buildObject(resolvedProp.properties, parentClass, refRootName(resolvedProp.$$ref), jsonSchema);
             } else if (classProperties[x]?.type === "array") {
                 newObject[x] = [];
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 2; i++) {
                     let aObject = !fTCheck(resolvedProp?.type) ?
                         buildProp(resolvedProp, x) :
                         buildObject(
@@ -102,7 +104,7 @@ describe('Test Data Entry', () => {
         let total = 10;
         let returnCount = 0;
         for (standard in standards) {
-            if (standard !== "OEM") continue
+            //if (standard !== "OPM") continue
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
@@ -119,23 +121,8 @@ describe('Test Data Entry', () => {
             const results = await read(standard, currentStandard);
             console.log("TABLENAME", tableName, results.RECORDS.length);
             writeFileSync(`.tmp/${tableName}.results.json`, JSON.stringify(results, null, 4));
-            /*console.log("ephemBplca", await knexConnection("ephemerisDataBlock").whereIn("OEM_id", resultQuery.map((e: any) => e.id)));
-               if (standard.indexOf("CDM") === 0) {
-                   let foreignKeys = ["OBJECT1", "OBJECT2"];
-                   let CDMObjects = await knexConnection("CDMObject").whereIn("id", resultQuery.map((e: any) => foreignKeys.map(fK => e[fK])).flat());
-                   let CDMObjectsHash: KeyValueDataStructure = {};
-                   for (let c = 0; c < CDMObjects.length; c++) {
-                       CDMObjectsHash[CDMObjects[c].id] = CDMObjects[c];
-                   }
-                   for (let t = 0; t < resultQuery.length; t++) {
-                       //Build Objects From Schemas Here!!
-                       for (let fK = 0; fK < foreignKeys.length; fK++) {
-                           resultQuery[t][foreignKeys[fK]] = CDMObjectsHash[resultQuery[t][foreignKeys[fK]]];
-                       }
-                   }
-               }*/
-            returnCount += 10;// results.RECORDS.length;
+            returnCount += results.RECORDS.length;
         }
-        expect(returnCount).toEqual(10);//total * Object.keys(standards).length);
+        expect(returnCount).toEqual(total * Object.keys(standards).length);
     })
 });

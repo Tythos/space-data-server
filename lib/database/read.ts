@@ -8,8 +8,9 @@ const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "u
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 
 const knexConnection: any = knex(databaseConfig);
-
+let debugProperties: boolean = true;
 const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: KeyValueDataStructure, parentArray: any, parentObject?: any, tableQuery?: any) => {
+
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);
         for (let x in query) {
@@ -20,12 +21,13 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
             }
         }
     }
-    console.log(tableQuery.toString());
-    const records = await tableQuery;
+
+    const records: any = await tableQuery;
+
     for (let r = 0; r < records.length; r++) {
         let n = new parentClass[tableName];
         for (let x in records[r]) {
-            if (n[x]) {
+            if (n.hasOwnProperty(x) || debugProperties) {
                 n[x] = records[r][x];
             }
         }
@@ -40,21 +42,21 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
 
     for (let prop in tableDefinition.properties) {
         const { type: pType } = tableDefinition.properties[prop];
-        const { type, $$ref } = resolver(tableDefinition.properties[prop], standardsSchema);
+        const { $$ref } = resolver(tableDefinition.properties[prop], standardsSchema);
 
-        /*
-        foreignProperties[refRootName($$ref)] = foreignProperties[refRootName($$ref)] || { fields: {}, type, pType };
-        foreignProperties[refRootName($$ref)].fields[prop] = {};
-        */
         if (pType === "array") {
             for (let p = 0; p < parentArray.length; p++) {
                 let where: KeyValueDataStructure = {};
                 where[`${tableName}_id`] = parentArray[p].id;
-                parentArray[p][prop] = await buildStatement(parentClass, refRootName($$ref), standardsSchema, { where }/*TODO subquery*/, [])
+                parentArray[p][prop] = await buildStatement(parentClass, refRootName($$ref), standardsSchema, { select: "*", where }/*TODO subquery*/, [])
             }
-            //console.log("array", refRootName($$ref), prop);
         } else if (pType === "object") {
-            //console.log("object", refRootName($$ref), prop);
+            for (let p = 0; p < parentArray.length; p++) {
+                let where: KeyValueDataStructure = {};
+                where[`id`] = parentArray[p][prop];
+                parentArray[p][prop] = (await buildStatement(parentClass, refRootName($$ref), standardsSchema, { select: "*", where, first: "" }/*TODO subquery*/, []))[0];
+
+            }
         }
     }
 

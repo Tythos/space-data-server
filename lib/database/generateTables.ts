@@ -111,7 +111,6 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
         table.timestamps(true, true);
         if (arrayParentReference[rootTableName]) {
             const fProperty = `${arrayParentReference[rootTableName]}_id`;
-            console.log(fProperty)
             table.integer(fProperty).unsigned();
             table.index(fProperty);
             table
