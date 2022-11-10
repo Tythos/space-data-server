@@ -9,7 +9,7 @@ import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 
 const knexConnection: any = knex(databaseConfig);
 
-const buildStatement = async (tableName: string, standardsSchema: JSONSchema4, query: KeyValueDataStructure, standardCollection: any, parentClass: any, tableQuery?: any) => {
+const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: KeyValueDataStructure, parentArray: any, parentObject?: any, tableQuery?: any) => {
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);
         for (let x in query) {
@@ -40,13 +40,13 @@ const buildStatement = async (tableName: string, standardsSchema: JSONSchema4, q
                         n[x] = records[r][x];
                     }
                 }
-                standardCollection.RECORDS.push(n);
+                parentArray.push(n);
             }
             tableQuery = console.log(refRootName($$ref), prop)
         }
     }
 
-    return standardCollection;
+    return parentArray;
 }
 const read = async (standard: string, standardsSchema: JSONSchema4, query: KeyValueDataStructure = { select: "*" }) => {
 
@@ -57,9 +57,9 @@ const read = async (standard: string, standardsSchema: JSONSchema4, query: KeyVa
     let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
     let standardCollection = new parentClass[cClassName];
 
-    const masterTableQuery: any = buildStatement(tableName, standardsSchema, query, standardCollection, parentClass);
+    await buildStatement(parentClass, tableName, standardsSchema, query, standardCollection.RECORDS);
 
-    return await masterTableQuery;
+    return standardCollection;
 }
 
 export default read;
