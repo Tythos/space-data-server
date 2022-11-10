@@ -5,6 +5,7 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
   roots: ["./test", "./lib"],
+  modulePathIgnorePatterns:["./test/output/data/"],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: "<rootDir>",
   }),
