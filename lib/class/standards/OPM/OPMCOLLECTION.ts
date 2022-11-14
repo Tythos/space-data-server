@@ -2,13 +2,13 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { OPM, OPMT } from './OPM';
+import { OPM, OPMT } from './OPM.js';
 
 
-export class OPMCOLLECTION {
+export class OPMCOLLECTION implements flatbuffers.IUnpackableObject<OPMCOLLECTIONT> {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
-__init(i:number, bb:flatbuffers.ByteBuffer):OPMCOLLECTION {
+  __init(i:number, bb:flatbuffers.ByteBuffer):OPMCOLLECTION {
   this.bb_pos = i;
   this.bb = bb;
   return this;
@@ -28,7 +28,7 @@ RECORDS(index: number, obj?:OPM):OPM|null {
   return offset ? (obj || new OPM()).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
 }
 
-RECORDSLength():number {
+RECORDS_Length():number {
   const offset = this.bb!.__offset(this.bb_pos, 4);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 }
@@ -37,11 +37,11 @@ static startOPMCOLLECTION(builder:flatbuffers.Builder) {
   builder.startObject(1);
 }
 
-static addRECORDS(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
+static add_RECORDS(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, RECORDSOffset, 0);
 }
 
-static createRECORDSVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
+static create_RECORDS_Vector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
   builder.startVector(4, data.length, 4);
   for (let i = data.length - 1; i >= 0; i--) {
     builder.addOffset(data[i]!);
@@ -49,7 +49,7 @@ static createRECORDSVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[
   return builder.endVector();
 }
 
-static startRECORDSVector(builder:flatbuffers.Builder, numElems:number) {
+static start_RECORDS_Vector(builder:flatbuffers.Builder, numElems:number) {
   builder.startVector(4, numElems, 4);
 }
 
@@ -60,30 +60,30 @@ static endOPMCOLLECTION(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createOPMCOLLECTION(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset):flatbuffers.Offset {
   OPMCOLLECTION.startOPMCOLLECTION(builder);
-  OPMCOLLECTION.addRECORDS(builder, RECORDSOffset);
+  OPMCOLLECTION.add_RECORDS(builder, RECORDSOffset);
   return OPMCOLLECTION.endOPMCOLLECTION(builder);
 }
 
 unpack(): OPMCOLLECTIONT {
   return new OPMCOLLECTIONT(
-    this.bb!.createObjList(this.RECORDS.bind(this), this.RECORDSLength())
+    this.bb!.createObjList<OPM, OPMT>(this.RECORDS.bind(this), this.RECORDS_Length())
   );
 }
 
 
 unpackTo(_o: OPMCOLLECTIONT): void {
-  _o.RECORDS = this.bb!.createObjList(this.RECORDS.bind(this), this.RECORDSLength());
+  _o.RECORDS = this.bb!.createObjList<OPM, OPMT>(this.RECORDS.bind(this), this.RECORDS_Length());
 }
 }
 
-export class OPMCOLLECTIONT {
+export class OPMCOLLECTIONT implements flatbuffers.IGeneratedObject {
 constructor(
   public RECORDS: (OPMT)[] = []
 ){}
 
 
 pack(builder:flatbuffers.Builder): flatbuffers.Offset {
-  const RECORDS = OPMCOLLECTION.createRECORDSVector(builder, builder.createObjectOffsetList(this.RECORDS));
+  const RECORDS = OPMCOLLECTION.create_RECORDS_Vector(builder, builder.createObjectOffsetList(this.RECORDS));
 
   return OPMCOLLECTION.createOPMCOLLECTION(builder,
     RECORDS

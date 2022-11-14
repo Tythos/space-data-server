@@ -2,17 +2,17 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { covarianceMethod } from './covarianceMethod';
-import { maneuverableType } from './maneuverableType';
-import { objectNumber } from './objectNumber';
-import { objectType } from './objectType';
-import { referenceFrame } from './referenceFrame';
+import { covarianceMethod } from './covarianceMethod.js';
+import { maneuverableType } from './maneuverableType.js';
+import { objectNumber } from './objectNumber.js';
+import { objectType } from './objectType.js';
+import { referenceFrame } from './referenceFrame.js';
 
 
-export class CDMObject {
+export class CDMObject implements flatbuffers.IUnpackableObject<CDMObjectT> {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
-__init(i:number, bb:flatbuffers.ByteBuffer):CDMObject {
+  __init(i:number, bb:flatbuffers.ByteBuffer):CDMObject {
   this.bb_pos = i;
   this.bb = bb;
   return this;
@@ -499,355 +499,355 @@ static startCDMObject(builder:flatbuffers.Builder) {
   builder.startObject(88);
 }
 
-static addCOMMENT(builder:flatbuffers.Builder, COMMENTOffset:flatbuffers.Offset) {
+static add_COMMENT(builder:flatbuffers.Builder, COMMENTOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, COMMENTOffset, 0);
 }
 
-static addOBJECT(builder:flatbuffers.Builder, OBJECT:objectNumber) {
+static add_OBJECT(builder:flatbuffers.Builder, OBJECT:objectNumber) {
   builder.addFieldInt8(1, OBJECT, objectNumber.OBJECT1);
 }
 
-static addOBJECT_DESIGNATOR(builder:flatbuffers.Builder, OBJECT_DESIGNATOROffset:flatbuffers.Offset) {
+static add_OBJECT_DESIGNATOR(builder:flatbuffers.Builder, OBJECT_DESIGNATOROffset:flatbuffers.Offset) {
   builder.addFieldOffset(2, OBJECT_DESIGNATOROffset, 0);
 }
 
-static addCATALOG_NAME(builder:flatbuffers.Builder, CATALOG_NAMEOffset:flatbuffers.Offset) {
+static add_CATALOG_NAME(builder:flatbuffers.Builder, CATALOG_NAMEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(3, CATALOG_NAMEOffset, 0);
 }
 
-static addOBJECT_NAME(builder:flatbuffers.Builder, OBJECT_NAMEOffset:flatbuffers.Offset) {
+static add_OBJECT_NAME(builder:flatbuffers.Builder, OBJECT_NAMEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(4, OBJECT_NAMEOffset, 0);
 }
 
-static addINTERNATIONAL_DESIGNATOR(builder:flatbuffers.Builder, INTERNATIONAL_DESIGNATOROffset:flatbuffers.Offset) {
+static add_INTERNATIONAL_DESIGNATOR(builder:flatbuffers.Builder, INTERNATIONAL_DESIGNATOROffset:flatbuffers.Offset) {
   builder.addFieldOffset(5, INTERNATIONAL_DESIGNATOROffset, 0);
 }
 
-static addOBJECT_TYPE(builder:flatbuffers.Builder, OBJECT_TYPE:objectType) {
+static add_OBJECT_TYPE(builder:flatbuffers.Builder, OBJECT_TYPE:objectType) {
   builder.addFieldInt8(6, OBJECT_TYPE, objectType.PAYLOAD);
 }
 
-static addOPERATOR_CONTACT_POSITION(builder:flatbuffers.Builder, OPERATOR_CONTACT_POSITIONOffset:flatbuffers.Offset) {
+static add_OPERATOR_CONTACT_POSITION(builder:flatbuffers.Builder, OPERATOR_CONTACT_POSITIONOffset:flatbuffers.Offset) {
   builder.addFieldOffset(7, OPERATOR_CONTACT_POSITIONOffset, 0);
 }
 
-static addOPERATOR_ORGANIZATION(builder:flatbuffers.Builder, OPERATOR_ORGANIZATIONOffset:flatbuffers.Offset) {
+static add_OPERATOR_ORGANIZATION(builder:flatbuffers.Builder, OPERATOR_ORGANIZATIONOffset:flatbuffers.Offset) {
   builder.addFieldOffset(8, OPERATOR_ORGANIZATIONOffset, 0);
 }
 
-static addEPHEMERIS_NAME(builder:flatbuffers.Builder, EPHEMERIS_NAMEOffset:flatbuffers.Offset) {
+static add_EPHEMERIS_NAME(builder:flatbuffers.Builder, EPHEMERIS_NAMEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(9, EPHEMERIS_NAMEOffset, 0);
 }
 
-static addCOVARIANCE_METHOD(builder:flatbuffers.Builder, COVARIANCE_METHOD:covarianceMethod) {
+static add_COVARIANCE_METHOD(builder:flatbuffers.Builder, COVARIANCE_METHOD:covarianceMethod) {
   builder.addFieldInt8(10, COVARIANCE_METHOD, covarianceMethod.CALCULATED);
 }
 
-static addMANEUVERABLE(builder:flatbuffers.Builder, MANEUVERABLE:maneuverableType) {
+static add_MANEUVERABLE(builder:flatbuffers.Builder, MANEUVERABLE:maneuverableType) {
   builder.addFieldInt8(11, MANEUVERABLE, maneuverableType.YES);
 }
 
-static addORBIT_CENTER(builder:flatbuffers.Builder, ORBIT_CENTEROffset:flatbuffers.Offset) {
+static add_ORBIT_CENTER(builder:flatbuffers.Builder, ORBIT_CENTEROffset:flatbuffers.Offset) {
   builder.addFieldOffset(12, ORBIT_CENTEROffset, 0);
 }
 
-static addREF_FRAME(builder:flatbuffers.Builder, REF_FRAME:referenceFrame) {
+static add_REF_FRAME(builder:flatbuffers.Builder, REF_FRAME:referenceFrame) {
   builder.addFieldInt8(13, REF_FRAME, referenceFrame.EME2000);
 }
 
-static addGRAVITY_MODEL(builder:flatbuffers.Builder, GRAVITY_MODELOffset:flatbuffers.Offset) {
+static add_GRAVITY_MODEL(builder:flatbuffers.Builder, GRAVITY_MODELOffset:flatbuffers.Offset) {
   builder.addFieldOffset(14, GRAVITY_MODELOffset, 0);
 }
 
-static addATMOSPHERIC_MODEL(builder:flatbuffers.Builder, ATMOSPHERIC_MODELOffset:flatbuffers.Offset) {
+static add_ATMOSPHERIC_MODEL(builder:flatbuffers.Builder, ATMOSPHERIC_MODELOffset:flatbuffers.Offset) {
   builder.addFieldOffset(15, ATMOSPHERIC_MODELOffset, 0);
 }
 
-static addN_BODY_PERTURBATIONS(builder:flatbuffers.Builder, N_BODY_PERTURBATIONSOffset:flatbuffers.Offset) {
+static add_N_BODY_PERTURBATIONS(builder:flatbuffers.Builder, N_BODY_PERTURBATIONSOffset:flatbuffers.Offset) {
   builder.addFieldOffset(16, N_BODY_PERTURBATIONSOffset, 0);
 }
 
-static addSOLAR_RAD_PRESSURE(builder:flatbuffers.Builder, SOLAR_RAD_PRESSURE:boolean) {
+static add_SOLAR_RAD_PRESSURE(builder:flatbuffers.Builder, SOLAR_RAD_PRESSURE:boolean) {
   builder.addFieldInt8(17, +SOLAR_RAD_PRESSURE, +false);
 }
 
-static addEARTH_TIDES(builder:flatbuffers.Builder, EARTH_TIDES:boolean) {
+static add_EARTH_TIDES(builder:flatbuffers.Builder, EARTH_TIDES:boolean) {
   builder.addFieldInt8(18, +EARTH_TIDES, +false);
 }
 
-static addINTRACK_THRUST(builder:flatbuffers.Builder, INTRACK_THRUST:boolean) {
+static add_INTRACK_THRUST(builder:flatbuffers.Builder, INTRACK_THRUST:boolean) {
   builder.addFieldInt8(19, +INTRACK_THRUST, +false);
 }
 
-static addTIME_LASTOB_START(builder:flatbuffers.Builder, TIME_LASTOB_STARTOffset:flatbuffers.Offset) {
+static add_TIME_LASTOB_START(builder:flatbuffers.Builder, TIME_LASTOB_STARTOffset:flatbuffers.Offset) {
   builder.addFieldOffset(20, TIME_LASTOB_STARTOffset, 0);
 }
 
-static addTIME_LASTOB_END(builder:flatbuffers.Builder, TIME_LASTOB_ENDOffset:flatbuffers.Offset) {
+static add_TIME_LASTOB_END(builder:flatbuffers.Builder, TIME_LASTOB_ENDOffset:flatbuffers.Offset) {
   builder.addFieldOffset(21, TIME_LASTOB_ENDOffset, 0);
 }
 
-static addRECOMMENDED_OD_SPAN(builder:flatbuffers.Builder, RECOMMENDED_OD_SPAN:number) {
+static add_RECOMMENDED_OD_SPAN(builder:flatbuffers.Builder, RECOMMENDED_OD_SPAN:number) {
   builder.addFieldFloat64(22, RECOMMENDED_OD_SPAN, 0.0);
 }
 
-static addACTUAL_OD_SPAN(builder:flatbuffers.Builder, ACTUAL_OD_SPAN:number) {
+static add_ACTUAL_OD_SPAN(builder:flatbuffers.Builder, ACTUAL_OD_SPAN:number) {
   builder.addFieldFloat64(23, ACTUAL_OD_SPAN, 0.0);
 }
 
-static addOBS_AVAILABLE(builder:flatbuffers.Builder, OBS_AVAILABLE:number) {
+static add_OBS_AVAILABLE(builder:flatbuffers.Builder, OBS_AVAILABLE:number) {
   builder.addFieldInt32(24, OBS_AVAILABLE, 0);
 }
 
-static addOBS_USED(builder:flatbuffers.Builder, OBS_USED:number) {
+static add_OBS_USED(builder:flatbuffers.Builder, OBS_USED:number) {
   builder.addFieldInt32(25, OBS_USED, 0);
 }
 
-static addTRACKS_AVAILABLE(builder:flatbuffers.Builder, TRACKS_AVAILABLE:number) {
+static add_TRACKS_AVAILABLE(builder:flatbuffers.Builder, TRACKS_AVAILABLE:number) {
   builder.addFieldInt32(26, TRACKS_AVAILABLE, 0);
 }
 
-static addTRACKS_USED(builder:flatbuffers.Builder, TRACKS_USED:number) {
+static add_TRACKS_USED(builder:flatbuffers.Builder, TRACKS_USED:number) {
   builder.addFieldInt32(27, TRACKS_USED, 0);
 }
 
-static addRESIDUALS_ACCEPTED(builder:flatbuffers.Builder, RESIDUALS_ACCEPTED:number) {
+static add_RESIDUALS_ACCEPTED(builder:flatbuffers.Builder, RESIDUALS_ACCEPTED:number) {
   builder.addFieldFloat64(28, RESIDUALS_ACCEPTED, 0.0);
 }
 
-static addWEIGHTED_RMS(builder:flatbuffers.Builder, WEIGHTED_RMS:number) {
+static add_WEIGHTED_RMS(builder:flatbuffers.Builder, WEIGHTED_RMS:number) {
   builder.addFieldFloat64(29, WEIGHTED_RMS, 0.0);
 }
 
-static addAREA_PC(builder:flatbuffers.Builder, AREA_PC:number) {
+static add_AREA_PC(builder:flatbuffers.Builder, AREA_PC:number) {
   builder.addFieldFloat64(30, AREA_PC, 0.0);
 }
 
-static addAREA_DRG(builder:flatbuffers.Builder, AREA_DRG:number) {
+static add_AREA_DRG(builder:flatbuffers.Builder, AREA_DRG:number) {
   builder.addFieldFloat64(31, AREA_DRG, 0.0);
 }
 
-static addAREA_SRP(builder:flatbuffers.Builder, AREA_SRP:number) {
+static add_AREA_SRP(builder:flatbuffers.Builder, AREA_SRP:number) {
   builder.addFieldFloat64(32, AREA_SRP, 0.0);
 }
 
-static addMASS(builder:flatbuffers.Builder, MASS:number) {
+static add_MASS(builder:flatbuffers.Builder, MASS:number) {
   builder.addFieldFloat64(33, MASS, 0.0);
 }
 
-static addCR_AREA_OVER_MASS(builder:flatbuffers.Builder, CR_AREA_OVER_MASS:number) {
+static add_CR_AREA_OVER_MASS(builder:flatbuffers.Builder, CR_AREA_OVER_MASS:number) {
   builder.addFieldFloat64(34, CR_AREA_OVER_MASS, 0.0);
 }
 
-static addTHRUST_ACCELERATION(builder:flatbuffers.Builder, THRUST_ACCELERATION:number) {
+static add_THRUST_ACCELERATION(builder:flatbuffers.Builder, THRUST_ACCELERATION:number) {
   builder.addFieldFloat64(35, THRUST_ACCELERATION, 0.0);
 }
 
-static addSEDR(builder:flatbuffers.Builder, SEDR:number) {
+static add_SEDR(builder:flatbuffers.Builder, SEDR:number) {
   builder.addFieldFloat64(36, SEDR, 0.0);
 }
 
-static addX(builder:flatbuffers.Builder, X:number) {
+static add_X(builder:flatbuffers.Builder, X:number) {
   builder.addFieldFloat64(37, X, 0.0);
 }
 
-static addY(builder:flatbuffers.Builder, Y:number) {
+static add_Y(builder:flatbuffers.Builder, Y:number) {
   builder.addFieldFloat64(38, Y, 0.0);
 }
 
-static addZ(builder:flatbuffers.Builder, Z:number) {
+static add_Z(builder:flatbuffers.Builder, Z:number) {
   builder.addFieldFloat64(39, Z, 0.0);
 }
 
-static addX_DOT(builder:flatbuffers.Builder, X_DOT:number) {
+static add_X_DOT(builder:flatbuffers.Builder, X_DOT:number) {
   builder.addFieldFloat64(40, X_DOT, 0.0);
 }
 
-static addY_DOT(builder:flatbuffers.Builder, Y_DOT:number) {
+static add_Y_DOT(builder:flatbuffers.Builder, Y_DOT:number) {
   builder.addFieldFloat64(41, Y_DOT, 0.0);
 }
 
-static addZ_DOT(builder:flatbuffers.Builder, Z_DOT:number) {
+static add_Z_DOT(builder:flatbuffers.Builder, Z_DOT:number) {
   builder.addFieldFloat64(42, Z_DOT, 0.0);
 }
 
-static addCR_R(builder:flatbuffers.Builder, CR_R:number) {
+static add_CR_R(builder:flatbuffers.Builder, CR_R:number) {
   builder.addFieldFloat64(43, CR_R, 0.0);
 }
 
-static addCT_R(builder:flatbuffers.Builder, CT_R:number) {
+static add_CT_R(builder:flatbuffers.Builder, CT_R:number) {
   builder.addFieldFloat64(44, CT_R, 0.0);
 }
 
-static addCT_T(builder:flatbuffers.Builder, CT_T:number) {
+static add_CT_T(builder:flatbuffers.Builder, CT_T:number) {
   builder.addFieldFloat64(45, CT_T, 0.0);
 }
 
-static addCN_R(builder:flatbuffers.Builder, CN_R:number) {
+static add_CN_R(builder:flatbuffers.Builder, CN_R:number) {
   builder.addFieldFloat64(46, CN_R, 0.0);
 }
 
-static addCN_T(builder:flatbuffers.Builder, CN_T:number) {
+static add_CN_T(builder:flatbuffers.Builder, CN_T:number) {
   builder.addFieldFloat64(47, CN_T, 0.0);
 }
 
-static addCN_N(builder:flatbuffers.Builder, CN_N:number) {
+static add_CN_N(builder:flatbuffers.Builder, CN_N:number) {
   builder.addFieldFloat64(48, CN_N, 0.0);
 }
 
-static addCRDOT_R(builder:flatbuffers.Builder, CRDOT_R:number) {
+static add_CRDOT_R(builder:flatbuffers.Builder, CRDOT_R:number) {
   builder.addFieldFloat64(49, CRDOT_R, 0.0);
 }
 
-static addCRDOT_T(builder:flatbuffers.Builder, CRDOT_T:number) {
+static add_CRDOT_T(builder:flatbuffers.Builder, CRDOT_T:number) {
   builder.addFieldFloat64(50, CRDOT_T, 0.0);
 }
 
-static addCRDOT_N(builder:flatbuffers.Builder, CRDOT_N:number) {
+static add_CRDOT_N(builder:flatbuffers.Builder, CRDOT_N:number) {
   builder.addFieldFloat64(51, CRDOT_N, 0.0);
 }
 
-static addCRDOT_RDOT(builder:flatbuffers.Builder, CRDOT_RDOT:number) {
+static add_CRDOT_RDOT(builder:flatbuffers.Builder, CRDOT_RDOT:number) {
   builder.addFieldFloat64(52, CRDOT_RDOT, 0.0);
 }
 
-static addCTDOT_R(builder:flatbuffers.Builder, CTDOT_R:number) {
+static add_CTDOT_R(builder:flatbuffers.Builder, CTDOT_R:number) {
   builder.addFieldFloat64(53, CTDOT_R, 0.0);
 }
 
-static addCTDOT_T(builder:flatbuffers.Builder, CTDOT_T:number) {
+static add_CTDOT_T(builder:flatbuffers.Builder, CTDOT_T:number) {
   builder.addFieldFloat64(54, CTDOT_T, 0.0);
 }
 
-static addCTDOT_N(builder:flatbuffers.Builder, CTDOT_N:number) {
+static add_CTDOT_N(builder:flatbuffers.Builder, CTDOT_N:number) {
   builder.addFieldFloat64(55, CTDOT_N, 0.0);
 }
 
-static addCTDOT_RDOT(builder:flatbuffers.Builder, CTDOT_RDOT:number) {
+static add_CTDOT_RDOT(builder:flatbuffers.Builder, CTDOT_RDOT:number) {
   builder.addFieldFloat64(56, CTDOT_RDOT, 0.0);
 }
 
-static addCTDOT_TDOT(builder:flatbuffers.Builder, CTDOT_TDOT:number) {
+static add_CTDOT_TDOT(builder:flatbuffers.Builder, CTDOT_TDOT:number) {
   builder.addFieldFloat64(57, CTDOT_TDOT, 0.0);
 }
 
-static addCNDOT_R(builder:flatbuffers.Builder, CNDOT_R:number) {
+static add_CNDOT_R(builder:flatbuffers.Builder, CNDOT_R:number) {
   builder.addFieldFloat64(58, CNDOT_R, 0.0);
 }
 
-static addCNDOT_T(builder:flatbuffers.Builder, CNDOT_T:number) {
+static add_CNDOT_T(builder:flatbuffers.Builder, CNDOT_T:number) {
   builder.addFieldFloat64(59, CNDOT_T, 0.0);
 }
 
-static addCNDOT_N(builder:flatbuffers.Builder, CNDOT_N:number) {
+static add_CNDOT_N(builder:flatbuffers.Builder, CNDOT_N:number) {
   builder.addFieldFloat64(60, CNDOT_N, 0.0);
 }
 
-static addCNDOT_RDOT(builder:flatbuffers.Builder, CNDOT_RDOT:number) {
+static add_CNDOT_RDOT(builder:flatbuffers.Builder, CNDOT_RDOT:number) {
   builder.addFieldFloat64(61, CNDOT_RDOT, 0.0);
 }
 
-static addCNDOT_TDOT(builder:flatbuffers.Builder, CNDOT_TDOT:number) {
+static add_CNDOT_TDOT(builder:flatbuffers.Builder, CNDOT_TDOT:number) {
   builder.addFieldFloat64(62, CNDOT_TDOT, 0.0);
 }
 
-static addCNDOT_NDOT(builder:flatbuffers.Builder, CNDOT_NDOT:number) {
+static add_CNDOT_NDOT(builder:flatbuffers.Builder, CNDOT_NDOT:number) {
   builder.addFieldFloat64(63, CNDOT_NDOT, 0.0);
 }
 
-static addCDRG_R(builder:flatbuffers.Builder, CDRG_R:number) {
+static add_CDRG_R(builder:flatbuffers.Builder, CDRG_R:number) {
   builder.addFieldFloat64(64, CDRG_R, 0.0);
 }
 
-static addCDRG_T(builder:flatbuffers.Builder, CDRG_T:number) {
+static add_CDRG_T(builder:flatbuffers.Builder, CDRG_T:number) {
   builder.addFieldFloat64(65, CDRG_T, 0.0);
 }
 
-static addCDRG_N(builder:flatbuffers.Builder, CDRG_N:number) {
+static add_CDRG_N(builder:flatbuffers.Builder, CDRG_N:number) {
   builder.addFieldFloat64(66, CDRG_N, 0.0);
 }
 
-static addCDRG_RDOT(builder:flatbuffers.Builder, CDRG_RDOT:number) {
+static add_CDRG_RDOT(builder:flatbuffers.Builder, CDRG_RDOT:number) {
   builder.addFieldFloat64(67, CDRG_RDOT, 0.0);
 }
 
-static addCDRG_TDOT(builder:flatbuffers.Builder, CDRG_TDOT:number) {
+static add_CDRG_TDOT(builder:flatbuffers.Builder, CDRG_TDOT:number) {
   builder.addFieldFloat64(68, CDRG_TDOT, 0.0);
 }
 
-static addCDRG_NDOT(builder:flatbuffers.Builder, CDRG_NDOT:number) {
+static add_CDRG_NDOT(builder:flatbuffers.Builder, CDRG_NDOT:number) {
   builder.addFieldFloat64(69, CDRG_NDOT, 0.0);
 }
 
-static addCDRG_DRG(builder:flatbuffers.Builder, CDRG_DRG:number) {
+static add_CDRG_DRG(builder:flatbuffers.Builder, CDRG_DRG:number) {
   builder.addFieldFloat64(70, CDRG_DRG, 0.0);
 }
 
-static addCSRP_R(builder:flatbuffers.Builder, CSRP_R:number) {
+static add_CSRP_R(builder:flatbuffers.Builder, CSRP_R:number) {
   builder.addFieldFloat64(71, CSRP_R, 0.0);
 }
 
-static addCSRP_T(builder:flatbuffers.Builder, CSRP_T:number) {
+static add_CSRP_T(builder:flatbuffers.Builder, CSRP_T:number) {
   builder.addFieldFloat64(72, CSRP_T, 0.0);
 }
 
-static addCSRP_N(builder:flatbuffers.Builder, CSRP_N:number) {
+static add_CSRP_N(builder:flatbuffers.Builder, CSRP_N:number) {
   builder.addFieldFloat64(73, CSRP_N, 0.0);
 }
 
-static addCSRP_RDOT(builder:flatbuffers.Builder, CSRP_RDOT:number) {
+static add_CSRP_RDOT(builder:flatbuffers.Builder, CSRP_RDOT:number) {
   builder.addFieldFloat64(74, CSRP_RDOT, 0.0);
 }
 
-static addCSRP_TDOT(builder:flatbuffers.Builder, CSRP_TDOT:number) {
+static add_CSRP_TDOT(builder:flatbuffers.Builder, CSRP_TDOT:number) {
   builder.addFieldFloat64(75, CSRP_TDOT, 0.0);
 }
 
-static addCSRP_NDOT(builder:flatbuffers.Builder, CSRP_NDOT:number) {
+static add_CSRP_NDOT(builder:flatbuffers.Builder, CSRP_NDOT:number) {
   builder.addFieldFloat64(76, CSRP_NDOT, 0.0);
 }
 
-static addCSRP_DRG(builder:flatbuffers.Builder, CSRP_DRG:number) {
+static add_CSRP_DRG(builder:flatbuffers.Builder, CSRP_DRG:number) {
   builder.addFieldFloat64(77, CSRP_DRG, 0.0);
 }
 
-static addCSRP_SRP(builder:flatbuffers.Builder, CSRP_SRP:number) {
+static add_CSRP_SRP(builder:flatbuffers.Builder, CSRP_SRP:number) {
   builder.addFieldFloat64(78, CSRP_SRP, 0.0);
 }
 
-static addCTHR_R(builder:flatbuffers.Builder, CTHR_R:number) {
+static add_CTHR_R(builder:flatbuffers.Builder, CTHR_R:number) {
   builder.addFieldFloat64(79, CTHR_R, 0.0);
 }
 
-static addCTHR_T(builder:flatbuffers.Builder, CTHR_T:number) {
+static add_CTHR_T(builder:flatbuffers.Builder, CTHR_T:number) {
   builder.addFieldFloat64(80, CTHR_T, 0.0);
 }
 
-static addCTHR_N(builder:flatbuffers.Builder, CTHR_N:number) {
+static add_CTHR_N(builder:flatbuffers.Builder, CTHR_N:number) {
   builder.addFieldFloat64(81, CTHR_N, 0.0);
 }
 
-static addCTHR_RDOT(builder:flatbuffers.Builder, CTHR_RDOT:number) {
+static add_CTHR_RDOT(builder:flatbuffers.Builder, CTHR_RDOT:number) {
   builder.addFieldFloat64(82, CTHR_RDOT, 0.0);
 }
 
-static addCTHR_TDOT(builder:flatbuffers.Builder, CTHR_TDOT:number) {
+static add_CTHR_TDOT(builder:flatbuffers.Builder, CTHR_TDOT:number) {
   builder.addFieldFloat64(83, CTHR_TDOT, 0.0);
 }
 
-static addCTHR_NDOT(builder:flatbuffers.Builder, CTHR_NDOT:number) {
+static add_CTHR_NDOT(builder:flatbuffers.Builder, CTHR_NDOT:number) {
   builder.addFieldFloat64(84, CTHR_NDOT, 0.0);
 }
 
-static addCTHR_DRG(builder:flatbuffers.Builder, CTHR_DRG:number) {
+static add_CTHR_DRG(builder:flatbuffers.Builder, CTHR_DRG:number) {
   builder.addFieldFloat64(85, CTHR_DRG, 0.0);
 }
 
-static addCTHR_SRP(builder:flatbuffers.Builder, CTHR_SRP:number) {
+static add_CTHR_SRP(builder:flatbuffers.Builder, CTHR_SRP:number) {
   builder.addFieldFloat64(86, CTHR_SRP, 0.0);
 }
 
-static addCTHR_THR(builder:flatbuffers.Builder, CTHR_THR:number) {
+static add_CTHR_THR(builder:flatbuffers.Builder, CTHR_THR:number) {
   builder.addFieldFloat64(87, CTHR_THR, 0.0);
 }
 
@@ -858,94 +858,94 @@ static endCDMObject(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createCDMObject(builder:flatbuffers.Builder, COMMENTOffset:flatbuffers.Offset, OBJECT:objectNumber, OBJECT_DESIGNATOROffset:flatbuffers.Offset, CATALOG_NAMEOffset:flatbuffers.Offset, OBJECT_NAMEOffset:flatbuffers.Offset, INTERNATIONAL_DESIGNATOROffset:flatbuffers.Offset, OBJECT_TYPE:objectType, OPERATOR_CONTACT_POSITIONOffset:flatbuffers.Offset, OPERATOR_ORGANIZATIONOffset:flatbuffers.Offset, EPHEMERIS_NAMEOffset:flatbuffers.Offset, COVARIANCE_METHOD:covarianceMethod, MANEUVERABLE:maneuverableType, ORBIT_CENTEROffset:flatbuffers.Offset, REF_FRAME:referenceFrame, GRAVITY_MODELOffset:flatbuffers.Offset, ATMOSPHERIC_MODELOffset:flatbuffers.Offset, N_BODY_PERTURBATIONSOffset:flatbuffers.Offset, SOLAR_RAD_PRESSURE:boolean, EARTH_TIDES:boolean, INTRACK_THRUST:boolean, TIME_LASTOB_STARTOffset:flatbuffers.Offset, TIME_LASTOB_ENDOffset:flatbuffers.Offset, RECOMMENDED_OD_SPAN:number, ACTUAL_OD_SPAN:number, OBS_AVAILABLE:number, OBS_USED:number, TRACKS_AVAILABLE:number, TRACKS_USED:number, RESIDUALS_ACCEPTED:number, WEIGHTED_RMS:number, AREA_PC:number, AREA_DRG:number, AREA_SRP:number, MASS:number, CR_AREA_OVER_MASS:number, THRUST_ACCELERATION:number, SEDR:number, X:number, Y:number, Z:number, X_DOT:number, Y_DOT:number, Z_DOT:number, CR_R:number, CT_R:number, CT_T:number, CN_R:number, CN_T:number, CN_N:number, CRDOT_R:number, CRDOT_T:number, CRDOT_N:number, CRDOT_RDOT:number, CTDOT_R:number, CTDOT_T:number, CTDOT_N:number, CTDOT_RDOT:number, CTDOT_TDOT:number, CNDOT_R:number, CNDOT_T:number, CNDOT_N:number, CNDOT_RDOT:number, CNDOT_TDOT:number, CNDOT_NDOT:number, CDRG_R:number, CDRG_T:number, CDRG_N:number, CDRG_RDOT:number, CDRG_TDOT:number, CDRG_NDOT:number, CDRG_DRG:number, CSRP_R:number, CSRP_T:number, CSRP_N:number, CSRP_RDOT:number, CSRP_TDOT:number, CSRP_NDOT:number, CSRP_DRG:number, CSRP_SRP:number, CTHR_R:number, CTHR_T:number, CTHR_N:number, CTHR_RDOT:number, CTHR_TDOT:number, CTHR_NDOT:number, CTHR_DRG:number, CTHR_SRP:number, CTHR_THR:number):flatbuffers.Offset {
   CDMObject.startCDMObject(builder);
-  CDMObject.addCOMMENT(builder, COMMENTOffset);
-  CDMObject.addOBJECT(builder, OBJECT);
-  CDMObject.addOBJECT_DESIGNATOR(builder, OBJECT_DESIGNATOROffset);
-  CDMObject.addCATALOG_NAME(builder, CATALOG_NAMEOffset);
-  CDMObject.addOBJECT_NAME(builder, OBJECT_NAMEOffset);
-  CDMObject.addINTERNATIONAL_DESIGNATOR(builder, INTERNATIONAL_DESIGNATOROffset);
-  CDMObject.addOBJECT_TYPE(builder, OBJECT_TYPE);
-  CDMObject.addOPERATOR_CONTACT_POSITION(builder, OPERATOR_CONTACT_POSITIONOffset);
-  CDMObject.addOPERATOR_ORGANIZATION(builder, OPERATOR_ORGANIZATIONOffset);
-  CDMObject.addEPHEMERIS_NAME(builder, EPHEMERIS_NAMEOffset);
-  CDMObject.addCOVARIANCE_METHOD(builder, COVARIANCE_METHOD);
-  CDMObject.addMANEUVERABLE(builder, MANEUVERABLE);
-  CDMObject.addORBIT_CENTER(builder, ORBIT_CENTEROffset);
-  CDMObject.addREF_FRAME(builder, REF_FRAME);
-  CDMObject.addGRAVITY_MODEL(builder, GRAVITY_MODELOffset);
-  CDMObject.addATMOSPHERIC_MODEL(builder, ATMOSPHERIC_MODELOffset);
-  CDMObject.addN_BODY_PERTURBATIONS(builder, N_BODY_PERTURBATIONSOffset);
-  CDMObject.addSOLAR_RAD_PRESSURE(builder, SOLAR_RAD_PRESSURE);
-  CDMObject.addEARTH_TIDES(builder, EARTH_TIDES);
-  CDMObject.addINTRACK_THRUST(builder, INTRACK_THRUST);
-  CDMObject.addTIME_LASTOB_START(builder, TIME_LASTOB_STARTOffset);
-  CDMObject.addTIME_LASTOB_END(builder, TIME_LASTOB_ENDOffset);
-  CDMObject.addRECOMMENDED_OD_SPAN(builder, RECOMMENDED_OD_SPAN);
-  CDMObject.addACTUAL_OD_SPAN(builder, ACTUAL_OD_SPAN);
-  CDMObject.addOBS_AVAILABLE(builder, OBS_AVAILABLE);
-  CDMObject.addOBS_USED(builder, OBS_USED);
-  CDMObject.addTRACKS_AVAILABLE(builder, TRACKS_AVAILABLE);
-  CDMObject.addTRACKS_USED(builder, TRACKS_USED);
-  CDMObject.addRESIDUALS_ACCEPTED(builder, RESIDUALS_ACCEPTED);
-  CDMObject.addWEIGHTED_RMS(builder, WEIGHTED_RMS);
-  CDMObject.addAREA_PC(builder, AREA_PC);
-  CDMObject.addAREA_DRG(builder, AREA_DRG);
-  CDMObject.addAREA_SRP(builder, AREA_SRP);
-  CDMObject.addMASS(builder, MASS);
-  CDMObject.addCR_AREA_OVER_MASS(builder, CR_AREA_OVER_MASS);
-  CDMObject.addTHRUST_ACCELERATION(builder, THRUST_ACCELERATION);
-  CDMObject.addSEDR(builder, SEDR);
-  CDMObject.addX(builder, X);
-  CDMObject.addY(builder, Y);
-  CDMObject.addZ(builder, Z);
-  CDMObject.addX_DOT(builder, X_DOT);
-  CDMObject.addY_DOT(builder, Y_DOT);
-  CDMObject.addZ_DOT(builder, Z_DOT);
-  CDMObject.addCR_R(builder, CR_R);
-  CDMObject.addCT_R(builder, CT_R);
-  CDMObject.addCT_T(builder, CT_T);
-  CDMObject.addCN_R(builder, CN_R);
-  CDMObject.addCN_T(builder, CN_T);
-  CDMObject.addCN_N(builder, CN_N);
-  CDMObject.addCRDOT_R(builder, CRDOT_R);
-  CDMObject.addCRDOT_T(builder, CRDOT_T);
-  CDMObject.addCRDOT_N(builder, CRDOT_N);
-  CDMObject.addCRDOT_RDOT(builder, CRDOT_RDOT);
-  CDMObject.addCTDOT_R(builder, CTDOT_R);
-  CDMObject.addCTDOT_T(builder, CTDOT_T);
-  CDMObject.addCTDOT_N(builder, CTDOT_N);
-  CDMObject.addCTDOT_RDOT(builder, CTDOT_RDOT);
-  CDMObject.addCTDOT_TDOT(builder, CTDOT_TDOT);
-  CDMObject.addCNDOT_R(builder, CNDOT_R);
-  CDMObject.addCNDOT_T(builder, CNDOT_T);
-  CDMObject.addCNDOT_N(builder, CNDOT_N);
-  CDMObject.addCNDOT_RDOT(builder, CNDOT_RDOT);
-  CDMObject.addCNDOT_TDOT(builder, CNDOT_TDOT);
-  CDMObject.addCNDOT_NDOT(builder, CNDOT_NDOT);
-  CDMObject.addCDRG_R(builder, CDRG_R);
-  CDMObject.addCDRG_T(builder, CDRG_T);
-  CDMObject.addCDRG_N(builder, CDRG_N);
-  CDMObject.addCDRG_RDOT(builder, CDRG_RDOT);
-  CDMObject.addCDRG_TDOT(builder, CDRG_TDOT);
-  CDMObject.addCDRG_NDOT(builder, CDRG_NDOT);
-  CDMObject.addCDRG_DRG(builder, CDRG_DRG);
-  CDMObject.addCSRP_R(builder, CSRP_R);
-  CDMObject.addCSRP_T(builder, CSRP_T);
-  CDMObject.addCSRP_N(builder, CSRP_N);
-  CDMObject.addCSRP_RDOT(builder, CSRP_RDOT);
-  CDMObject.addCSRP_TDOT(builder, CSRP_TDOT);
-  CDMObject.addCSRP_NDOT(builder, CSRP_NDOT);
-  CDMObject.addCSRP_DRG(builder, CSRP_DRG);
-  CDMObject.addCSRP_SRP(builder, CSRP_SRP);
-  CDMObject.addCTHR_R(builder, CTHR_R);
-  CDMObject.addCTHR_T(builder, CTHR_T);
-  CDMObject.addCTHR_N(builder, CTHR_N);
-  CDMObject.addCTHR_RDOT(builder, CTHR_RDOT);
-  CDMObject.addCTHR_TDOT(builder, CTHR_TDOT);
-  CDMObject.addCTHR_NDOT(builder, CTHR_NDOT);
-  CDMObject.addCTHR_DRG(builder, CTHR_DRG);
-  CDMObject.addCTHR_SRP(builder, CTHR_SRP);
-  CDMObject.addCTHR_THR(builder, CTHR_THR);
+  CDMObject.add_COMMENT(builder, COMMENTOffset);
+  CDMObject.add_OBJECT(builder, OBJECT);
+  CDMObject.add_OBJECT_DESIGNATOR(builder, OBJECT_DESIGNATOROffset);
+  CDMObject.add_CATALOG_NAME(builder, CATALOG_NAMEOffset);
+  CDMObject.add_OBJECT_NAME(builder, OBJECT_NAMEOffset);
+  CDMObject.add_INTERNATIONAL_DESIGNATOR(builder, INTERNATIONAL_DESIGNATOROffset);
+  CDMObject.add_OBJECT_TYPE(builder, OBJECT_TYPE);
+  CDMObject.add_OPERATOR_CONTACT_POSITION(builder, OPERATOR_CONTACT_POSITIONOffset);
+  CDMObject.add_OPERATOR_ORGANIZATION(builder, OPERATOR_ORGANIZATIONOffset);
+  CDMObject.add_EPHEMERIS_NAME(builder, EPHEMERIS_NAMEOffset);
+  CDMObject.add_COVARIANCE_METHOD(builder, COVARIANCE_METHOD);
+  CDMObject.add_MANEUVERABLE(builder, MANEUVERABLE);
+  CDMObject.add_ORBIT_CENTER(builder, ORBIT_CENTEROffset);
+  CDMObject.add_REF_FRAME(builder, REF_FRAME);
+  CDMObject.add_GRAVITY_MODEL(builder, GRAVITY_MODELOffset);
+  CDMObject.add_ATMOSPHERIC_MODEL(builder, ATMOSPHERIC_MODELOffset);
+  CDMObject.add_N_BODY_PERTURBATIONS(builder, N_BODY_PERTURBATIONSOffset);
+  CDMObject.add_SOLAR_RAD_PRESSURE(builder, SOLAR_RAD_PRESSURE);
+  CDMObject.add_EARTH_TIDES(builder, EARTH_TIDES);
+  CDMObject.add_INTRACK_THRUST(builder, INTRACK_THRUST);
+  CDMObject.add_TIME_LASTOB_START(builder, TIME_LASTOB_STARTOffset);
+  CDMObject.add_TIME_LASTOB_END(builder, TIME_LASTOB_ENDOffset);
+  CDMObject.add_RECOMMENDED_OD_SPAN(builder, RECOMMENDED_OD_SPAN);
+  CDMObject.add_ACTUAL_OD_SPAN(builder, ACTUAL_OD_SPAN);
+  CDMObject.add_OBS_AVAILABLE(builder, OBS_AVAILABLE);
+  CDMObject.add_OBS_USED(builder, OBS_USED);
+  CDMObject.add_TRACKS_AVAILABLE(builder, TRACKS_AVAILABLE);
+  CDMObject.add_TRACKS_USED(builder, TRACKS_USED);
+  CDMObject.add_RESIDUALS_ACCEPTED(builder, RESIDUALS_ACCEPTED);
+  CDMObject.add_WEIGHTED_RMS(builder, WEIGHTED_RMS);
+  CDMObject.add_AREA_PC(builder, AREA_PC);
+  CDMObject.add_AREA_DRG(builder, AREA_DRG);
+  CDMObject.add_AREA_SRP(builder, AREA_SRP);
+  CDMObject.add_MASS(builder, MASS);
+  CDMObject.add_CR_AREA_OVER_MASS(builder, CR_AREA_OVER_MASS);
+  CDMObject.add_THRUST_ACCELERATION(builder, THRUST_ACCELERATION);
+  CDMObject.add_SEDR(builder, SEDR);
+  CDMObject.add_X(builder, X);
+  CDMObject.add_Y(builder, Y);
+  CDMObject.add_Z(builder, Z);
+  CDMObject.add_X_DOT(builder, X_DOT);
+  CDMObject.add_Y_DOT(builder, Y_DOT);
+  CDMObject.add_Z_DOT(builder, Z_DOT);
+  CDMObject.add_CR_R(builder, CR_R);
+  CDMObject.add_CT_R(builder, CT_R);
+  CDMObject.add_CT_T(builder, CT_T);
+  CDMObject.add_CN_R(builder, CN_R);
+  CDMObject.add_CN_T(builder, CN_T);
+  CDMObject.add_CN_N(builder, CN_N);
+  CDMObject.add_CRDOT_R(builder, CRDOT_R);
+  CDMObject.add_CRDOT_T(builder, CRDOT_T);
+  CDMObject.add_CRDOT_N(builder, CRDOT_N);
+  CDMObject.add_CRDOT_RDOT(builder, CRDOT_RDOT);
+  CDMObject.add_CTDOT_R(builder, CTDOT_R);
+  CDMObject.add_CTDOT_T(builder, CTDOT_T);
+  CDMObject.add_CTDOT_N(builder, CTDOT_N);
+  CDMObject.add_CTDOT_RDOT(builder, CTDOT_RDOT);
+  CDMObject.add_CTDOT_TDOT(builder, CTDOT_TDOT);
+  CDMObject.add_CNDOT_R(builder, CNDOT_R);
+  CDMObject.add_CNDOT_T(builder, CNDOT_T);
+  CDMObject.add_CNDOT_N(builder, CNDOT_N);
+  CDMObject.add_CNDOT_RDOT(builder, CNDOT_RDOT);
+  CDMObject.add_CNDOT_TDOT(builder, CNDOT_TDOT);
+  CDMObject.add_CNDOT_NDOT(builder, CNDOT_NDOT);
+  CDMObject.add_CDRG_R(builder, CDRG_R);
+  CDMObject.add_CDRG_T(builder, CDRG_T);
+  CDMObject.add_CDRG_N(builder, CDRG_N);
+  CDMObject.add_CDRG_RDOT(builder, CDRG_RDOT);
+  CDMObject.add_CDRG_TDOT(builder, CDRG_TDOT);
+  CDMObject.add_CDRG_NDOT(builder, CDRG_NDOT);
+  CDMObject.add_CDRG_DRG(builder, CDRG_DRG);
+  CDMObject.add_CSRP_R(builder, CSRP_R);
+  CDMObject.add_CSRP_T(builder, CSRP_T);
+  CDMObject.add_CSRP_N(builder, CSRP_N);
+  CDMObject.add_CSRP_RDOT(builder, CSRP_RDOT);
+  CDMObject.add_CSRP_TDOT(builder, CSRP_TDOT);
+  CDMObject.add_CSRP_NDOT(builder, CSRP_NDOT);
+  CDMObject.add_CSRP_DRG(builder, CSRP_DRG);
+  CDMObject.add_CSRP_SRP(builder, CSRP_SRP);
+  CDMObject.add_CTHR_R(builder, CTHR_R);
+  CDMObject.add_CTHR_T(builder, CTHR_T);
+  CDMObject.add_CTHR_N(builder, CTHR_N);
+  CDMObject.add_CTHR_RDOT(builder, CTHR_RDOT);
+  CDMObject.add_CTHR_TDOT(builder, CTHR_TDOT);
+  CDMObject.add_CTHR_NDOT(builder, CTHR_NDOT);
+  CDMObject.add_CTHR_DRG(builder, CTHR_DRG);
+  CDMObject.add_CTHR_SRP(builder, CTHR_SRP);
+  CDMObject.add_CTHR_THR(builder, CTHR_THR);
   return CDMObject.endCDMObject(builder);
 }
 
@@ -1135,7 +1135,7 @@ unpackTo(_o: CDMObjectT): void {
 }
 }
 
-export class CDMObjectT {
+export class CDMObjectT implements flatbuffers.IGeneratedObject {
 constructor(
   public COMMENT: string|Uint8Array|null = null,
   public OBJECT: objectNumber = objectNumber.OBJECT1,

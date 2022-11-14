@@ -2,13 +2,13 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { manCovRefFrame } from './manCovRefFrame';
+import { manCovRefFrame } from './manCovRefFrame.js';
 
 
-export class maneuverParameters {
+export class maneuverParameters implements flatbuffers.IUnpackableObject<maneuverParametersT> {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
-__init(i:number, bb:flatbuffers.ByteBuffer):maneuverParameters {
+  __init(i:number, bb:flatbuffers.ByteBuffer):maneuverParameters {
   this.bb_pos = i;
   this.bb = bb;
   return this;
@@ -64,31 +64,31 @@ static startmaneuverParameters(builder:flatbuffers.Builder) {
   builder.startObject(7);
 }
 
-static addMAN_EPOCH_IGNITION(builder:flatbuffers.Builder, MAN_EPOCH_IGNITIONOffset:flatbuffers.Offset) {
+static add_MAN_EPOCH_IGNITION(builder:flatbuffers.Builder, MAN_EPOCH_IGNITIONOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, MAN_EPOCH_IGNITIONOffset, 0);
 }
 
-static addMAN_DURATION(builder:flatbuffers.Builder, MAN_DURATION:number) {
+static add_MAN_DURATION(builder:flatbuffers.Builder, MAN_DURATION:number) {
   builder.addFieldFloat64(1, MAN_DURATION, 0.0);
 }
 
-static addMAN_DELTA_MASS(builder:flatbuffers.Builder, MAN_DELTA_MASS:number) {
+static add_MAN_DELTA_MASS(builder:flatbuffers.Builder, MAN_DELTA_MASS:number) {
   builder.addFieldFloat64(2, MAN_DELTA_MASS, 0.0);
 }
 
-static addMAN_REF_FRAME(builder:flatbuffers.Builder, MAN_REF_FRAME:manCovRefFrame) {
+static add_MAN_REF_FRAME(builder:flatbuffers.Builder, MAN_REF_FRAME:manCovRefFrame) {
   builder.addFieldInt8(3, MAN_REF_FRAME, manCovRefFrame.RSW);
 }
 
-static addMAN_DV_1(builder:flatbuffers.Builder, MAN_DV_1:number) {
+static add_MAN_DV_1(builder:flatbuffers.Builder, MAN_DV_1:number) {
   builder.addFieldFloat64(4, MAN_DV_1, 0.0);
 }
 
-static addMAN_DV_2(builder:flatbuffers.Builder, MAN_DV_2:number) {
+static add_MAN_DV_2(builder:flatbuffers.Builder, MAN_DV_2:number) {
   builder.addFieldFloat64(5, MAN_DV_2, 0.0);
 }
 
-static addMAN_DV_3(builder:flatbuffers.Builder, MAN_DV_3:number) {
+static add_MAN_DV_3(builder:flatbuffers.Builder, MAN_DV_3:number) {
   builder.addFieldFloat64(6, MAN_DV_3, 0.0);
 }
 
@@ -99,13 +99,13 @@ static endmaneuverParameters(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createmaneuverParameters(builder:flatbuffers.Builder, MAN_EPOCH_IGNITIONOffset:flatbuffers.Offset, MAN_DURATION:number, MAN_DELTA_MASS:number, MAN_REF_FRAME:manCovRefFrame, MAN_DV_1:number, MAN_DV_2:number, MAN_DV_3:number):flatbuffers.Offset {
   maneuverParameters.startmaneuverParameters(builder);
-  maneuverParameters.addMAN_EPOCH_IGNITION(builder, MAN_EPOCH_IGNITIONOffset);
-  maneuverParameters.addMAN_DURATION(builder, MAN_DURATION);
-  maneuverParameters.addMAN_DELTA_MASS(builder, MAN_DELTA_MASS);
-  maneuverParameters.addMAN_REF_FRAME(builder, MAN_REF_FRAME);
-  maneuverParameters.addMAN_DV_1(builder, MAN_DV_1);
-  maneuverParameters.addMAN_DV_2(builder, MAN_DV_2);
-  maneuverParameters.addMAN_DV_3(builder, MAN_DV_3);
+  maneuverParameters.add_MAN_EPOCH_IGNITION(builder, MAN_EPOCH_IGNITIONOffset);
+  maneuverParameters.add_MAN_DURATION(builder, MAN_DURATION);
+  maneuverParameters.add_MAN_DELTA_MASS(builder, MAN_DELTA_MASS);
+  maneuverParameters.add_MAN_REF_FRAME(builder, MAN_REF_FRAME);
+  maneuverParameters.add_MAN_DV_1(builder, MAN_DV_1);
+  maneuverParameters.add_MAN_DV_2(builder, MAN_DV_2);
+  maneuverParameters.add_MAN_DV_3(builder, MAN_DV_3);
   return maneuverParameters.endmaneuverParameters(builder);
 }
 
@@ -133,7 +133,7 @@ unpackTo(_o: maneuverParametersT): void {
 }
 }
 
-export class maneuverParametersT {
+export class maneuverParametersT implements flatbuffers.IGeneratedObject {
 constructor(
   public MAN_EPOCH_IGNITION: string|Uint8Array|null = null,
   public MAN_DURATION: number = 0.0,

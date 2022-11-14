@@ -119,10 +119,11 @@ describe('Test Data Entry', () => {
             await create(tableName, input.RECORDS, currentStandard);
 
             const output = await read(standard, currentStandard);
+            expect(input.length).toEqual(output.length);
+
             writeFileSync(`${dataPath}/${tableName}.results.json`, JSON.stringify(output, null, 4));
             writeFileSync(`${dataPath}/${tableName}.results.fbs`, writeFB(output));
             writeFileSync(`${dataPath}/${tableName}.fbs.conversion.json`, JSON.stringify(readFB(readFileSync(`${dataPath}/${tableName}.results.fbs`), tableName, parentClass), null, 4));
-            expect(input.length).toEqual(output.length);
         }
 
     })

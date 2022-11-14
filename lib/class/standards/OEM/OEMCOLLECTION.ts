@@ -2,13 +2,13 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { OEM, OEMT } from './OEM';
+import { OEM, OEMT } from './OEM.js';
 
 
-export class OEMCOLLECTION {
+export class OEMCOLLECTION implements flatbuffers.IUnpackableObject<OEMCOLLECTIONT> {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
-__init(i:number, bb:flatbuffers.ByteBuffer):OEMCOLLECTION {
+  __init(i:number, bb:flatbuffers.ByteBuffer):OEMCOLLECTION {
   this.bb_pos = i;
   this.bb = bb;
   return this;
@@ -28,7 +28,7 @@ RECORDS(index: number, obj?:OEM):OEM|null {
   return offset ? (obj || new OEM()).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
 }
 
-RECORDSLength():number {
+RECORDS_Length():number {
   const offset = this.bb!.__offset(this.bb_pos, 4);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 }
@@ -37,11 +37,11 @@ static startOEMCOLLECTION(builder:flatbuffers.Builder) {
   builder.startObject(1);
 }
 
-static addRECORDS(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
+static add_RECORDS(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, RECORDSOffset, 0);
 }
 
-static createRECORDSVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
+static create_RECORDS_Vector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
   builder.startVector(4, data.length, 4);
   for (let i = data.length - 1; i >= 0; i--) {
     builder.addOffset(data[i]!);
@@ -49,7 +49,7 @@ static createRECORDSVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[
   return builder.endVector();
 }
 
-static startRECORDSVector(builder:flatbuffers.Builder, numElems:number) {
+static start_RECORDS_Vector(builder:flatbuffers.Builder, numElems:number) {
   builder.startVector(4, numElems, 4);
 }
 
@@ -60,30 +60,30 @@ static endOEMCOLLECTION(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createOEMCOLLECTION(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset):flatbuffers.Offset {
   OEMCOLLECTION.startOEMCOLLECTION(builder);
-  OEMCOLLECTION.addRECORDS(builder, RECORDSOffset);
+  OEMCOLLECTION.add_RECORDS(builder, RECORDSOffset);
   return OEMCOLLECTION.endOEMCOLLECTION(builder);
 }
 
 unpack(): OEMCOLLECTIONT {
   return new OEMCOLLECTIONT(
-    this.bb!.createObjList(this.RECORDS.bind(this), this.RECORDSLength())
+    this.bb!.createObjList<OEM, OEMT>(this.RECORDS.bind(this), this.RECORDS_Length())
   );
 }
 
 
 unpackTo(_o: OEMCOLLECTIONT): void {
-  _o.RECORDS = this.bb!.createObjList(this.RECORDS.bind(this), this.RECORDSLength());
+  _o.RECORDS = this.bb!.createObjList<OEM, OEMT>(this.RECORDS.bind(this), this.RECORDS_Length());
 }
 }
 
-export class OEMCOLLECTIONT {
+export class OEMCOLLECTIONT implements flatbuffers.IGeneratedObject {
 constructor(
   public RECORDS: (OEMT)[] = []
 ){}
 
 
 pack(builder:flatbuffers.Builder): flatbuffers.Offset {
-  const RECORDS = OEMCOLLECTION.createRECORDSVector(builder, builder.createObjectOffsetList(this.RECORDS));
+  const RECORDS = OEMCOLLECTION.create_RECORDS_Vector(builder, builder.createObjectOffsetList(this.RECORDS));
 
   return OEMCOLLECTION.createOEMCOLLECTION(builder,
     RECORDS

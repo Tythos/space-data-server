@@ -2,15 +2,15 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { CDMObject, CDMObjectT } from './CDMObject';
-import { objectCenteredReferenceFrame } from './objectCenteredReferenceFrame';
-import { screeningVolumeShape } from './screeningVolumeShape';
+import { CDMObject, CDMObjectT } from './CDMObject.js';
+import { objectCenteredReferenceFrame } from './objectCenteredReferenceFrame.js';
+import { screeningVolumeShape } from './screeningVolumeShape.js';
 
 
-export class CDM {
+export class CDM implements flatbuffers.IUnpackableObject<CDMT> {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
-__init(i:number, bb:flatbuffers.ByteBuffer):CDM {
+  __init(i:number, bb:flatbuffers.ByteBuffer):CDM {
   this.bb_pos = i;
   this.bb = bb;
   return this;
@@ -188,111 +188,111 @@ static startCDM(builder:flatbuffers.Builder) {
   builder.startObject(27);
 }
 
-static addCCSDS_CDM_VERS(builder:flatbuffers.Builder, CCSDS_CDM_VERS:number) {
+static add_CCSDS_CDM_VERS(builder:flatbuffers.Builder, CCSDS_CDM_VERS:number) {
   builder.addFieldFloat64(0, CCSDS_CDM_VERS, 0.0);
 }
 
-static addCREATION_DATE(builder:flatbuffers.Builder, CREATION_DATEOffset:flatbuffers.Offset) {
+static add_CREATION_DATE(builder:flatbuffers.Builder, CREATION_DATEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(1, CREATION_DATEOffset, 0);
 }
 
-static addORIGINATOR(builder:flatbuffers.Builder, ORIGINATOROffset:flatbuffers.Offset) {
+static add_ORIGINATOR(builder:flatbuffers.Builder, ORIGINATOROffset:flatbuffers.Offset) {
   builder.addFieldOffset(2, ORIGINATOROffset, 0);
 }
 
-static addMESSAGE_FOR(builder:flatbuffers.Builder, MESSAGE_FOROffset:flatbuffers.Offset) {
+static add_MESSAGE_FOR(builder:flatbuffers.Builder, MESSAGE_FOROffset:flatbuffers.Offset) {
   builder.addFieldOffset(3, MESSAGE_FOROffset, 0);
 }
 
-static addMESSAGE_ID(builder:flatbuffers.Builder, MESSAGE_IDOffset:flatbuffers.Offset) {
+static add_MESSAGE_ID(builder:flatbuffers.Builder, MESSAGE_IDOffset:flatbuffers.Offset) {
   builder.addFieldOffset(4, MESSAGE_IDOffset, 0);
 }
 
-static addTCA(builder:flatbuffers.Builder, TCAOffset:flatbuffers.Offset) {
+static add_TCA(builder:flatbuffers.Builder, TCAOffset:flatbuffers.Offset) {
   builder.addFieldOffset(5, TCAOffset, 0);
 }
 
-static addMISS_DISTANCE(builder:flatbuffers.Builder, MISS_DISTANCE:number) {
+static add_MISS_DISTANCE(builder:flatbuffers.Builder, MISS_DISTANCE:number) {
   builder.addFieldFloat64(6, MISS_DISTANCE, 0.0);
 }
 
-static addRELATIVE_SPEED(builder:flatbuffers.Builder, RELATIVE_SPEED:number) {
+static add_RELATIVE_SPEED(builder:flatbuffers.Builder, RELATIVE_SPEED:number) {
   builder.addFieldFloat64(7, RELATIVE_SPEED, 0.0);
 }
 
-static addRELATIVE_POSITION_R(builder:flatbuffers.Builder, RELATIVE_POSITION_R:number) {
+static add_RELATIVE_POSITION_R(builder:flatbuffers.Builder, RELATIVE_POSITION_R:number) {
   builder.addFieldFloat64(8, RELATIVE_POSITION_R, 0.0);
 }
 
-static addRELATIVE_POSITION_T(builder:flatbuffers.Builder, RELATIVE_POSITION_T:number) {
+static add_RELATIVE_POSITION_T(builder:flatbuffers.Builder, RELATIVE_POSITION_T:number) {
   builder.addFieldFloat64(9, RELATIVE_POSITION_T, 0.0);
 }
 
-static addRELATIVE_POSITION_N(builder:flatbuffers.Builder, RELATIVE_POSITION_N:number) {
+static add_RELATIVE_POSITION_N(builder:flatbuffers.Builder, RELATIVE_POSITION_N:number) {
   builder.addFieldFloat64(10, RELATIVE_POSITION_N, 0.0);
 }
 
-static addRELATIVE_VELOCITY_R(builder:flatbuffers.Builder, RELATIVE_VELOCITY_R:number) {
+static add_RELATIVE_VELOCITY_R(builder:flatbuffers.Builder, RELATIVE_VELOCITY_R:number) {
   builder.addFieldFloat64(11, RELATIVE_VELOCITY_R, 0.0);
 }
 
-static addRELATIVE_VELOCITY_T(builder:flatbuffers.Builder, RELATIVE_VELOCITY_T:number) {
+static add_RELATIVE_VELOCITY_T(builder:flatbuffers.Builder, RELATIVE_VELOCITY_T:number) {
   builder.addFieldFloat64(12, RELATIVE_VELOCITY_T, 0.0);
 }
 
-static addRELATIVE_VELOCITY_N(builder:flatbuffers.Builder, RELATIVE_VELOCITY_N:number) {
+static add_RELATIVE_VELOCITY_N(builder:flatbuffers.Builder, RELATIVE_VELOCITY_N:number) {
   builder.addFieldFloat64(13, RELATIVE_VELOCITY_N, 0.0);
 }
 
-static addSTART_SCREEN_PERIOD(builder:flatbuffers.Builder, START_SCREEN_PERIODOffset:flatbuffers.Offset) {
+static add_START_SCREEN_PERIOD(builder:flatbuffers.Builder, START_SCREEN_PERIODOffset:flatbuffers.Offset) {
   builder.addFieldOffset(14, START_SCREEN_PERIODOffset, 0);
 }
 
-static addSTOP_SCREEN_PERIOD(builder:flatbuffers.Builder, STOP_SCREEN_PERIODOffset:flatbuffers.Offset) {
+static add_STOP_SCREEN_PERIOD(builder:flatbuffers.Builder, STOP_SCREEN_PERIODOffset:flatbuffers.Offset) {
   builder.addFieldOffset(15, STOP_SCREEN_PERIODOffset, 0);
 }
 
-static addSCREEN_VOLUME_FRAME(builder:flatbuffers.Builder, SCREEN_VOLUME_FRAME:objectCenteredReferenceFrame) {
+static add_SCREEN_VOLUME_FRAME(builder:flatbuffers.Builder, SCREEN_VOLUME_FRAME:objectCenteredReferenceFrame) {
   builder.addFieldInt8(16, SCREEN_VOLUME_FRAME, objectCenteredReferenceFrame.RTN);
 }
 
-static addSCREEN_VOLUME_SHAPE(builder:flatbuffers.Builder, SCREEN_VOLUME_SHAPE:screeningVolumeShape) {
+static add_SCREEN_VOLUME_SHAPE(builder:flatbuffers.Builder, SCREEN_VOLUME_SHAPE:screeningVolumeShape) {
   builder.addFieldInt8(17, SCREEN_VOLUME_SHAPE, screeningVolumeShape.ELLIPSOID);
 }
 
-static addSCREEN_VOLUME_X(builder:flatbuffers.Builder, SCREEN_VOLUME_X:number) {
+static add_SCREEN_VOLUME_X(builder:flatbuffers.Builder, SCREEN_VOLUME_X:number) {
   builder.addFieldFloat64(18, SCREEN_VOLUME_X, 0.0);
 }
 
-static addSCREEN_VOLUME_Y(builder:flatbuffers.Builder, SCREEN_VOLUME_Y:number) {
+static add_SCREEN_VOLUME_Y(builder:flatbuffers.Builder, SCREEN_VOLUME_Y:number) {
   builder.addFieldFloat64(19, SCREEN_VOLUME_Y, 0.0);
 }
 
-static addSCREEN_VOLUME_Z(builder:flatbuffers.Builder, SCREEN_VOLUME_Z:number) {
+static add_SCREEN_VOLUME_Z(builder:flatbuffers.Builder, SCREEN_VOLUME_Z:number) {
   builder.addFieldFloat64(20, SCREEN_VOLUME_Z, 0.0);
 }
 
-static addSCREEN_ENTRY_TIME(builder:flatbuffers.Builder, SCREEN_ENTRY_TIMEOffset:flatbuffers.Offset) {
+static add_SCREEN_ENTRY_TIME(builder:flatbuffers.Builder, SCREEN_ENTRY_TIMEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(21, SCREEN_ENTRY_TIMEOffset, 0);
 }
 
-static addSCREEN_EXIT_TIME(builder:flatbuffers.Builder, SCREEN_EXIT_TIMEOffset:flatbuffers.Offset) {
+static add_SCREEN_EXIT_TIME(builder:flatbuffers.Builder, SCREEN_EXIT_TIMEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(22, SCREEN_EXIT_TIMEOffset, 0);
 }
 
-static addCOLLISION_PROBABILITY(builder:flatbuffers.Builder, COLLISION_PROBABILITY:number) {
+static add_COLLISION_PROBABILITY(builder:flatbuffers.Builder, COLLISION_PROBABILITY:number) {
   builder.addFieldFloat64(23, COLLISION_PROBABILITY, 0.0);
 }
 
-static addCOLLISION_PROBABILITY_METHOD(builder:flatbuffers.Builder, COLLISION_PROBABILITY_METHODOffset:flatbuffers.Offset) {
+static add_COLLISION_PROBABILITY_METHOD(builder:flatbuffers.Builder, COLLISION_PROBABILITY_METHODOffset:flatbuffers.Offset) {
   builder.addFieldOffset(24, COLLISION_PROBABILITY_METHODOffset, 0);
 }
 
-static addOBJECT1(builder:flatbuffers.Builder, OBJECT1Offset:flatbuffers.Offset) {
+static add_OBJECT1(builder:flatbuffers.Builder, OBJECT1Offset:flatbuffers.Offset) {
   builder.addFieldOffset(25, OBJECT1Offset, 0);
 }
 
-static addOBJECT2(builder:flatbuffers.Builder, OBJECT2Offset:flatbuffers.Offset) {
+static add_OBJECT2(builder:flatbuffers.Builder, OBJECT2Offset:flatbuffers.Offset) {
   builder.addFieldOffset(26, OBJECT2Offset, 0);
 }
 
@@ -374,7 +374,7 @@ unpackTo(_o: CDMT): void {
 }
 }
 
-export class CDMT {
+export class CDMT implements flatbuffers.IGeneratedObject {
 constructor(
   public CCSDS_CDM_VERS: number = 0.0,
   public CREATION_DATE: string|Uint8Array|null = null,
@@ -421,33 +421,33 @@ pack(builder:flatbuffers.Builder): flatbuffers.Offset {
   const OBJECT2 = (this.OBJECT2 !== null ? this.OBJECT2!.pack(builder) : 0);
 
   CDM.startCDM(builder);
-  CDM.addCCSDS_CDM_VERS(builder, this.CCSDS_CDM_VERS);
-  CDM.addCREATION_DATE(builder, CREATION_DATE);
-  CDM.addORIGINATOR(builder, ORIGINATOR);
-  CDM.addMESSAGE_FOR(builder, MESSAGE_FOR);
-  CDM.addMESSAGE_ID(builder, MESSAGE_ID);
-  CDM.addTCA(builder, TCA);
-  CDM.addMISS_DISTANCE(builder, this.MISS_DISTANCE);
-  CDM.addRELATIVE_SPEED(builder, this.RELATIVE_SPEED);
-  CDM.addRELATIVE_POSITION_R(builder, this.RELATIVE_POSITION_R);
-  CDM.addRELATIVE_POSITION_T(builder, this.RELATIVE_POSITION_T);
-  CDM.addRELATIVE_POSITION_N(builder, this.RELATIVE_POSITION_N);
-  CDM.addRELATIVE_VELOCITY_R(builder, this.RELATIVE_VELOCITY_R);
-  CDM.addRELATIVE_VELOCITY_T(builder, this.RELATIVE_VELOCITY_T);
-  CDM.addRELATIVE_VELOCITY_N(builder, this.RELATIVE_VELOCITY_N);
-  CDM.addSTART_SCREEN_PERIOD(builder, START_SCREEN_PERIOD);
-  CDM.addSTOP_SCREEN_PERIOD(builder, STOP_SCREEN_PERIOD);
-  CDM.addSCREEN_VOLUME_FRAME(builder, this.SCREEN_VOLUME_FRAME);
-  CDM.addSCREEN_VOLUME_SHAPE(builder, this.SCREEN_VOLUME_SHAPE);
-  CDM.addSCREEN_VOLUME_X(builder, this.SCREEN_VOLUME_X);
-  CDM.addSCREEN_VOLUME_Y(builder, this.SCREEN_VOLUME_Y);
-  CDM.addSCREEN_VOLUME_Z(builder, this.SCREEN_VOLUME_Z);
-  CDM.addSCREEN_ENTRY_TIME(builder, SCREEN_ENTRY_TIME);
-  CDM.addSCREEN_EXIT_TIME(builder, SCREEN_EXIT_TIME);
-  CDM.addCOLLISION_PROBABILITY(builder, this.COLLISION_PROBABILITY);
-  CDM.addCOLLISION_PROBABILITY_METHOD(builder, COLLISION_PROBABILITY_METHOD);
-  CDM.addOBJECT1(builder, OBJECT1);
-  CDM.addOBJECT2(builder, OBJECT2);
+  CDM.add_CCSDS_CDM_VERS(builder, this.CCSDS_CDM_VERS);
+  CDM.add_CREATION_DATE(builder, CREATION_DATE);
+  CDM.add_ORIGINATOR(builder, ORIGINATOR);
+  CDM.add_MESSAGE_FOR(builder, MESSAGE_FOR);
+  CDM.add_MESSAGE_ID(builder, MESSAGE_ID);
+  CDM.add_TCA(builder, TCA);
+  CDM.add_MISS_DISTANCE(builder, this.MISS_DISTANCE);
+  CDM.add_RELATIVE_SPEED(builder, this.RELATIVE_SPEED);
+  CDM.add_RELATIVE_POSITION_R(builder, this.RELATIVE_POSITION_R);
+  CDM.add_RELATIVE_POSITION_T(builder, this.RELATIVE_POSITION_T);
+  CDM.add_RELATIVE_POSITION_N(builder, this.RELATIVE_POSITION_N);
+  CDM.add_RELATIVE_VELOCITY_R(builder, this.RELATIVE_VELOCITY_R);
+  CDM.add_RELATIVE_VELOCITY_T(builder, this.RELATIVE_VELOCITY_T);
+  CDM.add_RELATIVE_VELOCITY_N(builder, this.RELATIVE_VELOCITY_N);
+  CDM.add_START_SCREEN_PERIOD(builder, START_SCREEN_PERIOD);
+  CDM.add_STOP_SCREEN_PERIOD(builder, STOP_SCREEN_PERIOD);
+  CDM.add_SCREEN_VOLUME_FRAME(builder, this.SCREEN_VOLUME_FRAME);
+  CDM.add_SCREEN_VOLUME_SHAPE(builder, this.SCREEN_VOLUME_SHAPE);
+  CDM.add_SCREEN_VOLUME_X(builder, this.SCREEN_VOLUME_X);
+  CDM.add_SCREEN_VOLUME_Y(builder, this.SCREEN_VOLUME_Y);
+  CDM.add_SCREEN_VOLUME_Z(builder, this.SCREEN_VOLUME_Z);
+  CDM.add_SCREEN_ENTRY_TIME(builder, SCREEN_ENTRY_TIME);
+  CDM.add_SCREEN_EXIT_TIME(builder, SCREEN_EXIT_TIME);
+  CDM.add_COLLISION_PROBABILITY(builder, this.COLLISION_PROBABILITY);
+  CDM.add_COLLISION_PROBABILITY_METHOD(builder, COLLISION_PROBABILITY_METHOD);
+  CDM.add_OBJECT1(builder, OBJECT1);
+  CDM.add_OBJECT2(builder, OBJECT2);
 
   return CDM.endCDM(builder);
 }

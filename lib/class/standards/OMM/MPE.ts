@@ -4,10 +4,10 @@ import * as flatbuffers from 'flatbuffers';
 
 
 
-export class MPE {
+export class MPE implements flatbuffers.IUnpackableObject<MPET> {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
-__init(i:number, bb:flatbuffers.ByteBuffer):MPE {
+  __init(i:number, bb:flatbuffers.ByteBuffer):MPE {
   this.bb_pos = i;
   this.bb = bb;
   return this;
@@ -71,39 +71,39 @@ static startMPE(builder:flatbuffers.Builder) {
   builder.startObject(9);
 }
 
-static addMEAN_MOTION(builder:flatbuffers.Builder, MEAN_MOTION:number) {
+static add_MEAN_MOTION(builder:flatbuffers.Builder, MEAN_MOTION:number) {
   builder.addFieldFloat64(0, MEAN_MOTION, 0.0);
 }
 
-static addECCENTRICITY(builder:flatbuffers.Builder, ECCENTRICITY:number) {
+static add_ECCENTRICITY(builder:flatbuffers.Builder, ECCENTRICITY:number) {
   builder.addFieldFloat64(1, ECCENTRICITY, 0.0);
 }
 
-static addINCLINATION(builder:flatbuffers.Builder, INCLINATION:number) {
+static add_INCLINATION(builder:flatbuffers.Builder, INCLINATION:number) {
   builder.addFieldFloat64(2, INCLINATION, 0.0);
 }
 
-static addRA_OF_ASC_NODE(builder:flatbuffers.Builder, RA_OF_ASC_NODE:number) {
+static add_RA_OF_ASC_NODE(builder:flatbuffers.Builder, RA_OF_ASC_NODE:number) {
   builder.addFieldFloat64(3, RA_OF_ASC_NODE, 0.0);
 }
 
-static addARG_OF_PERICENTER(builder:flatbuffers.Builder, ARG_OF_PERICENTER:number) {
+static add_ARG_OF_PERICENTER(builder:flatbuffers.Builder, ARG_OF_PERICENTER:number) {
   builder.addFieldFloat64(4, ARG_OF_PERICENTER, 0.0);
 }
 
-static addMEAN_ANOMALY(builder:flatbuffers.Builder, MEAN_ANOMALY:number) {
+static add_MEAN_ANOMALY(builder:flatbuffers.Builder, MEAN_ANOMALY:number) {
   builder.addFieldFloat64(5, MEAN_ANOMALY, 0.0);
 }
 
-static addNORAD_CAT_ID(builder:flatbuffers.Builder, NORAD_CAT_ID:number) {
+static add_NORAD_CAT_ID(builder:flatbuffers.Builder, NORAD_CAT_ID:number) {
   builder.addFieldInt32(6, NORAD_CAT_ID, 0);
 }
 
-static addBSTAR(builder:flatbuffers.Builder, BSTAR:number) {
+static add_BSTAR(builder:flatbuffers.Builder, BSTAR:number) {
   builder.addFieldFloat64(7, BSTAR, 0.0);
 }
 
-static addUSER_DEFINED_EPOCH_TIMESTAMP(builder:flatbuffers.Builder, USER_DEFINED_EPOCH_TIMESTAMP:number) {
+static add_USER_DEFINED_EPOCH_TIMESTAMP(builder:flatbuffers.Builder, USER_DEFINED_EPOCH_TIMESTAMP:number) {
   builder.addFieldFloat64(8, USER_DEFINED_EPOCH_TIMESTAMP, 0.0);
 }
 
@@ -114,15 +114,15 @@ static endMPE(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createMPE(builder:flatbuffers.Builder, MEAN_MOTION:number, ECCENTRICITY:number, INCLINATION:number, RA_OF_ASC_NODE:number, ARG_OF_PERICENTER:number, MEAN_ANOMALY:number, NORAD_CAT_ID:number, BSTAR:number, USER_DEFINED_EPOCH_TIMESTAMP:number):flatbuffers.Offset {
   MPE.startMPE(builder);
-  MPE.addMEAN_MOTION(builder, MEAN_MOTION);
-  MPE.addECCENTRICITY(builder, ECCENTRICITY);
-  MPE.addINCLINATION(builder, INCLINATION);
-  MPE.addRA_OF_ASC_NODE(builder, RA_OF_ASC_NODE);
-  MPE.addARG_OF_PERICENTER(builder, ARG_OF_PERICENTER);
-  MPE.addMEAN_ANOMALY(builder, MEAN_ANOMALY);
-  MPE.addNORAD_CAT_ID(builder, NORAD_CAT_ID);
-  MPE.addBSTAR(builder, BSTAR);
-  MPE.addUSER_DEFINED_EPOCH_TIMESTAMP(builder, USER_DEFINED_EPOCH_TIMESTAMP);
+  MPE.add_MEAN_MOTION(builder, MEAN_MOTION);
+  MPE.add_ECCENTRICITY(builder, ECCENTRICITY);
+  MPE.add_INCLINATION(builder, INCLINATION);
+  MPE.add_RA_OF_ASC_NODE(builder, RA_OF_ASC_NODE);
+  MPE.add_ARG_OF_PERICENTER(builder, ARG_OF_PERICENTER);
+  MPE.add_MEAN_ANOMALY(builder, MEAN_ANOMALY);
+  MPE.add_NORAD_CAT_ID(builder, NORAD_CAT_ID);
+  MPE.add_BSTAR(builder, BSTAR);
+  MPE.add_USER_DEFINED_EPOCH_TIMESTAMP(builder, USER_DEFINED_EPOCH_TIMESTAMP);
   return MPE.endMPE(builder);
 }
 
@@ -154,7 +154,7 @@ unpackTo(_o: MPET): void {
 }
 }
 
-export class MPET {
+export class MPET implements flatbuffers.IGeneratedObject {
 constructor(
   public MEAN_MOTION: number = 0.0,
   public ECCENTRICITY: number = 0.0,

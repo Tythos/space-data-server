@@ -2,13 +2,13 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { MPE, MPET } from './MPE';
+import { MPE, MPET } from './MPE.js';
 
 
-export class MPECOLLECTION {
+export class MPECOLLECTION implements flatbuffers.IUnpackableObject<MPECOLLECTIONT> {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
-__init(i:number, bb:flatbuffers.ByteBuffer):MPECOLLECTION {
+  __init(i:number, bb:flatbuffers.ByteBuffer):MPECOLLECTION {
   this.bb_pos = i;
   this.bb = bb;
   return this;
@@ -28,7 +28,7 @@ RECORDS(index: number, obj?:MPE):MPE|null {
   return offset ? (obj || new MPE()).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
 }
 
-RECORDSLength():number {
+RECORDS_Length():number {
   const offset = this.bb!.__offset(this.bb_pos, 4);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 }
@@ -37,11 +37,11 @@ static startMPECOLLECTION(builder:flatbuffers.Builder) {
   builder.startObject(1);
 }
 
-static addRECORDS(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
+static add_RECORDS(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, RECORDSOffset, 0);
 }
 
-static createRECORDSVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
+static create_RECORDS_Vector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
   builder.startVector(4, data.length, 4);
   for (let i = data.length - 1; i >= 0; i--) {
     builder.addOffset(data[i]!);
@@ -49,7 +49,7 @@ static createRECORDSVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[
   return builder.endVector();
 }
 
-static startRECORDSVector(builder:flatbuffers.Builder, numElems:number) {
+static start_RECORDS_Vector(builder:flatbuffers.Builder, numElems:number) {
   builder.startVector(4, numElems, 4);
 }
 
@@ -60,30 +60,30 @@ static endMPECOLLECTION(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createMPECOLLECTION(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset):flatbuffers.Offset {
   MPECOLLECTION.startMPECOLLECTION(builder);
-  MPECOLLECTION.addRECORDS(builder, RECORDSOffset);
+  MPECOLLECTION.add_RECORDS(builder, RECORDSOffset);
   return MPECOLLECTION.endMPECOLLECTION(builder);
 }
 
 unpack(): MPECOLLECTIONT {
   return new MPECOLLECTIONT(
-    this.bb!.createObjList(this.RECORDS.bind(this), this.RECORDSLength())
+    this.bb!.createObjList<MPE, MPET>(this.RECORDS.bind(this), this.RECORDS_Length())
   );
 }
 
 
 unpackTo(_o: MPECOLLECTIONT): void {
-  _o.RECORDS = this.bb!.createObjList(this.RECORDS.bind(this), this.RECORDSLength());
+  _o.RECORDS = this.bb!.createObjList<MPE, MPET>(this.RECORDS.bind(this), this.RECORDS_Length());
 }
 }
 
-export class MPECOLLECTIONT {
+export class MPECOLLECTIONT implements flatbuffers.IGeneratedObject {
 constructor(
   public RECORDS: (MPET)[] = []
 ){}
 
 
 pack(builder:flatbuffers.Builder): flatbuffers.Offset {
-  const RECORDS = MPECOLLECTION.createRECORDSVector(builder, builder.createObjectOffsetList(this.RECORDS));
+  const RECORDS = MPECOLLECTION.create_RECORDS_Vector(builder, builder.createObjectOffsetList(this.RECORDS));
 
   return MPECOLLECTION.createMPECOLLECTION(builder,
     RECORDS

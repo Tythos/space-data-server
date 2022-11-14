@@ -2,13 +2,13 @@
 
 import * as flatbuffers from 'flatbuffers';
 
-import { ephemerisDataBlock, ephemerisDataBlockT } from './ephemerisDataBlock';
+import { ephemerisDataBlock, ephemerisDataBlockT } from './ephemerisDataBlock.js';
 
 
-export class OEM {
+export class OEM implements flatbuffers.IUnpackableObject<OEMT> {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
-__init(i:number, bb:flatbuffers.ByteBuffer):OEM {
+  __init(i:number, bb:flatbuffers.ByteBuffer):OEM {
   this.bb_pos = i;
   this.bb = bb;
   return this;
@@ -51,7 +51,7 @@ EPHEMERIS_DATA_BLOCK(index: number, obj?:ephemerisDataBlock):ephemerisDataBlock|
   return offset ? (obj || new ephemerisDataBlock()).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
 }
 
-EPHEMERIS_DATA_BLOCKLength():number {
+EPHEMERIS_DATA_BLOCK_Length():number {
   const offset = this.bb!.__offset(this.bb_pos, 10);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 }
@@ -60,23 +60,23 @@ static startOEM(builder:flatbuffers.Builder) {
   builder.startObject(4);
 }
 
-static addCCSDS_OEM_VERS(builder:flatbuffers.Builder, CCSDS_OEM_VERS:number) {
+static add_CCSDS_OEM_VERS(builder:flatbuffers.Builder, CCSDS_OEM_VERS:number) {
   builder.addFieldFloat64(0, CCSDS_OEM_VERS, 0.0);
 }
 
-static addCREATION_DATE(builder:flatbuffers.Builder, CREATION_DATEOffset:flatbuffers.Offset) {
+static add_CREATION_DATE(builder:flatbuffers.Builder, CREATION_DATEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(1, CREATION_DATEOffset, 0);
 }
 
-static addORIGINATOR(builder:flatbuffers.Builder, ORIGINATOROffset:flatbuffers.Offset) {
+static add_ORIGINATOR(builder:flatbuffers.Builder, ORIGINATOROffset:flatbuffers.Offset) {
   builder.addFieldOffset(2, ORIGINATOROffset, 0);
 }
 
-static addEPHEMERIS_DATA_BLOCK(builder:flatbuffers.Builder, EPHEMERIS_DATA_BLOCKOffset:flatbuffers.Offset) {
+static add_EPHEMERIS_DATA_BLOCK(builder:flatbuffers.Builder, EPHEMERIS_DATA_BLOCKOffset:flatbuffers.Offset) {
   builder.addFieldOffset(3, EPHEMERIS_DATA_BLOCKOffset, 0);
 }
 
-static createEPHEMERIS_DATA_BLOCKVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
+static create_EPHEMERIS_DATA_BLOCK_Vector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
   builder.startVector(4, data.length, 4);
   for (let i = data.length - 1; i >= 0; i--) {
     builder.addOffset(data[i]!);
@@ -84,7 +84,7 @@ static createEPHEMERIS_DATA_BLOCKVector(builder:flatbuffers.Builder, data:flatbu
   return builder.endVector();
 }
 
-static startEPHEMERIS_DATA_BLOCKVector(builder:flatbuffers.Builder, numElems:number) {
+static start_EPHEMERIS_DATA_BLOCK_Vector(builder:flatbuffers.Builder, numElems:number) {
   builder.startVector(4, numElems, 4);
 }
 
@@ -103,10 +103,10 @@ static finishSizePrefixedOEMBuffer(builder:flatbuffers.Builder, offset:flatbuffe
 
 static createOEM(builder:flatbuffers.Builder, CCSDS_OEM_VERS:number, CREATION_DATEOffset:flatbuffers.Offset, ORIGINATOROffset:flatbuffers.Offset, EPHEMERIS_DATA_BLOCKOffset:flatbuffers.Offset):flatbuffers.Offset {
   OEM.startOEM(builder);
-  OEM.addCCSDS_OEM_VERS(builder, CCSDS_OEM_VERS);
-  OEM.addCREATION_DATE(builder, CREATION_DATEOffset);
-  OEM.addORIGINATOR(builder, ORIGINATOROffset);
-  OEM.addEPHEMERIS_DATA_BLOCK(builder, EPHEMERIS_DATA_BLOCKOffset);
+  OEM.add_CCSDS_OEM_VERS(builder, CCSDS_OEM_VERS);
+  OEM.add_CREATION_DATE(builder, CREATION_DATEOffset);
+  OEM.add_ORIGINATOR(builder, ORIGINATOROffset);
+  OEM.add_EPHEMERIS_DATA_BLOCK(builder, EPHEMERIS_DATA_BLOCKOffset);
   return OEM.endOEM(builder);
 }
 
@@ -115,7 +115,7 @@ unpack(): OEMT {
     this.CCSDS_OEM_VERS(),
     this.CREATION_DATE(),
     this.ORIGINATOR(),
-    this.bb!.createObjList(this.EPHEMERIS_DATA_BLOCK.bind(this), this.EPHEMERIS_DATA_BLOCKLength())
+    this.bb!.createObjList<ephemerisDataBlock, ephemerisDataBlockT>(this.EPHEMERIS_DATA_BLOCK.bind(this), this.EPHEMERIS_DATA_BLOCK_Length())
   );
 }
 
@@ -124,11 +124,11 @@ unpackTo(_o: OEMT): void {
   _o.CCSDS_OEM_VERS = this.CCSDS_OEM_VERS();
   _o.CREATION_DATE = this.CREATION_DATE();
   _o.ORIGINATOR = this.ORIGINATOR();
-  _o.EPHEMERIS_DATA_BLOCK = this.bb!.createObjList(this.EPHEMERIS_DATA_BLOCK.bind(this), this.EPHEMERIS_DATA_BLOCKLength());
+  _o.EPHEMERIS_DATA_BLOCK = this.bb!.createObjList<ephemerisDataBlock, ephemerisDataBlockT>(this.EPHEMERIS_DATA_BLOCK.bind(this), this.EPHEMERIS_DATA_BLOCK_Length());
 }
 }
 
-export class OEMT {
+export class OEMT implements flatbuffers.IGeneratedObject {
 constructor(
   public CCSDS_OEM_VERS: number = 0.0,
   public CREATION_DATE: string|Uint8Array|null = null,
@@ -140,7 +140,7 @@ constructor(
 pack(builder:flatbuffers.Builder): flatbuffers.Offset {
   const CREATION_DATE = (this.CREATION_DATE !== null ? builder.createString(this.CREATION_DATE!) : 0);
   const ORIGINATOR = (this.ORIGINATOR !== null ? builder.createString(this.ORIGINATOR!) : 0);
-  const EPHEMERIS_DATA_BLOCK = OEM.createEPHEMERIS_DATA_BLOCKVector(builder, builder.createObjectOffsetList(this.EPHEMERIS_DATA_BLOCK));
+  const EPHEMERIS_DATA_BLOCK = OEM.create_EPHEMERIS_DATA_BLOCK_Vector(builder, builder.createObjectOffsetList(this.EPHEMERIS_DATA_BLOCK));
 
   return OEM.createOEM(builder,
     this.CCSDS_OEM_VERS,

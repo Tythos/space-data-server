@@ -4,10 +4,10 @@ import * as flatbuffers from 'flatbuffers';
 
 
 
-export class TypeCheck {
+export class TypeCheck implements flatbuffers.IUnpackableObject<TypeCheckT> {
   bb: flatbuffers.ByteBuffer|null = null;
   bb_pos = 0;
-__init(i:number, bb:flatbuffers.ByteBuffer):TypeCheck {
+  __init(i:number, bb:flatbuffers.ByteBuffer):TypeCheck {
   this.bb_pos = i;
   this.bb = bb;
   return this;
@@ -97,24 +97,24 @@ float32():number {
   return offset ? this.bb!.readFloat32(this.bb_pos + offset) : 0.0;
 }
 
-long():flatbuffers.Long {
+long():bigint {
   const offset = this.bb!.__offset(this.bb_pos, 34);
-  return offset ? this.bb!.readInt64(this.bb_pos + offset) : this.bb!.createLong(0, 0);
+  return offset ? this.bb!.readInt64(this.bb_pos + offset) : BigInt('0');
 }
 
-int64():flatbuffers.Long {
+int64():bigint {
   const offset = this.bb!.__offset(this.bb_pos, 36);
-  return offset ? this.bb!.readInt64(this.bb_pos + offset) : this.bb!.createLong(0, 0);
+  return offset ? this.bb!.readInt64(this.bb_pos + offset) : BigInt('0');
 }
 
-ulong():flatbuffers.Long {
+ulong():bigint {
   const offset = this.bb!.__offset(this.bb_pos, 38);
-  return offset ? this.bb!.readUint64(this.bb_pos + offset) : this.bb!.createLong(0, 0);
+  return offset ? this.bb!.readUint64(this.bb_pos + offset) : BigInt('0');
 }
 
-uint64():flatbuffers.Long {
+uint64():bigint {
   const offset = this.bb!.__offset(this.bb_pos, 40);
-  return offset ? this.bb!.readUint64(this.bb_pos + offset) : this.bb!.createLong(0, 0);
+  return offset ? this.bb!.readUint64(this.bb_pos + offset) : BigInt('0');
 }
 
 double():number {
@@ -138,91 +138,91 @@ static startTypeCheck(builder:flatbuffers.Builder) {
   builder.startObject(22);
 }
 
-static addbyte(builder:flatbuffers.Builder, byte:number) {
+static add_byte(builder:flatbuffers.Builder, byte:number) {
   builder.addFieldInt8(0, byte, 0);
 }
 
-static addint8(builder:flatbuffers.Builder, int8:number) {
+static add_int8(builder:flatbuffers.Builder, int8:number) {
   builder.addFieldInt8(1, int8, 0);
 }
 
-static addubyte(builder:flatbuffers.Builder, ubyte:number) {
+static add_ubyte(builder:flatbuffers.Builder, ubyte:number) {
   builder.addFieldInt8(2, ubyte, 0);
 }
 
-static adduint8(builder:flatbuffers.Builder, uint8:number) {
+static add_uint8(builder:flatbuffers.Builder, uint8:number) {
   builder.addFieldInt8(3, uint8, 0);
 }
 
-static addbool(builder:flatbuffers.Builder, bool:boolean) {
+static add_bool(builder:flatbuffers.Builder, bool:boolean) {
   builder.addFieldInt8(4, +bool, +false);
 }
 
-static addshort(builder:flatbuffers.Builder, short:number) {
+static add_short(builder:flatbuffers.Builder, short:number) {
   builder.addFieldInt16(5, short, 0);
 }
 
-static addint16(builder:flatbuffers.Builder, int16:number) {
+static add_int16(builder:flatbuffers.Builder, int16:number) {
   builder.addFieldInt16(6, int16, 0);
 }
 
-static addushort(builder:flatbuffers.Builder, ushort:number) {
+static add_ushort(builder:flatbuffers.Builder, ushort:number) {
   builder.addFieldInt16(7, ushort, 0);
 }
 
-static adduint16(builder:flatbuffers.Builder, uint16:number) {
+static add_uint16(builder:flatbuffers.Builder, uint16:number) {
   builder.addFieldInt16(8, uint16, 0);
 }
 
-static addint(builder:flatbuffers.Builder, int:number) {
+static add_int(builder:flatbuffers.Builder, int:number) {
   builder.addFieldInt32(9, int, 0);
 }
 
-static addint32(builder:flatbuffers.Builder, int32:number) {
+static add_int32(builder:flatbuffers.Builder, int32:number) {
   builder.addFieldInt32(10, int32, 0);
 }
 
-static adduint(builder:flatbuffers.Builder, uint:number) {
+static add_uint(builder:flatbuffers.Builder, uint:number) {
   builder.addFieldInt32(11, uint, 0);
 }
 
-static adduint32(builder:flatbuffers.Builder, uint32:number) {
+static add_uint32(builder:flatbuffers.Builder, uint32:number) {
   builder.addFieldInt32(12, uint32, 0);
 }
 
-static addfloat(builder:flatbuffers.Builder, float:number) {
+static add_float(builder:flatbuffers.Builder, float:number) {
   builder.addFieldFloat32(13, float, 0.0);
 }
 
-static addfloat32(builder:flatbuffers.Builder, float32:number) {
+static add_float32(builder:flatbuffers.Builder, float32:number) {
   builder.addFieldFloat32(14, float32, 0.0);
 }
 
-static addlong(builder:flatbuffers.Builder, long:flatbuffers.Long) {
-  builder.addFieldInt64(15, long, builder.createLong(0, 0));
+static add_long(builder:flatbuffers.Builder, long:bigint) {
+  builder.addFieldInt64(15, long, BigInt('0'));
 }
 
-static addint64(builder:flatbuffers.Builder, int64:flatbuffers.Long) {
-  builder.addFieldInt64(16, int64, builder.createLong(0, 0));
+static add_int64(builder:flatbuffers.Builder, int64:bigint) {
+  builder.addFieldInt64(16, int64, BigInt('0'));
 }
 
-static addulong(builder:flatbuffers.Builder, ulong:flatbuffers.Long) {
-  builder.addFieldInt64(17, ulong, builder.createLong(0, 0));
+static add_ulong(builder:flatbuffers.Builder, ulong:bigint) {
+  builder.addFieldInt64(17, ulong, BigInt('0'));
 }
 
-static adduint64(builder:flatbuffers.Builder, uint64:flatbuffers.Long) {
-  builder.addFieldInt64(18, uint64, builder.createLong(0, 0));
+static add_uint64(builder:flatbuffers.Builder, uint64:bigint) {
+  builder.addFieldInt64(18, uint64, BigInt('0'));
 }
 
-static adddouble(builder:flatbuffers.Builder, double:number) {
+static add_double(builder:flatbuffers.Builder, double:number) {
   builder.addFieldFloat64(19, double, 0.0);
 }
 
-static addfloat64(builder:flatbuffers.Builder, float64:number) {
+static add_float64(builder:flatbuffers.Builder, float64:number) {
   builder.addFieldFloat64(20, float64, 0.0);
 }
 
-static addstring(builder:flatbuffers.Builder, stringOffset:flatbuffers.Offset) {
+static add_string(builder:flatbuffers.Builder, stringOffset:flatbuffers.Offset) {
   builder.addFieldOffset(21, stringOffset, 0);
 }
 
@@ -239,30 +239,30 @@ static finishSizePrefixedTypeCheckBuffer(builder:flatbuffers.Builder, offset:fla
   builder.finish(offset, undefined, true);
 }
 
-static createTypeCheck(builder:flatbuffers.Builder, byte:number, int8:number, ubyte:number, uint8:number, bool:boolean, short:number, int16:number, ushort:number, uint16:number, int:number, int32:number, uint:number, uint32:number, float:number, float32:number, long:flatbuffers.Long, int64:flatbuffers.Long, ulong:flatbuffers.Long, uint64:flatbuffers.Long, double:number, float64:number, stringOffset:flatbuffers.Offset):flatbuffers.Offset {
+static createTypeCheck(builder:flatbuffers.Builder, byte:number, int8:number, ubyte:number, uint8:number, bool:boolean, short:number, int16:number, ushort:number, uint16:number, int:number, int32:number, uint:number, uint32:number, float:number, float32:number, long:bigint, int64:bigint, ulong:bigint, uint64:bigint, double:number, float64:number, stringOffset:flatbuffers.Offset):flatbuffers.Offset {
   TypeCheck.startTypeCheck(builder);
-  TypeCheck.addbyte(builder, byte);
-  TypeCheck.addint8(builder, int8);
-  TypeCheck.addubyte(builder, ubyte);
-  TypeCheck.adduint8(builder, uint8);
-  TypeCheck.addbool(builder, bool);
-  TypeCheck.addshort(builder, short);
-  TypeCheck.addint16(builder, int16);
-  TypeCheck.addushort(builder, ushort);
-  TypeCheck.adduint16(builder, uint16);
-  TypeCheck.addint(builder, int);
-  TypeCheck.addint32(builder, int32);
-  TypeCheck.adduint(builder, uint);
-  TypeCheck.adduint32(builder, uint32);
-  TypeCheck.addfloat(builder, float);
-  TypeCheck.addfloat32(builder, float32);
-  TypeCheck.addlong(builder, long);
-  TypeCheck.addint64(builder, int64);
-  TypeCheck.addulong(builder, ulong);
-  TypeCheck.adduint64(builder, uint64);
-  TypeCheck.adddouble(builder, double);
-  TypeCheck.addfloat64(builder, float64);
-  TypeCheck.addstring(builder, stringOffset);
+  TypeCheck.add_byte(builder, byte);
+  TypeCheck.add_int8(builder, int8);
+  TypeCheck.add_ubyte(builder, ubyte);
+  TypeCheck.add_uint8(builder, uint8);
+  TypeCheck.add_bool(builder, bool);
+  TypeCheck.add_short(builder, short);
+  TypeCheck.add_int16(builder, int16);
+  TypeCheck.add_ushort(builder, ushort);
+  TypeCheck.add_uint16(builder, uint16);
+  TypeCheck.add_int(builder, int);
+  TypeCheck.add_int32(builder, int32);
+  TypeCheck.add_uint(builder, uint);
+  TypeCheck.add_uint32(builder, uint32);
+  TypeCheck.add_float(builder, float);
+  TypeCheck.add_float32(builder, float32);
+  TypeCheck.add_long(builder, long);
+  TypeCheck.add_int64(builder, int64);
+  TypeCheck.add_ulong(builder, ulong);
+  TypeCheck.add_uint64(builder, uint64);
+  TypeCheck.add_double(builder, double);
+  TypeCheck.add_float64(builder, float64);
+  TypeCheck.add_string(builder, stringOffset);
   return TypeCheck.endTypeCheck(builder);
 }
 
@@ -320,7 +320,7 @@ unpackTo(_o: TypeCheckT): void {
 }
 }
 
-export class TypeCheckT {
+export class TypeCheckT implements flatbuffers.IGeneratedObject {
 constructor(
   public byte: number = 0,
   public int8: number = 0,
@@ -337,10 +337,10 @@ constructor(
   public uint32: number = 0,
   public float: number = 0.0,
   public float32: number = 0.0,
-  public long: flatbuffers.Long = flatbuffers.createLong(0, 0),
-  public int64: flatbuffers.Long = flatbuffers.createLong(0, 0),
-  public ulong: flatbuffers.Long = flatbuffers.createLong(0, 0),
-  public uint64: flatbuffers.Long = flatbuffers.createLong(0, 0),
+  public long: bigint = BigInt('0'),
+  public int64: bigint = BigInt('0'),
+  public ulong: bigint = BigInt('0'),
+  public uint64: bigint = BigInt('0'),
   public double: number = 0.0,
   public float64: number = 0.0,
   public string: string|Uint8Array|null = null

@@ -17,7 +17,7 @@ export default {
         app.get("/", (req: Request, res: Response) => {
             res.end(`<html>Express + TypeScript Server ${pid}</html>`);
         });
-        app.get("/spacedata/:standard?", spacedata);
+        app.all("/spacedata/:standard?", spacedata);
         app.listen(port, () => {
             console.log(`⚡️[child process ${pid} server]: Server is running at https://localhost:${port}`);
         });
