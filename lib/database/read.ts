@@ -21,6 +21,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
         }
     }
 
+    console.log(tableQuery.toString());
     const records: any = await tableQuery;
 
     for (let r = 0; r < records.length; r++) {

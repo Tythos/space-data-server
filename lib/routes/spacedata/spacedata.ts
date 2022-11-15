@@ -17,12 +17,9 @@ export default async (req: Request, res: Response, next: Function) => {
     res.send(Object.keys(standards));
   } else {
     const standard = req.params.standard.toUpperCase();
-    const allStandards: KeyValueDataStructure = standards;
-    const predicate: string = standard + "T";
-
-    const currentStandard = allStandards[standard]; //, allStandards, predicate);
-
-    res.end(JSON.stringify(await read(standard, standardsJSON[standard])));
+    const query = JSON.parse(req.query.query as string);
+    console.log(query);
+    res.end(JSON.stringify(await read(standard, standardsJSON[standard], { where: query })));
   }
 
   next();
