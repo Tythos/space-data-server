@@ -1,7 +1,7 @@
 import toposort from "toposort";
-import getID from "@/lib/utility/getID";
-import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
-import databaseConfig from "@/lib/database/config/config";
+import getID from "../../lib/utility/getID";
+import { fTCheck, refRootName, resolver } from "../../lib/database/generateTables";
+import databaseConfig from "../../lib/database/config/config";
 import knex from "knex";
 const knexConnection = knex(databaseConfig);
 let pageSize = 10;

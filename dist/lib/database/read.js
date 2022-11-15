@@ -1,7 +1,7 @@
-import databaseConfig from "@/lib/database/config/config";
+import databaseConfig from "../../lib/database/config/config";
 import knex from "knex";
-import { refRootName, resolver } from "@/lib/database/generateTables";
-import * as standards from "@/lib/standards/standards";
+import { refRootName, resolver } from "../../lib/database/generateTables";
+import * as standards from "../../lib/standards/standards";
 import { readFileSync } from "fs";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
 const knexConnection = knex(databaseConfig);

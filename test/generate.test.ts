@@ -110,6 +110,7 @@ describe('Test Data Entry', () => {
             let parentClass: any = standards[pClassName];
             let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
             let input = new parentClass[cClassName];
+
             for (let i = 0; i < total; i++) {
                 let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard, true);
                 input.RECORDS.push(newObject);

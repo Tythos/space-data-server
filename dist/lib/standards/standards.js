@@ -1,10 +1,10 @@
-import * as CAT_1 from "@/lib/class/standards/CAT/main";
+import * as CAT_1 from "../../lib/class/standards/CAT/main";
 export { CAT_1 as CAT };
-import * as OMM_1 from "@/lib/class/standards/OMM/main";
+import * as OMM_1 from "../../lib/class/standards/OMM/main";
 export { OMM_1 as OMM };
-import * as CDM_1 from "@/lib/class/standards/CDM/main";
+import * as CDM_1 from "../../lib/class/standards/CDM/main";
 export { CDM_1 as CDM };
-import * as OPM_1 from "@/lib/class/standards/OPM/main";
+import * as OPM_1 from "../../lib/class/standards/OPM/main";
 export { OPM_1 as OPM };
-import * as OEM_1 from "@/lib/class/standards/OEM/main";
+import * as OEM_1 from "../../lib/class/standards/OEM/main";
 export { OEM_1 as OEM };

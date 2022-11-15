@@ -2,6 +2,6 @@
   "watch": ["lib", "index.ts"],
   "ignore": ["packages"],
   "ext": "ts,mjs,js,json,graphql",
-  "exec": "npm run build && node ./dist/index.js",
+  "exec": "npm run build && node ./dist/server.cjs",
   "legacyWatch": true
 }
