@@ -6,7 +6,6 @@ import spacedata from "../routes/spacedata/spacedata.js";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import cors from "cors";
-
 const totalCPUs = cpus().length;
 let bingoProcess: Number = 0;
 

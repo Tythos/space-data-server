@@ -12,7 +12,7 @@ import read from "@/lib/database/read";
 //.sig file, reference file for input in database, optional encryption file
 
 
-export default (req: Request, res: Response, next: Function) => {
+export default async (req: Request, res: Response, next: Function) => {
   if (!req.params.standard) {
     res.send(Object.keys(standards));
   } else {
@@ -22,9 +22,7 @@ export default (req: Request, res: Response, next: Function) => {
 
     const currentStandard = allStandards[standard]; //, allStandards, predicate);
 
-    console.log(read(standard, standardsJSON));
-
-    res.end();
+    res.end(JSON.stringify(await read(standard, standardsJSON[standard])));
   }
 
   next();
