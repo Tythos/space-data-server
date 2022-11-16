@@ -18,21 +18,25 @@ export default async (req: Request, res: Response, next: Function) => {
     res.send(Object.keys(standards));
   } else {
     const standard = req.params.standard.toUpperCase();
-    let { query, format } = req.query;
-
-    try {
-      query = JSON.parse(query as string);
-    } catch (e) {
-      console.log(e)
-    }
-
-    let payload = await read(standard, standardsJSON[standard], query);
-    if (format === "json") {
-      payload = JSON.stringify(payload);
+    let { query, format, schema } = req.query;
+    if (schema) {
+      res.end(JSON.stringify(standardsJSON[standard], null, 4));
     } else {
-      payload = writeFB(payload)
+
+      try {
+        query = JSON.parse(query as string);
+      } catch (e) {
+        console.log(e)
+      }
+
+      let payload = await read(standard, standardsJSON[standard], query);
+      if (format === "json") {
+        payload = JSON.stringify(payload);
+      } else {
+        payload = writeFB(payload)
+      }
+      res.end(payload);
     }
-    res.end(payload);
   }
 
   next();
