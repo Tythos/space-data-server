@@ -8,7 +8,7 @@ const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "u
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 
 const knexConnection: any = knex(databaseConfig);
-const toRemoveDefault: Array<string> = ["created_at", "updated_at"];
+const toRemoveDefault: Array<string> = ["created_at", "updated_at", "fid"];
 const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: any[][], parentArray: any, tableQuery?: any, toRemove: Array<string> = toRemoveDefault, debugProperties: boolean = false) => {
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);
