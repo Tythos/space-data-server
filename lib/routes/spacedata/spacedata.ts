@@ -19,12 +19,14 @@ export default async (req: Request, res: Response, next: Function) => {
   } else {
     const standard = req.params.standard.toUpperCase();
     let { query, format } = req.query;
+
     try {
-      query = JSON.parse(req.query.query as string);
-    } catch (e) { }
+      query = JSON.parse(query as string);
+    } catch (e) {
+      console.log(e)
+    }
 
     let payload = await read(standard, standardsJSON[standard], query);
-    console.log(query)
     if (format === "json") {
       payload = JSON.stringify(payload);
     } else {

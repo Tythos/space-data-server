@@ -14,10 +14,11 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
         tableQuery = knexConnection(tableName);
         if (Array.isArray(query)) {
             for (let x = 0; x < query.length; x++) {
+
                 if (Array.isArray(query[x][1])) {
-                    console.log(query[x][0])
                     tableQuery[query[x][0]].apply(tableQuery, query[x][1]);
                 } else {
+
                     tableQuery[query[x][0]](query[x][1]);
                 }
             }
