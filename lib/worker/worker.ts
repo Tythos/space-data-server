@@ -2,7 +2,7 @@ import { InitableProcess } from "../class/process.interface";
 import express, { Express, Request, Response } from 'express';
 import http, { Server } from "http";
 import { cpus, totalmem, freemem } from "os";
-import { pid } from "process";
+import { pid, version } from "process";
 import spacedata from "../routes/spacedata/spacedata.js";
 import helmet from "helmet";
 import dotenv from "dotenv";
@@ -23,9 +23,10 @@ export default {
             <h2>Total CPU:${totalCPUs}</h2>
             <h2>Total Memory:${totalmem()}</h2>
             <h2>Free Memory:${freemem()}</h2>
+            <h2>Node Version: ${version}</h2>
             <hr/>
             <h3><a href="./spacedata">spacedata</a></h3>
-            <h3>API: spacedata/[${Object.keys(standards)}]/query=["select":["*]]&format=[json, flatbuffer]
+            <h3>API: spacedata/[${Object.keys(standards)}]/query=[["select":["*"]]]&format=[json, flatbuffer]
                   
             </html>`);
         });
