@@ -24,7 +24,7 @@ export default async (req: Request, res: Response, next: Function) => {
     } catch (e) { }
 
     let payload = await read(standard, standardsJSON[standard], query);
-
+    console.log(query)
     if (format === "json") {
       payload = JSON.stringify(payload);
     } else {
