@@ -23,7 +23,7 @@ let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON);
 const dataPath: string = "test/output/data"
 beforeAll(async () => {
     execSync(`rm -rf ${dataPath}/*.json`);
-    knexConnection = knex(databaseConfig);
+    knexConnection = await knex(databaseConfig);
     await generateDatabase(standardsArray, databaseFilename, sqlfilename, knexConnection);
 });
 
@@ -74,14 +74,15 @@ describe('Test Data Entry', () => {
         return fakerValue;
     }
 
-    const buildObject = (classProperties: KeyValueDataStructure, parentClass: any, tableName: string, jsonSchema: JSONSchema4, topLevel: Boolean = false) => {
+    const buildObject = (classProperties: KeyValueDataStructure, parentClass: any, tableName: string, jsonSchema: JSONSchema4, fid: Number) => {
         let newObject = new parentClass[`${tableName}T`];
+        newObject["fid"] = fid;
         for (let x in classProperties) {
             let resolvedProp: any = resolver(classProperties[x]?.items || classProperties[x], jsonSchema);
             if (!fTCheck(resolvedProp?.type)) {
                 newObject[x] = buildProp(resolvedProp, x);
             } else if (resolvedProp?.type === "object" && classProperties[x]?.type !== "array") {
-                newObject[x] = buildObject(resolvedProp.properties, parentClass, refRootName(resolvedProp.$$ref), jsonSchema);
+                newObject[x] = buildObject(resolvedProp.properties, parentClass, refRootName(resolvedProp.$$ref), jsonSchema, fid);
             } else if (classProperties[x]?.type === "array") {
                 newObject[x] = [];
                 for (let i = 0; i < 2; i++) {
@@ -91,7 +92,7 @@ describe('Test Data Entry', () => {
                             resolvedProp?.items || resolvedProp.properties,
                             parentClass,
                             refRootName(resolvedProp.$$ref),
-                            jsonSchema);
+                            jsonSchema, fid);
                     newObject[x].push(aObject);
                 }
             }
@@ -101,7 +102,7 @@ describe('Test Data Entry', () => {
 
     test('Enter Data For Each Data Type', async () => {
         let standard: keyof typeof standards;
-        let total = 10;
+        let total = 1_000;
 
         for (standard in standards) {
             let currentStandard = standardsJSON[standard];
@@ -111,15 +112,19 @@ describe('Test Data Entry', () => {
             let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
             let input = new parentClass[cClassName];
 
+            let batch = 0;
             for (let i = 0; i < total; i++) {
-                let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard, true);
+                if (!(i % total / 10)) {
+                    batch++;
+                }
+                let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard, batch);
                 input.RECORDS.push(newObject);
             }
 
             writeFileSync(`${dataPath}/${standard}.input.json`, JSON.stringify(input, null, 4));
             await create(tableName, input.RECORDS, currentStandard);
 
-            const output = await read(standard, currentStandard);
+            const output = await read(standard, currentStandard, [["select", "*"]]);
             expect(input.length).toEqual(output.length);
 
             writeFileSync(`${dataPath}/${tableName}.results.json`, JSON.stringify(output, null, 4));

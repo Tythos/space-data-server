@@ -1,5 +1,6 @@
 create table `CAT` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `OBJECT_NAME` text,
@@ -32,8 +33,13 @@ create index `cat_id_index` on `CAT` (
  `id`);
 
 
+create index `cat_fid_index` on `CAT` (
+ `fid`);
+
+
 create table `OMM` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `CCSDS_OMM_VERS` float,
@@ -104,8 +110,13 @@ create index `omm_id_index` on `OMM` (
  `id`);
 
 
+create index `omm_fid_index` on `OMM` (
+ `fid`);
+
+
 create table `CDM` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `CCSDS_CDM_VERS` float,
@@ -149,6 +160,10 @@ create index `cdm_id_index` on `CDM` (
  `id`);
 
 
+create index `cdm_fid_index` on `CDM` (
+ `fid`);
+
+
 create index `cdm_object1_index` on `CDM` (
  `OBJECT1`);
 
@@ -159,6 +174,7 @@ create index `cdm_object2_index` on `CDM` (
 
 create table `CDMObject` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `COMMENT` text,
@@ -257,8 +273,13 @@ create index `cdmobject_id_index` on `CDMObject` (
  `id`);
 
 
+create index `cdmobject_fid_index` on `CDMObject` (
+ `fid`);
+
+
 create table `OPM` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `CCSDS_OPM_VERS` float,
@@ -326,8 +347,13 @@ create index `opm_id_index` on `OPM` (
  `id`);
 
 
+create index `opm_fid_index` on `OPM` (
+ `fid`);
+
+
 create table `maneuverParameters` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `OPM_id` integer,
@@ -349,12 +375,17 @@ create index `maneuverparameters_id_index` on `maneuverParameters` (
  `id`);
 
 
+create index `maneuverparameters_fid_index` on `maneuverParameters` (
+ `fid`);
+
+
 create index `maneuverparameters_opm_id_index` on `maneuverParameters` (
  `OPM_id`);
 
 
 create table `OEM` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `CCSDS_OEM_VERS` float,
@@ -368,8 +399,13 @@ create index `oem_id_index` on `OEM` (
  `id`);
 
 
+create index `oem_fid_index` on `OEM` (
+ `fid`);
+
+
 create table `ephemerisDataBlock` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `OEM_id` integer,
@@ -397,12 +433,17 @@ create index `ephemerisdatablock_id_index` on `ephemerisDataBlock` (
  `id`);
 
 
+create index `ephemerisdatablock_fid_index` on `ephemerisDataBlock` (
+ `fid`);
+
+
 create index `ephemerisdatablock_oem_id_index` on `ephemerisDataBlock` (
  `OEM_id`);
 
 
 create table `ephemerisDataLine` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `ephemerisDataBlock_id` integer,
@@ -427,12 +468,17 @@ create index `ephemerisdataline_id_index` on `ephemerisDataLine` (
  `id`);
 
 
+create index `ephemerisdataline_fid_index` on `ephemerisDataLine` (
+ `fid`);
+
+
 create index `ephemerisdataline_ephemerisdatablock_id_index` on `ephemerisDataLine` (
  `ephemerisDataBlock_id`);
 
 
 create table `covarianceMatrixLine` (
  `id` integer not null,
+ `fid` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
  `ephemerisDataBlock_id` integer,
@@ -468,6 +514,10 @@ create table `covarianceMatrixLine` (
 
 create index `covariancematrixline_id_index` on `covarianceMatrixLine` (
  `id`);
+
+
+create index `covariancematrixline_fid_index` on `covarianceMatrixLine` (
+ `fid`);
 
 
 create index `covariancematrixline_ephemerisdatablock_id_index` on `covarianceMatrixLine` (

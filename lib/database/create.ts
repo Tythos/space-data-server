@@ -7,7 +7,7 @@ import databaseConfig from "@/lib/database/config/config"
 import knex from "knex";
 
 const knexConnection: any = knex(databaseConfig);
-let pageSize = 10;
+let pageSize = 200;
 
 const insertData = async (
     tableName: string,

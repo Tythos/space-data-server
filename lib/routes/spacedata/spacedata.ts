@@ -18,8 +18,7 @@ export default async (req: Request, res: Response, next: Function) => {
   } else {
     const standard = req.params.standard.toUpperCase();
     const query = JSON.parse(req.query.query as string);
-    console.log(query);
-    res.end(JSON.stringify(await read(standard, standardsJSON[standard], { where: query })));
+    res.end(JSON.stringify(await read(standard, standardsJSON[standard], query)));
   }
 
   next();

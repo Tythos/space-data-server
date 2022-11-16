@@ -5,12 +5,11 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
   roots: ["./test", "./lib"],
-  transform: { "\\.[jt]s?$": ["ts-jest", { tsconfig: { allowJs: true } }] }, // allowJs is required for get-port
-  extensionsToTreatAsEsm: [".ts"],
   modulePathIgnorePatterns: ["./test/output/data/"],
+  extensionsToTreatAsEsm: [".ts"],
+  resolver: "jest-ts-webcompat-resolver",
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: "<rootDir>",
-    '^(\\.{1,2}/.*)\\.[jt]s$': '$1',
-
+    "^(\\.{1,2}/.*)\\.js$": "$1",
   }),
 };
