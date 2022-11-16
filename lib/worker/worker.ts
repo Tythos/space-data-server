@@ -26,7 +26,7 @@ export default {
             <h2>Node Version: ${version}</h2>
             <hr/>
             <h3><a href='./spacedata/omm/?query=[["select":["*"]]]&format=json'>Example</a></h3>
-            <h3>API: spacedata/[${Object.keys(standards)}]?query=[["select":["*"]]]&format=[json, flatbuffer]
+            <h3>API: spacedata/[${Object.keys(standards)}]?query=[["select",["*"]]]&format=[json, flatbuffer]
                   
             </html>`);
         });
