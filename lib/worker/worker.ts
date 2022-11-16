@@ -16,7 +16,7 @@ export default {
         const port: String | undefined = process.env.PORT || "3000";
 
         app.get("/", (req: Request, res: Response) => {
-            res.end(`<html>Express + TypeScript Server ${pid}</html>`);
+            res.end(`<html>DigitalArsenal.io Space Data Server Version: 1ce866a2-3653-4d62-b1b2-440e8f82d3cd</html>`);
         });
         app.get("/spacedata/:standard?", spacedata);
         app.listen(port, () => {
