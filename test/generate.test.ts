@@ -114,7 +114,7 @@ describe('Test Data Entry', () => {
 
             let batch = 0;
             for (let i = 0; i < total; i++) {
-                if (!(i % total / 10)) {
+                if (!(i % 100)) {
                     batch++;
                 }
                 let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard, batch);
