@@ -10,14 +10,16 @@ import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 const knexConnection: any = knex(databaseConfig);
 const toRemoveDefault: Array<string> = ["created_at", "updated_at"];
 const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: any[][], parentArray: any, tableQuery?: any, toRemove: Array<string> = toRemoveDefault, debugProperties: boolean = false) => {
-    
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);
-        for (let x = 0; x < query.length; x++) {
-            if (Array.isArray(query[x][1])) {
-                tableQuery[query[x][0]].apply(tableQuery, query[x][1]);
-            } else {
-                tableQuery[query[x][0]](query[x][1]);
+        if (Array.isArray(query)) {
+            for (let x = 0; x < query.length; x++) {
+                if (Array.isArray(query[x][1])) {
+                    console.log(query[x][0])
+                    tableQuery[query[x][0]].apply(tableQuery, query[x][1]);
+                } else {
+                    tableQuery[query[x][0]](query[x][1]);
+                }
             }
         }
     }

@@ -8,6 +8,7 @@ import { readFileSync } from "fs";
 const sqlfilename = "./test/output/standards.sql";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
 import read from "@/lib/database/read";
+import { readFB, writeFB } from "@/lib/utility/flatbufferConversion";
 
 //.sig file, reference file for input in database, optional encryption file
 
@@ -17,11 +18,19 @@ export default async (req: Request, res: Response, next: Function) => {
     res.send(Object.keys(standards));
   } else {
     const standard = req.params.standard.toUpperCase();
-    let query;
+    let { query, format } = req.query;
     try {
       query = JSON.parse(req.query.query as string);
     } catch (e) { }
-    res.end(JSON.stringify(await read(standard, standardsJSON[standard], query)));
+
+    let payload = await read(standard, standardsJSON[standard], query);
+
+    if (format === "json") {
+      payload = JSON.stringify(payload);
+    } else {
+      payload = writeFB(payload)
+    }
+    res.end(payload);
   }
 
   next();
