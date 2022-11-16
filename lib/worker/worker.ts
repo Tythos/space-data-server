@@ -1,11 +1,13 @@
 import { InitableProcess } from "../class/process.interface";
 import express, { Express, Request, Response } from 'express';
-import http, { Server } from "http"; import { cpus } from "os";
+import http, { Server } from "http";
+import { cpus, totalmem, freemem } from "os";
 import { pid } from "process";
 import spacedata from "../routes/spacedata/spacedata.js";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import cors from "cors";
+import * as standards from "@/lib/standards/standards";
 const totalCPUs = cpus().length;
 let bingoProcess: Number = 0;
 
@@ -16,7 +18,16 @@ export default {
         const port: String | undefined = process.env.PORT || "3000";
 
         app.get("/", (req: Request, res: Response) => {
-            res.end(`<html>DigitalArsenal.io Space Data Server Version: 1ce866a2-3653-4d62-b1b2-440e8f82d3cd</html>`);
+            res.end(`<html>
+            <h2>DigitalArsenal.io Space Data Server Version: 1.0.0+1668633361148 </h2>
+            <h2>Total CPU:${totalCPUs}</h2>
+            <h2>Total Memory:${totalmem()}</h2>
+            <h2>Free Memory:${freemem()}</h2>
+            <hr/>
+            <h3><a href="./spacedata">spacedata</a></h3>
+            <h3>API: spacedata/[${Object.keys(standards)}]/query=["select":["*]]&format=[json, flatbuffer]
+                  
+            </html>`);
         });
         app.get("/spacedata/:standard?", spacedata);
         app.listen(port, () => {
