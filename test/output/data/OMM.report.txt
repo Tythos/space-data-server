@@ -1,6 +1,6 @@
 
-            OMM buffer gzip size: 4.437 kB
-            OMM json gzip size: 5.866 kB
-            OMM buffer brotli size: 3.982 kB
-            OMM json brotli size: 4.111 kB
+            OMM buffer gzip size: 4.278 kB
+            OMM json gzip size: 5.682 kB
+            OMM buffer brotli size: 3.809 kB
+            OMM json brotli size: 3.941 kB
             

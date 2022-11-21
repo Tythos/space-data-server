@@ -1,6 +1,6 @@
 
-            CAT buffer gzip size: 2.097 kB
-            CAT json gzip size: 2.309 kB
-            CAT buffer brotli size: 1.885 kB
-            CAT json brotli size: 1.797 kB
+            CAT buffer gzip size: 1.882 kB
+            CAT json gzip size: 2.068 kB
+            CAT buffer brotli size: 1.706 kB
+            CAT json brotli size: 1.646 kB
             

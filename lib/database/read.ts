@@ -8,7 +8,7 @@ const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "u
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 
 const knexConnection: any = knex(databaseConfig);
-const toRemoveDefault: Array<string> = ["created_at", "updated_at", "fid"];
+const toRemoveDefault: Array<string> = ["created_at", "updated_at"];
 const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: any[][], parentArray: any, tableQuery?: any, toRemove: Array<string> = toRemoveDefault, debugProperties: boolean = false) => {
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);
@@ -51,7 +51,6 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
 
         if (pType === "array") {
             for (let p = 0; p < parentArray.length; p++) {
-                let where: Array<any> = [];
                 const fID: string = `${tableName}_id`;
                 parentArray[p][prop] =
                     await buildStatement(
@@ -77,7 +76,10 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
             }
         }
     }
-    return parentArray;
+    return parentArray.map((pA: any) => {
+        delete pA.id;
+        return pA;
+    });
 }
 const read = async (standard: string, standardsSchema: JSONSchema4, query: Array<any> = [["select", "*"]]) => {
 
@@ -89,7 +91,7 @@ const read = async (standard: string, standardsSchema: JSONSchema4, query: Array
     let standardCollection = new parentClass[cClassName];
 
     await buildStatement(parentClass, tableName, standardsSchema, query, standardCollection.RECORDS);
-
+   
     return standardCollection;
 }
 

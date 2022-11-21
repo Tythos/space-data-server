@@ -108,8 +108,6 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
 
         table.integer("id").notNullable().unsigned().primary();
         table.index("id");
-        table.integer("fid").notNullable().unsigned().primary();
-        table.index("fid");
         table.timestamps(true, true);
         if (arrayParentReference[rootTableName]) {
             const fProperty = `${arrayParentReference[rootTableName]}_id`;

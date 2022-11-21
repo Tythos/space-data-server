@@ -24,8 +24,6 @@ create table `CAT` (
  `SIZE` float,
  `MASS` float,
  `MASS_TYPE` text,
- `USER_DEFINED_BATCH_ID` text,
- `USER_DEFINED_ROW_ID` integer,
  primary key (
  `id`));
 
@@ -98,8 +96,6 @@ create table `OMM` (
  `USER_DEFINED_EARTH_MODEL` text,
  `USER_DEFINED_EPOCH_TIMESTAMP` float,
  `USER_DEFINED_MICROSECONDS` float,
- `USER_DEFINED_BATCH_ID` text,
- `USER_DEFINED_ROW_ID` integer,
  primary key (
  `id`));
 
@@ -137,8 +133,6 @@ create table `CDM` (
  `SCREEN_EXIT_TIME` text,
  `COLLISION_PROBABILITY` float,
  `COLLISION_PROBABILITY_METHOD` text,
- `USER_DEFINED_BATCH_ID` text,
- `USER_DEFINED_ROW_ID` integer,
  `OBJECT1` integer,
  `OBJECT2` integer,
  foreign key(
@@ -324,8 +318,6 @@ create table `OPM` (
  `USER_DEFINED_EARTH_MODEL` text,
  `USER_DEFINED_EPOCH_TIMESTAMP` float,
  `USER_DEFINED_EPOCH_MICROSECONDS` float,
- `USER_DEFINED_BATCH_ID` text,
- `USER_DEFINED_ROW_ID` integer,
  primary key (
  `id`));
 
@@ -368,8 +360,6 @@ create table `OEM` (
  `CCSDS_OEM_VERS` float,
  `CREATION_DATE` text,
  `ORIGINATOR` text,
- `USER_DEFINED_BATCH_ID` text,
- `USER_DEFINED_ROW_ID` integer,
  primary key (
  `id`));
 
