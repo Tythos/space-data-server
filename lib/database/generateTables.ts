@@ -123,8 +123,7 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
             const _predicate = tableSchema[predicate];
             if (!_predicate) continue;
             const { type, minimum, maximum } = _predicate;
-
-            if (~["integer", "number"].indexOf(type)) {
+            if (~["integer", "number"].indexOf(type) || _predicate.enum) {
                 let numType = "double";
                 if (!isNaN(minimum) && !isNaN(maximum)) {
                     numType = knexNumberTypes[maximum - minimum];

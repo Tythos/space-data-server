@@ -1,6 +1,6 @@
 
-            OEM buffer gzip size: 11.24 kB
-            OEM json gzip size: 14.639 kB
-            OEM buffer brotli size: 9.72 kB
-            OEM json brotli size: 9.708 kB
+            OEM buffer gzip size: 11.106 kB
+            OEM json gzip size: 14.616 kB
+            OEM buffer brotli size: 9.688 kB
+            OEM json brotli size: 9.606 kB
             

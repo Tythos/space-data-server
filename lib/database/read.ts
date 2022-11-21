@@ -39,16 +39,19 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
 
     //determine foreignKey requirements for this level in object
     let tableDefinition = standardsSchema.definitions ? standardsSchema.definitions[tableName] : null;
+    console.log(tableDefinition)
     if (!tableDefinition) {
         throw Error(`Attempted to Run Query on non-existent table definition: ${tableName}`);
     }
-
+    let booleanProperties: Array<string> = [];
     for (let prop in tableDefinition.properties) {
         const { type } = tableDefinition.properties[prop];
         const { $$ref, type: rType } = resolver(tableDefinition.properties[prop], standardsSchema);
 
         const pType = type || rType;
-
+        if (pType === "boolean") {
+            booleanProperties.push(prop);
+        }
         if (pType === "array") {
             for (let p = 0; p < parentArray.length; p++) {
                 const fID: string = `${tableName}_id`;
@@ -76,7 +79,13 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
             }
         }
     }
+
     return parentArray.map((pA: any) => {
+        for (let x in pA) {
+            if (~booleanProperties.indexOf(x)) {
+                pA[x] = !!pA[x];
+            }
+        }
         delete pA.id;
         return pA;
     });
@@ -91,7 +100,7 @@ const read = async (standard: string, standardsSchema: JSONSchema4, query: Array
     let standardCollection = new parentClass[cClassName];
 
     await buildStatement(parentClass, tableName, standardsSchema, query, standardCollection.RECORDS);
-   
+
     return standardCollection;
 }
 
