@@ -1,1 +1,1 @@
-export default () => Math.floor(Math.random() * 1_000_000_000_000_000);
+export default () => Math.floor(performance.now() * 1_000_000_000_000);

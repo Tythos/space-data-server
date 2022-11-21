@@ -39,7 +39,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
 
     //determine foreignKey requirements for this level in object
     let tableDefinition = standardsSchema.definitions ? standardsSchema.definitions[tableName] : null;
-    console.log(tableDefinition)
+
     if (!tableDefinition) {
         throw Error(`Attempted to Run Query on non-existent table definition: ${tableName}`);
     }
@@ -60,7 +60,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
                         parentClass,
                         refRootName($$ref),
                         standardsSchema,
-                        [["select", "*"], ["where", [fID, parentArray[p].id]]]/*TODO subquery*/,
+                        [["select", "*"], ["where", [fID, parentArray[p].id]], ["orderBy", ["id"]]]/*TODO subquery*/,
                         [],
                         null,
                         [fID, ...toRemoveDefault]);

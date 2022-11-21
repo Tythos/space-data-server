@@ -50,7 +50,6 @@ describe('Test Data Entry', () => {
             const output = await read(standard, currentStandard, [["select", "*"]]);
             let sortProp = Object.keys(flatbufferInput.RECORDS[0])[0];
             const sortFunc = (a: any, b: any) => (a[sortProp] > b[sortProp]) ? 1 : -1;
-            writeFileSync(`.tmp/${tableName}.export.txt`, `${tableName}:INPUT \n\n ${JSON.stringify(flatbufferInput.RECORDS.sort(sortFunc), null, 4)}${tableName}:OUTPUT \n\n ${JSON.stringify(output.RECORDS.sort(sortFunc), null, 4)} `)
             expect(JSON.stringify(flatbufferInput.RECORDS.sort(sortFunc), null, 4)).toEqual(JSON.stringify(output.RECORDS.sort(sortFunc), null, 4));
         }
 

@@ -1,6 +1,6 @@
 
-            OPM buffer gzip size: 5.113 kB
-            OPM json gzip size: 6.693 kB
-            OPM buffer brotli size: 4.529 kB
-            OPM json brotli size: 4.539 kB
+            OPM buffer gzip size: 5.106 kB
+            OPM json gzip size: 6.647 kB
+            OPM buffer brotli size: 4.524 kB
+            OPM json brotli size: 4.497 kB
             

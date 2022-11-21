@@ -1,6 +1,6 @@
 
-            CDM buffer gzip size: 12.755 kB
-            CDM json gzip size: 18.175 kB
-            CDM buffer brotli size: 11.022 kB
-            CDM json brotli size: 11.676 kB
+            CDM buffer gzip size: 12.698 kB
+            CDM json gzip size: 18.136 kB
+            CDM buffer brotli size: 11.137 kB
+            CDM json brotli size: 11.536 kB
             
