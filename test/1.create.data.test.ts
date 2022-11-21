@@ -35,7 +35,7 @@ const { address: btcAddress } = p2pkh({
     network: networks.bitcoin,
 });
 
-let total = 10;
+let total = 1_00;
 
 if (total > 10) {
     jest.setTimeout(total * 100);
@@ -137,10 +137,13 @@ describe('Test Data Entry', () => {
             let resultBuffer: Buffer = Buffer.from(writeFB(input));
             let resultJSON: string = JSON.stringify(input, null, 4);
 
-            let signatureBufferETH: string = await ethWallet.signMessage(resultBuffer);
-            let signatureJSONETH: string = await ethWallet.signMessage(resultJSON);
-            let signatureBufferBTC: string = message.sign(resultBuffer, btcWallet.privateKey, btcWallet.compressed).toString("base64");
-            let signatureJSONBTC: string = message.sign(resultJSON, btcWallet.privateKey, btcWallet.compressed).toString("base64");
+            let resultBufferIPFSCID: string = await ipfsHash.of(resultBuffer);
+            let resultJSONIPFSCID: string = await ipfsHash.of(resultJSON);
+
+            let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
+            let signatureJSONETH: string = await ethWallet.signMessage(resultJSONIPFSCID);
+            let signatureBufferBTC: string = message.sign(resultBufferIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
+            let signatureJSONBTC: string = message.sign(resultJSONIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
 
             let outputPath = `${dataPath}/${standard}`;
 
@@ -170,14 +173,14 @@ describe('Test Data Entry', () => {
                 [`${outputPath}.input.fbs.br`, brotliData.buffer],
                 [`${outputPath}.input.fbs.eth.sig`, signatureBufferETH],
                 [`${outputPath}.input.fbs.btc.sig`, signatureBufferBTC],
-                [`${outputPath}.input.fbs.ipfs.cid.txt`, await ipfsHash.of(resultBuffer)],
+                [`${outputPath}.input.fbs.ipfs.cid.txt`, resultBufferIPFSCID],
                 //JSON
                 [`${outputPath}.input.json`, resultJSON],
                 [`${outputPath}.input.json.gz`, gzipData.json],
                 [`${outputPath}.input.json.br`, brotliData.json],
                 [`${outputPath}.input.json.eth.sig`, signatureJSONETH],
                 [`${outputPath}.input.json.btc.sig`, signatureJSONBTC],
-                [`${outputPath}.input.json.ipfs.cid.txt`, await ipfsHash.of(resultBuffer)]
+                [`${outputPath}.input.json.ipfs.cid.txt`, resultJSONIPFSCID]
             ]);
         }
 

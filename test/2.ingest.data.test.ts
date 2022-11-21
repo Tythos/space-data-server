@@ -44,9 +44,14 @@ describe('Test Data Entry', () => {
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
             let parentClass: any = standards[pClassName];
-
+            /*  TODO: 
+                - Database table to rebuild message
+                - File ID - IPFS Hash
+                - Digital Signature
+            */
             let flatbufferInput = await readFB(readFileSync(`${dataPath}/${tableName}.input.fbs`), tableName, parentClass);
             await write(tableName, flatbufferInput.RECORDS, currentStandard);
+            knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
             const output = await read(standard, currentStandard, [["select", "*"]]);
             let sortProp = Object.keys(flatbufferInput.RECORDS[0])[0];
             const sortFunc = (a: any, b: any) => (a[sortProp] > b[sortProp]) ? 1 : -1;
