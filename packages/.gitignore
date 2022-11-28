@@ -1,1 +1,2 @@
-packages/SpaceDataParsers/test/data/**/*
+SpaceDataParsers/test/**/*
+spacedatastandards.org/test/**/*
