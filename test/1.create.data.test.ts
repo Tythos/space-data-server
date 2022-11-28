@@ -42,7 +42,7 @@ if (total > 10) {
 }
 
 beforeAll(async () => {
-    execSync(`rm -rf ${dataPath}/*.*`);
+    execSync(`rm -rf ${dataPath}/*.* && mkdir -p ${dataPath}`);
 });
 
 describe('Test Data Entry', () => {
