@@ -1,2 +1,1 @@
-./output/**/*
-!.gitignore
+node_modules

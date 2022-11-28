@@ -193,7 +193,7 @@ describe('Test Data Entry', () => {
 
         //Expect all files to be present
         expect(outputPaths.map((oP: any) => { return oP[0].replace(dataPath + "/", "") }).sort()
-        ).toEqual(readdirSync(`${dataPath}/`).sort());
+        ).toEqual(readdirSync(`${dataPath}/`).filter(f => f !== ".gitignore").sort());
 
         //Expect deserialized flatbuffers to exactly equal the JSON representation
         for (let standard in standards) {
