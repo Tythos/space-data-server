@@ -3,7 +3,7 @@ import express, { Express, Request, Response } from 'express';
 import http, { Server } from "http";
 import { cpus, totalmem, freemem } from "os";
 import { pid, version } from "process";
-import spacedata from "../routes/spacedata/spacedata.js";
+import { get, post } from "../routes/spacedata/index";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -30,7 +30,10 @@ export default {
             <h3>JSON Schema: spacedata/[${Object.keys(standards)}]?schema=true</h3>
             </html>`);
         });
-        app.get("/spacedata/:standard?", spacedata);
+
+        app.get("/spacedata/:standard?", get);
+        app.post("/spacedata/:standard?", (post as any));
+
         app.listen(port, () => {
             console.log(`⚡️[child process ${pid} server]: Server is running at https://localhost:${port}`);
         });
