@@ -100,10 +100,8 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
     }
 };
 
-
 const buildTable = (rootTableName: string, tableSchema: any) => {
-    //console.log(tableSchema);
-    const { rootPredicate } = tableSchema;
+
     tSchema.createTable(rootTableName, function (table: any) {
 
         table.integer("id").notNullable().unsigned().primary();
@@ -196,6 +194,13 @@ export const generateDatabase = (
             }
         }
     }
+
+    tSchema.createTable("FILE_IMPORT_TABLE", function (table: any) {
+        //TODO: Reference https://public.ccsds.org/Pubs/357x0b1.pdf
+        table.string("CID").notNullable().primary();
+        table.string("DIGITAL_SIGNATURE");
+        table.integer("RECORD_COUNT").unsigned().notNullable();
+    });
 
     return tSchema.then(() => {
         if (sqlFilename.length) {

@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
-import { fTCheck, generateDatabase, refRootName, resolver } from "../lib/database/generateTables";
+import { generateDatabase, refRootName } from "../lib/database/generateTables";
 import knex from "knex";
 import { readFileSync, writeFileSync } from "fs";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
@@ -11,7 +11,6 @@ import databaseConfig, { filename as databaseFilename } from "@/lib/database/con
 const sqlfilename = "./test/output/standards.sql";
 import write from "@/lib/database/write";
 import read from "@/lib/database/read";
-import { execSync } from "child_process";
 import { readFB, writeFB } from "@/lib/utility/flatbufferConversion";
 const dataPath: string = "test/output/data"
 
@@ -50,12 +49,27 @@ describe('Test Data Entry', () => {
                 - Digital Signature
             */
             let flatbufferInput = await readFB(readFileSync(`${dataPath}/${tableName}.input.fbs`), tableName, parentClass);
+            let DIGITAL_SIGNATURE = await readFileSync(`${dataPath}/${tableName}.input.fbs.eth.sig`, "utf8");
+            let CID = await readFileSync(`${dataPath}/${tableName}.input.fbs.ipfs.cid.txt`, "utf8");
+
+            let inputRecord = {
+                CID,
+                DIGITAL_SIGNATURE,
+                RECORD_COUNT: flatbufferInput.RECORDS.length
+            };
+
+            await knexConnection("FILE_IMPORT_TABLE").insert([inputRecord]);
             await write(tableName, flatbufferInput.RECORDS, currentStandard);
             knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
+            
             const output = await read(standard, currentStandard, [["select", "*"]]);
             let sortProp = Object.keys(flatbufferInput.RECORDS[0])[0];
+            
             const sortFunc = (a: any, b: any) => (a[sortProp] > b[sortProp]) ? 1 : -1;
             expect(JSON.stringify(flatbufferInput.RECORDS.sort(sortFunc), null, 4)).toEqual(JSON.stringify(output.RECORDS.sort(sortFunc), null, 4));
+            
+            let inputRecordMetaData = await knexConnection("FILE_IMPORT_TABLE").select("*").where("CID", CID);
+            expect(JSON.stringify(inputRecordMetaData[0])).toEqual(JSON.stringify(inputRecord));
         }
 
     })
