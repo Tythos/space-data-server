@@ -5,10 +5,8 @@ import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
 import * as standards from "@/lib/standards/standards";
 import { readFileSync } from "fs";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
-import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
-
 const knexConnection: any = knex(databaseConfig);
-const toRemoveDefault: Array<string> = ["created_at", "updated_at", "fid"];
+const toRemoveDefault: Array<string> = ["created_at", "updated_at", "file_id"];
 const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: any[][], parentArray: any, tableQuery?: any, toRemove: Array<string> = toRemoveDefault, debugProperties: boolean = false) => {
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);

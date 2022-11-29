@@ -62,7 +62,7 @@ describe('Test Data Entry', () => {
             await write(tableName, flatbufferInput.RECORDS, currentStandard, CID);
             knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
 
-            const output = await read(standard, currentStandard, [["select", "*"], ["where", ["fid", "=", CID]]], false);
+            const output = await read(standard, currentStandard, [["select", "*"], ["where", ["file_id", "=", CID]]], false);
             let sortProp = Object.keys(flatbufferInput.RECORDS[0])[0];
 
             const sortFunc = (a: any, b: any) => (a[sortProp] > b[sortProp]) ? 1 : -1;

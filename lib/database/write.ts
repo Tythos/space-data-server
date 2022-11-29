@@ -18,7 +18,7 @@ const insertData = async (
     if (runQuery) {
         queryArray = structuredClone(queryArray);
         for (let i = 0; i < queryArray.length; i++) {
-            queryArray[i].fid = fileID;
+            queryArray[i].file_id = fileID;
         }
     }
     let nTables: Array<string> | null = null;

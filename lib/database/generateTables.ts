@@ -103,8 +103,8 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
 const buildTable = (rootTableName: string, tableSchema: any, namespace: string) => {
     tSchema.createTable(rootTableName, function (table: any) {
         if (rootTableName === namespace) {
-            table.string("fid");
-            table.index("fid");
+            table.string("file_id");
+            table.index("file_id");
         }
         table.integer("id").notNullable().unsigned().primary();
         table.index("id");
