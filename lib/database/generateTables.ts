@@ -100,10 +100,12 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
     }
 };
 
-const buildTable = (rootTableName: string, tableSchema: any) => {
-
+const buildTable = (rootTableName: string, tableSchema: any, namespace: string) => {
     tSchema.createTable(rootTableName, function (table: any) {
-
+        if (rootTableName === namespace) {
+            table.string("fid");
+            table.index("fid");
+        }
         table.integer("id").notNullable().unsigned().primary();
         table.index("id");
         table.timestamps(true, true);
@@ -159,7 +161,7 @@ const buildTable = (rootTableName: string, tableSchema: any) => {
 const buildDatabase = async (namespace: string) => {
     const nJSONSchema = finalJSON[namespace];
     for (let rootPredicate in nJSONSchema) {
-        buildTable(rootPredicate, nJSONSchema[rootPredicate]);
+        buildTable(rootPredicate, nJSONSchema[rootPredicate], namespace);
     }
 };
 

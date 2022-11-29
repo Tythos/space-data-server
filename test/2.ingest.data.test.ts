@@ -59,15 +59,15 @@ describe('Test Data Entry', () => {
             };
 
             await knexConnection("FILE_IMPORT_TABLE").insert([inputRecord]);
-            await write(tableName, flatbufferInput.RECORDS, currentStandard);
+            await write(tableName, flatbufferInput.RECORDS, currentStandard, CID);
             knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
-            
-            const output = await read(standard, currentStandard, [["select", "*"]]);
+
+            const output = await read(standard, currentStandard, [["select", "*"], ["where", ["fid", "=", CID]]], false);
             let sortProp = Object.keys(flatbufferInput.RECORDS[0])[0];
-            
+
             const sortFunc = (a: any, b: any) => (a[sortProp] > b[sortProp]) ? 1 : -1;
             expect(JSON.stringify(flatbufferInput.RECORDS.sort(sortFunc), null, 4)).toEqual(JSON.stringify(output.RECORDS.sort(sortFunc), null, 4));
-            
+
             let inputRecordMetaData = await knexConnection("FILE_IMPORT_TABLE").select("*").where("CID", CID);
             expect(JSON.stringify(inputRecordMetaData[0])).toEqual(JSON.stringify(inputRecord));
         }

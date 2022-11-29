@@ -8,7 +8,7 @@ const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "u
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 
 const knexConnection: any = knex(databaseConfig);
-const toRemoveDefault: Array<string> = ["created_at", "updated_at"];
+const toRemoveDefault: Array<string> = ["created_at", "updated_at", "fid"];
 const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: any[][], parentArray: any, tableQuery?: any, toRemove: Array<string> = toRemoveDefault, debugProperties: boolean = false) => {
     if (!tableQuery) {
         tableQuery = knexConnection(tableName);
@@ -86,11 +86,13 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
                 pA[x] = !!pA[x];
             }
         }
-        delete pA.id;
+        if (!debugProperties) {
+            delete pA.id;
+        }
         return pA;
     });
 }
-const read = async (standard: string, standardsSchema: JSONSchema4, query: Array<any> = [["select", "*"]]) => {
+const read = async (standard: string, standardsSchema: JSONSchema4, query: Array<any> = [["select", "*"]], debugProperties: boolean) => {
 
     let currentStandard = standardsJSON[standard];
     let tableName = refRootName(currentStandard.$ref);
@@ -99,7 +101,7 @@ const read = async (standard: string, standardsSchema: JSONSchema4, query: Array
     let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
     let standardCollection = new parentClass[cClassName];
 
-    await buildStatement(parentClass, tableName, standardsSchema, query, standardCollection.RECORDS);
+    await buildStatement(parentClass, tableName, standardsSchema, query, standardCollection.RECORDS, undefined, undefined, debugProperties);
 
     return standardCollection;
 }

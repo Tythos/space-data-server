@@ -5,7 +5,6 @@ import getID from "@/lib/utility/getID";
 import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
 import databaseConfig from "@/lib/database/config/config"
 import knex from "knex";
-import { deepCopy } from "ethers/lib/utils";
 const knexConnection: any = knex(databaseConfig);
 let pageSize = 200;
 
@@ -15,9 +14,12 @@ const insertData = async (
     standardsSchema: JSONSchema4,
     resultObject: KeyValueDataStructure = {},
     tableTopo: any = [],
-    runQuery: boolean = true): Promise<any> => {
+    runQuery: boolean = true, fileID: string = "no_id"): Promise<any> => {
     if (runQuery) {
-        queryArray = JSON.parse(JSON.stringify(queryArray));
+        queryArray = structuredClone(queryArray);
+        for (let i = 0; i < queryArray.length; i++) {
+            queryArray[i].fid = fileID;
+        }
     }
     let nTables: Array<string> | null = null;
     if (!tableName) {
@@ -107,11 +109,18 @@ const insertData = async (
 export const write = (
     tableName: string,
     queryArray: Array<any>,
-    standardsSchema: JSONSchema4
+    standardsSchema: JSONSchema4,
+    fileID: string = "no_id"
 ) => {
-    return insertData(tableName,
+
+    return insertData(
+        tableName,
         queryArray,
-        standardsSchema);
+        standardsSchema,
+        undefined,
+        undefined,
+        undefined,
+        fileID);
 }
 
 export default write;
