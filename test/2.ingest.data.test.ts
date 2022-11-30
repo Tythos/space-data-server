@@ -48,28 +48,16 @@ describe('Test Data Entry', () => {
                 - File ID - IPFS Hash
                 - Digital Signature
             */
-            let flatbufferInput = await readFB(readFileSync(`${dataPath}/${tableName}.input.fbs`), tableName, parentClass);
+            let flatBufferInput: Buffer = readFileSync(`${dataPath}/${tableName}.input.fbs`);
+            let flatBufferObject = await readFB(flatBufferInput, tableName, parentClass);
             let DIGITAL_SIGNATURE = await readFileSync(`${dataPath}/${tableName}.input.fbs.eth.sig`, "utf8");
             let CID = await readFileSync(`${dataPath}/${tableName}.input.fbs.ipfs.cid.txt`, "utf8");
-
-            let inputRecord = {
-                CID,
-                DIGITAL_SIGNATURE,
-                RECORD_COUNT: flatbufferInput.RECORDS.length
-            };
-
-            await knexConnection("FILE_IMPORT_TABLE").insert([inputRecord]);
-            await write(tableName, flatbufferInput.RECORDS, currentStandard, CID);
-            knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
-
+            await write(tableName, flatBufferObject.RECORDS, currentStandard, CID, DIGITAL_SIGNATURE);
             const output = await read(standard, currentStandard, [["select", "*"], ["where", ["file_id", "=", CID]]], false);
-            let sortProp = Object.keys(flatbufferInput.RECORDS[0])[0];
-
-            const sortFunc = (a: any, b: any) => (a[sortProp] > b[sortProp]) ? 1 : -1;
-            expect(JSON.stringify(flatbufferInput.RECORDS.sort(sortFunc), null, 4)).toEqual(JSON.stringify(output.RECORDS.sort(sortFunc), null, 4));
-
-            let inputRecordMetaData = await knexConnection("FILE_IMPORT_TABLE").select("*").where("CID", CID);
-            expect(JSON.stringify(inputRecordMetaData[0])).toEqual(JSON.stringify(inputRecord));
+            expect(JSON.stringify(flatBufferObject, null, 4)).toEqual(JSON.stringify(output, null, 4));
+            
+            //Sanity Check
+            expect(flatBufferInput).toEqual(writeFB(flatBufferObject));
         }
 
     })

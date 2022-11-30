@@ -11,7 +11,6 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 import { JSONSchema4 } from "json-schema";
 import { execSync } from "child_process";
 import { readFB, writeFB } from "@/lib/utility/flatbufferConversion";
-import { extname } from "path";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
 import { Wallet } from "ethers";
@@ -134,7 +133,7 @@ describe('Test Data Entry', () => {
                 input.RECORDS.push(newObject);
             }
 
-            let resultBuffer: Buffer = Buffer.from(writeFB(input));
+            let resultBuffer: Buffer = writeFB(input);
             let resultJSON: string = JSON.stringify(input, null, 4);
 
             let resultBufferIPFSCID: string = await ipfsHash.of(resultBuffer);
@@ -195,16 +194,22 @@ describe('Test Data Entry', () => {
         expect(outputPaths.map((oP: any) => { return oP[0].replace(dataPath + "/", "") }).sort()
         ).toEqual(readdirSync(`${dataPath}/`).filter(f => f !== ".gitignore").sort());
 
-        //Expect deserialized flatbuffers to exactly equal the JSON representation
+        //Expect deserialized flatbuffers to exactly equal the JSON representation, input flatbuffer to equal output
         for (let standard in standards) {
             let currentStandard = standardsJSON[standard];
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
             let parentClass: any = standards[pClassName];
             let jsonStringInput = readFileSync(`${dataPath}/${standard}.input.json`, 'utf8');
-            let flatbufferInput = readFB(readFileSync(`${dataPath}/${tableName}.input.fbs`), tableName, parentClass);
-            expect(JSON.stringify(flatbufferInput, null, 4)).toStrictEqual(jsonStringInput);
+            let flatBufferInput: Buffer = readFileSync(`${dataPath}/${tableName}.input.fbs`);
+            let flatBufferObject = readFB(flatBufferInput, tableName, parentClass);
+            let flatBufferOutput: Buffer = writeFB(flatBufferObject);
+
+            expect(JSON.stringify(flatBufferObject, null, 4)).toStrictEqual(jsonStringInput);
+
+            expect(flatBufferInput).toEqual(flatBufferOutput);
         }
+
 
     })
 });

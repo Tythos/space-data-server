@@ -106,12 +106,21 @@ const insertData = async (
     return resultObject;
 }
 
-export const write = (
+export const write = async (
     tableName: string,
     queryArray: Array<any>,
     standardsSchema: JSONSchema4,
-    fileID: string = "no_id"
+    CID: string = "no_id",
+    DIGITAL_SIGNATURE: string
 ) => {
+
+    await knexConnection("FILE_IMPORT_TABLE").insert([{
+        CID,
+        DIGITAL_SIGNATURE,
+        RECORD_COUNT: queryArray.length
+    }]);
+
+    knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
 
     return insertData(
         tableName,
@@ -120,7 +129,7 @@ export const write = (
         undefined,
         undefined,
         undefined,
-        fileID);
+        CID);
 }
 
 export default write;

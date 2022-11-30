@@ -2,11 +2,11 @@
 import * as flatbuffers from "flatbuffers";
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 
-export const writeFB = (standard: any) => {
+export const writeFB = (standard: any): Buffer => {
     const flatBufferBuilder = new flatbuffers.Builder(1);
     let packed = standard.pack(flatBufferBuilder);
     flatBufferBuilder.finish(packed);
-    return flatBufferBuilder.asUint8Array();
+    return Buffer.from(flatBufferBuilder.asUint8Array());
 }
 
 export const readFB = (fbs: any, tableName: any, parentClass: KeyValueDataStructure) => {
