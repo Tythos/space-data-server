@@ -12,4 +12,5 @@ module.exports = {
     prefix: "<rootDir>",
     "^(\\.{1,2}/.*)\\.js$": "$1",
   }),
+  
 };
