@@ -9,12 +9,11 @@
     "init": "git submodule init && git submodule update && npm run build:standards",
     "build": "cp -R ./node_modules/better-sqlite3/build/Release/* build/ && npm run build:esbuild && node ./scripts/updateVersion.mjs",
     "build:esbuild": "esbuild index.ts --external:pg-native --external:better_sqlite3 --bundle --platform=node > ./build/server.cjs",
-    "build:ipfs:test": "esbuild ./lib/ipfs/index.ts --bundle > test/dependencies/ipfs.mjs --platform=node && cp -R go-ipfs ./test/dependencies",
     "build:standards": "cd packages/spacedatastandards.org && git reset --hard && git checkout main && git pull && cd ../../ && node ./lib/utility/generator.mjs",
     "start": "npm run build && node ./build/server.cjs",
     "dev": "npm run build && PORT=3000 nodemon",
     "dev:standards": "nodemon --config nodemon.generator.json",
-    "test": "npm run build:standards && npm run build:ipfs:test && jest --watchAll --detectOpenHandles --runInBand"
+    "test": "npm run build:standards && jest --watchAll --detectOpenHandles --runInBand"
   },
   "keywords": [],
   "author": "",
