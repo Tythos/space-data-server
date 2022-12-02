@@ -12,5 +12,8 @@ module.exports = {
     prefix: "<rootDir>",
     "^(\\.{1,2}/.*)\\.js$": "$1",
   }),
-  
+  transform: {
+    "node_modules/ipfs*/.+\\.(j|t)sx?$": "ts-jest",
+  },
+  transformIgnorePatterns: ["node_modules/(?!ipfs*/.*)"],
 };

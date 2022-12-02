@@ -34,7 +34,7 @@ const { address: btcAddress } = p2pkh({
     network: networks.bitcoin,
 });
 
-let total = 1_00;
+let total = 1_0;
 
 if (total > 10) {
     jest.setTimeout(total * 100);
