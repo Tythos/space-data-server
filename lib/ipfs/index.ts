@@ -32,8 +32,22 @@ export interface IPFSControllerCollection {
 
 let ipfsDaemons: IPFSControllerCollection = {};
 
-const api = async function (path: string, args: object) {
-    let apiCall = fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}`, { method: 'POST' });
+const apiArgs = {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
+    body: ""
+};
+
+const api = async function (path: string, queryString: object, args: object = {}) {
+    args = Object.assign({}, args, apiArgs);
+    let apiCall = fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}` + (queryString ? new URLSearchParams(queryString as any) : ""), args);
     let returnObj = await (await apiCall).json();
     return returnObj;
 }
