@@ -8,6 +8,7 @@ module.exports = {
   modulePathIgnorePatterns: ["./test/output/data/"],
   extensionsToTreatAsEsm: [".ts"],
   resolver: "jest-ts-webcompat-resolver",
+  testSequencer: "./test/sequence.js",
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: "<rootDir>",
     "^(\\.{1,2}/.*)\\.js$": "$1",

@@ -1,7 +1,10 @@
 import { join } from "path";
 import { ChildProcess, exec } from 'node:child_process';
+import { promisify } from "node:util";
+const execP = promisify(exec);
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 import { mkdir, existsSync, rmdirSync, mkdirSync } from "fs";
+import { spawn, spawnSync } from "child_process";
 const ipfsPath = join(__dirname, "../../", "go-ipfs/");
 
 /* TODO
@@ -62,29 +65,24 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
 
     const env = { IPFS_PATH };
     const execPath = `${ipfsPath}ipfs`;
+    try {
+        await execP(`${execPath} init`);
+    } catch (e) { }
     const cmds = [`${execPath} config Addresses.Gateway /ip4/0.0.0.0/tcp/${gatewayPort}`,
-    `${execPath} config Addresses.API /ip4/0.0.0.0/tcp/${apiPort}`,
-    `${execPath} daemon`];
+    `${execPath} config Addresses.API /ip4/0.0.0.0/tcp/${apiPort}`];
+    await execP(
+        cmds.join("&&"),
+        { env });
 
     ipfsDaemons[gatewayPort.toString()] = {
         env,
-        process: await exec(
-            cmds.join("&&"),
-            { env }) as ChildProcess,
+        process: spawn("/home/tj/software/space-data-server/go-ipfs/ipfs", ["daemon"], { env }),
         gatewayPort,
         apiPort,
         api
     } as IPFSController;
 
     return ipfsDaemons[gatewayPort.toString()];
-}
-
-export const stopIPFS = async (gatewayPort: Number) => {
-    if (!gatewayPort) {
-        throw Error(`Unknown IPFS Instance ${gatewayPort}`);
-    } else {
-        return ipfsDaemons[gatewayPort.toString()].process.kill();
-    }
 }
 
 export const cleanUpFolder = () => { }

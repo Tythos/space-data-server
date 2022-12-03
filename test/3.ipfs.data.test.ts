@@ -1,15 +1,17 @@
-import { IPFSController, startIPFS, stopIPFS } from "@/lib/ipfs/index";
-
+import { IPFSController, startIPFS } from "@/lib/ipfs/index";
+import { ChildProcess, execSync, spawn } from "child_process";
+import delay from "delay";
 describe('Test Publishing to IPFS', () => {
     test('Post Data', async () => {
-        const gatewayPort = 5001;
+        const gatewayPort = 5002;
         const apiPort = 9002;
-        let ipfsController: IPFSController = await startIPFS(gatewayPort, apiPort);
+        let ipfsController: any = await startIPFS(gatewayPort, apiPort);
         expect(ipfsController.gatewayPort).toEqual(gatewayPort);
         expect(ipfsController.apiPort).toEqual(apiPort);
-        jest.setTimeout(120000);
+        await delay(3000);
         let swarm = await ipfsController.api(`/swarm/peers`);
         expect(swarm.Peers.length).toBeGreaterThan(0);
-        expect(await stopIPFS(5001)).toBe(true);
-    })
+        ipfsController.process.kill('SIGKILL');
+        expect(ipfsController.process.killed).toBe(true);
+    }, 5000)
 });

@@ -44,6 +44,7 @@
     "body-parser": "^1.20.0",
     "concurrently": "^7.4.0",
     "cors": "^2.8.5",
+    "delay": "^5.0.0",
     "dotenv": "^16.0.2",
     "ecpair": "^2.1.0",
     "esbuild": "^0.15.10",
