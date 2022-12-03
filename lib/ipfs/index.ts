@@ -33,7 +33,7 @@ export interface IPFSControllerCollection {
     [key: string]: IPFSController;
 }
 
-let ipfsDaemons: IPFSControllerCollection = {};
+let ipfsControllerCollection: IPFSControllerCollection = {};
 
 const apiArgs = {
     method: 'POST',
@@ -55,7 +55,7 @@ const api = async function (path: string, queryString: object, args: object = {}
     return returnObj;
 }
 
-export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 9001, folderPath: string = ""): Promise<any> => {
+export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 9001, folderPath: string = "", config:config): Promise<any> => {
 
     let IPFS_PATH = join(ipfsPath, folderPath.length ? folderPath : gatewayPort.toString());
 
@@ -65,16 +65,19 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
 
     const env = { IPFS_PATH };
     const execPath = `${ipfsPath}ipfs`;
+
     try {
         await execP(`${execPath} init`);
-    } catch (e) { }
+    } catch (e) {
+    }
+
     const cmds = [`${execPath} config Addresses.Gateway /ip4/0.0.0.0/tcp/${gatewayPort}`,
     `${execPath} config Addresses.API /ip4/0.0.0.0/tcp/${apiPort}`];
     await execP(
         cmds.join("&&"),
         { env });
 
-    ipfsDaemons[gatewayPort.toString()] = {
+    ipfsControllerCollection[gatewayPort.toString()] = {
         env,
         process: spawn("/home/tj/software/space-data-server/go-ipfs/ipfs", ["daemon"], { env }),
         gatewayPort,
@@ -82,7 +85,7 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
         api
     } as IPFSController;
 
-    return ipfsDaemons[gatewayPort.toString()];
+    return ipfsControllerCollection[gatewayPort.toString()];
 }
 
 export const cleanUpFolder = () => { }
