@@ -55,7 +55,7 @@ const api = async function (path: string, queryString: object, args: object = {}
     return returnObj;
 }
 
-export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 9001, folderPath: string = "", config:config): Promise<any> => {
+export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 9001, folderPath: string = ""): Promise<any> => {
 
     let IPFS_PATH = join(ipfsPath, folderPath.length ? folderPath : gatewayPort.toString());
 
