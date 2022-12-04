@@ -67,7 +67,7 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
     const execPath = `${ipfsPath}ipfs`;
 
     try {
-        await execP(`${execPath} init`);
+        await execP(`${execPath} init`,  { env });
     } catch (e) {
     }
 
