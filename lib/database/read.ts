@@ -1,11 +1,9 @@
 import { JSONSchema4 } from "json-schema";
-import databaseConfig from "@/lib/database/config/config"
-import knex from "knex";
-import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
+import { refRootName, resolver } from "@/lib/database/generateTables";
 import * as standards from "@/lib/standards/standards";
 import { readFileSync } from "fs";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
-const knexConnection: any = knex(databaseConfig);
+let knexConnection: any;
 const toRemoveDefault: Array<string> = ["created_at", "updated_at", "file_id"];
 const buildStatement = async (parentClass: any, tableName: string, standardsSchema: JSONSchema4, query: any[][], parentArray: any, tableQuery?: any, toRemove: Array<string> = toRemoveDefault, debugProperties: boolean = false) => {
     if (!tableQuery) {
@@ -90,17 +88,15 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
         return pA;
     });
 }
-const read = async (standard: string, standardsSchema: JSONSchema4, query: Array<any> = [["select", "*"]], debugProperties: boolean) => {
-
+const read = async (currentKnexConnection: any, standard: string, standardsSchema: JSONSchema4, query: Array<any> = [["select", "*"]], debugProperties: boolean = false) => {
+    knexConnection = currentKnexConnection;
     let currentStandard = standardsJSON[standard];
     let tableName = refRootName(currentStandard.$ref);
     let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
     let parentClass: any = standards[pClassName];
     let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
     let standardCollection = new parentClass[cClassName];
-
     await buildStatement(parentClass, tableName, standardsSchema, query, standardCollection.RECORDS, undefined, undefined, debugProperties);
-
     return standardCollection;
 }
 

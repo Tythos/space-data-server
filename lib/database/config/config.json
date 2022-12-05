@@ -1,0 +1,5 @@
+{
+  "client": "better-sqlite3",
+  "connection": { "filename": "./test/output/standards.sqlite" },
+  "useNullAsDefault": true
+}

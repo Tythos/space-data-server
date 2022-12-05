@@ -1,27 +1,27 @@
 import { describe, expect, test, beforeAll } from "@jest/globals";
-import { generateDatabase, refRootName } from "../lib/database/generateTables";
+import { generateDatabase, refRootName } from "@/lib/database/generateTables";
 import knex from "knex";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
-import * as standards from "../lib/standards/standards";
-import { faker } from '@faker-js/faker';
-import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
+import * as standards from "@/lib/standards/standards";
 import { JSONSchema4 } from "json-schema";
-import databaseConfig, { filename as databaseFilename } from "@/lib/database/config/default";
 const sqlfilename = "./test/output/standards.sql";
 import write from "@/lib/database/write";
 import read from "@/lib/database/read";
 import { readFB, writeFB } from "@/lib/utility/flatbufferConversion";
-const dataPath: string = "test/output/data"
-
+import { execSync } from "node:child_process";
+import databaseConfig from "./config/test.database.config.json"
+const dataPath: string = "test/output/data";
+const databasePath: string = "test/output/database";
 
 let knexConnection: any;
 
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON);
 
 beforeAll(async () => {
+    execSync(`rm -rf ${databasePath}/*.* && mkdir -p ${databasePath}`);
     knexConnection = await knex(databaseConfig);
-    await generateDatabase(standardsArray, databaseFilename, sqlfilename, knexConnection);
+    await generateDatabase(standardsArray, databaseConfig.connection.filename, sqlfilename, knexConnection);
 });
 
 describe('Test Generation', () => {
@@ -43,19 +43,14 @@ describe('Test Data Entry', () => {
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
             let parentClass: any = standards[pClassName];
-            /*  TODO: 
-                - Database table to rebuild message
-                - File ID - IPFS Hash
-                - Digital Signature
-            */
             let flatBufferInput: Buffer = readFileSync(`${dataPath}/${tableName}.input.fbs`);
             let flatBufferObject = await readFB(flatBufferInput, tableName, parentClass);
             let DIGITAL_SIGNATURE = await readFileSync(`${dataPath}/${tableName}.input.fbs.eth.sig`, "utf8");
             let CID = await readFileSync(`${dataPath}/${tableName}.input.fbs.ipfs.cid.txt`, "utf8");
-            await write(tableName, flatBufferObject.RECORDS, currentStandard, CID, DIGITAL_SIGNATURE);
-            const output = await read(standard, currentStandard, [["select", "*"], ["where", ["file_id", "=", CID]]], false);
+            await write(knexConnection, tableName, flatBufferObject.RECORDS, currentStandard, CID, DIGITAL_SIGNATURE);
+            const output = await read(knexConnection, standard, currentStandard, [["select", "*"], ["where", ["file_id", "=", CID]]], false);
             expect(JSON.stringify(flatBufferObject, null, 4)).toEqual(JSON.stringify(output, null, 4));
-            
+
             //Sanity Check
             expect(flatBufferInput).toEqual(writeFB(flatBufferObject));
         }

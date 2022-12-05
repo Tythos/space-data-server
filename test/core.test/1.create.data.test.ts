@@ -1,11 +1,11 @@
 import { describe, test, beforeAll } from "@jest/globals";
-import { fTCheck, refRootName, resolver } from "../lib/database/generateTables";
-import { readdirSync, readFileSync, promises, writeSync } from "fs";
+import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
+import { readdirSync, readFileSync, promises } from "fs";
 const { writeFile } = promises;
 import zlib from "node:zlib";
 const { brotliCompressSync, gzipSync } = zlib;
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
-import * as standards from "../lib/standards/standards";
+import * as standards from "@/lib/standards/standards";
 import { faker } from '@faker-js/faker';
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { JSONSchema4 } from "json-schema";
@@ -24,7 +24,7 @@ const fDT: any = faker.datatype;
 
 const { p2pkh } = payments;
 
-const dataPath: string = "test/output/data";
+const dataPath: string = `output/data`;
 const mnemonic: string = `${Array(12).join("abandon ")}about`;
 const ethWallet: Wallet = Wallet.fromMnemonic(mnemonic);
 const btcNode: any = bip32.fromSeed(mnemonicToSeedSync(mnemonic));

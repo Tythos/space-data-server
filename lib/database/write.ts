@@ -3,9 +3,7 @@ import { JSONSchema4 } from "json-schema";
 import toposort from "toposort";
 import getID from "@/lib/utility/getID";
 import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
-import databaseConfig from "@/lib/database/config/config"
-import knex from "knex";
-const knexConnection: any = knex(databaseConfig);
+let knexConnection: any;
 let pageSize = 200;
 
 const insertData = async (
@@ -107,13 +105,14 @@ const insertData = async (
 }
 
 export const write = async (
+    currentKnexConnection: any,
     tableName: string,
     queryArray: Array<any>,
     standardsSchema: JSONSchema4,
     CID: string = "no_id",
     DIGITAL_SIGNATURE: string
 ) => {
-
+    knexConnection = currentKnexConnection;
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,
