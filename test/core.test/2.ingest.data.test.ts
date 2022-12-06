@@ -2,7 +2,7 @@ import { describe, expect, test, beforeAll } from "@jest/globals";
 import { generateDatabase, refRootName } from "@/lib/database/generateTables";
 import knex from "knex";
 import { readFileSync } from "fs";
-const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
+import standardsJSON from "@/lib/standards/schemas.json"; 
 import * as standards from "@/lib/standards/standards";
 import { JSONSchema4 } from "json-schema";
 const sqlfilename = "./test/output/standards.sql";
@@ -16,7 +16,7 @@ const databasePath: string = "test/output/database";
 
 let knexConnection: any;
 
-let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON);
+let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 
 beforeAll(async () => {
     execSync(`rm -rf ${databasePath}/*.* && mkdir -p ${databasePath}`);
@@ -39,7 +39,8 @@ describe('Test Data Entry', () => {
         let standard: keyof typeof standards;
 
         for (standard in standards) {
-            let currentStandard = standardsJSON[standard];
+            if (standard !== "OMM") continue;
+            let currentStandard = standardsJSON[standard] as any;
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
             let parentClass: any = standards[pClassName];

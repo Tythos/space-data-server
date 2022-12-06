@@ -13,5 +13,5 @@ describe('Test Publishing to IPFS', () => {
         expect(swarm.Peers.length).toBeGreaterThan(0);
         ipfsController.process.kill('SIGKILL');
         expect(ipfsController.process.killed).toBe(true);
-    }, 5000)
+    }, 10000)
 });

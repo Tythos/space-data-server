@@ -171,7 +171,6 @@ export const generateDatabase = (
     sqlFilename: string = "",
     knexConnection: any
 ) => {
-
     if (existsSync(filename)) {
         rmSync(filename);
     }

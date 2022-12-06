@@ -5,7 +5,7 @@ const port: String | undefined = process.env.PORT || "3000";
 import dotenv from "dotenv";
 
 export default {
-    init: function () {
+    init: async function () {
         dotenv.config();
         app.listen(port, () => {
             console.log(`⚡️[child process ${pid} server]: Server is running at https://localhost:${port}`);

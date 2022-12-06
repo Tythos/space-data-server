@@ -1,15 +1,13 @@
 import { Request, Response } from "express";
+import * as express from "express";
 import * as standards from "@/lib/standards/standards";
 import { readFileSync } from "fs";
-import databaseConfig from "@/lib/database/config/config.json";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
 import read from "@/lib/database/read";
 import { writeFB } from "@/lib/utility/flatbufferConversion";
-import knex from "knex";
+import { connection } from "@/lib/database/connection";
 
-//.sig file, reference file for input in database, optional encryption file
-const knexConnection: any = knex(databaseConfig);
-export const get = async (req: Request, res: Response, next: Function) => {
+export const get: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
   if (!req.params.standard) {
     res.send(Object.keys(standards));
   } else {
@@ -22,10 +20,12 @@ export const get = async (req: Request, res: Response, next: Function) => {
       try {
         query = JSON.parse(query as string);
       } catch (e) {
-        console.log(e)
+        console.log(e);
+        res.status(500);
+        res.end();
       }
 
-      let payload = await read(knexConnection, standard, standardsJSON[standard], (query as Array<any>));
+      let payload = await read(connection, standard, standardsJSON[standard], (query as Array<any>));
       if (format === "json") {
         payload = JSON.stringify(payload);
       } else {

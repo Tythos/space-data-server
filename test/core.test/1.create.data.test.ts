@@ -24,7 +24,7 @@ const fDT: any = faker.datatype;
 
 const { p2pkh } = payments;
 
-const dataPath: string = `output/data`;
+const dataPath: string = `test/output/data`;
 const mnemonic: string = `${Array(12).join("abandon ")}about`;
 const ethWallet: Wallet = Wallet.fromMnemonic(mnemonic);
 const btcNode: any = bip32.fromSeed(mnemonicToSeedSync(mnemonic));
@@ -34,7 +34,7 @@ const { address: btcAddress } = p2pkh({
     network: networks.bitcoin,
 });
 
-let total = 1_0;
+let total = 10;
 
 if (total > 10) {
     jest.setTimeout(total * 100);
@@ -109,11 +109,10 @@ describe('Test Data Entry', () => {
         }
 
         return newObject;
-
     }
 
     test('Enter Data For Each Data Type', async () => {
-        let standard: keyof typeof standards
+        let standard: keyof typeof standards;
 
         let outputPaths: any = [
             [`${dataPath}/address.eth`, ethWallet.address],
