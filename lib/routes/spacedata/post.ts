@@ -5,6 +5,8 @@ import standardsJSON from "@/lib/standards/schemas.json";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
+const ethers = require('ethers');
+
 
 // Middleware function that accepts either a JSON or FlatBuffer file
 export const writeToDatabase: express.RequestHandler = async (req, res, next) => {
@@ -12,6 +14,20 @@ export const writeToDatabase: express.RequestHandler = async (req, res, next) =>
     const data = Buffer.from(req.body);
     let CID: string = await ipfsHash.of(data);
 
+    if (req.headers["signature"]) {
+        const { keyId, signature } = req.headers["signature"] as any;
+        // Get the message that was signed from the request body
+        const message = req.body.message;
+
+        // Use ethers.js to create a signature object from the signature and keyId
+        const sig = new ethers.Signature(signature, keyId);
+
+        // Verify the signature using the message and the signature object
+        const verified = sig.verifyMessage(message);
+        if (!verified || keyId !== sig.recoverAddress(message)) {
+            res.status(403).end('Invalid signature');
+        }
+    }
     // Check if the request body is a JSON object
     const standard = req.params.standard.toUpperCase();
     if (typeof req.body === "object" && !Array.isArray(req.body)) {

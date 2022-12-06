@@ -10,31 +10,16 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 import { JSONSchema4 } from "json-schema";
 import { execSync } from "child_process";
 import { writeFB } from "@/lib/utility/flatbufferConversion";
+import message from "bitcoinjs-message";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
-import { Wallet } from "ethers";
-import { networks, payments } from "bitcoinjs-lib";
-import message from "bitcoinjs-message";
-import BIP32Factory from 'bip32';
-import * as ecc from 'tiny-secp256k1';
-import { mnemonicToSeedSync } from "bip39";
-const bip32 = BIP32Factory(ecc);
-const fDT: any = faker.datatype;
+import { ethWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
 
-const { p2pkh } = payments;
+const fDT: any = faker.datatype;
 const standardsJSON: any = _standardsJSON;
 
-const mnemonic: string = `${Array(12).join("abandon ")}about`;
-const ethWallet: Wallet = Wallet.fromMnemonic(mnemonic);
-const btcNode: any = bip32.fromSeed(mnemonicToSeedSync(mnemonic));
-const btcWallet: any = btcNode.derivePath("84'/0'/0'/1");
-const { address: btcAddress } = p2pkh({
-    pubkey: btcWallet.publicKey,
-    network: networks.bitcoin,
-});
-
 export const generateData = async (total: number = 10, dataPath: string = `test/output/data`, standardsToGenerate: Array<string> = Object.keys(standards)): Promise<Array<any>[][]> => {
-    if(!dataPath) return [];
+    if (!dataPath) return [];
     execSync(`rm -rf ${dataPath}/*.* && mkdir -p ${dataPath}`);
 
     const buildProp = (prop: any, propName: string) => {
