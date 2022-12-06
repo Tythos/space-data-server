@@ -16,7 +16,7 @@ export const writeToDatabase: express.RequestHandler = async (req, res, next) =>
     const standard = req.params.standard.toUpperCase();
     if (typeof req.body === "object" && !Array.isArray(req.body)) {
         // Write the JSON object to the database
-        write(connection, standard, req.body.RECORDS, (standardsJSON as KeyValueDataStructure)[standard], CID, null);
+        write(connection, standard, req.body.RECORDS, (standardsJSON as KeyValueDataStructure)[standard], CID, "null");
     } else if (Buffer.isBuffer(req.body)) {
 
     } else {
