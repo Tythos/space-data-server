@@ -1,6 +1,6 @@
-import databaseConfig from "@/lib/database/config/config.json";
+import { config } from "@/lib/config/config";
 import knex from "knex";
 
-const connection: any = knex(databaseConfig);
+const connection: any = knex(config.database.config[config.database.config.primary]);
 
 export { connection };

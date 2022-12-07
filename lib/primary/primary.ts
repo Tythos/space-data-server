@@ -7,7 +7,7 @@ import { generateDatabase } from "../database/generateTables";
 import databaseConfig from "@/lib/database/config/config.json";
 import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
-import { existsSync, readFileSync } from "fs";
+import { existsSync } from "fs";
 import standardsJSON from "@/lib/standards/schemas.json";
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON) as unknown as Array<JSONSchema4>;
 const totalCPUs = cpus().length;
@@ -17,7 +17,6 @@ let bingoProcess: Number = 0;
 export default {
     init: async function () {
         if (!existsSync(databaseConfig.connection.filename)) {
-            console.log(databaseConfig.connection)
             await generateDatabase(standardsArray, databaseConfig.connection.filename, `./.database/standards.${databaseConfig.version}.sql`, connection);
         }
 
