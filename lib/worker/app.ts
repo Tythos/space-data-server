@@ -2,12 +2,15 @@ import { get, post } from "../routes/spacedata/index";
 import express, { Express, Request, Response } from 'express';
 import helmet from "helmet";
 import cors from "cors";
+import bodyParser from "body-parser";
 import { cpus, totalmem, freemem } from "os";
 import * as standards from "@/lib/standards/standards";
 const app: Express = express();
 const totalCPUs = cpus().length;
 import { version } from "process";
 
+app.use(bodyParser.json({ type: ['application/json', 'application/*+json'] }));
+app.use(bodyParser.raw({ inflate: true, limit: "1GB", type: '*/*' }));
 app.get("/", (req: Request, res: Response) => {
     res.end(`<html>
     <h2>DigitalArsenal.io Space Data Server Version: 1.0.0+1668633361148 </h2>

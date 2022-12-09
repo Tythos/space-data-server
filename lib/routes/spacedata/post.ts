@@ -9,9 +9,14 @@ const ethers = require('ethers');
 
 
 // Middleware function that accepts either a JSON or FlatBuffer file
-export const writeToDatabase: express.RequestHandler = async (req, res, next) => {
+export const post: express.RequestHandler = async (req, res, next) => {
+    const standard = req.params.standard.toUpperCase();
     // Convert the request body to a Buffer
-    const data = Buffer.from(req.body);
+    // const data = Buffer.from(req.body);
+    //console.log(JSON.stringify(req.body));
+    res.send({"test":"test"});
+    next();
+    /*
     let CID: string = await ipfsHash.of(data);
 
     if (req.headers["signature"]) {
@@ -29,7 +34,7 @@ export const writeToDatabase: express.RequestHandler = async (req, res, next) =>
         }
     }
     // Check if the request body is a JSON object
-    const standard = req.params.standard.toUpperCase();
+
     if (typeof req.body === "object" && !Array.isArray(req.body)) {
         // Write the JSON object to the database
         write(connection, standard, req.body.RECORDS, (standardsJSON as KeyValueDataStructure)[standard], CID, "null");
@@ -38,8 +43,5 @@ export const writeToDatabase: express.RequestHandler = async (req, res, next) =>
     } else {
         // Return an error if the request body is not a JSON object or FlatBuffer file
         next(new Error("Invalid request body"));
-    }
+    }*/
 };
-export const post = async (req: Request, res: Response, next: Function) => {
-    next();
-}
