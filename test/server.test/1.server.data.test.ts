@@ -24,27 +24,30 @@ describe("POST /endpoint", () => {
             outputStandardFiles[standard] = outputStandardFiles[standard] || {};
             outputStandardFiles[standard][extname(_file).replace(".", "")] = _file;
         });
-        for (let standard in standards) {
-            let keyConvert = new keyconvert({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as any);
-            await keyConvert.import(ethWallet.privateKey, "hex");
-            expect(await keyConvert.publicKeyHex()).toEqual(ethWallet.publicKey.slice(2,));
-            let jwkETH = await keyConvert.export("jwk", "private");
-            //@ts-ignore
-            jwkETH.crv = "secp256k1";
 
-            let ecPrivateKey = await jose.importJWK(jwkETH as any, "ES256");
-            let ecJWKExport = await jose.exportJWK(ecPrivateKey);
-            //@ts-ignore
-            ecJWKExport.crv = "K-256";
-            //@ts-ignore
-            await keyConvert.import(ecJWKExport, "jwk");
-           await keyConvert.export("hex", "public");
-            const jsonFile = JSON.parse(readFileSync(join(dataPath, outputStandardFiles[standard].json), "utf8"));
+        for (let standard in standards) {
+            let ethKeyConvert = new keyconvert({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as any);
+            await ethKeyConvert.import(ethWallet.privateKey, "hex");
+            expect(await ethKeyConvert.publicKeyHex()).toEqual(ethWallet.publicKey.slice(2,));
+            let jwkETH = await ethKeyConvert.export("jwk", "private");
+            const ecJosePrivateKey = await jose.importJWK({ ...jwkETH as any, crv: "secp256k1" }, "ES256");
+            const ecJWKExport = await jose.exportJWK(ecJosePrivateKey);
+            await ethKeyConvert.import(ecJWKExport, "jwk");
+            expect(ethWallet.publicKey.slice(2,)).toEqual(await ethKeyConvert.export("hex", "public"));
+            const jsonFileString = readFileSync(join(dataPath, outputStandardFiles[standard].json), "utf8");
+            const jsonFile = JSON.parse(jsonFileString);
+            expect(JSON.stringify(jsonFile)).toEqual(jsonFileString);
+            const jwe = await new jose
+                .GeneralSign(new TextEncoder().encode(jsonFileString))
+                .addSignature(ecJosePrivateKey)
+                .setUnprotectedHeader({ alg: "ES256K" });
+            console.log(await jwe.sign());
             const jsonResponse = await request(app)
                 .post(`/spacedata/${standard}`)
                 .send(jsonFile);
             expect(jsonResponse.status).toBe(200);
         }
+        
         /* const jsonResponse = await request(app)
             .post("/endpoint")
             .send({ foo: "bar" });

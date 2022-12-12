@@ -108,7 +108,7 @@ export const generateData = async (total: number = 10, dataPath: string = `test/
         }
 
         let resultBuffer: Buffer = writeFB(input);
-        let resultJSON: string = JSON.stringify(input, null, 4);
+        let resultJSON: string = JSON.stringify(input);
 
         let resultBufferIPFSCID: string = await ipfsHash.of(resultBuffer);
         let resultJSONIPFSCID: string = await ipfsHash.of(resultJSON);
