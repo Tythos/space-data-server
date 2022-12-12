@@ -7,7 +7,7 @@ import { extname, join } from "node:path";
 import { readFileSync } from "node:fs";
 import { ethWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
 import * as jose from "jose";
-import keyconvert from "@/packages/keyconvert";
+import { keyconvert } from "@/packages/keyconvert";
 
 beforeAll(() => {
 
@@ -26,8 +26,19 @@ describe("POST /endpoint", () => {
         });
         for (let standard in standards) {
             let keyConvert = new keyconvert({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as any);
-            await keyConvert.import(ethWallet.privateKey.slice(2,), "hex");
-            console.log(await keyConvert.publicKeyHex(), ethWallet.publicKey);
+            await keyConvert.import(ethWallet.privateKey, "hex");
+            expect(await keyConvert.publicKeyHex()).toEqual(ethWallet.publicKey.slice(2,));
+            let jwkETH = await keyConvert.export("jwk", "private");
+            //@ts-ignore
+            jwkETH.crv = "secp256k1";
+
+            let ecPrivateKey = await jose.importJWK(jwkETH as any, "ES256");
+            let ecJWKExport = await jose.exportJWK(ecPrivateKey);
+            //@ts-ignore
+            ecJWKExport.crv = "K-256";
+            //@ts-ignore
+            await keyConvert.import(ecJWKExport, "jwk");
+           await keyConvert.export("hex", "public");
             const jsonFile = JSON.parse(readFileSync(join(dataPath, outputStandardFiles[standard].json), "utf8"));
             const jsonResponse = await request(app)
                 .post(`/spacedata/${standard}`)
