@@ -5,7 +5,9 @@ import standardsJSON from "@/lib/standards/schemas.json";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
+import { sign } from "node:crypto";
 const ethers = require('ethers');
+import * as jose from "jose";
 
 
 // Middleware function that accepts either a JSON or FlatBuffer file
@@ -13,8 +15,18 @@ export const post: express.RequestHandler = async (req, res, next) => {
     const standard = req.params.standard.toUpperCase();
     // Convert the request body to a Buffer
     // const data = Buffer.from(req.body);
-    //console.log(JSON.stringify(req.body));
-    res.send({"test":"test"});
+
+    for (let s = 0; s < req.body.signatures.length; s++) {
+        let signature = req.body.signatures[s];
+        try {
+            let publicKey = await jose.importJWK(signature.header.jwk, signature.header.alg);
+            const { payload, unprotectedHeader } = await jose.generalVerify(req.body, publicKey as any);
+        } catch (e) {
+            res.status(500);
+            res.json({ error: `Signature invalid or key missing.` });
+        }
+    }
+    res.send();
     next();
     /*
     let CID: string = await ipfsHash.of(data);
