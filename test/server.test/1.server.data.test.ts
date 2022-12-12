@@ -22,6 +22,10 @@ describe("POST /endpoint", () => {
             let _file = p[0].split("/").pop();
             let standard = p[0].split("/").pop().substring(0, 3);
             outputStandardFiles[standard] = outputStandardFiles[standard] || {};
+            let fileRef = outputStandardFiles[standard][extname(_file).replace(".", "")];
+            if (fileRef) {
+                fileRef = [fileRef];
+            }
             outputStandardFiles[standard][extname(_file).replace(".", "")] = _file;
         });
 
@@ -53,13 +57,14 @@ describe("POST /endpoint", () => {
             const jweNoKey = await new jose
                 .GeneralSign(new TextEncoder().encode(jsonFileString))
                 .addSignature(ecJosePrivateKey)
-                .setUnprotectedHeader({ alg: "ES256K", })
+                .setProtectedHeader({ alg: "ES256K" })
                 .sign();
 
             const jwe = await new jose
                 .GeneralSign(new TextEncoder().encode(jsonFileString))
                 .addSignature(ecJosePrivateKey)
-                .setUnprotectedHeader({ jwk: ecJWKExportPublicKey, kid: ethWallet.address, alg: "ES256K", })
+                .setUnprotectedHeader({ kid: ethWallet.address })
+                .setProtectedHeader({ jwk: ecJWKExportPublicKey, alg: "ES256K" })
                 .sign();
 
             const { payload, unprotectedHeader } = await jose.generalVerify(jwe, ecJosePublicKey);
@@ -67,6 +72,7 @@ describe("POST /endpoint", () => {
             const jsonResponseError = await request(app)
                 .post(`/spacedata/${standard}`)
                 .send(jweNoKey);
+                
             expect(jsonResponseError.status).toBe(500);
 
             expect(jsonResponseError.body).toMatchObject({ error: `Signature invalid or key missing.` });

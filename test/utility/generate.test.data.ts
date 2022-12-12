@@ -144,15 +144,15 @@ export const generateData = async (total: number = 10, dataPath: string = `test/
             [`${outputPath}.input.fbs`, resultBuffer],
             [`${outputPath}.input.fbs.gz`, gzipData.buffer],
             [`${outputPath}.input.fbs.br`, brotliData.buffer],
-            [`${outputPath}.input.fbs.eth.sig`, signatureBufferETH],
-            [`${outputPath}.input.fbs.btc.sig`, signatureBufferBTC],
+            [`${outputPath}.input.fbs.ethsig`, signatureBufferETH],
+            [`${outputPath}.input.fbs.btcsig`, signatureBufferBTC],
             [`${outputPath}.input.fbs.ipfs.cid.txt`, resultBufferIPFSCID],
             //JSON
             [`${outputPath}.input.json`, resultJSON],
             [`${outputPath}.input.json.gz`, gzipData.json],
             [`${outputPath}.input.json.br`, brotliData.json],
-            [`${outputPath}.input.json.eth.sig`, signatureJSONETH],
-            [`${outputPath}.input.json.btc.sig`, signatureJSONBTC],
+            [`${outputPath}.input.json.ethsig`, signatureJSONETH],
+            [`${outputPath}.input.json.btcsig`, signatureJSONBTC],
             [`${outputPath}.input.json.ipfs.cid.txt`, resultJSONIPFSCID]
         ]);
     }

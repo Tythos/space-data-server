@@ -15,45 +15,20 @@ export const post: express.RequestHandler = async (req, res, next) => {
     const standard = req.params.standard.toUpperCase();
     // Convert the request body to a Buffer
     // const data = Buffer.from(req.body);
-
+    let verifiedMessages: KeyValueDataStructure = {};
     for (let s = 0; s < req.body.signatures.length; s++) {
         let signature = req.body.signatures[s];
         try {
-            let publicKey = await jose.importJWK(signature.header.jwk, signature.header.alg);
-            const { payload, unprotectedHeader } = await jose.generalVerify(req.body, publicKey as any);
+            if (signature.header.kid) {
+                let pHeader = JSON.parse((Buffer.from(signature.protected, "base64")).toString());
+                let publicKey = await jose.importJWK(pHeader.jwk, pHeader.alg);
+                verifiedMessages[signature.header.kid] = await jose.generalVerify(req.body, publicKey as any);
+            }
+            res.json(Object.keys(verifiedMessages));
         } catch (e) {
             res.status(500);
             res.json({ error: `Signature invalid or key missing.` });
         }
     }
-    res.send();
     next();
-    /*
-    let CID: string = await ipfsHash.of(data);
-
-    if (req.headers["signature"]) {
-        const { keyId, signature } = req.headers["signature"] as any;
-        // Get the message that was signed from the request body
-        const message = req.body.message;
-
-        // Use ethers.js to create a signature object from the signature and keyId
-        const sig = new ethers.Signature(signature, keyId);
-
-        // Verify the signature using the message and the signature object
-        const verified = sig.verifyMessage(message);
-        if (!verified || keyId !== sig.recoverAddress(message)) {
-            res.status(403).end('Invalid signature');
-        }
-    }
-    // Check if the request body is a JSON object
-
-    if (typeof req.body === "object" && !Array.isArray(req.body)) {
-        // Write the JSON object to the database
-        write(connection, standard, req.body.RECORDS, (standardsJSON as KeyValueDataStructure)[standard], CID, "null");
-    } else if (Buffer.isBuffer(req.body)) {
-
-    } else {
-        // Return an error if the request body is not a JSON object or FlatBuffer file
-        next(new Error("Invalid request body"));
-    }*/
 };
