@@ -72,13 +72,13 @@ describe("POST /endpoint", () => {
             const jsonResponseError = await request(app)
                 .post(`/spacedata/${standard}`)
                 .send(jweNoKey);
-                
+
             expect(jsonResponseError.status).toBe(500);
 
-            expect(jsonResponseError.body).toMatchObject({ error: `Signature invalid or key missing.` });
+            expect(jsonResponseError.body.error).toMatch(`Signature invalid or key missing.`);
             const jsonResponse = await request(app)
                 .post(`/spacedata/${standard}`)
-                .send(jwe)
+                .send(jwe);
             expect(jsonResponse.status).toBe(200);
         }
 

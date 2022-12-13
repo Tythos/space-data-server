@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
-import defaultConfig from "./config.json";
+import defaultConfig from "./defaultConfig.json";
 
 let _config: any;
 
