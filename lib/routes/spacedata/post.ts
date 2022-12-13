@@ -16,27 +16,30 @@ if (!existsSync(config.filesystem.path)) {
 }
 
 const checkAccount = (ethAddress: string) => {
+    ethAddress = ethAddress.toLowerCase();
     return true;
 }
 
-const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, extension: string) => {
+const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, extension: string, signature: string) => {
     const filePath = join(config.filesystem.path, standard, ethereumAddress.toLowerCase());
     const fileName = await ipfsHash.of(vM.payload);
 
     if (!existsSync(filePath)) {
         await mkdir(filePath, { recursive: true });
     }
-    await writeFile(`${filePath}/${fileName}.${extension}`, vM.payload);
+    let completePath = `${filePath}/${fileName}.${extension}`;
+    await writeFile(completePath, vM.payload);
+    await writeFile(completePath + ".sig", signature);
 }
 
 const verifySig = (msg: any, ethAddress: any, signature: any) => {
-    return (ethAddress.toLowerCase() === ethers.utils.verifyMessage(msg, signature).toLowerCase())
+    return checkAccount(ethAddress) && (ethAddress.toLowerCase() === ethers.utils.verifyMessage(msg, signature).toLowerCase())
 }
 
 const checkToken = async (req: express.Request, useRaw: boolean = true) => {
     const { address, body } = await Web3Token.verify((req.headers["authorization"] || "").toString());
     let [CID, SIG] = body.statement.split(":");
-    return checkAccount(address) && verifySig(CID, address, SIG) ? address : false;
+    return verifySig(CID, address, SIG) ? { address, signature: SIG } : {};
 }
 
 const sendError = (e: any, res: express.Response) => {
@@ -57,7 +60,6 @@ export const post: express.RequestHandler = async (req, res, next) => {
 
             for (let s = 0; s < req.body.signatures.length; s++) {
                 let signature = req.body.signatures[s];
-                let ipfsCID = await ipfsHash.of((req as any).rawBody);
                 if (!signature.header) {
                     sendError("Unauthorized", res);
                     return;
@@ -70,7 +72,7 @@ export const post: express.RequestHandler = async (req, res, next) => {
                         verifiedMessages[kid] = await jose.generalVerify(req.body, publicKey as any);
 
                         if (verifySig(await ipfsHash.of(verifiedMessages[kid].payload), kid, ethSignature)) {
-                            await writeToDisk(verifiedMessages[signature.header.kid], standard, signature.header.kid, "json");
+                            await writeToDisk(verifiedMessages[signature.header.kid], standard, signature.header.kid, "json", ethSignature);
                         } else {
                             sendError("Bad ETH Signature", res);
                         }
@@ -90,18 +92,18 @@ export const post: express.RequestHandler = async (req, res, next) => {
                 }
             }
         } else if (req.headers.authorization) {
-            let address = await checkToken(req);
+            let { address, signature } = await checkToken(req);
             if (address) {
-                await writeToDisk({ payload: (req as any).rawBody }, standard, address, "json");
+                await writeToDisk({ payload: (req as any).rawBody }, standard, address, "json", signature);
                 res.json({})
             } else {
                 sendError("Unauthorized", res);
             }
         }
     } else if (Buffer.isBuffer(req.body)) {
-        let address = await checkToken(req, false);
+        let { address, signature } = await checkToken(req, false);
         if (address) {
-            await writeToDisk({ payload: req.body }, standard, address, "fbs");
+            await writeToDisk({ payload: req.body }, standard, address, "fbs", signature);
             res.json({});
         } else {
             sendError("Unauthorized", res);

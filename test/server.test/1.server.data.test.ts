@@ -105,7 +105,7 @@ describe("POST /endpoint", () => {
             const ipfsCIDFBS = await ipfsHash.of(flatbuffer);
 
             statement = `${ipfsCIDFBS}:${await ethWallet.signMessage(ipfsCIDFBS)}`;
-            let [CID, SIG] = statement.split(":");
+    
             const fbToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
                 statement,
                 expires_in: '1 day',
