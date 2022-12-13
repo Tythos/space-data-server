@@ -1,12 +1,10 @@
 import * as express from "express";
 import write from "@/lib/database/write";
-import { connection } from "@/lib/database/connection";
 import standardsJSON from "@/lib/standards/schemas.json";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
-import { sign } from "node:crypto";
-const ethers = require('ethers');
+import * as ethers from "ethers";
 import Web3Token from "web3-token";
 import * as jose from "jose";
 import { exists, existsSync, mkdirSync } from "node:fs";
@@ -31,9 +29,14 @@ const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, e
     await writeFile(`${filePath}/${fileName}.${extension}`, vM.payload);
 }
 
+const verifySig = (msg: any, ethAddress: any, signature: any) => {
+    return (ethAddress.toLowerCase() === ethers.utils.verifyMessage(msg, signature).toLowerCase())
+}
+
 const checkToken = async (req: express.Request, useRaw: boolean = true) => {
     const { address, body } = await Web3Token.verify((req.headers["authorization"] || "").toString());
-    return checkAccount(address) && body.statement === await ipfsHash.of(useRaw ? (req as any).rawBody : req.body) ? address : false;
+    let [CID, SIG] = body.statement.split(":");
+    return checkAccount(address) && verifySig(CID, address, SIG) ? address : false;
 }
 
 const sendError = (e: any, res: express.Response) => {
@@ -51,17 +54,30 @@ export const post: express.RequestHandler = async (req, res, next) => {
     if (!Buffer.isBuffer(req.body) && typeof req.body === "object" && !Array.isArray(req.body)) {
         if (req.body?.signatures) {
             let verifiedMessages: KeyValueDataStructure = {};
+
             for (let s = 0; s < req.body.signatures.length; s++) {
                 let signature = req.body.signatures[s];
+                let ipfsCID = await ipfsHash.of((req as any).rawBody);
+                if (!signature.header) {
+                    sendError("Unauthorized", res);
+                    return;
+                }
+                let { kid, signature: ethSignature } = signature.header;
                 try {
-                    if (signature.header?.kid && checkAccount(signature.header.kid)) {
+                    if (signature.header?.kid && checkAccount(kid)) {
                         let pHeader = JSON.parse((Buffer.from(signature.protected, "base64")).toString());
                         let publicKey = await jose.importJWK(pHeader.jwk, pHeader.alg);
-                        verifiedMessages[signature.header.kid] = await jose.generalVerify(req.body, publicKey as any);
-                        await writeToDisk(verifiedMessages[signature.header.kid], standard, signature.header.kid, "json");
+                        verifiedMessages[kid] = await jose.generalVerify(req.body, publicKey as any);
+
+                        if (verifySig(await ipfsHash.of(verifiedMessages[kid].payload), kid, ethSignature)) {
+                            await writeToDisk(verifiedMessages[signature.header.kid], standard, signature.header.kid, "json");
+                        } else {
+                            sendError("Bad ETH Signature", res);
+                        }
 
                         /**
                          * Write each file to disk as in folder {root}/{standard}/{ethAddress}/{ipfshash}.{filetype}
+                         * ipfsHash.sig
                          */
 
                         res.json(Object.keys(verifiedMessages));

@@ -6,6 +6,7 @@ import * as standards from "@/lib/standards/standards";
 import { extname, join } from "node:path";
 import { readFileSync, rmdirSync, rmSync } from "node:fs";
 import { ethWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
+import * as ethers from "ethers";
 import * as jose from "jose";
 import { keyconvert } from "@/packages/keyconvert";
 import Web3Token from 'web3-token';
@@ -67,7 +68,7 @@ describe("POST /endpoint", () => {
             const jwe = await new jose
                 .GeneralSign(fileBuff)
                 .addSignature(ecJosePrivateKey)
-                .setUnprotectedHeader({ kid: ethWallet.address })
+                .setUnprotectedHeader({ kid: ethWallet.address, signature: await ethWallet.signMessage(await ipfsHash.of(fileBuff)) })
                 .setProtectedHeader({ jwk: ecJWKExportPublicKey, alg: "ES256K" })
                 .sign();
 
@@ -85,8 +86,11 @@ describe("POST /endpoint", () => {
                 .send(jwe);
             expect(jsonResponse.status).toBe(200);
 
+            const ipfsCIDJSON = await ipfsHash.of(fileBuff);
+            let statement = `${ipfsCIDJSON}:${await ethWallet.signMessage(ipfsCIDJSON)}`;
+
             const jsonToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
-                statement: await ipfsHash.of(fileBuff),
+                statement,
                 expires_in: '1 day',
                 nonce: performance.now(),
             });
@@ -98,9 +102,12 @@ describe("POST /endpoint", () => {
             expect(jsonResponseEIP4361.status).toBe(200);
 
             const flatbuffer: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
+            const ipfsCIDFBS = await ipfsHash.of(flatbuffer);
 
+            statement = `${ipfsCIDFBS}:${await ethWallet.signMessage(ipfsCIDFBS)}`;
+            let [CID, SIG] = statement.split(":");
             const fbToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
-                statement: await ipfsHash.of(flatbuffer),
+                statement,
                 expires_in: '1 day',
                 nonce: performance.now(),
             });
@@ -117,7 +124,34 @@ describe("POST /endpoint", () => {
 });
 
 afterAll(() => {
-
-
+    /*
+        const ipfsCIDJSON = await ipfsHash.of(fileBuff);
+        const jsonToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
+            statement: `${ipfsCIDJSON}:${await ethWallet.signMessage(ipfsCIDJSON)}`,
+            expires_in: '1 day',
+            nonce: performance.now(),
+        });
+    
+        const jsonResponseEIP4361 = await request(app)
+            .post(`/spacedata/${standard}`)
+            .set("authorization", jsonToken)
+            .send(jsonFile);
+        expect(jsonResponseEIP4361.status).toBe(200);
+    
+        const flatbuffer: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
+        const ipfsCIDFBS: any = await ipfsHash.of(flatbuffer);
+        const fbToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
+            statement: `${ipfsCIDFBS}:${await ethWallet.signMessage(ipfsCIDFBS)}`,
+            expires_in: '1 day',
+            nonce: performance.now(),
+        });
+    
+        const fbResponseEIP4361 = await request(app)
+            .post(`/spacedata/${standard}`)
+            .set("authorization", fbToken)
+            .set('Content-Type', 'application/octet-stream')
+            .send(flatbuffer);
+        expect(fbResponseEIP4361.status).toBe(200);
+    */
 
 })
