@@ -10,7 +10,8 @@ import * as jose from "jose";
 import { exists, existsSync, mkdirSync } from "node:fs";
 import { writeFile, mkdir } from "node:fs/promises";
 import { config } from "@/lib/config/config"
-import { join } from "path"
+import { join } from "path";
+
 if (!existsSync(config.filesystem.path)) {
     mkdirSync(config.filesystem.path);
 }

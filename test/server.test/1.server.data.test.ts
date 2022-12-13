@@ -13,10 +13,12 @@ import Web3Token from 'web3-token';
 import { config } from "@/lib/config/config"
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
+import { init, getQueue, deinit } from "@/lib/ingest/index";
 
 const outputStandardFiles: any = {};
 
 beforeAll(async () => {
+    await init(config.filesystem.path);
     const outputPaths = await generateData(10, dataPath);
     outputPaths.forEach((p: any) => {
         let _file = p[0].split("/").pop();
@@ -32,6 +34,7 @@ beforeAll(async () => {
 
 describe("POST /endpoint", () => {
     rmSync(config.filesystem.path, { recursive: true, force: true });
+
     it("should accept JSON files and save them to the database", async () => {
         for (let standard in standards) {
             let ethKeyConvert = new keyconvert({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as any);
@@ -105,7 +108,7 @@ describe("POST /endpoint", () => {
             const ipfsCIDFBS = await ipfsHash.of(flatbuffer);
 
             statement = `${ipfsCIDFBS}:${await ethWallet.signMessage(ipfsCIDFBS)}`;
-    
+
             const fbToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
                 statement,
                 expires_in: '1 day',
@@ -119,11 +122,12 @@ describe("POST /endpoint", () => {
                 .send(flatbuffer);
             expect(fbResponseEIP4361.status).toBe(200);
         }
-
+        console.log(getQueue());
     }, 10000);
 });
 
-afterAll(() => {
+afterAll(async () => {
+    await deinit();
     /*
         const ipfsCIDJSON = await ipfsHash.of(fileBuff);
         const jsonToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
