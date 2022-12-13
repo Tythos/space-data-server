@@ -33,7 +33,7 @@ beforeAll(async () => {
 })
 
 describe("POST /endpoint", () => {
-    rmSync(config.filesystem.path, { recursive: true, force: true });
+    //rmSync(config.filesystem.path, { recursive: true, force: true });
 
     it("should accept JSON files and save them to the database", async () => {
         for (let standard in standards) {
