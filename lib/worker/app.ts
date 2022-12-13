@@ -9,7 +9,11 @@ const app: Express = express();
 const totalCPUs = cpus().length;
 import { version } from "process";
 
-app.use(bodyParser.json({ type: ['application/json', 'application/*+json'] }));
+app.use(bodyParser.json({
+    type: ['application/json', 'application/*+json'], verify: (req, res, buf) => {
+        (req as any).rawBody = buf;
+    }
+}));
 app.use(bodyParser.raw({ inflate: true, limit: "1GB", type: '*/*' }));
 app.get("/", (req: Request, res: Response) => {
     res.end(`<html>
