@@ -4,11 +4,16 @@ import { cpus } from "os";
 import { pid } from "process";
 import { ChildProcess } from 'node:child_process';
 import { generateDatabase } from "../database/generateTables";
-import databaseConfig from "@/lib/database/config/config.json";
+import { config } from "@/lib/config/config"
 import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
 import { existsSync } from "fs";
 import standardsJSON from "@/lib/standards/schemas.json";
+import { init as ingestInit } from "@/lib/ingest/index";
+import { join } from "path";
+
+const databaseConfig = config.database.config[config.database.config.primary];
+
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON) as unknown as Array<JSONSchema4>;
 const totalCPUs = cpus().length;
 
@@ -20,6 +25,12 @@ export default {
             await generateDatabase(standardsArray, databaseConfig.connection.filename, `./.database/standards.${databaseConfig.version}.sql`, connection);
         }
 
+        try {
+            await ingestInit(config.filesystem.path);
+            console.log(`${new Date().toISOString()} - Ingest service started in folder ${join(process.cwd(), config.filesystem.path)}`)
+        } catch (e) {
+            console.log(e);
+        }
         console.log(`Number of CPUs is ${totalCPUs}`);
         console.log(`Master ${pid} is running`);
 

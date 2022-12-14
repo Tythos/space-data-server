@@ -34,7 +34,7 @@ describe('Test Data Entry', () => {
             let flatBufferObject = readFB(flatBufferInput, tableName, parentClass);
             let flatBufferOutput: Buffer = writeFB(flatBufferObject);
 
-            expect(JSON.stringify(flatBufferObject, null, 4)).toStrictEqual(jsonStringInput);
+            expect(JSON.stringify(flatBufferObject)).toStrictEqual(jsonStringInput);
 
             expect(flatBufferInput).toEqual(flatBufferOutput);
         }
