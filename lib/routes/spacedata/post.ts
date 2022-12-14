@@ -1,5 +1,4 @@
 import * as express from "express";
-import write from "@/lib/database/write";
 import standardsJSON from "@/lib/standards/schemas.json";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 //@ts-ignore
@@ -7,7 +6,7 @@ import ipfsHash from "pure-ipfs-only-hash";
 import * as ethers from "ethers";
 import Web3Token from "web3-token";
 import * as jose from "jose";
-import { exists, existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { writeFile, mkdir } from "node:fs/promises";
 import { config } from "@/lib/config/config"
 import { join } from "path";
@@ -33,7 +32,7 @@ const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, e
     await writeFile(completePath + ".sig", signature);
 }
 
-const verifySig = (msg: any, ethAddress: any, signature: any) => {
+export const verifySig = (msg: any, ethAddress: any, signature: any) => {
     return checkAccount(ethAddress) && (ethAddress.toLowerCase() === ethers.utils.verifyMessage(msg, signature).toLowerCase())
 }
 

@@ -19,7 +19,7 @@ const outputStandardFiles: any = {};
 
 beforeAll(async () => {
     await init(config.filesystem.path);
-    const outputPaths = await generateData(10, dataPath);
+    const outputPaths = await generateData(1, dataPath);
     outputPaths.forEach((p: any) => {
         let _file = p[0].split("/").pop();
         let standard = p[0].split("/").pop().substring(0, 3);
@@ -33,7 +33,7 @@ beforeAll(async () => {
 })
 
 describe("POST /endpoint", () => {
-    //rmSync(config.filesystem.path, { recursive: true, force: true });
+    rmSync(config.filesystem.path, { recursive: true, force: true });
 
     it("should accept JSON files and save them to the database", async () => {
         for (let standard in standards) {
@@ -122,8 +122,7 @@ describe("POST /endpoint", () => {
                 .send(flatbuffer);
             expect(fbResponseEIP4361.status).toBe(200);
         }
-        console.log(getQueue());
-    }, 10000);
+    }, 20000);
 });
 
 afterAll(async () => {
