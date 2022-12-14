@@ -110,12 +110,12 @@ async function processData() {
         } else {
             input = readFB(inputFile, tableName, parentClass);
         }
+        let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
 
-        if (currentStandard) {
-            //write(connection, standard, input.RECORDS, currentStandard, signedFile.split, inputSignature)
+        if (!currentCID) {
+            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature);
         }
     }
-
 
 }
 
