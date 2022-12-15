@@ -4,3 +4,7 @@
 [submodule "packages/SpaceDataParsers"]
 	path = packages/SpaceDataParsers
 	url = git@github.com:DigitalArsenal/SpaceDataParsers.git
+[submodule "./packages/spacedatastandards.org/"]
+	url = https://github.com/DigitalArsenal/spacedatastandards.org.git
+[submodule "./packages/SpaceDataParsers"]
+	url = https://github.com/DigitalArsenal/SpaceDataParsers.git
