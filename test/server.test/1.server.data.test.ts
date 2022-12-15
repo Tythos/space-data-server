@@ -135,40 +135,13 @@ describe("POST /endpoint", () => {
                 .set('Content-Type', 'application/octet-stream')
                 .send(flatbuffer);
             expect(ufbResponseEIP4361.status).toBe(401);
+
+            rmSync(config.data.ingest, { recursive: true, force: true });
         }
     }, 20000);
 });
 
 afterAll(async () => {
     await deinit();
-    /*
-        const ipfsCIDJSON = await ipfsHash.of(fileBuff);
-        const jsonToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
-            statement: `${ipfsCIDJSON}:${await ethWallet.signMessage(ipfsCIDJSON)}`,
-            expires_in: '1 day',
-            nonce: performance.now(),
-        });
-    
-        const jsonResponseEIP4361 = await request(app)
-            .post(`/spacedata/${standard}`)
-            .set("authorization", jsonToken)
-            .send(jsonFile);
-        expect(jsonResponseEIP4361.status).toBe(200);
-    
-        const flatbuffer: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
-        const ipfsCIDFBS: any = await ipfsHash.of(flatbuffer);
-        const fbToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
-            statement: `${ipfsCIDFBS}:${await ethWallet.signMessage(ipfsCIDFBS)}`,
-            expires_in: '1 day',
-            nonce: performance.now(),
-        });
-    
-        const fbResponseEIP4361 = await request(app)
-            .post(`/spacedata/${standard}`)
-            .set("authorization", fbToken)
-            .set('Content-Type', 'application/octet-stream')
-            .send(flatbuffer);
-        expect(fbResponseEIP4361.status).toBe(200);
-    */
-
-})
+    rmSync(config.data.ingest, { recursive: true, force: true });
+});

@@ -1,6 +1,6 @@
 {
   "data": {
-    "ingest": ".data"
+    "ingest": ".testdata"
   },
   "trustedAddresses": ["0x9858effd232b4033e47d90003d41ec34ecaeda94"],
   "database": {
