@@ -8,7 +8,7 @@ import { readFileSync, rmdirSync, rmSync } from "node:fs";
 import { ethWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
 import * as ethers from "ethers";
 import * as jose from "jose";
-import { keyconvert } from "@/packages/keyconvert";
+import { keyconvert, pubKeyToEthAddress } from "@/packages/keyconvert";
 import Web3Token from 'web3-token';
 import { config } from "@/lib/config/config"
 //@ts-ignore
@@ -48,7 +48,7 @@ describe("POST /endpoint", () => {
 
             const ecJWKExportPrivateKey = await jose.exportJWK(ecJosePrivateKey);
             const ecJWKExportPublicKey = await jose.exportJWK(ecJosePublicKey);
-
+ 
             await ethKeyConvert.import(ecJWKExportPrivateKey, "jwk");
             expect(ethWallet.publicKey.slice(2,)).toEqual(await ethKeyConvert.export("hex", "public"));
             const jsonFileString = readFileSync(join(dataPath, outputStandardFiles[standard].json), "utf8");

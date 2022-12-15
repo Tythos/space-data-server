@@ -9,7 +9,7 @@ import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
 import { existsSync } from "fs";
 import standardsJSON from "@/lib/standards/schemas.json";
-import { init as ingestInit } from "@/lib/ingest/index";
+import { init as ingestInit, deinit as ingestDeinit } from "@/lib/ingest/index";
 import { join } from "path";
 
 const databaseConfig = config.database.config[config.database.config.primary];
@@ -57,6 +57,6 @@ export default {
         });
     },
     deinit: function () {
-
+        ingestDeinit();
     }
 } as InitableProcess

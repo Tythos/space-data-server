@@ -33,7 +33,8 @@ const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, e
 }
 
 export const verifySig = (msg: any, ethAddress: any, signature: any) => {
-    return checkAccount(ethAddress) && (ethAddress.toLowerCase() === ethers.utils.verifyMessage(msg, signature).toLowerCase())
+    let signingEthAccount = ethers.utils.verifyMessage(msg, signature).toLowerCase();
+    return (checkAccount(ethAddress) && (ethAddress.toLowerCase() === signingEthAccount)) ? signingEthAccount : ""
 }
 
 const checkToken = async (req: express.Request, useRaw: boolean = true) => {
@@ -70,7 +71,7 @@ export const post: express.RequestHandler = async (req, res, next) => {
                         let pHeader = JSON.parse((Buffer.from(signature.protected, "base64")).toString());
                         let publicKey = await jose.importJWK(pHeader.jwk, pHeader.alg);
                         verifiedMessages[kid] = await jose.generalVerify(req.body, publicKey as any);
-
+      
                         if (verifySig(await ipfsHash.of(verifiedMessages[kid].payload), kid, ethSignature)) {
                             await writeToDisk(verifiedMessages[signature.header.kid], standard, signature.header.kid, "json", ethSignature);
                         } else {

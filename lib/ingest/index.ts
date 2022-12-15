@@ -87,15 +87,12 @@ async function processData() {
         let inputFile: any = await readFile(signedFile);
         let inputSignature: any = await readFile(signatureFile, "utf8");
         let input;
-
-        if (!verifySig(CID, ethAddress, inputSignature)) {
+        let signedEthAddress = verifySig(CID, ethAddress, inputSignature);
+        if (!signedEthAddress) {
             console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid.`);
-            returnFunc();
-            return;
         }
 
         if (extname(signedFile) === ".json") {
-            //console.warn(`${CID} ${new Date().toISOString()} importing ${signedFile}. Importing JSON Is Not Recommended.`)
             input = new parentClass[cClassName];
             try {
                 inputFile = JSON.parse(inputFile.toString("utf8"));
