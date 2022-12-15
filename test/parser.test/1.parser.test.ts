@@ -1,0 +1,39 @@
+import { config } from "@/lib/config/config"
+import { readFileSync } from "fs";
+import { parseCSV } from "@/lib/ingest/parsers/celestrak/omm";
+import OMMSchema from "@/lib/class/standards/OMM/main.schema.json"
+import { OMMCOLLECTIONT } from "@/lib/class/standards/OMM/OMMCOLLECTION";
+import * as standards from "@/lib/standards/standards";
+import { readFB, writeFB } from "@/lib/utility/flatbufferConversion"
+import { OMMT } from "@/lib/class/standards/OMM/OMM";
+import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
+const outputStandardFiles: any = {};
+
+beforeAll(async () => {
+
+})
+
+describe("Parse Data Into Flatbuffers", () => {
+    it("should read the celestrak csv file", async () => {
+        const celestrakTemplate = (format: string) => `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=${format}`;
+
+        const ommCSVFile: string = await fetch(celestrakTemplate("csv")).then(response => response.text());
+        const ommCollection: OMMCOLLECTIONT = await parseCSV(ommCSVFile, OMMSchema);
+        const ommJSON: Array<any> = await fetch(celestrakTemplate("json")).then(response => response.json());
+
+        let oFBS = writeFB(ommCollection);
+        let iFBS = readFB(oFBS, "OMM", standards["OMM"]);
+
+        expect(JSON.stringify(ommCollection.RECORDS.map((m: OMMT) => {
+            let rM: KeyValueDataStructure = {};
+            for (let x in m) {
+                if (ommJSON[0].hasOwnProperty(x)) {
+                    rM[x] = m[x as keyof OMMT];
+                }
+            }
+            return rM;
+        }))).toEqual(JSON.stringify(ommJSON));
+
+        expect(JSON.stringify(iFBS)).toEqual(JSON.stringify(ommCollection));
+    });
+});
