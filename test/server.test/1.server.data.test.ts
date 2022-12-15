@@ -18,7 +18,7 @@ import { init, getQueue, deinit } from "@/lib/ingest/index";
 const outputStandardFiles: any = {};
 
 beforeAll(async () => {
-    await init(config.filesystem.path);
+    await init(config.data.ingest);
     const outputPaths = await generateData(1, dataPath);
     outputPaths.forEach((p: any) => {
         let _file = p[0].split("/").pop();
@@ -33,7 +33,7 @@ beforeAll(async () => {
 })
 
 describe("POST /endpoint", () => {
-    rmSync(config.filesystem.path, { recursive: true, force: true });
+    rmSync(config.data.ingest, { recursive: true, force: true });
 
     it("should accept JSON files and save them to the database", async () => {
         for (let standard in standards) {
@@ -48,7 +48,7 @@ describe("POST /endpoint", () => {
 
             const ecJWKExportPrivateKey = await jose.exportJWK(ecJosePrivateKey);
             const ecJWKExportPublicKey = await jose.exportJWK(ecJosePublicKey);
- 
+
             await ethKeyConvert.import(ecJWKExportPrivateKey, "jwk");
             expect(ethWallet.publicKey.slice(2,)).toEqual(await ethKeyConvert.export("hex", "public"));
             const jsonFileString = readFileSync(join(dataPath, outputStandardFiles[standard].json), "utf8");

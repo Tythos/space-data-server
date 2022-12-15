@@ -12,7 +12,7 @@ import standardsJSON from "@/lib/standards/schemas.json";
 import { init as ingestInit, deinit as ingestDeinit } from "@/lib/ingest/index";
 import { join } from "path";
 
-const databaseConfig = config.database.config[config.database.config.primary];
+const databaseConfig = (config.database.config as any)[config.database.config.primary as any];
 
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON) as unknown as Array<JSONSchema4>;
 const totalCPUs = cpus().length;
@@ -26,8 +26,8 @@ export default {
         }
 
         try {
-            await ingestInit(config.filesystem.path);
-            console.log(`${new Date().toISOString()} - Ingest service started in folder ${join(process.cwd(), config.filesystem.path)}`)
+            await ingestInit(config.data.ingest);
+            console.log(`${new Date().toISOString()} - Ingest service started in folder ${join(process.cwd(), config.data.ingest)}`)
         } catch (e) {
             console.log(e);
         }

@@ -9,13 +9,11 @@ import write from "@/lib/database/write";
 import { connection } from "@/lib/database/connection";
 import { sep } from "path";
 import { verifySig } from '../routes/spacedata/post';
-//@ts-ignore
-import ipfsHash from "pure-ipfs-only-hash";
+
 import { extname } from 'node:path';
 import { refRootName } from '../database/generateTables';
 import { readFB } from '../utility/flatbufferConversion';
 import { readFile } from 'node:fs/promises';
-import { ethers } from 'ethers';
 
 const queue: Array<string> = [];
 
@@ -64,7 +62,7 @@ async function processData() {
         returnFunc();
         return;
     }
-    let trimmedFile = file.replace(config.filesystem.path, "");
+    let trimmedFile = file.replace(config.data.ingest, "");
 
     const [standard, ethAddress, fileName] = trimmedFile.split(sep).filter(Boolean);
 

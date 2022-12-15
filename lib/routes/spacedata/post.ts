@@ -11,8 +11,8 @@ import { writeFile, mkdir } from "node:fs/promises";
 import { config } from "@/lib/config/config"
 import { join } from "path";
 
-if (!existsSync(config.filesystem.path)) {
-    mkdirSync(config.filesystem.path);
+if (!existsSync(config.data.ingest)) {
+    mkdirSync(config.data.ingest);
 }
 
 const checkAccount = (ethAddress: string) => {
@@ -21,7 +21,7 @@ const checkAccount = (ethAddress: string) => {
 }
 
 const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, extension: string, signature: string) => {
-    const filePath = join(config.filesystem.path, standard, ethereumAddress.toLowerCase());
+    const filePath = join(config.data.ingest, standard, ethereumAddress.toLowerCase());
     const fileName = await ipfsHash.of(vM.payload);
 
     if (!existsSync(filePath)) {
@@ -71,7 +71,7 @@ export const post: express.RequestHandler = async (req, res, next) => {
                         let pHeader = JSON.parse((Buffer.from(signature.protected, "base64")).toString());
                         let publicKey = await jose.importJWK(pHeader.jwk, pHeader.alg);
                         verifiedMessages[kid] = await jose.generalVerify(req.body, publicKey as any);
-      
+
                         if (verifySig(await ipfsHash.of(verifiedMessages[kid].payload), kid, ethSignature)) {
                             await writeToDisk(verifiedMessages[signature.header.kid], standard, signature.header.kid, "json", ethSignature);
                         } else {

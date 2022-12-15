@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { Settings } from "@/lib/class/settings.interface";
 import defaultConfig from "./defaultConfig.json";
 
 let _config: any;
@@ -23,6 +23,6 @@ const exportObj = {
     }
 }
 
-const config = exportObj.tconfig;
+const config = exportObj.tconfig as Settings;
 
 export { config };

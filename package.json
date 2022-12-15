@@ -14,7 +14,7 @@
         "dev": "npm run build && PORT=8080 nodemon",
         "dev:standards": "nodemon --config nodemon.generator.json",
         "test": "npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",
-        "test:server": "npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.test"
+        "test:server": "cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.test"
     },
     "keywords": [],
     "author": "",
