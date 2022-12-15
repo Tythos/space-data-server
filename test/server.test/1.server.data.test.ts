@@ -5,7 +5,7 @@ import { app } from "@/lib/worker/app";
 import * as standards from "@/lib/standards/standards";
 import { extname, join } from "node:path";
 import { readFileSync, rmdirSync, rmSync } from "node:fs";
-import { ethWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
+import { ethWallet, untrustedEthWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
 import * as ethers from "ethers";
 import * as jose from "jose";
 import { keyconvert, pubKeyToEthAddress } from "@/packages/keyconvert";
@@ -121,6 +121,20 @@ describe("POST /endpoint", () => {
                 .set('Content-Type', 'application/octet-stream')
                 .send(flatbuffer);
             expect(fbResponseEIP4361.status).toBe(200);
+
+            //Untrusted Wallet
+            const ufbToken = await Web3Token.sign(async (msg: any) => await untrustedEthWallet.signMessage(msg), {
+                statement,
+                expires_in: '1 day',
+                nonce: performance.now(),
+            });
+
+            const ufbResponseEIP4361 = await request(app)
+                .post(`/spacedata/${standard}`)
+                .set("authorization", ufbToken)
+                .set('Content-Type', 'application/octet-stream')
+                .send(flatbuffer);
+            expect(ufbResponseEIP4361.status).toBe(401);
         }
     }, 20000);
 });

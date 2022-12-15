@@ -16,8 +16,7 @@ if (!existsSync(config.data.ingest)) {
 }
 
 const checkAccount = (ethAddress: string) => {
-    ethAddress = ethAddress.toLowerCase();
-    return true;
+    return (~config.trustedAddresses.indexOf(ethAddress.toLowerCase()));
 }
 
 const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, extension: string, signature: string) => {
