@@ -16,7 +16,9 @@ if (!existsSync(config.data.ingest)) {
 }
 
 const checkAccount = (ethAddress: string) => {
-    return (~config.trustedAddresses.indexOf(ethAddress.toLowerCase()));
+    let check = (config.trustedAddresses[ethAddress.toLowerCase()]);
+    //TODO stub
+    return (config.trustedAddresses[ethAddress.toLowerCase()]?.trust === 4);
 }
 
 const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, extension: string, signature: string) => {

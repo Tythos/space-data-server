@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.296+1671200798575",
+    "version": "1.0.348+1671234881112",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -29,6 +29,7 @@
         "@types/compression": "^1.7.2",
         "@types/compression-next": "^1.0.0",
         "@types/cors": "^2.8.12",
+        "@types/cron": "^2.0.0",
         "@types/dotenv": "^8.2.0",
         "@types/express": "^4.17.14",
         "@types/helmet": "^4.0.0",
@@ -93,6 +94,7 @@
         "webcrypto-liner": "^1.4.0"
     },
     "dependencies": {
+        "cron": "^2.1.0",
         "key-encoder": "^2.0.3"
     }
 }

@@ -1,5 +1,4 @@
 import { existsSync, mkdirSync, unwatchFile } from 'node:fs';
-import { KeyValueDataStructure } from '../class/utility/KeyValueDataStructure';
 import chokidar from "chokidar";
 import { config } from "@/lib/config/config";
 import { promises as fs } from 'fs';
@@ -9,14 +8,16 @@ import write from "@/lib/database/write";
 import { connection } from "@/lib/database/connection";
 import { sep } from "path";
 import { verifySig } from '../routes/spacedata/post';
+import { CronJob } from "cron";
 
 import { extname } from 'node:path';
 import { refRootName } from '../database/generateTables';
 import { readFB } from '../utility/flatbufferConversion';
 import { readFile } from 'node:fs/promises';
+import { exec, execSync } from 'node:child_process';
 
 let queue: Array<string> = [];
-
+let CronJobs: Array<CronJob> = [];
 async function readDirectoryRecursively(dir: string): Promise<string[]> {
     const files = await fs.readdir(dir);
     const filePaths: string[] = [];
@@ -40,7 +41,6 @@ export const init = async (folder: string) => {
         mkdirSync(folder);
     }
     queue = await readDirectoryRecursively(folder);
-    console.log(queue)
     await processData();
     watchPath = folder;
     chokidar.watch(folder).on("all", async (event, filename) => {
@@ -50,6 +50,24 @@ export const init = async (folder: string) => {
             await processData();
         }
     });
+
+    if (config.cronjobs) {
+        for (let cJ of config.cronjobs) {
+            CronJobs.push(new CronJob(
+                cJ.cron,
+                function () {
+                    try {
+                        execSync(cJ.command);
+                    } catch (e) {
+
+                    }
+                },
+                null,
+                true,
+                'Etc/UTC'
+            ));
+        }
+    }
 }
 
 async function processData() {

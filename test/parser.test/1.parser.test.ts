@@ -26,7 +26,10 @@ describe("Parse Data Into Flatbuffers", () => {
         let iFBS = readFB(oFBS, standard, standards[standard]);
         let writePath = `./${config.data.ingest}/${standard}/${await ethWallet.getAddress()}/`;
         mkdirSync(writePath, { recursive: true });
-        writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.fbs`, oFBS)
+        writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.fbs`, oFBS);
+        let resultBufferIPFSCID: string = await ipfsHash.of(oFBS);
+        let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
+        writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.fbs.sig`, signatureBufferETH);
         expect(JSON.stringify(ommCollection.RECORDS.map((m: OMMT) => {
             let rM: KeyValueDataStructure = {};
             for (let x in m) {

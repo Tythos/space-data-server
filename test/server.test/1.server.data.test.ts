@@ -35,7 +35,7 @@ beforeAll(async () => {
 describe("POST /endpoint", () => {
     rmSync(config.data.ingest, { recursive: true, force: true });
 
-    it("should accept JSON files and save them to the database", async () => {
+    it("should accept JSON and Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
             let ethKeyConvert = new keyconvert({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as any);
             await ethKeyConvert.import(ethWallet.privateKey, "hex");
@@ -135,8 +135,6 @@ describe("POST /endpoint", () => {
                 .set('Content-Type', 'application/octet-stream')
                 .send(flatbuffer);
             expect(ufbResponseEIP4361.status).toBe(401);
-
-            rmSync(config.data.ingest, { recursive: true, force: true });
         }
     }, 20000);
 });
