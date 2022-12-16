@@ -201,6 +201,7 @@ export const generateDatabase = (
         table.string("CID").notNullable().primary();
         table.string("DIGITAL_SIGNATURE");
         table.integer("RECORD_COUNT").unsigned().notNullable();
+        table.timestamps();
     });
 
     return tSchema.then(() => {

@@ -1,4 +1,9 @@
 {
+    "data": {
+        "ingest": ".data",
+        "raw": ".raw"
+    },
+    "trustedAddresses": [],
     "database": {
         "path": ".database",
         "config": {

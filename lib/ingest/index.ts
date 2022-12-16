@@ -15,7 +15,7 @@ import { refRootName } from '../database/generateTables';
 import { readFB } from '../utility/flatbufferConversion';
 import { readFile } from 'node:fs/promises';
 
-const queue: Array<string> = [];
+let queue: Array<string> = [];
 
 async function readDirectoryRecursively(dir: string): Promise<string[]> {
     const files = await fs.readdir(dir);
@@ -39,7 +39,8 @@ export const init = async (folder: string) => {
     if (!existsSync(folder)) {
         mkdirSync(folder);
     }
-    await readDirectoryRecursively(folder);
+    queue = await readDirectoryRecursively(folder);
+    console.log(queue)
     await processData();
     watchPath = folder;
     chokidar.watch(folder).on("all", async (event, filename) => {
@@ -62,6 +63,7 @@ async function processData() {
         returnFunc();
         return;
     }
+
     let trimmedFile = file.replace(config.data.ingest, "");
 
     const [standard, ethAddress, fileName] = trimmedFile.split(sep).filter(Boolean);
@@ -69,7 +71,8 @@ async function processData() {
     let signedFile = file.replace(".sig", "");
     let signatureFile = extname(fileName) === ".sig" ? file : `${file}.sig`;
 
-    if (existsSync(signatureFile) && existsSync(signedFile)) {
+    if (existsSync(signedFile)) {
+
         let CID = fileName.split(".")[0];
         //@ts-ignore
         let currentStandard = standardsJSON[standard];
@@ -83,9 +86,16 @@ async function processData() {
         let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
 
         let inputFile: any = await readFile(signedFile);
-        let inputSignature: any = await readFile(signatureFile, "utf8");
-        let input;
-        let signedEthAddress = verifySig(CID, ethAddress, inputSignature);
+        let inputSignature: any
+        if (!existsSync(signatureFile)) {
+            console.warn(`${signedFile}: could not find digital signature.`)
+        } else {
+            inputSignature = await readFile(signatureFile, "utf8");
+        }
+        let input, signedEthAddress;
+        if (inputSignature) {
+            signedEthAddress = verifySig(CID, ethAddress, inputSignature);
+        }
         if (!signedEthAddress) {
             console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid.`);
         }

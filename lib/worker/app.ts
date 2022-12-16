@@ -2,6 +2,8 @@ import { get, post } from "../routes/spacedata/index";
 import express, { Express, Request, Response } from 'express';
 import helmet from "helmet";
 import cors from "cors";
+import compression from "compression-next";
+
 import bodyParser from "body-parser";
 import { cpus, totalmem, freemem } from "os";
 import * as standards from "@/lib/standards/standards";
@@ -9,6 +11,11 @@ const app: Express = express();
 const totalCPUs = cpus().length;
 import { version } from "process";
 
+app.use(compression({
+    level: 9, minlevel: 2, threshold: 0, filter: (req, res) => {
+        return true;
+    }
+}));
 app.use(bodyParser.json({
     type: ['application/json', 'application/*+json'], verify: (req, res, buf) => {
         (req as any).rawBody = buf;
@@ -29,7 +36,7 @@ app.get("/", (req: Request, res: Response) => {
     </html>`);
 });
 
-app.get("/spacedata/:standard?", get);
+app.get("/spacedata/:standard/:querytype?", get);
 app.post("/spacedata/:standard?", (post as any));
 
 export { app };

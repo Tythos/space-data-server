@@ -1,5 +1,4 @@
 import { parse as csvparse } from 'csv-parse/sync';
-import * as standards from "@/lib/standards/standards";
 import { OMMCOLLECTIONT } from '@/lib/class/standards/OMM/OMMCOLLECTION';
 import { OMMT } from '@/lib/class/standards/OMM/OMM';
 import { KeyValueDataStructure } from '@/lib/class/utility/KeyValueDataStructure';
