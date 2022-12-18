@@ -57,9 +57,10 @@ export const init = async (folder: string) => {
                 cJ.cron,
                 function () {
                     try {
-                        execSync(cJ.command);
+                        let stdout = execSync(cJ.command).toString();
+                        console.log(stdout);
                     } catch (e) {
-
+                        console.error(e);
                     }
                 },
                 null,
