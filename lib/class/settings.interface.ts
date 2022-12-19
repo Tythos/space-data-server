@@ -26,6 +26,9 @@ interface cronJob {
 }
 
 export interface Settings {
+    "server": {
+        "port": number,
+    },
     "data": {
         "ingest": string,
         "raw": string

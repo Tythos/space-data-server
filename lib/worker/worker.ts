@@ -1,7 +1,10 @@
 import { InitableProcess } from "../class/process.interface";
 import { app } from "./app";
 import { pid } from "process";
-const port: String | undefined = process.env.PORT || "3000";
+import { config } from "@/lib/config/config";
+
+const port: String | undefined = process.env.PORT || config.server.port.toString() || "3000";
+
 import dotenv from "dotenv";
 
 export default {
