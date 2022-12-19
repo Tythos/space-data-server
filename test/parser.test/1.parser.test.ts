@@ -20,7 +20,6 @@ beforeAll(async () => {
 describe("Parse Data Into Flatbuffers", () => {
     it("should read the celestrak csv file", async () => {
         const celestrakTemplate = (format: string) => `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=${format}`;
-        init(config.data.ingest);
         const ommCSVFile: string = await fetch(celestrakTemplate("csv")).then(response => response.text());
         const ommCollection: OMMCOLLECTIONT = await parseCSV(ommCSVFile, OMMSchema);
         const ommJSON: Array<any> = await fetch(celestrakTemplate("json")).then(response => response.json());
@@ -43,9 +42,5 @@ describe("Parse Data Into Flatbuffers", () => {
             return rM;
         }))).toEqual(JSON.stringify(ommJSON));
         expect(JSON.stringify(iFBS)).toEqual(JSON.stringify(ommCollection));
-        
-        //execSync(`node ./scripts/data_fetch/celestrak.omm.js "${mnemonic}" ${} ${writePath}`);
-        deinit();
-
     });
 });
