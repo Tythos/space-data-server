@@ -45231,6 +45231,8 @@ var import_path = require("path");
   let resultBufferIPFSCID = await import_pure_ipfs_only_hash.default.of(oFBS);
   let signatureBufferETH = await ethWallet.signMessage(resultBufferIPFSCID);
   let signingEthAccount = import_ethers.ethers.utils.verifyMessage(resultBufferIPFSCID, signatureBufferETH).toLowerCase();
+  console.log("This gets signed:", resultBufferIPFSCID, " by this: ", signingEthAccount, " this signature ", signatureBufferETH);
+  console.log(oFBS);
   (0, import_fs.writeFileSync)(`${nwritePath}/${await import_pure_ipfs_only_hash.default.of(oFBS)}.omm.fbs.sig`, signatureBufferETH);
   (0, import_fs.writeFileSync)(`${nwritePath}/${await import_pure_ipfs_only_hash.default.of(oFBS)}.omm.fbs`, oFBS);
 })();

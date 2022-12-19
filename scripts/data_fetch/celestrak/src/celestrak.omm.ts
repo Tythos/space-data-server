@@ -23,6 +23,8 @@ import { join } from "path";
     let resultBufferIPFSCID: string = await ipfsHash.of(oFBS);
     let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
     let signingEthAccount = ethers.utils.verifyMessage(resultBufferIPFSCID, signatureBufferETH).toLowerCase();
+    console.log("This gets signed:", resultBufferIPFSCID, " by this: ", signingEthAccount, " this signature ", signatureBufferETH);
+    console.log(oFBS)
     writeFileSync(`${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs.sig`, signatureBufferETH);
     writeFileSync(`${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs`, oFBS);
 

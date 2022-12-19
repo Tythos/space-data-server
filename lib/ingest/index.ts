@@ -1,12 +1,12 @@
 import { existsSync, mkdirSync, unwatchFile } from 'node:fs';
 import chokidar from "chokidar";
 import { config } from "@/lib/config/config";
-import { promises as fs } from 'fs';
+import { promises as fs, readFileSync } from 'fs';
 import standardsJSON from "@/lib/standards/schemas.json";
 import * as standards from "@/lib/standards/standards";
 import write from "@/lib/database/write";
 import { connection } from "@/lib/database/connection";
-import { sep } from "path";
+import { join, sep } from "path";
 import { verifySig } from '../routes/spacedata/post';
 import { CronJob } from "cron";
 //@ts-ignore
@@ -14,8 +14,9 @@ import ipfsHash from "pure-ipfs-only-hash"
 import { extname, basename } from 'node:path';
 import { refRootName } from '../database/generateTables';
 import { readFB } from '../utility/flatbufferConversion';
-import { readFile } from 'node:fs/promises';
+import { readFile, rename } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 
 let queue: Array<string> = [];
 let CronJobs: Array<CronJob> = [];
@@ -49,6 +50,17 @@ export const init = async (folder: string) => {
 
         if (event === "add" && filename) {
             queue.push(filename);
+            let isFinished = false;
+            while (!isFinished) {
+                try {
+                    const tmpFile = join(tmpdir(), basename(filename));
+                    await rename(filename, tmpFile);
+                    await rename(tmpFile, filename);
+                    isFinished = true;
+                } catch (err) {
+                    isFinished = false;
+                }
+            }
             await processData();
         }
     });
@@ -92,8 +104,9 @@ async function processData() {
     let signedFile = file.replace(".sig", "");
     let signatureFile = extname(trimmedFile) === ".sig" ? file : `${file}.sig`;
 
-    if (existsSync(signedFile)) {
-        let inputFile: any = await readFile(signedFile);
+    if (existsSync(signedFile) && ~["fbs", "json"].indexOf(ext)) {
+        let inputFile: any = readFileSync(signedFile);
+        console.log(signedFile, inputFile.length)
         let CID = await ipfsHash.of(inputFile);
         //@ts-ignore
         let currentStandard = standardsJSON[standard];
@@ -140,6 +153,7 @@ async function processData() {
             return;
         }
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
+        console.log(signedFile, CID, signedEthAddress, inputSignature)
         if (!currentCID) {
             write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string);
         }
