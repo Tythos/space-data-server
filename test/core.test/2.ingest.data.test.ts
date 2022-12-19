@@ -2,18 +2,22 @@ import { describe, expect, test, beforeAll } from "@jest/globals";
 import { generateDatabase, refRootName } from "@/lib/database/generateTables";
 import knex from "knex";
 import { readFileSync } from "fs";
-import standardsJSON from "@/lib/standards/schemas.json"; 
+import standardsJSON from "@/lib/standards/schemas.json";
 import * as standards from "@/lib/standards/standards";
 import { JSONSchema4 } from "json-schema";
-const sqlfilename = "./test/output/standards.sql";
 import write from "@/lib/database/write";
 import read from "@/lib/database/read";
 import { readFB, writeFB } from "@/lib/utility/flatbufferConversion";
 import { execSync } from "node:child_process";
-import databaseConfig from "./config/test.database.config.json"
+import { verifySig } from "@/lib/routes/spacedata/post";
 const dataPath: string = "test/output/data";
 const databasePath: string = "test/output/database";
+import { config } from "@/lib/config/config";
+import { dirname, join } from "path";
 
+//@ts-ignore
+let databaseConfig = config.database.config[config.database.config.primary];
+const sqlfilename = join(dirname(databaseConfig.connection.filename), "standards.sql");
 let knexConnection: any;
 
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
@@ -48,7 +52,8 @@ describe('Test Data Entry', () => {
             let flatBufferObject = await readFB(flatBufferInput, tableName, parentClass);
             let DIGITAL_SIGNATURE = await readFileSync(`${dataPath}/${tableName}.input.fbs.ethsig`, "utf8");
             let CID = await readFileSync(`${dataPath}/${tableName}.input.fbs.ipfs.cid.txt`, "utf8");
-            await write(knexConnection, tableName, flatBufferObject.RECORDS, currentStandard, CID, DIGITAL_SIGNATURE);
+            let ETH_ADDRESS: string = verifySig(CID, "", DIGITAL_SIGNATURE);
+            await write(knexConnection, tableName, flatBufferObject.RECORDS, currentStandard, CID, DIGITAL_SIGNATURE, ETH_ADDRESS);
             const output = await read(knexConnection, standard, currentStandard, [["select", "*"], ["where", ["file_id", "=", CID]]], false);
             expect(JSON.stringify(flatBufferObject, null, 4)).toEqual(JSON.stringify(output, null, 4));
 

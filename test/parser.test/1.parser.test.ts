@@ -10,12 +10,31 @@ import ipfsHash from "pure-ipfs-only-hash";
 import { ethWallet, mnemonic } from "@/test/utility/generate.crypto.wallets"
 import { mkdirSync, writeFileSync } from "fs";
 import { config } from "@/lib/config/config";
-import { init, deinit } from "@/lib/ingest/index";
-import { exec } from "child_process";
+import { describe, expect, test, beforeAll } from "@jest/globals";
+import { generateDatabase, refRootName } from "@/lib/database/generateTables";
+import knex from "knex";
+import standardsJSON from "@/lib/standards/schemas.json";
+
+import { JSONSchema4 } from "json-schema";
+
+import { execSync } from "node:child_process";
+import { dirname, join } from "path";
+const databasePath: string = "test/output/database";
+
+//@ts-ignore
+var databaseConfig = config.database.config[config.database.config.primary];
+const sqlfilename = join(dirname(databaseConfig.connection.filename), "standards.sql");
+
+let knexConnection: any;
+
+let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 
 beforeAll(async () => {
+    execSync(`rm -rf ${databasePath}/*.* && mkdir -p ${databasePath}`);
+    knexConnection = await knex(databaseConfig);
+    await generateDatabase(standardsArray, databaseConfig.connection.filename, sqlfilename, knexConnection);
+});
 
-})
 
 describe("Parse Data Into Flatbuffers", () => {
     it("should read the celestrak csv file", async () => {

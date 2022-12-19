@@ -16,7 +16,6 @@ import { refRootName } from '../database/generateTables';
 import { readFB } from '../utility/flatbufferConversion';
 import { readFile } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
-import { sign } from 'node:crypto';
 
 let queue: Array<string> = [];
 let CronJobs: Array<CronJob> = [];
@@ -141,9 +140,8 @@ async function processData() {
             return;
         }
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
-        console.log(currentCID, CID, signedEthAddress, inputSignature)
         if (!currentCID) {
-            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature);
+            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string);
         }
     }
 

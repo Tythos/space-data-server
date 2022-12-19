@@ -110,12 +110,14 @@ export const write = async (
     queryArray: Array<any>,
     standardsSchema: JSONSchema4,
     CID: string = "no_id",
-    DIGITAL_SIGNATURE: string
+    DIGITAL_SIGNATURE: string,
+    ETH_ADDRESS: string
 ) => {
     knexConnection = currentKnexConnection;
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,
+        ETH_ADDRESS,
         RECORD_COUNT: queryArray.length
     }]);
 

@@ -200,6 +200,7 @@ export const generateDatabase = (
         //TODO: Reference https://public.ccsds.org/Pubs/357x0b1.pdf
         table.string("CID").notNullable().primary();
         table.string("DIGITAL_SIGNATURE");
+        table.string("ETH_ADDRESS");
         table.integer("RECORD_COUNT").unsigned().notNullable();
         table.timestamps();
     });
