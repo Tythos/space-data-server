@@ -15,25 +15,28 @@ import { exec, execSync } from "child_process";
 
 beforeAll(async () => {
     jest.useFakeTimers();
-    jest.spyOn(global, 'setTimeout');
+    rmSync(config.data.ingest, { recursive: true });
+    let readPath = `${config.data.ingest}/celestrak.omm.test.csv`;
+    let writePath = `./${config.data.ingest}/OMM/`;
+    mkdirSync(writePath, { recursive: true });
+    const celestrakTemplate = (format: string) => `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=${format}`;
+    const ommCSVFile: string = await fetch(celestrakTemplate("csv")).then(response => response.text());
+    writeFileSync(`${config.data.ingest}/celestrak.omm.test.csv`, ommCSVFile);
+    let result = execSync(`node ./scripts/data_fetch/celestrak/celestrak.omm.js "${mnemonic}" ${readPath} ${writePath}`);
 })
 
 describe("Parse Data Into Flatbuffers", () => {
-    it("should read the celestrak csv file", async () => {
-        rmSync(config.data.ingest, { recursive: true });
-        mkdirSync(config.data.ingest, { recursive: true });
-        const celestrakTemplate = (format: string) => `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=${format}`;
-        init(config.data.ingest);
-        const ommCSVFile: string = await fetch(celestrakTemplate("csv")).then(response => response.text());
-        let readPath = `${config.data.ingest}/celestrak.omm.test.csv`;
-        let writePath = `./${config.data.ingest}/OMM/`;
+    it("should read the celestrak csv file",  (done) => {
 
-        writeFileSync(`${config.data.ingest}/celestrak.omm.test.csv`, ommCSVFile);
-        mkdirSync(writePath, { recursive: true });
-        console.log(`node ./scripts/data_fetch/celestrak/celestrak.omm.js "${mnemonic}" ${readPath} ${writePath}`)
-        let result = execSync(`node ./scripts/data_fetch/celestrak/celestrak.omm.js "${mnemonic}" ${readPath} ${writePath}`);
-        console.log(result.toString());
-        deinit();
+        mkdirSync(config.data.ingest, { recursive: true });
+
+         init(config.data.ingest).then(()=>{
+            done();
+         });
 
     });
 });
+
+afterAll(() => {
+    deinit();
+})

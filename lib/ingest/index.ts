@@ -16,6 +16,7 @@ import { refRootName } from '../database/generateTables';
 import { readFB } from '../utility/flatbufferConversion';
 import { readFile } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
+import { sign } from 'node:crypto';
 
 let queue: Array<string> = [];
 let CronJobs: Array<CronJob> = [];
@@ -44,6 +45,7 @@ export const init = async (folder: string) => {
     queue = await readDirectoryRecursively(folder);
     await processData();
     watchPath = folder;
+
     chokidar.watch(folder).on("all", async (event, filename) => {
 
         if (event === "add" && filename) {
@@ -86,8 +88,8 @@ async function processData() {
 
     let trimmedFile = basename(file);
 
-    const [fileName, standard, ext] = trimmedFile.split(".");
-
+    const [fileName, fstandard, ext] = trimmedFile.split(".");
+    const standard = fstandard.toUpperCase();
     let signedFile = file.replace(".sig", "");
     let signatureFile = extname(trimmedFile) === ".sig" ? file : `${file}.sig`;
 
@@ -106,7 +108,7 @@ async function processData() {
         let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
 
 
-        let inputSignature: any
+        let inputSignature: any;
         if (!existsSync(signatureFile)) {
             console.warn(`${signedFile}: could not find digital signature.`)
         } else {
@@ -139,7 +141,7 @@ async function processData() {
             return;
         }
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
-        console.log(ext, extname(signedFile), file, currentCID, inputSignature);
+        console.log(currentCID, CID, signedEthAddress, inputSignature)
         if (!currentCID) {
             write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature);
         }
