@@ -106,7 +106,6 @@ async function processData() {
 
     if (existsSync(signedFile) && ~["fbs", "json"].indexOf(ext)) {
         let inputFile: any = readFileSync(signedFile);
-        console.log(signedFile, inputFile.length)
         let CID = await ipfsHash.of(inputFile);
         //@ts-ignore
         let currentStandard = standardsJSON[standard];
@@ -153,7 +152,6 @@ async function processData() {
             return;
         }
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
-        console.log(signedFile, CID, signedEthAddress, inputSignature)
         if (!currentCID) {
             write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string);
         }
