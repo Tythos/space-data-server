@@ -51,7 +51,7 @@ export const init = async (folder: string) => {
         }
     });
 
-    if (config.cronjobs) {
+    if (config.cronjobs?.length) {
         for (let cJ of config.cronjobs) {
             CronJobs.push(new CronJob(
                 cJ.cron,

@@ -7,18 +7,15 @@ import { OMMT } from "@/lib/class/standards/OMM/OMM";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
-import { config } from "@/lib/config/config";
 import { Wallet } from "ethers";
 
-console.log(process.env);
 (async () => {
-    const ethWallet = Wallet.fromMnemonic(readFileSync(process.env.SEEDPHRASE as any, "utf8"));
-    const ommCSVFile: string = readFileSync(process.env.OMMFILE as any, "utf8");
+    const [mnemonic, filePath, writePath] = process.argv.slice(-3);
+    if (!mnemonic || !filePath) return;
+    const ethWallet = Wallet.fromMnemonic(mnemonic);
+    const ommCSVFile: string = readFileSync(filePath as any, "utf8");
     const ommCollection: OMMCOLLECTIONT = await parseCSV(ommCSVFile, OMMSchema);
-    const standard = "OMM";
     let oFBS = writeFB(ommCollection);
-    let iFBS = readFB(oFBS, standard, standards[standard]);
-    let writePath = `./${config.data.ingest}/${standard}/${await ethWallet.getAddress()}/`;
     mkdirSync(writePath, { recursive: true });
     writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.fbs`, oFBS);
     let resultBufferIPFSCID: string = await ipfsHash.of(oFBS);

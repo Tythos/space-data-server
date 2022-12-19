@@ -2,12 +2,6 @@
   "data": {
     "ingest": ".testdata"
   },
-  "cronjobs": [
-    {
-      "cron": "*/5 * * * * *",
-      "command": "node ./scripts/data_fetch/celestrak.omm.js"
-    }
-  ],
   "trustedAddresses": {
     "0x9858effd232b4033e47d90003d41ec34ecaeda94": {
       "trust": 4,
