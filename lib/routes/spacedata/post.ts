@@ -38,7 +38,6 @@ export const verifySig = (msg: any, ethAddress: any, signature: any) => {
     if (!ethAddress) {
         ethAddress = signingEthAccount;
     }
-    console.log(ethAddress, signingEthAccount)
     return (checkAccount(ethAddress) && (ethAddress.toLowerCase() === signingEthAccount)) ? signingEthAccount : ""
 }
 
