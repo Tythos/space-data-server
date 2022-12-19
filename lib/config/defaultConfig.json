@@ -1,9 +1,16 @@
 {
+  "server": {
+    "port": 3000
+  },
   "data": {
     "ingest": ".data"
   },
-  "ingest": [],
-  "trustedAddresses": [],
+  "trustedAddresses": {
+    "0x9858effd232b4033e47d90003d41ec34ecaeda94": {
+      "trust": 4,
+      "comment": "Test Key, Do Not Use In Production"
+    }
+  },
   "database": {
     "path": ".database",
     "config": {
@@ -11,7 +18,7 @@
       "sqlite": {
         "client": "better-sqlite3",
         "connection": {
-          "filename": "./test/output/spacedatastandards.0.0.2+1668785618858.sqlite"
+          "filename": "./.database/spacedatastandards.0.0.2+1668785618858.sqlite"
         },
         "useNullAsDefault": true,
         "version": "0.0.2+1668785618858"
