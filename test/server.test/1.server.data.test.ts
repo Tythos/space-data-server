@@ -141,5 +141,5 @@ describe("POST /endpoint", () => {
 
 afterAll(async () => {
     await deinit();
-    rmSync(config.data.ingest, { recursive: true, force: true });
+    //rmSync(config.data.ingest, { recursive: true, force: true });
 });

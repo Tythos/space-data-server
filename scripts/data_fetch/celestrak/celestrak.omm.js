@@ -42713,12 +42713,12 @@ var require_lib32 = __commonJS({
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Wordlist = exports2.version = exports2.wordlists = exports2.utils = exports2.logger = exports2.errors = exports2.constants = exports2.FixedNumber = exports2.BigNumber = exports2.ContractFactory = exports2.Contract = exports2.BaseContract = exports2.providers = exports2.getDefaultProvider = exports2.VoidSigner = exports2.Wallet = exports2.Signer = exports2.ethers = void 0;
-    var ethers = __importStar(require_ethers());
-    exports2.ethers = ethers;
+    var ethers2 = __importStar(require_ethers());
+    exports2.ethers = ethers2;
     try {
       anyGlobal = window;
       if (anyGlobal._ethers == null) {
-        anyGlobal._ethers = ethers;
+        anyGlobal._ethers = ethers2;
       }
     } catch (error) {
     }
@@ -45216,19 +45216,24 @@ var writeFB = (standard) => {
 var import_pure_ipfs_only_hash = __toESM(require_pure_ipfs_only_hash());
 var import_fs = require("fs");
 var import_ethers = __toESM(require_lib32());
+var import_path = require("path");
 (async () => {
   const [mnemonic, filePath, writePath] = process.argv.slice(-3);
   if (!mnemonic || !filePath)
     return;
   const ethWallet = import_ethers.Wallet.fromMnemonic(mnemonic);
+  const ethAddress = await ethWallet.getAddress();
   const ommCSVFile = (0, import_fs.readFileSync)(filePath, "utf8");
   const ommCollection = await parseCSV(ommCSVFile, main_schema_default);
   let oFBS = writeFB(ommCollection);
-  (0, import_fs.mkdirSync)(writePath, { recursive: true });
-  (0, import_fs.writeFileSync)(`${writePath}/${await import_pure_ipfs_only_hash.default.of(oFBS)}.fbs`, oFBS);
+  let nwritePath = (0, import_path.join)(writePath, ethAddress);
+  (0, import_fs.mkdirSync)(nwritePath, { recursive: true });
   let resultBufferIPFSCID = await import_pure_ipfs_only_hash.default.of(oFBS);
   let signatureBufferETH = await ethWallet.signMessage(resultBufferIPFSCID);
-  (0, import_fs.writeFileSync)(`${writePath}/${await import_pure_ipfs_only_hash.default.of(oFBS)}.fbs.sig`, signatureBufferETH);
+  let signingEthAccount = import_ethers.ethers.utils.verifyMessage(resultBufferIPFSCID, signatureBufferETH).toLowerCase();
+  console.log(signingEthAccount, ethAddress);
+  (0, import_fs.writeFileSync)(`${nwritePath}/${await import_pure_ipfs_only_hash.default.of(oFBS)}.fbs.sig`, signatureBufferETH);
+  (0, import_fs.writeFileSync)(`${nwritePath}/${await import_pure_ipfs_only_hash.default.of(oFBS)}.fbs`, oFBS);
 })();
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}

@@ -9,12 +9,13 @@ import { connection } from "@/lib/database/connection";
 import { sep } from "path";
 import { verifySig } from '../routes/spacedata/post';
 import { CronJob } from "cron";
-
-import { extname } from 'node:path';
+//@ts-ignore
+import ipfsHash from "pure-ipfs-only-hash"
+import { extname, basename } from 'node:path';
 import { refRootName } from '../database/generateTables';
 import { readFB } from '../utility/flatbufferConversion';
 import { readFile } from 'node:fs/promises';
-import { exec, execSync } from 'node:child_process';
+import { execSync } from 'node:child_process';
 
 let queue: Array<string> = [];
 let CronJobs: Array<CronJob> = [];
@@ -83,16 +84,16 @@ async function processData() {
         return;
     }
 
-    let trimmedFile = file.replace(config.data.ingest, "");
+    let trimmedFile = basename(file);
 
-    const [standard, ethAddress, fileName] = trimmedFile.split(sep).filter(Boolean);
+    const [fileName, standard, ext] = trimmedFile.split(".");
 
     let signedFile = file.replace(".sig", "");
-    let signatureFile = extname(fileName) === ".sig" ? file : `${file}.sig`;
+    let signatureFile = extname(trimmedFile) === ".sig" ? file : `${file}.sig`;
 
     if (existsSync(signedFile)) {
-
-        let CID = fileName.split(".")[0];
+        let inputFile: any = await readFile(signedFile);
+        let CID = await ipfsHash.of(inputFile);
         //@ts-ignore
         let currentStandard = standardsJSON[standard];
         if (!currentStandard) {
@@ -104,7 +105,7 @@ async function processData() {
         let parentClass: any = standards[pClassName];
         let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
 
-        let inputFile: any = await readFile(signedFile);
+
         let inputSignature: any
         if (!existsSync(signatureFile)) {
             console.warn(`${signedFile}: could not find digital signature.`)
@@ -113,8 +114,9 @@ async function processData() {
         }
         let input, signedEthAddress;
         if (inputSignature) {
-            signedEthAddress = verifySig(CID, ethAddress, inputSignature);
+            signedEthAddress = verifySig(CID, "", inputSignature);
         }
+
         if (!signedEthAddress) {
             console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid.`);
         }
@@ -131,11 +133,13 @@ async function processData() {
             for (let s = 0; s < inputFile.RECORDS.length; s++) {
                 input.RECORDS.push(inputFile.RECORDS[s]);
             }
-        } else {
+        } else if (extname(signedFile) === ".fbs") {
             input = readFB(inputFile, tableName, parentClass);
+        } else {
+            return;
         }
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
-
+        console.log(ext, extname(signedFile), file, currentCID, inputSignature);
         if (!currentCID) {
             write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature);
         }
@@ -150,3 +154,5 @@ export const getQueue = () => {
 export const deinit = async () => {
     unwatchFile(watchPath);
 }
+
+

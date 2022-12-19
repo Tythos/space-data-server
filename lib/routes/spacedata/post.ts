@@ -22,19 +22,22 @@ const checkAccount = (ethAddress: string) => {
 }
 
 const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, extension: string, signature: string) => {
-    const filePath = join(config.data.ingest, standard, ethereumAddress.toLowerCase());
+    const filePath = config.data.ingest;
     const fileName = await ipfsHash.of(vM.payload);
 
     if (!existsSync(filePath)) {
         await mkdir(filePath, { recursive: true });
     }
-    let completePath = `${filePath}/${fileName}.${extension}`;
+    let completePath = `${filePath}/${fileName}.${standard}.${extension}`;
     await writeFile(completePath, vM.payload);
     await writeFile(completePath + ".sig", signature);
 }
 
 export const verifySig = (msg: any, ethAddress: any, signature: any) => {
     let signingEthAccount = ethers.utils.verifyMessage(msg, signature).toLowerCase();
+    if (!ethAddress) {
+        ethAddress = signingEthAccount;
+    }
     return (checkAccount(ethAddress) && (ethAddress.toLowerCase() === signingEthAccount)) ? signingEthAccount : ""
 }
 
@@ -104,6 +107,7 @@ export const post: express.RequestHandler = async (req, res, next) => {
         }
     } else if (Buffer.isBuffer(req.body)) {
         let { address, signature } = await checkToken(req, false);
+
         if (address) {
             await writeToDisk({ payload: req.body }, standard, address, "fbs", signature);
             res.json({});

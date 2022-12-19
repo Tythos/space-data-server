@@ -7,9 +7,12 @@ import { OMMT } from "@/lib/class/standards/OMM/OMM";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
-import { ethWallet } from "@/test/utility/generate.crypto.wallets"
+import { ethWallet, mnemonic } from "@/test/utility/generate.crypto.wallets"
 import { mkdirSync, writeFileSync } from "fs";
-import { config } from "@/lib/config/config"
+import { config } from "@/lib/config/config";
+import { init, deinit } from "@/lib/ingest/index";
+import { exec } from "child_process";
+
 beforeAll(async () => {
 
 })
@@ -17,7 +20,7 @@ beforeAll(async () => {
 describe("Parse Data Into Flatbuffers", () => {
     it("should read the celestrak csv file", async () => {
         const celestrakTemplate = (format: string) => `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=${format}`;
-
+        init(config.data.ingest);
         const ommCSVFile: string = await fetch(celestrakTemplate("csv")).then(response => response.text());
         const ommCollection: OMMCOLLECTIONT = await parseCSV(ommCSVFile, OMMSchema);
         const ommJSON: Array<any> = await fetch(celestrakTemplate("json")).then(response => response.json());
@@ -39,7 +42,10 @@ describe("Parse Data Into Flatbuffers", () => {
             }
             return rM;
         }))).toEqual(JSON.stringify(ommJSON));
-
         expect(JSON.stringify(iFBS)).toEqual(JSON.stringify(ommCollection));
+        
+        //execSync(`node ./scripts/data_fetch/celestrak.omm.js "${mnemonic}" ${} ${writePath}`);
+        deinit();
+
     });
 });
