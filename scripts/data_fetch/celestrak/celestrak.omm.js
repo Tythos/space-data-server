@@ -45223,7 +45223,6 @@ var import_ethers = __toESM(require_lib32());
   const ethWallet = import_ethers.Wallet.fromMnemonic(mnemonic);
   const ommCSVFile = (0, import_fs.readFileSync)(filePath, "utf8");
   const ommCollection = await parseCSV(ommCSVFile, main_schema_default);
-  const standard = "OMM";
   let oFBS = writeFB(ommCollection);
   (0, import_fs.mkdirSync)(writePath, { recursive: true });
   (0, import_fs.writeFileSync)(`${writePath}/${await import_pure_ipfs_only_hash.default.of(oFBS)}.fbs`, oFBS);
