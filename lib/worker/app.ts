@@ -20,6 +20,7 @@ app.use(compression({
 }));
 
 app.use("/raw", express.static(config.data.public));
+app.use("/app", express.static("UI/dist"));
 app.use(bodyParser.json({
     type: ['application/json', 'application/*+json'], verify: (req, res, buf) => {
         (req as any).rawBody = buf;
