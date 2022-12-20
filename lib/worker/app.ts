@@ -40,7 +40,7 @@ app.get("/", (req: Request, res: Response) => {
     <h3>JSON Schema: spacedata/[${Object.keys(standards)}]?schema=true</h3>
     </html>`);
 });
-app.get("/providers/", providers);
+app.get("/providers/:provider", providers);
 app.get("/spacedata/:standard/:querytype?", get);
 app.post("/spacedata/:standard?", (post as any));
 app.get("/standards/:standard?", standardsRoute);

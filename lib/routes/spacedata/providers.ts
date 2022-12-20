@@ -10,7 +10,11 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 
 export const providers: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
-  const providers = await connection("FILE_IMPORT_TABLE").distinct("ETH_ADDRESS").pluck("ETH_ADDRESS");
-  res.json(providers);
+  if (req.params?.provider) {
+    res.json(await connection("FILE_IMPORT_TABLE").where({ "ETH_ADDRESS": req.params.provider }));
+  } else {
+    const providers = await connection("FILE_IMPORT_TABLE").distinct("ETH_ADDRESS").pluck("ETH_ADDRESS");
+    res.json(providers);
+  }
   next();
 };
