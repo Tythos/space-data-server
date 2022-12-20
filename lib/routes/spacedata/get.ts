@@ -15,7 +15,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     res.end();
     next();
   } else {
-    if (!req.params.standard) {
+    if (!standards.hasOwnProperty(req.params?.standard)) {
       res.send(Object.keys(standards));
     } else {
       const standard = req.params.standard.toUpperCase();
@@ -35,7 +35,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
         }
         let payload;
         if (req.params.querytype === "latest") {
-          
+
           let latestCID = await connection("FILE_IMPORT_TABLE").select("CID").orderBy("updated_at").first();
           if (latestCID) {
             let { CID } = latestCID;

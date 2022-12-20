@@ -11,6 +11,7 @@ import { standards as standardsRoute } from "../routes/standards";
 const app: Express = express();
 const totalCPUs = cpus().length;
 import { version } from "process";
+import {providers} from "@/lib/routes/spacedata/providers";
 
 app.use(compression({
     level: -1, minlevel: -1, threshold: 1024, filter: (req, res) => {
@@ -39,7 +40,7 @@ app.get("/", (req: Request, res: Response) => {
     <h3>JSON Schema: spacedata/[${Object.keys(standards)}]?schema=true</h3>
     </html>`);
 });
-
+app.get("/providers/", providers);
 app.get("/spacedata/:standard/:querytype?", get);
 app.post("/spacedata/:standard?", (post as any));
 app.get("/standards/:standard?", standardsRoute);
