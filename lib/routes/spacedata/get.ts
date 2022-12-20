@@ -10,15 +10,21 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 
 export const get: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
-
-  if (req.params?.querytype?.split(".").pop() === 'map') {
+  let { standard, provider, querytype } = req.params;
+  standard = standard.toUpperCase();
+  if (!provider) {
+    res.status(500);
+    res.end("ERROR: No Provider Selected.")
+  }
+  if (querytype?.split(".").pop() === 'map') {
     res.end();
-    next();
+
   } else {
-    if (!standards.hasOwnProperty(req.params?.standard)) {
+    //@ts-ignore
+    if (!standards[standard]) {
       res.send(Object.keys(standards));
     } else {
-      const standard = req.params.standard.toUpperCase();
+      standard = standard.toUpperCase();
       let { query, format, schema } = req.query;
       if (schema) {
         res.end(JSON.stringify(standardsJSON[standard], null, 4));
@@ -34,15 +40,14 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
           res.end();
         }
         let payload;
-        if (req.params.querytype === "latest") {
 
-          let latestCID = await connection("FILE_IMPORT_TABLE").select("CID").orderBy("updated_at").first();
+        if (querytype === "latest") {
+          let latestCID = await connection("FILE_IMPORT_TABLE").select("CID").where({ "ETH_ADDRESS": provider }).orderBy("updated_at").first();
           if (latestCID) {
             let { CID } = latestCID;
             parsedQuery.push(["where", ["file_id", "=", CID]]);
           }
         }
-
         payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
 
         if (format === "json") {
@@ -54,6 +59,6 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       }
     }
 
-    next();
   }
+  next();
 };

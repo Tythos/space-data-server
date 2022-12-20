@@ -11,10 +11,10 @@ import { standards as standardsRoute } from "../routes/standards";
 const app: Express = express();
 const totalCPUs = cpus().length;
 import { version } from "process";
-import {providers} from "@/lib/routes/spacedata/providers";
+import { providers } from "@/lib/routes/spacedata/providers";
 
 app.use(compression({
-    level: -1, minlevel: -1, threshold: 1024, filter: (req, res) => {
+    level: 6, minlevel: 6, threshold: 512, filter: (req, res) => {
         return true;
     }
 }));
@@ -35,13 +35,14 @@ app.get("/", (req: Request, res: Response) => {
     <h2>Free Memory:${freemem()}</h2>
     <h2>Node Version: ${version}</h2>
     <hr/>
-    <h3><a href='./spacedata/omm/?query=[["select",["*"]]]&format=json'>Example</a></h3>
+    <h3><a href='./spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94?query=[["select",["*"]]]&format=json'>Example JSON</a></h3>
+    <h3><a href='./spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94?query=[["select",["*"]]]&format=fbs'>Example FBS</a></h3>
     <h3>API: spacedata/[${Object.keys(standards)}]?query=[["select",["*"]]]&format=[json, flatbuffer]</h3>
     <h3>JSON Schema: spacedata/[${Object.keys(standards)}]?schema=true</h3>
     </html>`);
 });
-app.get("/providers/:provider", providers);
-app.get("/spacedata/:standard/:querytype?", get);
+app.get("/providers/:provider?", providers);
+app.get("/spacedata/:standard/:provider/:querytype?", get);
 app.post("/spacedata/:standard?", (post as any));
 app.get("/standards/:standard?", standardsRoute);
 
