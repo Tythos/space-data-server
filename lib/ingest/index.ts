@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, unwatchFile } from 'node:fs';
+import { existsSync, mkdirSync, statSync, unwatchFile, writeFileSync } from 'node:fs';
 import chokidar from "chokidar";
 import { config } from "@/lib/config/config";
 import { promises as fs, readFileSync } from 'fs';
@@ -13,11 +13,11 @@ import { CronJob } from "cron";
 import ipfsHash from "pure-ipfs-only-hash"
 import { extname, basename } from 'node:path';
 import { refRootName } from '../database/generateTables';
-import { readFB } from '../utility/flatbufferConversion';
+import { readFB, writeFB } from '../utility/flatbufferConversion';
 import { readFile, rename } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
-
+import { roundToUTCDate } from "@/lib/utility/roundDate"
 let queue: Array<string> = [];
 let CronJobs: Array<CronJob> = [];
 async function readDirectoryRecursively(dir: string): Promise<string[]> {
@@ -100,6 +100,7 @@ async function processData() {
     let trimmedFile = basename(file);
 
     const [fileName, fstandard, ext] = trimmedFile.split(".");
+
     const standard = fstandard.toUpperCase();
     let signedFile = file.replace(".sig", "");
     let signatureFile = extname(trimmedFile) === ".sig" ? file : `${file}.sig`;
@@ -154,6 +155,28 @@ async function processData() {
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
         if (!currentCID) {
             write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string);
+        }
+        if (config.data.copyOnRead) {
+
+            const writePath = join(
+                config.data.public,
+                standard.toUpperCase(),
+                signedEthAddress as string,
+                roundToUTCDate(new Date(statSync(signedFile).mtime)).toISOString());
+
+            mkdirSync(writePath, { recursive: true });
+            const fbsPath = join(
+                writePath,
+                `${CID}.fbs`);
+            const jsonPath = join(
+                writePath,
+                `${CID}.json`);
+            if (!existsSync(fbsPath)) {
+                writeFileSync(fbsPath, writeFB(input));
+            }
+            if (!existsSync(jsonPath)) {
+                writeFileSync(jsonPath, JSON.stringify(input));
+            }
         }
     }
 

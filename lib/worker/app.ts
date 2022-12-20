@@ -3,25 +3,29 @@ import express, { Express, Request, Response } from 'express';
 import helmet from "helmet";
 import cors from "cors";
 import compression from "compression-next";
-
+import { config } from "@/lib/config/config";
 import bodyParser from "body-parser";
 import { cpus, totalmem, freemem } from "os";
 import * as standards from "@/lib/standards/standards";
+import { standards as standardsRoute } from "../routes/standards";
 const app: Express = express();
 const totalCPUs = cpus().length;
 import { version } from "process";
 
 app.use(compression({
-    level: 9, minlevel: 2, threshold: 0, filter: (req, res) => {
+    level: -1, minlevel: -1, threshold: 1024, filter: (req, res) => {
         return true;
     }
 }));
+
+app.use("/raw", express.static(config.data.public));
 app.use(bodyParser.json({
     type: ['application/json', 'application/*+json'], verify: (req, res, buf) => {
         (req as any).rawBody = buf;
     }
 }));
-app.use(bodyParser.raw({ inflate: true, limit: "1GB", type: '*/*' }));
+app.use(cors());
+app.use(bodyParser.raw({ inflate: true, limit: "2GB", type: '*/*' }));
 app.get("/", (req: Request, res: Response) => {
     res.end(`<html>
     <h2>DigitalArsenal.io Space Data Server Version: 1.0.0+1668633361148 </h2>
@@ -38,5 +42,6 @@ app.get("/", (req: Request, res: Response) => {
 
 app.get("/spacedata/:standard/:querytype?", get);
 app.post("/spacedata/:standard?", (post as any));
+app.get("/standards/:standard?", standardsRoute);
 
 export { app };

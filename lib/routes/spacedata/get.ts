@@ -35,10 +35,14 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
         }
         let payload;
         if (req.params.querytype === "latest") {
-          let { CID } = await connection("FILE_IMPORT_TABLE").select("CID").orderBy("updated_at").first();
-          parsedQuery.push(["where", ["file_id", "=", CID]]);
+          
+          let latestCID = await connection("FILE_IMPORT_TABLE").select("CID").orderBy("updated_at").first();
+          if (latestCID) {
+            let { CID } = latestCID;
+            parsedQuery.push(["where", ["file_id", "=", CID]]);
+          }
         }
-        
+
         payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
 
         if (format === "json") {

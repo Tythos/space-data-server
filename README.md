@@ -5,3 +5,8 @@
 - [ ] Finish CRD
 - [ ] Logging
 - [ ] Authentication
+
+## Paths
+
+- [ ] /standards - Lists current loaded standards, and version
+- [ ]

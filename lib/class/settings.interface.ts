@@ -31,7 +31,9 @@ export interface Settings {
     },
     "data": {
         "ingest": string,
-        "raw": string
+        "raw": string,
+        "public": string,
+        "copyOnRead": Boolean
     },
     "cronjobs": Array<cronJob>,
     "trustedAddresses": trustedAddressMap,

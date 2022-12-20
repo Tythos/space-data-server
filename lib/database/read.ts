@@ -20,7 +20,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
             }
         }
     }
-
+    
     const records: any = await tableQuery;
 
     for (let r = 0; r < records.length; r++) {
@@ -76,7 +76,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
         }
     }
 
-    return parentArray.map((pA: any) => {
+    return parentArray/*.map((pA: any) => {
         for (let x in pA) {
             if (~booleanProperties.indexOf(x)) {
                 pA[x] = !!pA[x];
@@ -86,7 +86,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
             delete pA.id;
         }
         return pA;
-    });
+    })*/;
 }
 const read = async (currentKnexConnection: any, standard: string, standardsSchema: JSONSchema4, query: Array<any> = [["select", "*"]], debugProperties: boolean = false) => {
     knexConnection = currentKnexConnection;
