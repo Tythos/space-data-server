@@ -13,6 +13,7 @@ const totalCPUs = cpus().length;
 import { version } from "process";
 import { providers } from "@/lib/routes/spacedata/providers";
 import { sql } from "@/lib/routes/standards/sql";
+import { schema } from "@/lib/routes/standards/schema";
 
 app.use(compression({
     level: 6, minlevel: 6, threshold: 512, filter: (req, res) => {
@@ -37,16 +38,20 @@ app.get("/", (req: Request, res: Response) => {
     <h2>Free Memory:${freemem()}</h2>
     <h2>Node Version: ${version}</h2>
     <hr/>
-    <h3><a href='./spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/latest?query=[["select",["*"]]]&format=json'>Example JSON</a></h3>
-    <h3><a href='./spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/latest?query=[["select",["*"]]]&format=fbs'>Example FBS</a></h3>
+    <h3><a href='./spacedata/latest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94?query=[["select",["*"]]]&format=json'>Example JSON</a></h3>
+    <h3><a href='./spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94?query=[["select",["*"]]]&format=fbs'>Example FBS</a></h3>
     <h3>API: spacedata/[${Object.keys(standards)}]?query=[["select",["*"]]]&format=[json, flatbuffer]</h3>
-    <h3>JSON Schema: spacedata/[${Object.keys(standards)}]?schema=true</h3>
+    <h3>JSON Schema: schema/[${Object.keys(standards)}]</h3>
+    <h3><a href='./schema/omm'>Example Schema</a></h3>
+    <h3><a href='./app'>TEST APP</a></h3>
     </html>`);
 });
 app.get("/providers/:provider?", providers);
-app.get("/spacedata/:standard/:provider/", get);
+app.get("/schema/:standard", schema);
+app.get("/spacedata/:standard/:provider?", get);
 app.get('/spacedata/latest/:standard/:provider', latest);
 app.post("/spacedata/:standard?", (post as any));
 app.get("/standards/:standard?", standardsRoute);
 app.get("/sql/", sql);
+
 export { app };
