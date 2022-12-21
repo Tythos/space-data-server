@@ -7,6 +7,8 @@
     json: { start: 0, stop: 0, data: { RECORDS: [] } },
     fbs: { start: 0, stop: 0, data: { RECORDS: [] } },
   };
+  let currentData = new standards.OMM.OMMCOLLECTIONT();
+  let cDT;
   let templateURL = `${
     ~window.location.host.indexOf("localhost") ? "http://localhost:8080" : ""
   }/spacedata/latest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/`;
@@ -21,6 +23,10 @@
       results[format].data = readFB(rawBuffer, "OMM", standards.OMM);
     }
     results[format].stop = (performance.now() - results[format].start) / 1000;
+    clearTimeout(cDT);
+    cDT = setTimeout(() => {
+      currentData = results[format].data;
+    }, 1000);
   };
   const RunTest = async () => {
     loading = true;
@@ -52,6 +58,15 @@
     {:else}
       <div>RUNNING TEST...</div>
     {/if}
+  </div>
+  <div class="overflow-auto border rounded-md h-24 w-1/2">
+    {#each currentData.RECORDS.slice(0, 100) as record}
+      <div class="border rounded-md m-2">
+        {#each Object.entries(record) as [key, value]}
+          <div>{key}:{value}</div>
+        {/each}
+      </div>
+    {/each}
   </div>
 </main>
 
