@@ -9,7 +9,7 @@
   };
   let templateURL = `${
     window.location.host === "localhost" ? "localhost:8080" : ""
-  }/spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/`;
+  }/spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/latest`;
   let loading = false;
   const getData = async (format) => {
     results[format].start = performance.now();
