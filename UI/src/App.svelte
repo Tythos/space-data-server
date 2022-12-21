@@ -31,8 +31,10 @@
   };
 </script>
 
-<main style="width:100vw">
-  <input style="width:50vw" bind:value={templateURL} />
+<main style="width:100vw" class="background-black">
+  <input
+    class="w-full border-solid border-2 border-rose-600"
+    bind:value={templateURL} />
   {#each Object.entries(results) as [format, result]}
     <div>
       <h2>{format.toUpperCase()}</h2>
@@ -50,7 +52,8 @@
   </div>
 </main>
 
-<style>
+<style global lang="postcss">
+
   :global(body, html) {
     overflow: hidden;
     width: 100vw;
