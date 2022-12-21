@@ -14,7 +14,7 @@
     }
   },
   "database": {
-    "path": ".database",
+    "path": ".testdatabase",
     "config": {
       "primary": "sqlite",
       "sqlite": {

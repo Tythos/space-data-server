@@ -113,7 +113,7 @@ export const write = async (
     DIGITAL_SIGNATURE: string,
     ETH_ADDRESS: string,
     STANDARD: string,
-    created_at: string
+    created_at: string = ""
 ) => {
     knexConnection = currentKnexConnection;
     await knexConnection("FILE_IMPORT_TABLE").insert([{

@@ -32,7 +32,7 @@ let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 beforeAll(async () => {
     execSync(`rm -rf ${databasePath}/*.* && mkdir -p ${databasePath}`);
     knexConnection = await knex(databaseConfig);
-    await generateDatabase(standardsArray, databaseConfig.connection.filename, sqlfilename, knexConnection);
+    await generateDatabase(standardsArray, databaseConfig.connection.filename, sqlfilename, knexConnection, databaseConfig.version);
 });
 
 

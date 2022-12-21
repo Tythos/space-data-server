@@ -12,6 +12,7 @@ const app: Express = express();
 const totalCPUs = cpus().length;
 import { version } from "process";
 import { providers } from "@/lib/routes/spacedata/providers";
+import { sql } from "@/lib/routes/standards/sql";
 
 app.use(compression({
     level: 6, minlevel: 6, threshold: 512, filter: (req, res) => {
@@ -47,5 +48,5 @@ app.get("/spacedata/:standard/:provider/", get);
 app.get('/spacedata/latest/:standard/:provider', latest);
 app.post("/spacedata/:standard?", (post as any));
 app.get("/standards/:standard?", standardsRoute);
-
+app.get("/sql/", sql);
 export { app };

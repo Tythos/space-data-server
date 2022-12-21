@@ -22,7 +22,7 @@ let bingoProcess: Number = 0;
 export default {
     init: async function () {
         if (!existsSync(databaseConfig.connection.filename)) {
-            await generateDatabase(standardsArray, databaseConfig.connection.filename, `./.database/standards.${databaseConfig.version}.sql`, connection);
+            await generateDatabase(standardsArray, databaseConfig.connection.filename, `./.database/standards.sql`, connection, databaseConfig.version);
         }
 
         try {

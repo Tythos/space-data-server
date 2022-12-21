@@ -169,7 +169,8 @@ export const generateDatabase = (
     jsonSchemas: Array<JSONSchema4>,
     filename: string = ".tmp/standards.sqlite",
     sqlFilename: string = "",
-    knexConnection: any
+    knexConnection: any,
+    version: string = ""
 ) => {
     if (existsSync(filename)) {
         rmSync(filename);
@@ -208,8 +209,11 @@ export const generateDatabase = (
 
     return tSchema.then(() => {
         if (sqlFilename.length) {
+
             writeFileSync(
                 sqlFilename,
+                `/*${version}*/
+                ` +
                 tSchema
                     .toString()
                     .replaceAll(",", ",\n")
