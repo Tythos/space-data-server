@@ -38,7 +38,7 @@ app.get("/", (req: Request, res: Response) => {
     <h2>Free Memory:${freemem()}</h2>
     <h2>Node Version: ${version}</h2>
     <hr/>
-    <h3><a href='./spacedata/latest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94?query=[["select",["*"]]]&format=json'>Example JSON</a></h3>
+    <h3><a href='./spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94?query=[["select",["*"]]]&format=json'>Example JSON</a></h3>
     <h3><a href='./spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94?query=[["select",["*"]]]&format=fbs'>Example FBS</a></h3>
     <h3>API: spacedata/[${Object.keys(standards)}]?query=[["select",["*"]]]&format=[json, flatbuffer]</h3>
     <h3>JSON Schema: schema/[${Object.keys(standards)}]</h3>
