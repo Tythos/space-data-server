@@ -5,15 +5,16 @@
   import { ByteBuffer } from "flatbuffers";
   let results = {
     json: { start: 0, stop: 0, data: { RECORDS: [] } },
-    fb: { start: 0, stop: 0, data: { RECORDS: [] } },
+    fbs: { start: 0, stop: 0, data: { RECORDS: [] } },
   };
   let templateURL = `${
-    window.location.host === "localhost" ? "localhost:8080" : ""
-  }/spacedata/latest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/latest`;
+    ~window.location.host.indexOf("localhost") ? "http://localhost:8080" : ""
+  }/spacedata/latest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/`;
   let loading = false;
   const getData = async (format) => {
     results[format].start = performance.now();
-    const xresults = await fetch(`${templateURL}?&format=${format}`);
+    console.log(templateURL, window.location.host)
+    const xresults = await fetch(`${templateURL}?format=${format}`);
     if (format === "json") {
       results[format].data = await xresults.json();
     } else {
