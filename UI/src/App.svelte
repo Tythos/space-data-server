@@ -9,7 +9,7 @@
   };
   let templateURL = `${
     window.location.host === "localhost" ? "localhost:8080" : ""
-  }/spacedata/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/latest`;
+  }/spacedata/latest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/latest`;
   let loading = false;
   const getData = async (format) => {
     results[format].start = performance.now();
@@ -31,7 +31,8 @@
   };
 </script>
 
-<main class="w-full flex flex-col items-center border border-2 border-gray-400 background-black">
+<main
+  class="w-full flex flex-col items-center border border-2 border-gray-400 background-black">
   <input
     class="p-2 w-1/2 rounded-md border-solid border-2 border-gray-400"
     bind:value={templateURL} />
@@ -53,13 +54,12 @@
 </main>
 
 <style global lang="postcss">
-
   :global(body, html, #app) {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
-    padding:0px;
-    margin:0px;
+    padding: 0px;
+    margin: 0px;
   }
 
   main {
