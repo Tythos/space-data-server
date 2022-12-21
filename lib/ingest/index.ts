@@ -85,6 +85,21 @@ export const init = async (folder: string) => {
     }
 }
 
+const writeFiles = (writePath: string, CID: string, input: any) => {
+    mkdirSync(writePath, { recursive: true });
+    const fbsPath = join(
+        writePath,
+        `${CID}.fbs`);
+    const jsonPath = join(
+        writePath,
+        `${CID}.json`);
+    if (!existsSync(fbsPath)) {
+        writeFileSync(fbsPath, writeFB(input));
+    }
+    if (!existsSync(jsonPath)) {
+        writeFileSync(jsonPath, JSON.stringify(input));
+    }
+}
 async function processData() {
     const returnFunc = () => {
         if (queue.length) {
@@ -106,6 +121,7 @@ async function processData() {
     let signatureFile = extname(trimmedFile) === ".sig" ? file : `${file}.sig`;
 
     if (existsSync(signedFile) && ~["fbs", "json"].indexOf(ext)) {
+        let mtime: string = new Date(statSync(signedFile).mtime).toISOString();
         let inputFile: any = readFileSync(signedFile);
         let CID = await ipfsHash.of(inputFile);
         //@ts-ignore
@@ -133,6 +149,7 @@ async function processData() {
 
         if (!signedEthAddress) {
             console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid.`);
+            return;
         }
 
         if (extname(signedFile) === ".json") {
@@ -154,29 +171,24 @@ async function processData() {
         }
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
         if (!currentCID) {
-            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string);
+            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
+        }
+        let { CID: latestCID } = await connection("FILE_IMPORT_TABLE").select("*").where({ "ETH_ADDRESS": signedEthAddress }).orderBy("created_at").first();
+
+        if (CID === latestCID) {
+            const writePath = join(config.data.public,
+                standard.toUpperCase(),
+                signedEthAddress as string);
+            writeFiles(writePath, "latest", input);
         }
         if (config.data.copyOnRead) {
-
             const writePath = join(
                 config.data.public,
                 standard.toUpperCase(),
                 signedEthAddress as string,
                 roundToUTCDate(new Date(statSync(signedFile).mtime)).toISOString());
 
-            mkdirSync(writePath, { recursive: true });
-            const fbsPath = join(
-                writePath,
-                `${CID}.fbs`);
-            const jsonPath = join(
-                writePath,
-                `${CID}.json`);
-            if (!existsSync(fbsPath)) {
-                writeFileSync(fbsPath, writeFB(input));
-            }
-            if (!existsSync(jsonPath)) {
-                writeFileSync(jsonPath, JSON.stringify(input));
-            }
+            writeFiles(writePath, CID, input);
         }
     }
 

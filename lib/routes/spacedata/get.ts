@@ -25,7 +25,8 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       res.send(Object.keys(standards));
     } else {
       standard = standard.toUpperCase();
-      let { query, format, schema } = req.query;
+      let { query, format = "fbs", schema } = req.query;
+
       if (schema) {
         res.end(JSON.stringify(standardsJSON[standard], null, 4));
       } else {
@@ -39,17 +40,8 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
           res.status(500);
           res.end();
         }
-        let payload;
 
-        if (querytype === "latest") {
-          let latestCID = await connection("FILE_IMPORT_TABLE").select("CID").where({ "ETH_ADDRESS": provider }).orderBy("updated_at").first();
-          if (latestCID) {
-            let { CID } = latestCID;
-            parsedQuery.push(["where", ["file_id", "=", CID]]);
-          }
-        }
-        payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
-
+        let payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
         if (format === "json") {
           payload = JSON.stringify(payload);
         } else {

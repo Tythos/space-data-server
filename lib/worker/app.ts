@@ -1,4 +1,4 @@
-import { get, post } from "../routes/spacedata/index";
+import { get, latest, post } from "../routes/spacedata/index";
 import express, { Express, Request, Response } from 'express';
 import helmet from "helmet";
 import cors from "cors";
@@ -43,7 +43,8 @@ app.get("/", (req: Request, res: Response) => {
     </html>`);
 });
 app.get("/providers/:provider?", providers);
-app.get("/spacedata/:standard/:provider/:querytype?", get);
+app.get("/spacedata/:standard/:provider/", get);
+app.get('/spacedata/latest/:standard/:provider', latest);
 app.post("/spacedata/:standard?", (post as any));
 app.get("/standards/:standard?", standardsRoute);
 

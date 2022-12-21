@@ -111,14 +111,18 @@ export const write = async (
     standardsSchema: JSONSchema4,
     CID: string = "no_id",
     DIGITAL_SIGNATURE: string,
-    ETH_ADDRESS: string
+    ETH_ADDRESS: string,
+    STANDARD: string,
+    created_at: string
 ) => {
     knexConnection = currentKnexConnection;
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,
         ETH_ADDRESS,
-        RECORD_COUNT: queryArray.length
+        STANDARD,
+        RECORD_COUNT: queryArray.length,
+        created_at
     }]);
 
     knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");

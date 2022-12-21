@@ -201,6 +201,7 @@ export const generateDatabase = (
         table.string("CID").notNullable().primary();
         table.string("DIGITAL_SIGNATURE");
         table.string("ETH_ADDRESS");
+        table.string("STANDARD");
         table.integer("RECORD_COUNT").unsigned().notNullable();
         table.timestamps();
     });
