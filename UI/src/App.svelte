@@ -13,7 +13,6 @@
   let loading = false;
   const getData = async (format) => {
     results[format].start = performance.now();
-    console.log(templateURL, window.location.host)
     const xresults = await fetch(`${templateURL}?format=${format}`);
     if (format === "json") {
       results[format].data = await xresults.json();
@@ -39,7 +38,9 @@
     bind:value={templateURL} />
   {#each Object.entries(results) as [format, result]}
     <div>
-      <h2>{format.toUpperCase()}</h2>
+      <h2>
+        <a href={`${templateURL}?format=${format}`}>{format.toUpperCase()}</a>
+      </h2>
       Loaded: {result.data.RECORDS.length} RECORDS <br />
       {result.stop} seconds
     </div>
