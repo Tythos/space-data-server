@@ -1,11 +1,11 @@
 {
     "name": "space-data-server",
-    "version": "1.0.513+1671627078535",
+    "version": "1.0.514+1671638183429",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
     "scripts": {
-        "deploy": "npm run build && git add -A && git commit -m 'update build' && git push && npm publish",
+        "deploy": "npm run build && cd UI && npm run build && cd .. && git add -A && git commit -m 'update build' && git push && npm publish",
         "init": "git submodule init && git submodule update && npm run build:standards",
         "build": "cp -R ./node_modules/better-sqlite3/build/Release/* build/ && npm run build:esbuild && node ./scripts/updateVersion.mjs",
         "build:esbuild": "esbuild index.ts --sourcemap --external:pg-native --external:better_sqlite3 --bundle --platform=node --outfile=./build/server.cjs",

@@ -31,9 +31,9 @@
   };
 </script>
 
-<main style="width:100vw" class="background-black">
+<main class="w-full flex flex-col items-center border border-2 border-gray-400 background-black">
   <input
-    class="w-full border-solid border-2 border-rose-600"
+    class="p-2 w-1/2 rounded-md border-solid border-2 border-gray-400"
     bind:value={templateURL} />
   {#each Object.entries(results) as [format, result]}
     <div>
@@ -54,10 +54,12 @@
 
 <style global lang="postcss">
 
-  :global(body, html) {
+  :global(body, html, #app) {
     overflow: hidden;
     width: 100vw;
     height: 100vh;
+    padding:0px;
+    margin:0px;
   }
 
   main {
