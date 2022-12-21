@@ -43,6 +43,7 @@ app.get("/", (req: Request, res: Response) => {
     <h3>API: spacedata/[${Object.keys(standards)}]?query=[["select",["*"]]]&format=[json, flatbuffer]</h3>
     <h3>JSON Schema: schema/[${Object.keys(standards)}]</h3>
     <h3><a href='./schema/omm'>Example Schema</a></h3>
+    <h3><a href='./sql'>Generated SQL</a></h3>
     <h3><a href='./app'>TEST APP</a></h3>
     </html>`);
 });
