@@ -28,7 +28,7 @@ RECORDS(index: number, obj?:CAT):CAT|null {
   return offset ? (obj || new CAT()).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
 }
 
-RECORDS_Length():number {
+recordsLength():number {
   const offset = this.bb!.__offset(this.bb_pos, 4);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 }
@@ -37,11 +37,11 @@ static startCATCOLLECTION(builder:flatbuffers.Builder) {
   builder.startObject(1);
 }
 
-static add_RECORDS(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
+static addRecords(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, RECORDSOffset, 0);
 }
 
-static create_RECORDS_Vector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
+static createRecordsVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
   builder.startVector(4, data.length, 4);
   for (let i = data.length - 1; i >= 0; i--) {
     builder.addOffset(data[i]!);
@@ -49,7 +49,7 @@ static create_RECORDS_Vector(builder:flatbuffers.Builder, data:flatbuffers.Offse
   return builder.endVector();
 }
 
-static start_RECORDS_Vector(builder:flatbuffers.Builder, numElems:number) {
+static startRecordsVector(builder:flatbuffers.Builder, numElems:number) {
   builder.startVector(4, numElems, 4);
 }
 
@@ -60,19 +60,19 @@ static endCATCOLLECTION(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createCATCOLLECTION(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset):flatbuffers.Offset {
   CATCOLLECTION.startCATCOLLECTION(builder);
-  CATCOLLECTION.add_RECORDS(builder, RECORDSOffset);
+  CATCOLLECTION.addRecords(builder, RECORDSOffset);
   return CATCOLLECTION.endCATCOLLECTION(builder);
 }
 
 unpack(): CATCOLLECTIONT {
   return new CATCOLLECTIONT(
-    this.bb!.createObjList<CAT, CATT>(this.RECORDS.bind(this), this.RECORDS_Length())
+    this.bb!.createObjList<CAT, CATT>(this.RECORDS.bind(this), this.recordsLength())
   );
 }
 
 
 unpackTo(_o: CATCOLLECTIONT): void {
-  _o.RECORDS = this.bb!.createObjList<CAT, CATT>(this.RECORDS.bind(this), this.RECORDS_Length());
+  _o.RECORDS = this.bb!.createObjList<CAT, CATT>(this.RECORDS.bind(this), this.recordsLength());
 }
 }
 
@@ -83,7 +83,7 @@ constructor(
 
 
 pack(builder:flatbuffers.Builder): flatbuffers.Offset {
-  const RECORDS = CATCOLLECTION.create_RECORDS_Vector(builder, builder.createObjectOffsetList(this.RECORDS));
+  const RECORDS = CATCOLLECTION.createRecordsVector(builder, builder.createObjectOffsetList(this.RECORDS));
 
   return CATCOLLECTION.createCATCOLLECTION(builder,
     RECORDS

@@ -1,8 +1,8 @@
 {
     "client": "better-sqlite3",
     "connection": {
-        "filename": "./.database/spacedatastandards.0.0.2+1668785618858.sqlite"
+        "filename": "./.testdatabase/spacedatastandards.0.0.2+1671801697647.sqlite"
     },
     "useNullAsDefault": true,
-    "version": "0.0.2+1668785618858"
+    "version": "0.0.2+1671801697647"
 }

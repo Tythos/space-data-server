@@ -161,91 +161,91 @@ static startCAT(builder:flatbuffers.Builder) {
   builder.startObject(22);
 }
 
-static add_OBJECT_NAME(builder:flatbuffers.Builder, OBJECT_NAMEOffset:flatbuffers.Offset) {
+static addObjectName(builder:flatbuffers.Builder, OBJECT_NAMEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, OBJECT_NAMEOffset, 0);
 }
 
-static add_OBJECT_ID(builder:flatbuffers.Builder, OBJECT_IDOffset:flatbuffers.Offset) {
+static addObjectId(builder:flatbuffers.Builder, OBJECT_IDOffset:flatbuffers.Offset) {
   builder.addFieldOffset(1, OBJECT_IDOffset, 0);
 }
 
-static add_NORAD_CAT_ID(builder:flatbuffers.Builder, NORAD_CAT_ID:number) {
+static addNoradCatId(builder:flatbuffers.Builder, NORAD_CAT_ID:number) {
   builder.addFieldInt32(2, NORAD_CAT_ID, 0);
 }
 
-static add_OBJECT_TYPE(builder:flatbuffers.Builder, OBJECT_TYPE:objectType) {
+static addObjectType(builder:flatbuffers.Builder, OBJECT_TYPE:objectType) {
   builder.addFieldInt8(3, OBJECT_TYPE, objectType.UNKNOWN);
 }
 
-static add_OPS_STATUS_CODE(builder:flatbuffers.Builder, OPS_STATUS_CODE:opsStatusCode) {
+static addOpsStatusCode(builder:flatbuffers.Builder, OPS_STATUS_CODE:opsStatusCode) {
   builder.addFieldInt8(4, OPS_STATUS_CODE, opsStatusCode.UNKNOWN);
 }
 
-static add_OWNER(builder:flatbuffers.Builder, OWNEROffset:flatbuffers.Offset) {
+static addOwner(builder:flatbuffers.Builder, OWNEROffset:flatbuffers.Offset) {
   builder.addFieldOffset(5, OWNEROffset, 0);
 }
 
-static add_LAUNCH_DATE(builder:flatbuffers.Builder, LAUNCH_DATEOffset:flatbuffers.Offset) {
+static addLaunchDate(builder:flatbuffers.Builder, LAUNCH_DATEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(6, LAUNCH_DATEOffset, 0);
 }
 
-static add_LAUNCH_SITE(builder:flatbuffers.Builder, LAUNCH_SITEOffset:flatbuffers.Offset) {
+static addLaunchSite(builder:flatbuffers.Builder, LAUNCH_SITEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(7, LAUNCH_SITEOffset, 0);
 }
 
-static add_DECAY_DATE(builder:flatbuffers.Builder, DECAY_DATEOffset:flatbuffers.Offset) {
+static addDecayDate(builder:flatbuffers.Builder, DECAY_DATEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(8, DECAY_DATEOffset, 0);
 }
 
-static add_PERIOD(builder:flatbuffers.Builder, PERIOD:number) {
+static addPeriod(builder:flatbuffers.Builder, PERIOD:number) {
   builder.addFieldFloat64(9, PERIOD, 0.0);
 }
 
-static add_INCLINATION(builder:flatbuffers.Builder, INCLINATION:number) {
+static addInclination(builder:flatbuffers.Builder, INCLINATION:number) {
   builder.addFieldFloat64(10, INCLINATION, 0.0);
 }
 
-static add_APOGEE(builder:flatbuffers.Builder, APOGEE:number) {
+static addApogee(builder:flatbuffers.Builder, APOGEE:number) {
   builder.addFieldFloat64(11, APOGEE, 0.0);
 }
 
-static add_PERIGEE(builder:flatbuffers.Builder, PERIGEE:number) {
+static addPerigee(builder:flatbuffers.Builder, PERIGEE:number) {
   builder.addFieldFloat64(12, PERIGEE, 0.0);
 }
 
-static add_RCS(builder:flatbuffers.Builder, RCS:number) {
+static addRcs(builder:flatbuffers.Builder, RCS:number) {
   builder.addFieldFloat64(13, RCS, 0.0);
 }
 
-static add_DATA_STATUS_CODE(builder:flatbuffers.Builder, DATA_STATUS_CODE:dataStatusCode) {
+static addDataStatusCode(builder:flatbuffers.Builder, DATA_STATUS_CODE:dataStatusCode) {
   builder.addFieldInt8(14, DATA_STATUS_CODE, dataStatusCode.NO_CURRENT_ELEMENTS);
 }
 
-static add_ORBIT_CENTER(builder:flatbuffers.Builder, ORBIT_CENTEROffset:flatbuffers.Offset) {
+static addOrbitCenter(builder:flatbuffers.Builder, ORBIT_CENTEROffset:flatbuffers.Offset) {
   builder.addFieldOffset(15, ORBIT_CENTEROffset, 0);
 }
 
-static add_ORBIT_TYPE(builder:flatbuffers.Builder, ORBIT_TYPE:orbitType) {
+static addOrbitType(builder:flatbuffers.Builder, ORBIT_TYPE:orbitType) {
   builder.addFieldInt8(16, ORBIT_TYPE, orbitType.ORBIT);
 }
 
-static add_DEPLOYMENT_DATE(builder:flatbuffers.Builder, DEPLOYMENT_DATEOffset:flatbuffers.Offset) {
+static addDeploymentDate(builder:flatbuffers.Builder, DEPLOYMENT_DATEOffset:flatbuffers.Offset) {
   builder.addFieldOffset(17, DEPLOYMENT_DATEOffset, 0);
 }
 
-static add_MANEUVERABLE(builder:flatbuffers.Builder, MANEUVERABLE:boolean) {
+static addManeuverable(builder:flatbuffers.Builder, MANEUVERABLE:boolean) {
   builder.addFieldInt8(18, +MANEUVERABLE, +false);
 }
 
-static add_SIZE(builder:flatbuffers.Builder, SIZE:number) {
+static addSize(builder:flatbuffers.Builder, SIZE:number) {
   builder.addFieldFloat64(19, SIZE, 0.0);
 }
 
-static add_MASS(builder:flatbuffers.Builder, MASS:number) {
+static addMass(builder:flatbuffers.Builder, MASS:number) {
   builder.addFieldFloat64(20, MASS, 0.0);
 }
 
-static add_MASS_TYPE(builder:flatbuffers.Builder, MASS_TYPE:massType) {
+static addMassType(builder:flatbuffers.Builder, MASS_TYPE:massType) {
   builder.addFieldInt8(21, MASS_TYPE, massType.DRY);
 }
 
@@ -264,28 +264,28 @@ static finishSizePrefixedCATBuffer(builder:flatbuffers.Builder, offset:flatbuffe
 
 static createCAT(builder:flatbuffers.Builder, OBJECT_NAMEOffset:flatbuffers.Offset, OBJECT_IDOffset:flatbuffers.Offset, NORAD_CAT_ID:number, OBJECT_TYPE:objectType, OPS_STATUS_CODE:opsStatusCode, OWNEROffset:flatbuffers.Offset, LAUNCH_DATEOffset:flatbuffers.Offset, LAUNCH_SITEOffset:flatbuffers.Offset, DECAY_DATEOffset:flatbuffers.Offset, PERIOD:number, INCLINATION:number, APOGEE:number, PERIGEE:number, RCS:number, DATA_STATUS_CODE:dataStatusCode, ORBIT_CENTEROffset:flatbuffers.Offset, ORBIT_TYPE:orbitType, DEPLOYMENT_DATEOffset:flatbuffers.Offset, MANEUVERABLE:boolean, SIZE:number, MASS:number, MASS_TYPE:massType):flatbuffers.Offset {
   CAT.startCAT(builder);
-  CAT.add_OBJECT_NAME(builder, OBJECT_NAMEOffset);
-  CAT.add_OBJECT_ID(builder, OBJECT_IDOffset);
-  CAT.add_NORAD_CAT_ID(builder, NORAD_CAT_ID);
-  CAT.add_OBJECT_TYPE(builder, OBJECT_TYPE);
-  CAT.add_OPS_STATUS_CODE(builder, OPS_STATUS_CODE);
-  CAT.add_OWNER(builder, OWNEROffset);
-  CAT.add_LAUNCH_DATE(builder, LAUNCH_DATEOffset);
-  CAT.add_LAUNCH_SITE(builder, LAUNCH_SITEOffset);
-  CAT.add_DECAY_DATE(builder, DECAY_DATEOffset);
-  CAT.add_PERIOD(builder, PERIOD);
-  CAT.add_INCLINATION(builder, INCLINATION);
-  CAT.add_APOGEE(builder, APOGEE);
-  CAT.add_PERIGEE(builder, PERIGEE);
-  CAT.add_RCS(builder, RCS);
-  CAT.add_DATA_STATUS_CODE(builder, DATA_STATUS_CODE);
-  CAT.add_ORBIT_CENTER(builder, ORBIT_CENTEROffset);
-  CAT.add_ORBIT_TYPE(builder, ORBIT_TYPE);
-  CAT.add_DEPLOYMENT_DATE(builder, DEPLOYMENT_DATEOffset);
-  CAT.add_MANEUVERABLE(builder, MANEUVERABLE);
-  CAT.add_SIZE(builder, SIZE);
-  CAT.add_MASS(builder, MASS);
-  CAT.add_MASS_TYPE(builder, MASS_TYPE);
+  CAT.addObjectName(builder, OBJECT_NAMEOffset);
+  CAT.addObjectId(builder, OBJECT_IDOffset);
+  CAT.addNoradCatId(builder, NORAD_CAT_ID);
+  CAT.addObjectType(builder, OBJECT_TYPE);
+  CAT.addOpsStatusCode(builder, OPS_STATUS_CODE);
+  CAT.addOwner(builder, OWNEROffset);
+  CAT.addLaunchDate(builder, LAUNCH_DATEOffset);
+  CAT.addLaunchSite(builder, LAUNCH_SITEOffset);
+  CAT.addDecayDate(builder, DECAY_DATEOffset);
+  CAT.addPeriod(builder, PERIOD);
+  CAT.addInclination(builder, INCLINATION);
+  CAT.addApogee(builder, APOGEE);
+  CAT.addPerigee(builder, PERIGEE);
+  CAT.addRcs(builder, RCS);
+  CAT.addDataStatusCode(builder, DATA_STATUS_CODE);
+  CAT.addOrbitCenter(builder, ORBIT_CENTEROffset);
+  CAT.addOrbitType(builder, ORBIT_TYPE);
+  CAT.addDeploymentDate(builder, DEPLOYMENT_DATEOffset);
+  CAT.addManeuverable(builder, MANEUVERABLE);
+  CAT.addSize(builder, SIZE);
+  CAT.addMass(builder, MASS);
+  CAT.addMassType(builder, MASS_TYPE);
   return CAT.endCAT(builder);
 }
 

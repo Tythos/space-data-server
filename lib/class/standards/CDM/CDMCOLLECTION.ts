@@ -28,7 +28,7 @@ RECORDS(index: number, obj?:CDM):CDM|null {
   return offset ? (obj || new CDM()).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
 }
 
-RECORDS_Length():number {
+recordsLength():number {
   const offset = this.bb!.__offset(this.bb_pos, 4);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 }
@@ -37,11 +37,11 @@ static startCDMCOLLECTION(builder:flatbuffers.Builder) {
   builder.startObject(1);
 }
 
-static add_RECORDS(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
+static addRecords(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, RECORDSOffset, 0);
 }
 
-static create_RECORDS_Vector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
+static createRecordsVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
   builder.startVector(4, data.length, 4);
   for (let i = data.length - 1; i >= 0; i--) {
     builder.addOffset(data[i]!);
@@ -49,7 +49,7 @@ static create_RECORDS_Vector(builder:flatbuffers.Builder, data:flatbuffers.Offse
   return builder.endVector();
 }
 
-static start_RECORDS_Vector(builder:flatbuffers.Builder, numElems:number) {
+static startRecordsVector(builder:flatbuffers.Builder, numElems:number) {
   builder.startVector(4, numElems, 4);
 }
 
@@ -60,19 +60,19 @@ static endCDMCOLLECTION(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createCDMCOLLECTION(builder:flatbuffers.Builder, RECORDSOffset:flatbuffers.Offset):flatbuffers.Offset {
   CDMCOLLECTION.startCDMCOLLECTION(builder);
-  CDMCOLLECTION.add_RECORDS(builder, RECORDSOffset);
+  CDMCOLLECTION.addRecords(builder, RECORDSOffset);
   return CDMCOLLECTION.endCDMCOLLECTION(builder);
 }
 
 unpack(): CDMCOLLECTIONT {
   return new CDMCOLLECTIONT(
-    this.bb!.createObjList<CDM, CDMT>(this.RECORDS.bind(this), this.RECORDS_Length())
+    this.bb!.createObjList<CDM, CDMT>(this.RECORDS.bind(this), this.recordsLength())
   );
 }
 
 
 unpackTo(_o: CDMCOLLECTIONT): void {
-  _o.RECORDS = this.bb!.createObjList<CDM, CDMT>(this.RECORDS.bind(this), this.RECORDS_Length());
+  _o.RECORDS = this.bb!.createObjList<CDM, CDMT>(this.RECORDS.bind(this), this.recordsLength());
 }
 }
 
@@ -83,7 +83,7 @@ constructor(
 
 
 pack(builder:flatbuffers.Builder): flatbuffers.Offset {
-  const RECORDS = CDMCOLLECTION.create_RECORDS_Vector(builder, builder.createObjectOffsetList(this.RECORDS));
+  const RECORDS = CDMCOLLECTION.createRecordsVector(builder, builder.createObjectOffsetList(this.RECORDS));
 
   return CDMCOLLECTION.createCDMCOLLECTION(builder,
     RECORDS

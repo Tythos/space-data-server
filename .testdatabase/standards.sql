@@ -1,4 +1,5 @@
-create table `CAT` (
+/*0.0.2+1671801697647*/
+                create table `CAT` (
  `file_id` varchar(
  255),
  `id` integer not null,
@@ -510,6 +511,8 @@ create table `FILE_IMPORT_TABLE` (
  `DIGITAL_SIGNATURE` varchar(
  255),
  `ETH_ADDRESS` varchar(
+ 255),
+ `STANDARD` varchar(
  255),
  `RECORD_COUNT` integer not null,
  `created_at` datetime,

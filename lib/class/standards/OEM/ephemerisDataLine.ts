@@ -78,43 +78,43 @@ static startephemerisDataLine(builder:flatbuffers.Builder) {
   builder.startObject(10);
 }
 
-static add_EPOCH(builder:flatbuffers.Builder, EPOCHOffset:flatbuffers.Offset) {
+static addEpoch(builder:flatbuffers.Builder, EPOCHOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, EPOCHOffset, 0);
 }
 
-static add_X(builder:flatbuffers.Builder, X:number) {
+static addX(builder:flatbuffers.Builder, X:number) {
   builder.addFieldFloat64(1, X, 0.0);
 }
 
-static add_Y(builder:flatbuffers.Builder, Y:number) {
+static addY(builder:flatbuffers.Builder, Y:number) {
   builder.addFieldFloat64(2, Y, 0.0);
 }
 
-static add_Z(builder:flatbuffers.Builder, Z:number) {
+static addZ(builder:flatbuffers.Builder, Z:number) {
   builder.addFieldFloat64(3, Z, 0.0);
 }
 
-static add_X_DOT(builder:flatbuffers.Builder, X_DOT:number) {
+static addXDot(builder:flatbuffers.Builder, X_DOT:number) {
   builder.addFieldFloat64(4, X_DOT, 0.0);
 }
 
-static add_Y_DOT(builder:flatbuffers.Builder, Y_DOT:number) {
+static addYDot(builder:flatbuffers.Builder, Y_DOT:number) {
   builder.addFieldFloat64(5, Y_DOT, 0.0);
 }
 
-static add_Z_DOT(builder:flatbuffers.Builder, Z_DOT:number) {
+static addZDot(builder:flatbuffers.Builder, Z_DOT:number) {
   builder.addFieldFloat64(6, Z_DOT, 0.0);
 }
 
-static add_X_DDOT(builder:flatbuffers.Builder, X_DDOT:number) {
+static addXDdot(builder:flatbuffers.Builder, X_DDOT:number) {
   builder.addFieldFloat64(7, X_DDOT, 0.0);
 }
 
-static add_Y_DDOT(builder:flatbuffers.Builder, Y_DDOT:number) {
+static addYDdot(builder:flatbuffers.Builder, Y_DDOT:number) {
   builder.addFieldFloat64(8, Y_DDOT, 0.0);
 }
 
-static add_Z_DDOT(builder:flatbuffers.Builder, Z_DDOT:number) {
+static addZDdot(builder:flatbuffers.Builder, Z_DDOT:number) {
   builder.addFieldFloat64(9, Z_DDOT, 0.0);
 }
 
@@ -125,16 +125,16 @@ static endephemerisDataLine(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createephemerisDataLine(builder:flatbuffers.Builder, EPOCHOffset:flatbuffers.Offset, X:number, Y:number, Z:number, X_DOT:number, Y_DOT:number, Z_DOT:number, X_DDOT:number, Y_DDOT:number, Z_DDOT:number):flatbuffers.Offset {
   ephemerisDataLine.startephemerisDataLine(builder);
-  ephemerisDataLine.add_EPOCH(builder, EPOCHOffset);
-  ephemerisDataLine.add_X(builder, X);
-  ephemerisDataLine.add_Y(builder, Y);
-  ephemerisDataLine.add_Z(builder, Z);
-  ephemerisDataLine.add_X_DOT(builder, X_DOT);
-  ephemerisDataLine.add_Y_DOT(builder, Y_DOT);
-  ephemerisDataLine.add_Z_DOT(builder, Z_DOT);
-  ephemerisDataLine.add_X_DDOT(builder, X_DDOT);
-  ephemerisDataLine.add_Y_DDOT(builder, Y_DDOT);
-  ephemerisDataLine.add_Z_DDOT(builder, Z_DDOT);
+  ephemerisDataLine.addEpoch(builder, EPOCHOffset);
+  ephemerisDataLine.addX(builder, X);
+  ephemerisDataLine.addY(builder, Y);
+  ephemerisDataLine.addZ(builder, Z);
+  ephemerisDataLine.addXDot(builder, X_DOT);
+  ephemerisDataLine.addYDot(builder, Y_DOT);
+  ephemerisDataLine.addZDot(builder, Z_DOT);
+  ephemerisDataLine.addXDdot(builder, X_DDOT);
+  ephemerisDataLine.addYDdot(builder, Y_DDOT);
+  ephemerisDataLine.addZDdot(builder, Z_DDOT);
   return ephemerisDataLine.endephemerisDataLine(builder);
 }
 

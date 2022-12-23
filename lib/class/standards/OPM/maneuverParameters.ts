@@ -64,31 +64,31 @@ static startmaneuverParameters(builder:flatbuffers.Builder) {
   builder.startObject(7);
 }
 
-static add_MAN_EPOCH_IGNITION(builder:flatbuffers.Builder, MAN_EPOCH_IGNITIONOffset:flatbuffers.Offset) {
+static addManEpochIgnition(builder:flatbuffers.Builder, MAN_EPOCH_IGNITIONOffset:flatbuffers.Offset) {
   builder.addFieldOffset(0, MAN_EPOCH_IGNITIONOffset, 0);
 }
 
-static add_MAN_DURATION(builder:flatbuffers.Builder, MAN_DURATION:number) {
+static addManDuration(builder:flatbuffers.Builder, MAN_DURATION:number) {
   builder.addFieldFloat64(1, MAN_DURATION, 0.0);
 }
 
-static add_MAN_DELTA_MASS(builder:flatbuffers.Builder, MAN_DELTA_MASS:number) {
+static addManDeltaMass(builder:flatbuffers.Builder, MAN_DELTA_MASS:number) {
   builder.addFieldFloat64(2, MAN_DELTA_MASS, 0.0);
 }
 
-static add_MAN_REF_FRAME(builder:flatbuffers.Builder, MAN_REF_FRAME:manCovRefFrame) {
+static addManRefFrame(builder:flatbuffers.Builder, MAN_REF_FRAME:manCovRefFrame) {
   builder.addFieldInt8(3, MAN_REF_FRAME, manCovRefFrame.RSW);
 }
 
-static add_MAN_DV_1(builder:flatbuffers.Builder, MAN_DV_1:number) {
+static addManDv1(builder:flatbuffers.Builder, MAN_DV_1:number) {
   builder.addFieldFloat64(4, MAN_DV_1, 0.0);
 }
 
-static add_MAN_DV_2(builder:flatbuffers.Builder, MAN_DV_2:number) {
+static addManDv2(builder:flatbuffers.Builder, MAN_DV_2:number) {
   builder.addFieldFloat64(5, MAN_DV_2, 0.0);
 }
 
-static add_MAN_DV_3(builder:flatbuffers.Builder, MAN_DV_3:number) {
+static addManDv3(builder:flatbuffers.Builder, MAN_DV_3:number) {
   builder.addFieldFloat64(6, MAN_DV_3, 0.0);
 }
 
@@ -99,13 +99,13 @@ static endmaneuverParameters(builder:flatbuffers.Builder):flatbuffers.Offset {
 
 static createmaneuverParameters(builder:flatbuffers.Builder, MAN_EPOCH_IGNITIONOffset:flatbuffers.Offset, MAN_DURATION:number, MAN_DELTA_MASS:number, MAN_REF_FRAME:manCovRefFrame, MAN_DV_1:number, MAN_DV_2:number, MAN_DV_3:number):flatbuffers.Offset {
   maneuverParameters.startmaneuverParameters(builder);
-  maneuverParameters.add_MAN_EPOCH_IGNITION(builder, MAN_EPOCH_IGNITIONOffset);
-  maneuverParameters.add_MAN_DURATION(builder, MAN_DURATION);
-  maneuverParameters.add_MAN_DELTA_MASS(builder, MAN_DELTA_MASS);
-  maneuverParameters.add_MAN_REF_FRAME(builder, MAN_REF_FRAME);
-  maneuverParameters.add_MAN_DV_1(builder, MAN_DV_1);
-  maneuverParameters.add_MAN_DV_2(builder, MAN_DV_2);
-  maneuverParameters.add_MAN_DV_3(builder, MAN_DV_3);
+  maneuverParameters.addManEpochIgnition(builder, MAN_EPOCH_IGNITIONOffset);
+  maneuverParameters.addManDuration(builder, MAN_DURATION);
+  maneuverParameters.addManDeltaMass(builder, MAN_DELTA_MASS);
+  maneuverParameters.addManRefFrame(builder, MAN_REF_FRAME);
+  maneuverParameters.addManDv1(builder, MAN_DV_1);
+  maneuverParameters.addManDv2(builder, MAN_DV_2);
+  maneuverParameters.addManDv3(builder, MAN_DV_3);
   return maneuverParameters.endmaneuverParameters(builder);
 }
 
