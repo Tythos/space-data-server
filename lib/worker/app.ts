@@ -49,7 +49,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 app.get("/providers/:provider?", providers);
 app.get("/schema/:standard", schema);
-app.get("/spacedata/:standard/:provider?", get);
+app.get("/spacedata/:standard/:provider/:cid?", get);
 app.get('/spacedata/latest/:standard/:provider', latest);
 app.post("/spacedata/:standard?", (post as any));
 app.get("/standards/:standard?", standardsRoute);
