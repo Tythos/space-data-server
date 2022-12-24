@@ -148,6 +148,8 @@ create table `CDM` (
  `SCREEN_EXIT_TIME` text,
  `COLLISION_PROBABILITY` float,
  `COLLISION_PROBABILITY_METHOD` text,
+ `OBJECT1` integer,
+ `OBJECT2` integer,
  primary key (
  `id`));
 
@@ -158,6 +160,14 @@ create index `cdm_file_id_index` on `CDM` (
 
 create index `cdm_id_index` on `CDM` (
  `id`);
+
+
+create index `cdm_object1_index` on `CDM` (
+ `OBJECT1`);
+
+
+create index `cdm_object2_index` on `CDM` (
+ `OBJECT2`);
 
 
 create table `CDMObject` (
@@ -331,6 +341,7 @@ create table `OPM` (
  `USER_DEFINED_EARTH_MODEL` text,
  `USER_DEFINED_EPOCH_TIMESTAMP` float,
  `USER_DEFINED_EPOCH_MICROSECONDS` float,
+ `MANEUVERS` integer,
  primary key (
  `id`));
 
@@ -341,6 +352,10 @@ create index `opm_file_id_index` on `OPM` (
 
 create index `opm_id_index` on `OPM` (
  `id`);
+
+
+create index `opm_maneuvers_index` on `OPM` (
+ `MANEUVERS`);
 
 
 create table `maneuverParameters` (
@@ -379,6 +394,7 @@ create table `OEM` (
  `CCSDS_OEM_VERS` float,
  `CREATION_DATE` text,
  `ORIGINATOR` text,
+ `EPHEMERIS_DATA_BLOCK` integer,
  primary key (
  `id`));
 
@@ -389,6 +405,10 @@ create index `oem_file_id_index` on `OEM` (
 
 create index `oem_id_index` on `OEM` (
  `id`);
+
+
+create index `oem_ephemeris_data_block_index` on `OEM` (
+ `EPHEMERIS_DATA_BLOCK`);
 
 
 create table `ephemerisDataBlock` (
@@ -409,6 +429,8 @@ create table `ephemerisDataBlock` (
  `STOP_TIME` text,
  `INTERPOLATION` text,
  `INTERPOLATION_DEGREE` integer,
+ `EPHEMERIS_DATA_LINES` integer,
+ `COVARIANCE_MATRIX_LINES` integer,
  foreign key(
  `OEM_id`) references `OEM`(
  `id`) on delete CASCADE,
@@ -422,6 +444,14 @@ create index `ephemerisdatablock_id_index` on `ephemerisDataBlock` (
 
 create index `ephemerisdatablock_oem_id_index` on `ephemerisDataBlock` (
  `OEM_id`);
+
+
+create index `ephemerisdatablock_ephemeris_data_lines_index` on `ephemerisDataBlock` (
+ `EPHEMERIS_DATA_LINES`);
+
+
+create index `ephemerisdatablock_covariance_matrix_lines_index` on `ephemerisDataBlock` (
+ `COVARIANCE_MATRIX_LINES`);
 
 
 create table `ephemerisDataLine` (

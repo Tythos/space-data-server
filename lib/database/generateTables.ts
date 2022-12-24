@@ -2,13 +2,13 @@ import { Knex } from "knex";
 import { writeFileSync, rmSync, existsSync } from "fs";
 import { JSONSchema4 } from "json-schema";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
-import { config } from "../config/config";
 
 let tSchema: Knex.SchemaBuilder;
 
 let finalJSON: KeyValueDataStructure = {};
 let foreignKeys: KeyValueDataStructure = {};
-let foreignParentReference: KeyValueDataStructure = {};
+let arrayParentReference: KeyValueDataStructure = {};
+let parentPredicates: KeyValueDataStructure = {};
 
 const knexNumberTypes: KeyValueDataStructure = {
     255: "tinyint",
@@ -45,8 +45,9 @@ export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema
 };
 
 const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSONSchema4, rootPredicate: string, parentPredicate?: string): any => {
+   console.log(predicateName, predicate, rootPredicate, parentPredicate)
     let { type, $ref, $$ref, properties, items } = predicate;
-
+    parentPredicates[refRootName($$ref)] = parentPredicate || rootPredicate;
     if ($ref) {
         return builder(
             predicateName,
@@ -57,7 +58,6 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
     } else if (type === "object") {
         if (predicateName !== rootPredicate) {
             predicateName = refRootName($$ref);
-            foreignParentReference[predicateName] = rootPredicate;
         }
         finalJSON[rootPredicate][predicateName] = {
             ...predicate,
@@ -95,7 +95,7 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
     } else if (type === "array") {
         let tableName = refRootName((predicate?.items as unknown as any)?.$ref);
         let parentTableName = parentPredicate;
-        foreignParentReference[tableName] = parentTableName;
+        arrayParentReference[tableName] = parentTableName;
         return builder(predicateName, { ...items }, jsonSchema, rootPredicate);
     } else {
         return predicate;
@@ -111,13 +111,13 @@ const buildTable = (rootTableName: string, tableSchema: any, namespace: string) 
         table.integer("id").notNullable().unsigned().primary();
         table.index("id");
         table.timestamps(true, true);
-        if (foreignParentReference[rootTableName]) {
-            const fProperty = `${foreignParentReference[rootTableName]}_id`;
+        if (parentPredicates[rootTableName]) {
+            const fProperty = `${parentPredicates[rootTableName]}_id`;
             table.integer(fProperty).unsigned();
             table.index(fProperty);
             table
                 .foreign(fProperty)
-                .references(`${foreignParentReference[rootTableName]}.id`)
+                .references(`${parentPredicates[rootTableName]}.id`)
                 .deferrable("deferred")
                 .onDelete("CASCADE");
         }
@@ -147,10 +147,22 @@ const buildTable = (rootTableName: string, tableSchema: any, namespace: string) 
         ) {
             for (let fProperty in foreignKeys[rootTableName]) {
                 let { type, tableName } = foreignKeys[rootTableName][fProperty];
-                if (type === "object" && !foreignParentReference[tableName]) {
-                    table.integer(fProperty)
-                        .unsigned()
-                        .notNullable();
+                /*console.log({
+                    type,
+                    tableName,
+                    rootTableName,
+                    apR: arrayParentReference[tableName],
+                    fProperty,
+                    FK: foreignKeys[rootTableName]
+                })*/
+                if (type === "object" && foreignKeys[rootTableName]) {
+                    table.integer(fProperty).unsigned();
+                    table.index(fProperty);
+                    /* table
+                         .foreign(fProperty)
+                         .references(`${tableName}.id`)
+                         .deferrable("deferred")
+                         .onDelete("CASCADE");*/
                 }
             }
         }
@@ -169,7 +181,7 @@ export const generateDatabase = async (
     filename: string = ".tmp/standards.sqlite",
     sqlFilename: string = "",
     knexConnection: any,
-    version: string = ""
+    version: string = "NO_VERSION_SPECIFIED"
 ) => {
     if (existsSync(filename)) {
         rmSync(filename);
@@ -177,14 +189,6 @@ export const generateDatabase = async (
 
     if (existsSync(sqlFilename)) {
         rmSync(sqlFilename);
-    }
-
-    if (config.database.config.primary === "sqlite") {
-        await knexConnection.raw('PRAGMA foreign_keys = ON');
-        const fkPRAGMA = await knexConnection.raw('PRAGMA foreign_keys');
-        if (!fkPRAGMA[0].foreign_keys) {
-            throw Error("foreign key support not enabled.")
-        }
     }
 
     tSchema = knexConnection.schema;
@@ -214,9 +218,9 @@ export const generateDatabase = async (
         table.timestamps();
     });
 
+
     return tSchema.then(() => {
         if (sqlFilename.length) {
-
             writeFileSync(
                 sqlFilename,
                 `/*${version}*/

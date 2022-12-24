@@ -83,6 +83,7 @@ const insertData = async (
                         const nTable = nTables[nT];
                         const total = resultObject[nTable].length;
                         for (let page = 0; page < total; page += pageSize) {
+                            //console.log(resultObject[nTable].slice(page, page + pageSize))
                             await trx(nTable).insert(resultObject[nTable].slice(page, page + pageSize));
                         }
                         resultObject[nTable] = [];
