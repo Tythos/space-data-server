@@ -148,8 +148,6 @@ create table `CDM` (
  `SCREEN_EXIT_TIME` text,
  `COLLISION_PROBABILITY` float,
  `COLLISION_PROBABILITY_METHOD` text,
- `OBJECT1` integer not null,
- `OBJECT2` integer not null,
  primary key (
  `id`));
 
@@ -166,6 +164,7 @@ create table `CDMObject` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `CDM_id` integer,
  `COMMENT` text,
  `OBJECT` float,
  `OBJECT_DESIGNATOR` text,
@@ -254,12 +253,19 @@ create table `CDMObject` (
  `CTHR_DRG` float,
  `CTHR_SRP` float,
  `CTHR_THR` float,
+ foreign key(
+ `CDM_id`) references `CDM`(
+ `id`) on delete CASCADE,
  primary key (
  `id`));
 
 
 create index `cdmobject_id_index` on `CDMObject` (
  `id`);
+
+
+create index `cdmobject_cdm_id_index` on `CDMObject` (
+ `CDM_id`);
 
 
 create table `OPM` (
@@ -422,7 +428,7 @@ create table `ephemerisDataLine` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
- `ephemerisDataBlock_id` integer,
+ `OEM_id` integer,
  `EPOCH` text,
  `X` float,
  `Y` float,
@@ -434,7 +440,7 @@ create table `ephemerisDataLine` (
  `Y_DDOT` float,
  `Z_DDOT` float,
  foreign key(
- `ephemerisDataBlock_id`) references `ephemerisDataBlock`(
+ `OEM_id`) references `OEM`(
  `id`) on delete CASCADE,
  primary key (
  `id`));
@@ -444,15 +450,15 @@ create index `ephemerisdataline_id_index` on `ephemerisDataLine` (
  `id`);
 
 
-create index `ephemerisdataline_ephemerisdatablock_id_index` on `ephemerisDataLine` (
- `ephemerisDataBlock_id`);
+create index `ephemerisdataline_oem_id_index` on `ephemerisDataLine` (
+ `OEM_id`);
 
 
 create table `covarianceMatrixLine` (
  `id` integer not null,
  `created_at` datetime not null default CURRENT_TIMESTAMP,
  `updated_at` datetime not null default CURRENT_TIMESTAMP,
- `ephemerisDataBlock_id` integer,
+ `OEM_id` integer,
  `EPOCH` text,
  `COV_REF_FRAME` float,
  `CX_X` float,
@@ -477,7 +483,7 @@ create table `covarianceMatrixLine` (
  `CZ_DOT_Y_DOT` float,
  `CZ_DOT_Z_DOT` float,
  foreign key(
- `ephemerisDataBlock_id`) references `ephemerisDataBlock`(
+ `OEM_id`) references `OEM`(
  `id`) on delete CASCADE,
  primary key (
  `id`));
@@ -487,8 +493,8 @@ create index `covariancematrixline_id_index` on `covarianceMatrixLine` (
  `id`);
 
 
-create index `covariancematrixline_ephemerisdatablock_id_index` on `covarianceMatrixLine` (
- `ephemerisDataBlock_id`);
+create index `covariancematrixline_oem_id_index` on `covarianceMatrixLine` (
+ `OEM_id`);
 
 
 create table `FILE_IMPORT_TABLE` (

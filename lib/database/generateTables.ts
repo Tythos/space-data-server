@@ -8,7 +8,7 @@ let tSchema: Knex.SchemaBuilder;
 
 let finalJSON: KeyValueDataStructure = {};
 let foreignKeys: KeyValueDataStructure = {};
-let arrayParentReference: KeyValueDataStructure = {};
+let foreignParentReference: KeyValueDataStructure = {};
 
 const knexNumberTypes: KeyValueDataStructure = {
     255: "tinyint",
@@ -57,6 +57,7 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
     } else if (type === "object") {
         if (predicateName !== rootPredicate) {
             predicateName = refRootName($$ref);
+            foreignParentReference[predicateName] = rootPredicate;
         }
         finalJSON[rootPredicate][predicateName] = {
             ...predicate,
@@ -94,7 +95,7 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
     } else if (type === "array") {
         let tableName = refRootName((predicate?.items as unknown as any)?.$ref);
         let parentTableName = parentPredicate;
-        arrayParentReference[tableName] = parentTableName;
+        foreignParentReference[tableName] = parentTableName;
         return builder(predicateName, { ...items }, jsonSchema, rootPredicate);
     } else {
         return predicate;
@@ -110,13 +111,13 @@ const buildTable = (rootTableName: string, tableSchema: any, namespace: string) 
         table.integer("id").notNullable().unsigned().primary();
         table.index("id");
         table.timestamps(true, true);
-        if (arrayParentReference[rootTableName]) {
-            const fProperty = `${arrayParentReference[rootTableName]}_id`;
+        if (foreignParentReference[rootTableName]) {
+            const fProperty = `${foreignParentReference[rootTableName]}_id`;
             table.integer(fProperty).unsigned();
             table.index(fProperty);
             table
                 .foreign(fProperty)
-                .references(`${arrayParentReference[rootTableName]}.id`)
+                .references(`${foreignParentReference[rootTableName]}.id`)
                 .deferrable("deferred")
                 .onDelete("CASCADE");
         }
@@ -146,7 +147,7 @@ const buildTable = (rootTableName: string, tableSchema: any, namespace: string) 
         ) {
             for (let fProperty in foreignKeys[rootTableName]) {
                 let { type, tableName } = foreignKeys[rootTableName][fProperty];
-                if (type === "object" && !arrayParentReference[tableName]) {
+                if (type === "object" && !foreignParentReference[tableName]) {
                     table.integer(fProperty)
                         .unsigned()
                         .notNullable();
