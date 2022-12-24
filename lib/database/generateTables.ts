@@ -2,6 +2,7 @@ import { Knex } from "knex";
 import { writeFileSync, rmSync, existsSync } from "fs";
 import { JSONSchema4 } from "json-schema";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
+import { config } from "../config/config";
 
 let tSchema: Knex.SchemaBuilder;
 
@@ -113,10 +114,11 @@ const buildTable = (rootTableName: string, tableSchema: any, namespace: string) 
             const fProperty = `${arrayParentReference[rootTableName]}_id`;
             table.integer(fProperty).unsigned();
             table.index(fProperty);
-            table
+            console.log(fProperty, rootTableName)
+            /*table
                 .foreign(fProperty)
                 .references(`${arrayParentReference[rootTableName]}.id`)
-                .deferrable("deferred");
+                .deferrable("deferred"); */
         }
         for (let predicate in tableSchema) {
             if (predicate === "properties") continue;
@@ -145,13 +147,9 @@ const buildTable = (rootTableName: string, tableSchema: any, namespace: string) 
             for (let fProperty in foreignKeys[rootTableName]) {
                 let { type, tableName } = foreignKeys[rootTableName][fProperty];
                 if (type === "object" && !arrayParentReference[tableName]) {
-                    table.integer(fProperty).unsigned();
-                    table.index(fProperty);
-                    table
-                        .foreign(fProperty)
-                        .references(`${tableName}.id`)
-                        .deferrable("deferred")
-                        .onDelete("CASCADE");
+                    table.integer(fProperty)
+                        .unsigned()
+                        .notNullable();
                 }
             }
         }
@@ -165,7 +163,7 @@ const buildDatabase = async (namespace: string) => {
     }
 };
 
-export const generateDatabase = (
+export const generateDatabase = async (
     jsonSchemas: Array<JSONSchema4>,
     filename: string = ".tmp/standards.sqlite",
     sqlFilename: string = "",
@@ -178,6 +176,14 @@ export const generateDatabase = (
 
     if (existsSync(sqlFilename)) {
         rmSync(sqlFilename);
+    }
+
+    if (config.database.config.primary === "sqlite") {
+        await knexConnection.raw('PRAGMA foreign_keys = ON');
+        const fkPRAGMA = await knexConnection.raw('PRAGMA foreign_keys');
+        if (!fkPRAGMA[0].foreign_keys) {
+            throw Error("foreign key support not enabled.")
+        }
     }
 
     tSchema = knexConnection.schema;
@@ -213,7 +219,7 @@ export const generateDatabase = (
             writeFileSync(
                 sqlFilename,
                 `/*${version}*/
-                ` +
+` +
                 tSchema
                     .toString()
                     .replaceAll(",", ",\n")
