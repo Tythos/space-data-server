@@ -10,47 +10,42 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 
 export const get: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
-  let { standard, provider, querytype } = req.params;
+  let { standard, provider, cid } = req.params;
   standard = standard.toUpperCase();
   if (!provider) {
     res.status(500);
     res.end("ERROR: No Provider Selected.")
   }
-  if (querytype?.split(".").pop() === 'map') {
-    res.end();
 
+  //@ts-ignore
+  if (!standards[standard]) {
+    res.send(Object.keys(standards));
   } else {
-    //@ts-ignore
-    if (!standards[standard]) {
-      res.send(Object.keys(standards));
+    standard = standard.toUpperCase();
+    let { query, format = "fbs", schema } = req.query;
+    if (schema) {
+      res.end(JSON.stringify(standardsJSON[standard], null, 4));
     } else {
-      standard = standard.toUpperCase();
-      let { query, format = "fbs", schema } = req.query;
-
-      if (schema) {
-        res.end(JSON.stringify(standardsJSON[standard], null, 4));
-      } else {
-        let parsedQuery: Array<any> = [];
-        try {
-          if (query) {
-            parsedQuery = JSON.parse(query as string) as Array<any>;
-          }
-        } catch (e) {
-          console.log(e);
-          res.status(500);
-          res.end();
+      let parsedQuery: Array<any> = [];
+      try {
+        if (query) {
+          parsedQuery = JSON.parse(query as string) as Array<any>;
         }
-
-        let payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
-        if (format === "json") {
-          payload = JSON.stringify(payload);
-        } else {
-          payload = writeFB(payload);
-        }
-        res.end(payload);
+      } catch (e) {
+        console.log(e);
+        res.status(500);
+        res.end();
       }
-    }
 
+      let payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
+      if (format === "json") {
+        payload = JSON.stringify(payload);
+      } else {
+        payload = writeFB(payload);
+      }
+      res.end(payload);
+    }
   }
+
   next();
 };

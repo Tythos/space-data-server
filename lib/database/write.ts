@@ -78,7 +78,6 @@ const insertData = async (
                 await knexConnection.transaction(async (trx: any) => {
                     nTables = nTables === null ? toposort(tableTopo) : nTables;
                     nTables = nTables.length ? nTables : [tableName];
-                    writeFileSync(`.database.${Object.keys(nTables).join(".")}`, JSON.stringify(resultObject, null, 4));
                     for (let nT = 0; nT < nTables.length; nT++) {
                         const nTable = nTables[nT];
                         const total = resultObject[nTable].length;

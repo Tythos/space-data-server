@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { Settings } from "@/lib/class/settings.interface";
-import defaultConfig from "./defaultConfig.json";
+import defaultConfig from "./default.config.json";
 
 let _config: any;
 

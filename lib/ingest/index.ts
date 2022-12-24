@@ -18,6 +18,7 @@ import { readFile, rename } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { roundToUTCDate } from "@/lib/utility/roundDate"
+import { sign } from 'node:crypto';
 let queue: Array<string> = [];
 let CronJobs: Array<CronJob> = [];
 async function readDirectoryRecursively(dir: string): Promise<string[]> {
