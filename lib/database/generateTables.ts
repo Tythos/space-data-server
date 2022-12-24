@@ -45,7 +45,8 @@ export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema
 };
 
 const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSONSchema4, rootPredicate: string, parentPredicate?: string): any => {
-   console.log(predicateName, predicate, rootPredicate, parentPredicate)
+    if (predicateName === "EPHEMERIS_DATA_LINES")
+        console.log(predicateName, predicate, rootPredicate, parentPredicate)
     let { type, $ref, $$ref, properties, items } = predicate;
     parentPredicates[refRootName($$ref)] = parentPredicate || rootPredicate;
     if ($ref) {
@@ -53,7 +54,8 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
             predicateName,
             resolver(predicate, jsonSchema),
             jsonSchema,
-            rootPredicate
+            rootPredicate,
+            parentPredicate
         );
     } else if (type === "object") {
         if (predicateName !== rootPredicate) {
@@ -94,9 +96,8 @@ const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSON
         return { type, $ref, $$ref };
     } else if (type === "array") {
         let tableName = refRootName((predicate?.items as unknown as any)?.$ref);
-        let parentTableName = parentPredicate;
-        arrayParentReference[tableName] = parentTableName;
-        return builder(predicateName, { ...items }, jsonSchema, rootPredicate);
+        arrayParentReference[tableName] = parentPredicate;
+        return builder(predicateName, { ...items }, jsonSchema, rootPredicate, parentPredicate);
     } else {
         return predicate;
     }
