@@ -62,7 +62,7 @@ describe('Test Data Entry', () => {
         let standard: keyof typeof standards;
 
         for (standard in standards) {
-            if (standard !== "OEM") continue;
+            //if (standard !== "OPM") continue;
             let currentStandard = standardsJSON[standard] as any;
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;

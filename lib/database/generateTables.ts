@@ -45,8 +45,6 @@ export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema
 };
 
 const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSONSchema4, rootPredicate: string, parentPredicate?: string): any => {
-    if (predicateName === "EPHEMERIS_DATA_LINES")
-        console.log(predicateName, predicate, rootPredicate, parentPredicate)
     let { type, $ref, $$ref, properties, items } = predicate;
     parentPredicates[refRootName($$ref)] = parentPredicate || rootPredicate;
     if ($ref) {
@@ -148,22 +146,11 @@ const buildTable = (rootTableName: string, tableSchema: any, namespace: string) 
         ) {
             for (let fProperty in foreignKeys[rootTableName]) {
                 let { type, tableName } = foreignKeys[rootTableName][fProperty];
-                /*console.log({
-                    type,
-                    tableName,
-                    rootTableName,
-                    apR: arrayParentReference[tableName],
-                    fProperty,
-                    FK: foreignKeys[rootTableName]
-                })*/
-                if (type === "object" && foreignKeys[rootTableName]) {
+                if (type === "object"
+                    && foreignKeys[rootTableName]
+                    && !arrayParentReference[tableName]) {
                     table.integer(fProperty).unsigned();
                     table.index(fProperty);
-                    /* table
-                         .foreign(fProperty)
-                         .references(`${tableName}.id`)
-                         .deferrable("deferred")
-                         .onDelete("CASCADE");*/
                 }
             }
         }
