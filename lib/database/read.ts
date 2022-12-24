@@ -20,7 +20,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
             }
         }
     }
-    
+
     const records: any = await tableQuery;
 
     for (let r = 0; r < records.length; r++) {
@@ -45,12 +45,12 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
         const { $$ref, type: rType } = resolver(tableDefinition.properties[prop], standardsSchema);
 
         const pType = type || rType;
+        const fID: string = `${tableName}_id`;
         if (pType === "boolean") {
             booleanProperties.push(prop);
         }
         if (pType === "array") {
             for (let p = 0; p < parentArray.length; p++) {
-                const fID: string = `${tableName}_id`;
                 parentArray[p][prop] =
                     await buildStatement(
                         parentClass,
@@ -69,7 +69,8 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
                         refRootName($$ref),
                         standardsSchema,
                         [["select", "*"], ["where", [`id`, parentArray[p][prop]]]]/*TODO subquery*/,
-                        [], null, toRemoveDefault)
+                        [], null,
+                        [fID, ...toRemoveDefault])
                 )[0];
 
             }

@@ -1,5 +1,5 @@
-/*0.0.2+1671801697647*/
-                create table `CAT` (
+/*0.0.2+1671802887497*/
+create table `CAT` (
  `file_id` varchar(
  255),
  `id` integer not null,
@@ -148,14 +148,8 @@ create table `CDM` (
  `SCREEN_EXIT_TIME` text,
  `COLLISION_PROBABILITY` float,
  `COLLISION_PROBABILITY_METHOD` text,
- `OBJECT1` integer,
- `OBJECT2` integer,
- foreign key(
- `OBJECT1`) references `CDMObject`(
- `id`) on delete CASCADE,
- foreign key(
- `OBJECT2`) references `CDMObject`(
- `id`) on delete CASCADE,
+ `OBJECT1` integer not null,
+ `OBJECT2` integer not null,
  primary key (
  `id`));
 
@@ -166,14 +160,6 @@ create index `cdm_file_id_index` on `CDM` (
 
 create index `cdm_id_index` on `CDM` (
  `id`);
-
-
-create index `cdm_object1_index` on `CDM` (
- `OBJECT1`);
-
-
-create index `cdm_object2_index` on `CDM` (
- `OBJECT2`);
 
 
 create table `CDMObject` (
@@ -365,7 +351,7 @@ create table `maneuverParameters` (
  `MAN_DV_3` float,
  foreign key(
  `OPM_id`) references `OPM`(
- `id`),
+ `id`) on delete CASCADE,
  primary key (
  `id`));
 
@@ -419,7 +405,7 @@ create table `ephemerisDataBlock` (
  `INTERPOLATION_DEGREE` integer,
  foreign key(
  `OEM_id`) references `OEM`(
- `id`),
+ `id`) on delete CASCADE,
  primary key (
  `id`));
 
@@ -449,7 +435,7 @@ create table `ephemerisDataLine` (
  `Z_DDOT` float,
  foreign key(
  `ephemerisDataBlock_id`) references `ephemerisDataBlock`(
- `id`),
+ `id`) on delete CASCADE,
  primary key (
  `id`));
 
@@ -492,7 +478,7 @@ create table `covarianceMatrixLine` (
  `CZ_DOT_Z_DOT` float,
  foreign key(
  `ephemerisDataBlock_id`) references `ephemerisDataBlock`(
- `id`),
+ `id`) on delete CASCADE,
  primary key (
  `id`));
 

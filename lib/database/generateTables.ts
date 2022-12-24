@@ -114,11 +114,11 @@ const buildTable = (rootTableName: string, tableSchema: any, namespace: string) 
             const fProperty = `${arrayParentReference[rootTableName]}_id`;
             table.integer(fProperty).unsigned();
             table.index(fProperty);
-            console.log(fProperty, rootTableName)
-            /*table
+            table
                 .foreign(fProperty)
                 .references(`${arrayParentReference[rootTableName]}.id`)
-                .deferrable("deferred"); */
+                .deferrable("deferred")
+                .onDelete("CASCADE");
         }
         for (let predicate in tableSchema) {
             if (predicate === "properties") continue;

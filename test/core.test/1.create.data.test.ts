@@ -7,7 +7,7 @@ import { readFB, writeFB } from "@/lib/utility/flatbufferConversion";
 import { generateData } from "../utility/generate.test.data";
 const dataPath: string = `test/output/data`;
 
-let total = 10;
+let total = 1;
 
 if (total > 10) {
     jest.setTimeout(total * 100);

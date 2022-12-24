@@ -3,6 +3,7 @@ import { JSONSchema4 } from "json-schema";
 import toposort from "toposort";
 import getID from "@/lib/utility/getID";
 import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
+import { writeFileSync } from "fs";
 let knexConnection: any;
 let pageSize = 200;
 
@@ -48,8 +49,8 @@ const insertData = async (
             queryBatchInput[i].id = getID();
             for (let fTable in foreignProperties) {
                 let { fields, pType } = foreignProperties[fTable];
+                tableTopo.push([tableName, fTable]);
                 if (pType === "array") {
-                    tableTopo.push([tableName, fTable]);
                     for (let fieldName in fields) {
                         let fTableRows = [...queryBatchInput[i][fieldName]];
                         for (let eRow = 0; eRow < fTableRows.length; eRow++) {
@@ -60,9 +61,10 @@ const insertData = async (
                         delete queryBatchInput[i][fieldName];
                     }
                 } else {
-                    tableTopo.push([fTable, tableName]);
                     for (let fieldName in fields) {
                         let objectRecord = { ...queryBatchInput[i][fieldName] };
+                        //console.log(objectRecord, `${tableName}_id`, queryBatchInput[i].id)
+                        objectRecord[`${tableName}_id`] = queryBatchInput[i].id;
                         objectRecord.id = getID();
                         resultObject = await insertData(fTable, [objectRecord], standardsSchema, resultObject, tableTopo, false);
                         queryBatchInput[i][fieldName] = objectRecord.id;
@@ -76,6 +78,7 @@ const insertData = async (
                 await knexConnection.transaction(async (trx: any) => {
                     nTables = nTables === null ? toposort(tableTopo) : nTables;
                     nTables = nTables.length ? nTables : [tableName];
+                    writeFileSync(`.database.${Object.keys(nTables).join(".")}`, JSON.stringify(resultObject, null, 4));
                     for (let nT = 0; nT < nTables.length; nT++) {
                         const nTable = nTables[nT];
                         const total = resultObject[nTable].length;

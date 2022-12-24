@@ -15,6 +15,25 @@ const databasePath: string = "test/output/database";
 import { config } from "@/lib/config/config";
 import { dirname, join } from "path";
 
+async function dumpDatabase(connection: any) {
+    //const result = await connection.raw('PRAGMA foreign_keys');
+    //console.log(result);  
+    // prints the value of the foreign_keys pragma
+    // Get a list of all tables in the database
+    const tables = await connection("sqlite_master").where({ type: "table" }).select("name");
+
+    // Flatten the list of tables
+    const tableNames = tables.map((table: any) => table.name).filter((t: any) => t !== "FILE_IMPORT_TABLE");
+
+    // Iterate over the list of tables and print their rows
+    for (const tableName of tableNames) {
+        const rows = await connection(tableName).select();
+        if (rows.length) {
+            console.log(`Table: ${tableName}, Rows Remain: ${rows.length}`);
+        }
+    }
+}
+
 //@ts-ignore
 let databaseConfig = config.database.config[config.database.config.primary];
 const sqlfilename = join(dirname(databaseConfig.connection.filename), "standards.sql");
@@ -43,7 +62,7 @@ describe('Test Data Entry', () => {
         let standard: keyof typeof standards;
 
         for (standard in standards) {
-            if (standard !== "OMM") continue;
+            if (standard !== "OPM") continue;
             let currentStandard = standardsJSON[standard] as any;
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
@@ -56,10 +75,13 @@ describe('Test Data Entry', () => {
             await write(knexConnection, tableName, flatBufferObject.RECORDS, currentStandard, CID, DIGITAL_SIGNATURE, ETH_ADDRESS, standard.toUpperCase());
             const output = await read(knexConnection, standard, currentStandard, [["select", "*"], ["where", ["file_id", "=", CID]]], false);
             expect(JSON.stringify(flatBufferObject, null, 4)).toEqual(JSON.stringify(output, null, 4));
+            await knexConnection.raw('PRAGMA foreign_keys = ON');
+            await knexConnection(tableName).where('file_id', CID).del();
+            const blank = await read(knexConnection, standard, currentStandard, [["select", "*"], ["where", ["file_id", "=", CID]]], false);
 
             //Sanity Check
             expect(flatBufferInput).toEqual(writeFB(flatBufferObject));
         }
-
+        await dumpDatabase(knexConnection);
     })
 });
