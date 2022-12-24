@@ -1,13 +1,13 @@
 {
     "name": "space-data-server",
-    "version": "1.0.689+1671900717512",
+    "version": "1.0.692+1671900970619",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
     "scripts": {
         "deploy": "npm run build && cd UI && npm run build && cd .. && git add -A && git commit -m 'update build' && git push && npm publish",
         "init": "git submodule init && git submodule update && npm run build:standards",
-        "build": "cp -R ./node_modules/better-sqlite3/build/Release/* build/ && npm run build:esbuild && node ./scripts/updateVersion.mjs",
+        "build": "npm run build:standards && cp -R ./node_modules/better-sqlite3/build/Release/* build/ && npm run build:esbuild && node ./scripts/updateVersion.mjs",
         "build:esbuild": "esbuild index.ts --sourcemap --external:pg-native --external:better_sqlite3 --bundle --platform=node --outfile=./build/server.cjs",
         "build:standards": "cd packages/spacedatastandards.org && git reset --hard && git checkout main && git pull && cd ../../ && node ./lib/utility/generator.mjs",
         "build:celestrak:ommcsv": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.omm.ts --sourcemap --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.omm.js",
@@ -97,5 +97,6 @@
     "dependencies": {
         "cron": "^2.1.0",
         "key-encoder": "^2.0.3"
-    }
+    },
+    "standardsVersion": "0.0.2+1671802887497"
 }
