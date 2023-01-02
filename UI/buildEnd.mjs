@@ -8,7 +8,9 @@ export default function (options) {
             Config = config;
         },
         buildEnd() {
-            execSync("cd .. && node ./scripts/uiBuild.mjs");
+            setTimeout(() => {
+                execSync("cd .. && node ./scripts/uiBuild.mjs");
+            }, 1000)
         }
     };
 
