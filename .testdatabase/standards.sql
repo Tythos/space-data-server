@@ -512,7 +512,7 @@ create table `FILE_IMPORT_TABLE` (
  255) not null,
  `DIGITAL_SIGNATURE` varchar(
  255),
- `ETH_ADDRESS` varchar(
+ `PROVIDER` varchar(
  255),
  `STANDARD` varchar(
  255),

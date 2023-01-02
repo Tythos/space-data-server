@@ -114,7 +114,7 @@ export const write = async (
     standardsSchema: JSONSchema4,
     CID: string = "no_id",
     DIGITAL_SIGNATURE: string,
-    ETH_ADDRESS: string,
+    PROVIDER: string,
     STANDARD: string,
     created_at: string = ""
 ) => {
@@ -122,7 +122,7 @@ export const write = async (
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,
-        ETH_ADDRESS,
+        PROVIDER,
         STANDARD,
         RECORD_COUNT: queryArray.length,
         created_at

@@ -11,7 +11,7 @@
   let cDT;
   let templateURL = `${
     ~window.location.host.indexOf("localhost") ? "http://localhost:8080" : ""
-  }/spacedata/latest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/`;
+  }/spacedatalatest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94/`;
   let loading = false;
   const getData = async (format) => {
     results[format].start = performance.now();
@@ -36,7 +36,7 @@
     loading = false;
   };
 </script>
-
+<h1>Test 2</h1>
 <main
   class="w-full flex flex-col items-center border border-2 border-gray-400 background-black">
   <input

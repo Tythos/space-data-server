@@ -509,7 +509,7 @@ create table `FILE_IMPORT_TABLE` (
  255) not null,
  `DIGITAL_SIGNATURE` varchar(
  255),
- `ETH_ADDRESS` varchar(
+ `PROVIDER` varchar(
  255),
  `RECORD_COUNT` integer not null,
  `created_at` datetime,

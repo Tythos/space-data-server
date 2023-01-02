@@ -71,8 +71,8 @@ describe('Test Data Entry', () => {
             let flatBufferObject = await readFB(flatBufferInput, tableName, parentClass);
             let DIGITAL_SIGNATURE = await readFileSync(`${dataPath}/${tableName}.input.fbs.ethsig`, "utf8");
             let CID = await readFileSync(`${dataPath}/${tableName}.input.fbs.ipfs.cid.txt`, "utf8");
-            let ETH_ADDRESS: string = verifySig(CID, "", DIGITAL_SIGNATURE);
-            await write(knexConnection, tableName, flatBufferObject.RECORDS, currentStandard, CID, DIGITAL_SIGNATURE, ETH_ADDRESS, standard.toUpperCase());
+            let PROVIDER: string = verifySig(CID, "", DIGITAL_SIGNATURE);
+            await write(knexConnection, tableName, flatBufferObject.RECORDS, currentStandard, CID, DIGITAL_SIGNATURE, PROVIDER, standard.toUpperCase());
             const output = await read(knexConnection, standard, currentStandard, [["select", "*"], ["where", ["file_id", "=", CID]]], false);
             expect(JSON.stringify(flatBufferObject, null, 4)).toEqual(JSON.stringify(output, null, 4));
             await knexConnection.raw('PRAGMA foreign_keys = ON');

@@ -5,10 +5,13 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 import { createReadStream } from "fs";
 import { config } from "@/lib/config/config";
 import { join, resolve } from "path";
+import { connection } from "@/lib/database/connection";
+import read from "@/lib/database/read";
+import { writeFB } from "@/lib/utility/flatbufferConversion";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 
-export const latest = async (req: any, res: any, next: any) => {
+export const latestStatic = async (req: any, res: any, next: any) => {
   let { standard, provider } = req.params;
   let { format = "fbs" } = req.query;
   format = format.toLowerCase();
@@ -37,4 +40,27 @@ export const latest = async (req: any, res: any, next: any) => {
       next(err);
     });
   }
+};
+
+export const latest = async (req: any, res: any, next: any) => {
+  let { standard, provider } = req.params;
+  let { format } = req.query;
+  standard = standard.toUpperCase();
+  let { CID: latestCID } = await connection("FILE_IMPORT_TABLE").select("*").where({
+    "PROVIDER": provider,
+    "STANDARD": standard
+  }).orderBy("created_at").first();
+
+  let payload = await read(
+    connection,
+    standard,
+    standardsJSON[standard],
+    [["where", ["file_id", "=", latestCID]]]
+  );
+  if (format === "json") {
+    payload = JSON.stringify(payload);
+  } else {
+    payload = writeFB(payload);
+  }
+  res.end(payload);
 };

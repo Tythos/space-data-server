@@ -174,7 +174,7 @@ async function processData() {
         if (!currentCID) {
             write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
         }
-        let { CID: latestCID } = await connection("FILE_IMPORT_TABLE").select("*").where({ "ETH_ADDRESS": signedEthAddress }).orderBy("created_at").first();
+        let { CID: latestCID } = await connection("FILE_IMPORT_TABLE").select("*").where({ "PROVIDER": signedEthAddress }).orderBy("created_at").first();
 
         if (CID === latestCID) {
             const writePath = join(config.data.public,

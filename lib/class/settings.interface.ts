@@ -33,7 +33,8 @@ export interface Settings {
         "ingest": string,
         "raw": string,
         "public": string,
-        "copyOnRead": Boolean
+        "copyOnRead": Boolean,
+        "cache": string
     },
     "cronjobs": Array<cronJob>,
     "trustedAddresses": trustedAddressMap,
