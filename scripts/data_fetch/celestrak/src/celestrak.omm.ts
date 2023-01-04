@@ -35,7 +35,10 @@ import { join } from "path";
         writeFileSync(`${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs.error`, e);
     }
 
-    rmSync(signatureFileName, { force: true, recursive: true });
-    rmSync(fileName, { force: true, recursive: true });
+    setTimeout(() => {
+        rmSync(signatureFileName, { force: true, recursive: true });
+        rmSync(fileName, { force: true, recursive: true });
+    }, 1000);
+
 
 })()
