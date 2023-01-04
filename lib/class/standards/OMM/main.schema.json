@@ -207,53 +207,11 @@
       },
       "additionalProperties" : false
     },
-    "MPE" : {
-      "type" : "object",
-      "properties" : {
-        "MEAN_MOTION" : {
-                "type" : "number"
-              },
-        "ECCENTRICITY" : {
-                "type" : "number"
-              },
-        "INCLINATION" : {
-                "type" : "number"
-              },
-        "RA_OF_ASC_NODE" : {
-                "type" : "number"
-              },
-        "ARG_OF_PERICENTER" : {
-                "type" : "number"
-              },
-        "MEAN_ANOMALY" : {
-                "type" : "number"
-              },
-        "NORAD_CAT_ID" : {
-                "type" : "integer", "minimum" : 0, "maximum" : 4294967295
-              },
-        "BSTAR" : {
-                "type" : "number"
-              },
-        "USER_DEFINED_EPOCH_TIMESTAMP" : {
-                "type" : "number"
-              }
-      },
-      "additionalProperties" : false
-    },
     "OMMCOLLECTION" : {
       "type" : "object",
       "properties" : {
         "RECORDS" : {
                 "type" : "array", "items" : {"$ref" : "#/definitions/OMM"}
-              }
-      },
-      "additionalProperties" : false
-    },
-    "MPECOLLECTION" : {
-      "type" : "object",
-      "properties" : {
-        "RECORDS" : {
-                "type" : "array", "items" : {"$ref" : "#/definitions/MPE"}
               }
       },
       "additionalProperties" : false

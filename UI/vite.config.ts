@@ -8,11 +8,7 @@ import buildEnd from "./buildEnd.mjs";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    buildEnd({
-      buildEnd: () => {
-        console.log('Build completed!');
-      }
-    }),
+    buildEnd(),
     svelte({
       onwarn: (warning, handler) => {
         const { code, frame } = warning;
