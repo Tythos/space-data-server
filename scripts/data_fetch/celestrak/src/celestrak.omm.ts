@@ -38,6 +38,7 @@ import { join } from "path";
     setTimeout(() => {
         rmSync(signatureFileName, { force: true, recursive: true });
         rmSync(fileName, { force: true, recursive: true });
+        console.log(signatureFileName, fileName);
     }, 1000);
 
 
