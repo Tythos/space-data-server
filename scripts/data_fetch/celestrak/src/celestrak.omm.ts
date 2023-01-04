@@ -6,11 +6,12 @@ import { readFB, writeFB } from "@/lib/utility/flatbufferConversion"
 import { OMMT } from "@/lib/class/standards/OMM/OMM";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
-import { mkdirSync, readFileSync, writeFileSync } from "fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { ethers, Wallet } from "ethers";
 import { join } from "path";
 
 (async () => {
+
     const [mnemonic, filePath, writePath] = process.argv.slice(-3);
     if (!mnemonic || !filePath) return;
     const ethWallet = Wallet.fromMnemonic(mnemonic);
@@ -20,10 +21,21 @@ import { join } from "path";
     let oFBS = writeFB(ommCollection);
     let nwritePath = join(writePath, ethAddress);
     mkdirSync(nwritePath, { recursive: true });
-    let resultBufferIPFSCID: string = await ipfsHash.of(oFBS);
-    let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
-    let signingEthAccount = ethers.utils.verifyMessage(resultBufferIPFSCID, signatureBufferETH).toLowerCase();
-    writeFileSync(`${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs.sig`, signatureBufferETH);
-    writeFileSync(`${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs`, oFBS);
+
+    let signatureFileName: string = `${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs.sig`;
+    let fileName: string = `${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs`;
+
+    try {
+        let resultBufferIPFSCID: string = await ipfsHash.of(oFBS);
+        let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
+        let signingEthAccount = ethers.utils.verifyMessage(resultBufferIPFSCID, signatureBufferETH).toLowerCase();
+        writeFileSync(`${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs.sig`, signatureBufferETH);
+        writeFileSync(`${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs`, oFBS);
+    } catch (e) {
+        writeFileSync(`${nwritePath}/${await ipfsHash.of(oFBS)}.omm.fbs.error`, e);
+    }
+
+    rmSync(signatureFileName, { force: true, recursive: true });
+    rmSync(fileName, { force: true, recursive: true });
 
 })()

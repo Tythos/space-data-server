@@ -1413,7 +1413,7 @@
             "MPE": {
                 "type": "object",
                 "properties": {
-                    "OBJECT_ID": {
+                    "ENTITY_ID": {
                         "type": "string"
                     },
                     "USER_DEFINED_EPOCH_TIMESTAMP": {
