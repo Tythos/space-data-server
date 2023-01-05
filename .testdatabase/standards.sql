@@ -1,4 +1,4 @@
-/*0.0.2+1671802887497*/
+/*0.0.2+1672861763163*/
 create table `CAT` (
  `file_id` varchar(
  255),
@@ -505,6 +505,33 @@ create index `covariancematrixline_id_index` on `covarianceMatrixLine` (
 
 create index `covariancematrixline_ephemerisdatablock_id_index` on `covarianceMatrixLine` (
  `ephemerisDataBlock_id`);
+
+
+create table `MPE` (
+ `file_id` varchar(
+ 255),
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `ENTITY_ID` text,
+ `USER_DEFINED_EPOCH_TIMESTAMP` float,
+ `MEAN_MOTION` float,
+ `ECCENTRICITY` float,
+ `INCLINATION` float,
+ `RA_OF_ASC_NODE` float,
+ `ARG_OF_PERICENTER` float,
+ `MEAN_ANOMALY` float,
+ `BSTAR` float,
+ primary key (
+ `id`));
+
+
+create index `mpe_file_id_index` on `MPE` (
+ `file_id`);
+
+
+create index `mpe_id_index` on `MPE` (
+ `id`);
 
 
 create table `FILE_IMPORT_TABLE` (

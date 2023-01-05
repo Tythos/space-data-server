@@ -15,12 +15,6 @@ if (!existsSync(config.data.ingest)) {
     mkdirSync(config.data.ingest);
 }
 
-const checkAccount = (ethAddress: string) => {
-    let check = (config.trustedAddresses[ethAddress.toLowerCase()]);
-    //TODO stub
-    return (config.trustedAddresses[ethAddress.toLowerCase()]?.trust === 4);
-}
-
 const writeToDisk = async (vM: any, standard: string, ethereumAddress: string, extension: string, signature: string) => {
     const filePath = config.data.ingest;
     const fileName = await ipfsHash.of(vM.payload);
@@ -38,7 +32,8 @@ export const verifySig = (msg: any, ethAddress: any, signature: any) => {
     if (!ethAddress) {
         ethAddress = signingEthAccount;
     }
-    return (checkAccount(ethAddress) && (ethAddress.toLowerCase() === signingEthAccount)) ? signingEthAccount : ""
+    //T
+    return (ethAddress.toLowerCase() === signingEthAccount) ? signingEthAccount : ""
 }
 
 const checkToken = async (req: express.Request, useRaw: boolean = true) => {
@@ -71,7 +66,7 @@ export const post: express.RequestHandler = async (req, res, next) => {
                 }
                 let { kid, signature: ethSignature } = signature.header;
                 try {
-                    if (signature.header?.kid && checkAccount(kid)) {
+                    if (signature.header?.kid) {
                         let pHeader = JSON.parse((Buffer.from(signature.protected, "base64")).toString());
                         let publicKey = await jose.importJWK(pHeader.jwk, pHeader.alg);
                         verifiedMessages[kid] = await jose.generalVerify(req.body, publicKey as any);

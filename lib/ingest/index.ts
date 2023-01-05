@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync, statSync, unwatchFile, writeFileSync } from 'node:fs';
+import { writeFile, access } from "node:fs/promises"
 import chokidar from "chokidar";
 import { config } from "@/lib/config/config";
 import { promises as fs, readFileSync } from 'fs';
@@ -47,21 +48,15 @@ export const init = async (folder: string) => {
     await processData();
     watchPath = folder;
 
-    chokidar.watch(folder).on("all", async (event, filename) => {
+    chokidar.watch(folder, {
+        awaitWriteFinish: {
+            stabilityThreshold: 2000,
+            pollInterval: 200
+        }
+    }).on("all", async (event, filename) => {
 
         if (event === "add" && filename) {
             queue.push(filename);
-            let isFinished = false;
-            while (!isFinished) {
-                try {
-                    const tmpFile = join(tmpdir(), basename(filename));
-                    await rename(filename, tmpFile);
-                    await rename(tmpFile, filename);
-                    isFinished = true;
-                } catch (err) {
-                    isFinished = false;
-                }
-            }
             await processData();
         }
     });
@@ -86,24 +81,34 @@ export const init = async (folder: string) => {
     }
 }
 
-const writeFiles = (writePath: string, CID: string, input: any) => {
+const writeFiles = async (writePath: string, CID: string, input: any) => {
     if (!input.pack) {
         throw Error("NO INPUT")
     }
+
     mkdirSync(writePath, { recursive: true });
+
     const fbsPath = join(
         writePath,
         `${CID}.fbs`);
     const jsonPath = join(
         writePath,
         `${CID}.json`);
-    if (!existsSync(fbsPath)) {
-        writeFileSync(fbsPath, writeFB(input));
+
+    if (!input) return;
+    try {
+        await access(fbsPath);
+        await writeFile(fbsPath, writeFB(input));
+    } catch (e) {
+
     }
-    if (!existsSync(jsonPath)) {
-        writeFileSync(jsonPath, JSON.stringify(input));
+    try {
+        await access(jsonPath)
+        await writeFile(jsonPath, JSON.stringify(input));
+    } catch (e) {
     }
 }
+
 async function processData() {
     const returnFunc = () => {
         if (queue.length) {
@@ -149,7 +154,7 @@ async function processData() {
         }
         let input, signedEthAddress;
         if (inputSignature) {
-            signedEthAddress = verifySig(CID, "", inputSignature);
+            signedEthAddress = verifySig(CID, undefined, inputSignature);
         }
 
         if (!signedEthAddress) {
@@ -159,15 +164,17 @@ async function processData() {
 
         if (extname(signedFile) === ".json") {
             input = new parentClass[cClassName];
+            let parsedInputFile;
             try {
-                inputFile = JSON.parse(inputFile.toString("utf8"));
+                parsedInputFile = JSON.parse(inputFile.toString("utf8"));
             } catch (e) {
+                console.log(inputFile, signedFile);
                 console.error(`Unable to parse file ${inputFile}`);
                 returnFunc();
                 return;
             }
-            for (let s = 0; s < inputFile.RECORDS.length; s++) {
-                input.RECORDS.push(inputFile.RECORDS[s]);
+            for (let s = 0; s < parsedInputFile.RECORDS.length; s++) {
+                input.RECORDS.push(parsedInputFile.RECORDS[s]);
             }
         } else if (extname(signedFile) === ".fbs") {
             input = readFB(inputFile, tableName, parentClass);
@@ -182,20 +189,13 @@ async function processData() {
         }
 
         let { CID: latestCID } = await connection("FILE_IMPORT_TABLE").select("*").where({ "PROVIDER": signedEthAddress }).orderBy("created_at").first();
- 
-        if (CID === latestCID) {
-            const writePath = join(config.data.public,
-                standard.toUpperCase(),
-                signedEthAddress as string);
-            writeFiles(writePath, "latest", input);
-        }
+
         if (config.data.copyOnRead) {
             const writePath = join(
                 config.data.public,
                 standard.toUpperCase(),
                 signedEthAddress as string,
                 roundToUTCDate(new Date(statSync(signedFile).mtime)).toISOString());
-
             writeFiles(writePath, CID, input);
         }
     }

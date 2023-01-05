@@ -3,6 +3,11 @@ import * as flatbuffers from "flatbuffers";
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 
 export const writeFB = (standard: any): Buffer => {
+    if (!standard?.pack) {
+        console.log(standard);
+        new Error("INVALID DATA TO BE PACKED");
+
+    }
     const flatBufferBuilder = new flatbuffers.Builder(1);
     let packed = standard.pack(flatBufferBuilder);
     flatBufferBuilder.finish(packed);

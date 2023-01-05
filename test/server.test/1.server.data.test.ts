@@ -3,21 +3,33 @@ import { generateData } from "../utility/generate.test.data";
 const dataPath: string = `test/output/data/`;
 import { app } from "@/lib/worker/app";
 import * as standards from "@/lib/standards/standards";
-import { extname, join } from "node:path";
-import { readFileSync, rmdirSync, rmSync } from "node:fs";
+import { dirname, extname, join } from "node:path";
+import { existsSync, readFileSync, rmdirSync, rmSync } from "node:fs";
 import { ethWallet, untrustedEthWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
-import * as ethers from "ethers";
 import * as jose from "jose";
 import { keyconvert, pubKeyToEthAddress } from "@/packages/keyconvert";
 import Web3Token from 'web3-token';
+import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
+import standardsJSON from "@/lib/standards/schemas.json";
+import { JSONSchema4 } from "json-schema";
+
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
 import { init, getQueue, deinit } from "@/lib/ingest/index";
+import { generateDatabase } from "@/lib/database/generateTables";
+
+//@ts-ignore
+var databaseConfig = config.database.config[config.database.config.primary];
+const sqlfilename = join(dirname(databaseConfig.connection.filename), "standards.sql");
 
 const outputStandardFiles: any = {};
+let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 
 beforeAll(async () => {
+    if (!existsSync(databaseConfig.connection.filename)) {
+        await generateDatabase(standardsArray, databaseConfig.connection.filename, `${config.database.path}/standards.sql`, connection, databaseConfig.version);
+    }
     await init(config.data.ingest);
     const outputPaths = await generateData(1, dataPath);
     outputPaths.forEach((p: any) => {
@@ -137,7 +149,7 @@ describe("POST /endpoint", () => {
                 .send(flatbuffer);
             expect(ufbResponseEIP4361.status).toBe(401);
         }
-        await new Promise((r) => setTimeout(r, 3000))
+        await new Promise(r => setTimeout(r, 5000));
     }, 30000);
 });
 
