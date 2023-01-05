@@ -7,3 +7,4 @@ node_modules
 .testdatabase
 .inputdata
 config.json
+public
