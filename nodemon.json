@@ -1,6 +1,6 @@
 {
   "watch": ["lib", "index.ts"],
-  "ignore": ["packages", "lib/class/standards", "lib/class/TypeGen", "lib/standards/"],
+  "ignore": ["packages", "lib/class/standards", "lib/class/TypeGen", "lib/standards/", "config.json", "lib/config/*.json"],
   "ext": "ts,mjs,js,json,graphql",
   "exec": "npm run build && node --enable-source-maps ./build/server.cjs",
   "legacyWatch": true,

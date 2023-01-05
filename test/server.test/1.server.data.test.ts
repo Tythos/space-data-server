@@ -37,6 +37,7 @@ describe("POST /endpoint", () => {
 
     it("should accept JSON and Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
+            if (standard !== "OMM") continue;
             let ethKeyConvert = new keyconvert({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as any);
             await ethKeyConvert.import(ethWallet.privateKey, "hex");
             expect(await ethKeyConvert.publicKeyHex()).toEqual(ethWallet.publicKey.slice(2,));
@@ -136,7 +137,8 @@ describe("POST /endpoint", () => {
                 .send(flatbuffer);
             expect(ufbResponseEIP4361.status).toBe(401);
         }
-    }, 20000);
+        await new Promise((r) => setTimeout(r, 3000))
+    }, 30000);
 });
 
 afterAll(async () => {

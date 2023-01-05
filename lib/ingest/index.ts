@@ -87,6 +87,9 @@ export const init = async (folder: string) => {
 }
 
 const writeFiles = (writePath: string, CID: string, input: any) => {
+    if (!input.pack) {
+        throw Error("NO INPUT")
+    }
     mkdirSync(writePath, { recursive: true });
     const fbsPath = join(
         writePath,
@@ -125,17 +128,18 @@ async function processData() {
         let mtime: string = new Date(statSync(signedFile).mtime).toISOString();
         let inputFile: any = readFileSync(signedFile);
         let CID = await ipfsHash.of(inputFile);
+
         //@ts-ignore
         let currentStandard = standardsJSON[standard];
         if (!currentStandard) {
             returnFunc();
             return;
         }
+
         let tableName = refRootName(currentStandard.$ref);
         let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
         let parentClass: any = standards[pClassName];
         let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
-
 
         let inputSignature: any;
         if (!existsSync(signatureFile)) {
@@ -170,12 +174,15 @@ async function processData() {
         } else {
             return;
         }
+
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
+
         if (!currentCID) {
             write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
         }
-        let { CID: latestCID } = await connection("FILE_IMPORT_TABLE").select("*").where({ "PROVIDER": signedEthAddress }).orderBy("created_at").first();
 
+        let { CID: latestCID } = await connection("FILE_IMPORT_TABLE").select("*").where({ "PROVIDER": signedEthAddress }).orderBy("created_at").first();
+ 
         if (CID === latestCID) {
             const writePath = join(config.data.public,
                 standard.toUpperCase(),
