@@ -1,9 +1,9 @@
 import { parse as csvparse } from 'csv-parse/sync';
-import { MPECOLLECTIONT } from '@/lib/class/standards/MPE/MPECOLLECTION';
-import { MPET } from '@/lib/class/standards/MPE/MPE';
-import { KeyValueDataStructure } from '@/lib/class/utility/KeyValueDataStructure';
+import { MPECOLLECTIONT } from '@/src/class/standards/MPE/MPECOLLECTION';
+import { MPET } from '@/src/class/standards/MPE/MPE';
+import { KeyValueDataStructure } from '@/src/class/utility/KeyValueDataStructure';
 const useAsNumber = ["#/definitions/ephemerisType"]; //Hack until we can formalize fields between each format
-import scalarTypes from "../../lib/flatbuffer.scalartypes";
+import scalarTypes from "@/src/lib/flatbuffer.scalartypes";
 
 const numCheck = (schema: any, pkey: string, pval: any) => {
     let sD = schema.properties[pkey];
@@ -13,20 +13,23 @@ const numCheck = (schema: any, pkey: string, pval: any) => {
 };
 
 export const parseCSV = async (input: any, schema: any): Promise<MPECOLLECTIONT> => {
-    let resultsOMMCOLLECTION: MPECOLLECTIONT = new MPECOLLECTIONT;
+    let resultsMPECOLLECTION: MPECOLLECTIONT = new MPECOLLECTIONT;
     let intermediateResults: any = (await csvparse(input, {
         columns: true,
         skip_empty_lines: true
     }));
 
     for (let row of intermediateResults) {
-        let newOMM: KeyValueDataStructure = new MPET();
+        let newMPE: KeyValueDataStructure = new MPET();
+
+        newMPE.ENTITY_ID = "0x"+(parseInt(row.NORAD_CAT_ID)).toString(16);
+        newMPE.USER_DEFINED_EPOCH_TIMESTAMP = new Date(row.EPOCH).getTime() + (row.EPOCH.slice(-3)) / 1000;
         for (let prop in row) {
-            if (newOMM.hasOwnProperty(prop)) {
-                newOMM[prop] = numCheck(schema.definitions.OMM, prop, row[prop]);
+            if (newMPE.hasOwnProperty(prop)) {
+                newMPE[prop] = numCheck(schema.definitions.MPE, prop, row[prop]);
             }
         }
-        resultsOMMCOLLECTION.RECORDS.push(newOMM as MPET);
+        resultsMPECOLLECTION.RECORDS.push(newMPE as MPET);
     };
-    return resultsOMMCOLLECTION;
+    return resultsMPECOLLECTION;
 };
