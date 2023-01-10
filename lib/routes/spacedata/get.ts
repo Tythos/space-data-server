@@ -22,7 +22,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     res.send(Object.keys(standards));
   } else {
     standard = standard.toUpperCase();
-    let { query, format = "fbs", schema } = req.query;
+    let { query, format = "json", schema } = req.query;
     if (schema) {
       res.end(JSON.stringify(standardsJSON[standard], null, 4));
     } else {
