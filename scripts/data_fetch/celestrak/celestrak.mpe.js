@@ -44349,22 +44349,24 @@ var numCheck = (schema, pkey, pval) => {
   return ~flatbuffer_scalartypes_default.indexOf(schema.properties[pkey].type) || useAsNumber.indexOf(sD?.$ref) > -1 ? isZero ? pF : pF || null : pval ?? null;
 };
 var parseCSV = async (input, schema) => {
-  let resultsOMMCOLLECTION = new MPECOLLECTIONT();
+  let resultsMPECOLLECTION = new MPECOLLECTIONT();
   let intermediateResults = await parse(input, {
     columns: true,
     skip_empty_lines: true
   });
   for (let row of intermediateResults) {
-    let newOMM = new MPET();
+    let newMPE = new MPET();
+    newMPE.ENTITY_ID = "0x" + parseInt(row.NORAD_CAT_ID).toString(16);
+    newMPE.USER_DEFINED_EPOCH_TIMESTAMP = new Date(row.EPOCH).getTime() + row.EPOCH.slice(-3) / 1e3;
     for (let prop in row) {
-      if (newOMM.hasOwnProperty(prop)) {
-        newOMM[prop] = numCheck(schema.definitions.OMM, prop, row[prop]);
+      if (newMPE.hasOwnProperty(prop)) {
+        newMPE[prop] = numCheck(schema.definitions.MPE, prop, row[prop]);
       }
     }
-    resultsOMMCOLLECTION.RECORDS.push(newOMM);
+    resultsMPECOLLECTION.RECORDS.push(newMPE);
   }
   ;
-  return resultsOMMCOLLECTION;
+  return resultsMPECOLLECTION;
 };
 
 // lib/class/standards/MPE/main.schema.json
@@ -44448,6 +44450,10 @@ var main_schema_default = {
 // lib/utility/flatbufferConversion.ts
 var flatbuffers3 = __toESM(require_js());
 var writeFB = (standard) => {
+  if (!standard?.pack) {
+    console.log(standard);
+    new Error("INVALID DATA TO BE PACKED");
+  }
   const flatBufferBuilder = new flatbuffers3.Builder(1);
   let packed = standard.pack(flatBufferBuilder);
   flatBufferBuilder.finish(packed);

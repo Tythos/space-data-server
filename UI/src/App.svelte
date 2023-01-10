@@ -1,48 +1,65 @@
 <script lang="ts">
+  import "tw-elements";
+  import "tw-elements/dist/css/index.min.css";
+  const menuItems = [{ name: "Home" }, { name: "API" }, { name: "Login" }];
 </script>
 
-<div class="wrap-safe-pad flex flex-col h-full w-full fixed bg-black">
-  <div class="flex justify-center items-center bg-blue-300">
-    <div class="h-12 justify-center items-center flex w-full">
-      Space Data Server
+<header>
+  <!-- Navbar -->
+  <nav
+    class="navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center w-full justify-between">
+    <div class="px-6 w-full flex flex-wrap items-center justify-between">
+      <div class="flex items-center">
+        <button
+          class="navbar-toggler border-0 py-3 lg:hidden leading-none text-xl bg-transparent text-gray-600 hover:text-gray-700 focus:text-gray-700 transition-shadow duration-150 ease-in-out mr-2"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContentY"
+          aria-controls="navbarSupportedContentY"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            data-prefix="fas"
+            class="w-5"
+            role="img"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512">
+            <path
+              fill="currentColor"
+              d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z" />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="navbar-collapse collapse grow items-center"
+        id="navbarSupportedContentY">
+        <ul class="navbar-nav mr-auto lg:flex lg:flex-row">
+          {#each menuItems as m, i}
+            <li class="nav-item">
+              <a
+                class="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
+                href="#!"
+                data-mdb-ripple="true"
+                data-mdb-ripple-color="light">{m.name}</a>
+            </li>
+          {/each}
+        </ul>
+      </div>
     </div>
-  </div>
-  <div class="overflow-y-scroll overflow-x-hidden break-all body-safe-pad">
-    <div class="bg-red-400">
-      {new Array(3000).fill(0).map((n, i) => {
-        return i;
-      })}
-    </div>
-  </div>
-</div>
+  </nav>
+  <!-- Navbar -->
 
-<style global lang="postcss">
-  .body-safe-pad {
-    overscroll-behavior: none;
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-  }
-  .wrap-safe-pad {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  @supports (-webkit-touch-callout: none) {
-    body {
-      /* The hack for Safari */
-      height: -webkit-fill-available;
-      width: -webkit-fill-available;
-    }
-  }
-  :global(body, html) {
-    overflow: hidden;
-    min-height: 100vh;
-    height: 100vh;
-    overscroll-behavior: none;
-    /* mobile viewport bug fix */
-    min-height: -webkit-fill-available;
-    min-width: -webkit-fill-available;
-    width: 100vw;
-    padding: 0px;
-    margin: 0px;
-  }
-</style>
+  <!-- Jumbotron -->
+  <div class="text-center text-gray-800 py-20 px-6">
+    <h1 class="text-5xl font-bold mt-0 mb-6">Space Data Server</h1>
+    <a
+      class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+      data-mdb-ripple="true"
+      data-mdb-ripple-color="light"
+      href="#!"
+      role="button">Get started</a>
+  </div>
+  <!-- Jumbotron -->
+</header>

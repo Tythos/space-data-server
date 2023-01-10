@@ -7,7 +7,7 @@ import standardsJSON from "@/lib/standards/schemas.json";
 import * as standards from "@/lib/standards/standards";
 import write from "@/lib/database/write";
 import { connection } from "@/lib/database/connection";
-import { join, sep } from "path";
+import { join } from "path";
 import { verifySig } from '../routes/spacedata/post';
 import { CronJob } from "cron";
 //@ts-ignore
@@ -17,7 +17,6 @@ import { refRootName } from '../database/generateTables';
 import { readFB, writeFB } from '../utility/flatbufferConversion';
 import { readFile, rename } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
-import { tmpdir } from 'node:os';
 import { roundToUTCDate } from "@/lib/utility/roundDate"
 
 let queue: Array<string> = [];

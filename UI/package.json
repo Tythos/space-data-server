@@ -24,6 +24,7 @@
     "vite-tsconfig-paths": "^4.0.3"
   },
   "dependencies": {
-    "swagger-ui": "^4.15.5"
+    "swagger-ui": "^4.15.5",
+    "tw-elements": "^1.0.0-alpha13"
   }
 }

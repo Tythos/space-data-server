@@ -45161,6 +45161,10 @@ var main_schema_default = {
 // lib/utility/flatbufferConversion.ts
 var flatbuffers3 = __toESM(require_js());
 var writeFB = (standard) => {
+  if (!standard?.pack) {
+    console.log(standard);
+    new Error("INVALID DATA TO BE PACKED");
+  }
   const flatBufferBuilder = new flatbuffers3.Builder(1);
   let packed = standard.pack(flatBufferBuilder);
   flatBufferBuilder.finish(packed);

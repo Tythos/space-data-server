@@ -1,5 +1,8 @@
+import twElements from "tw-elements/dist/plugin";
+
 export default {
-  plugins: [],
+  content: ['./src/**/*.{html,js}', './node_modules/tw-elements/dist/js/**/*.js'],
+  plugins: [twElements],
   theme: {
     extend: {},
   },
