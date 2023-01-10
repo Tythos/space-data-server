@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.849+1673374750221",
+    "version": "1.0.877+1673379556268",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -14,6 +14,8 @@
         "build:celestrak:parsers": "npm run build:celestrak:mpecsv && npm run build:celestrak:ommcsv",
         "build:celestrak:mpecsv": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.mpe.ts --sourcemap --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.mpe.js",
         "build:celestrak:ommcsv": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.omm.ts --sourcemap --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.omm.js",
+        "build:swagger": "node ./scripts/swagger.js",
+        "build:swaggerui": "inliner ./node_modules/swagger-ui-dist/index.html > lib/ui/swagger.html",
         "start": "npm run build && node ./build/server.cjs",
         "dev": "rm -rf config.json && npm run build && PORT=8080 nodemon",
         "dev:standards": "nodemon --config nodemon.generator.json",
@@ -47,6 +49,7 @@
         "@types/node-red": "^1.2.1",
         "@types/sshpk": "^1.17.1",
         "@types/supertest": "^2.0.12",
+        "@types/swagger-ui-dist": "^3.30.1",
         "@types/swagger-ui-express": "^4.1.3",
         "@types/toposort": "^2.0.3",
         "aws-sdk": "^2.1254.0",
@@ -103,7 +106,8 @@
     "dependencies": {
         "apicache": "^1.6.3",
         "cron": "^2.1.0",
-        "key-encoder": "^2.0.3"
+        "key-encoder": "^2.0.3",
+        "swagger-ui-dist": "^4.15.5"
     },
     "standardsVersion": "0.0.2+1672861763163"
 }

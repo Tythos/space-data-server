@@ -1,7 +1,12 @@
 <script lang="ts">
   import "tw-elements";
   import "tw-elements/dist/css/index.min.css";
-  const menuItems = [{ name: "Home" }, { name: "API" }, { name: "Login" }];
+  import { onMount } from "svelte";
+  const menuItems = [
+    { name: "Home", href: "" },
+    { name: "API", href: "/docs" },
+    { name: "Login", href: "" },
+  ];
 </script>
 
 <header>
@@ -40,7 +45,7 @@
             <li class="nav-item">
               <a
                 class="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
-                href="#!"
+                href={m.href}
                 data-mdb-ripple="true"
                 data-mdb-ripple-color="light">{m.name}</a>
             </li>
@@ -53,13 +58,15 @@
 
   <!-- Jumbotron -->
   <div class="text-center text-gray-800 py-20 px-6">
-    <h1 class="text-5xl font-bold mt-0 mb-6">Space Data Server</h1>
-    <a
-      class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-      data-mdb-ripple="true"
-      data-mdb-ripple-color="light"
-      href="#!"
-      role="button">Get started</a>
+    <div>
+      <h1 class="text-5xl font-bold mt-0 mb-6">Space Data Server</h1>
+      <a
+        class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+        data-mdb-ripple="true"
+        data-mdb-ripple-color="light"
+        href="#!"
+        role="button">Get started</a>
+    </div>
   </div>
   <!-- Jumbotron -->
 </header>

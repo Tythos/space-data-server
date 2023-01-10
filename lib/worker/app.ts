@@ -14,11 +14,18 @@ import { providers } from "@/lib/routes/spacedata/providers";
 import { sql } from "@/lib/routes/standards/sql";
 import { schema } from "@/lib/routes/standards/schema";
 import apicache from "apicache";
-import swaggerUi from "swagger-ui-express";
 import swaggerFile from "@/swagger-output.json";
-import UI from "@/lib/ui/index";
+import { ui, swaggerUI } from "@/lib/ui/index";
+import packageJSON from "package.json";
+const rawUI = Buffer.from(ui, "base64").toString();
+const rawSwaggerUI = Buffer.from(swaggerUI, "base64").toString();
 
-const rawUI = Buffer.from(UI, "base64").toString();
+swaggerFile.host = "";
+swaggerFile.info = {
+    version: packageJSON.version,
+    title: "Space Data Server",
+    description: `MVP Space Data Service based on the data standards at: <a href="https://SpaceDataStandards.org">SpaceDataStandards.org</a>, version ${packageJSON.standardsVersion}`
+}
 
 let cache = apicache.middleware;
 
@@ -37,35 +44,21 @@ app.use(bodyParser.json({
 }));
 app.use(cors());
 app.use(bodyParser.raw({ inflate: true, limit: "2GB", type: '*/*' }));
-app.use("/swagger", (req: Request, res: Response) => {
-    res.json(swaggerFile)
-});
-app.get("/", (req: Request, res: Response) => {
 
+app.get("/", (req: Request, res: Response) => {
     res.end(rawUI);
-
 });
-/*
-app.get("/", (req: Request, res: Response) => {
- 
+app.get("/docs", (req: Request, res: Response) => {
+    res.end(rawSwaggerUI);
+});
+app.get("/swagger-json", (req: Request, res: Response) => {
+    res.json(swaggerFile);
+});
 
-res.end(`<html>
-<h2>DigitalArsenal.io Space Data Server Version: 1.0.0+1668633361148 </h2>
-<h2>Total CPU:${totalCPUs}</h2>
-<h2>Total Memory:${totalmem()}</h2>
-<h2>Free Memory:${freemem()}</h2>
-<h2>Node Version: ${version}</h2>
-<hr/>
-<h3><a href='./spacedata/latest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94?format=json'>Example JSON</a></h3>
-<h3><a href='./spacedata/latest/omm/0x9858effd232b4033e47d90003d41ec34ecaeda94?format=fbs'>Example FBS</a></h3>
-<h3>API: spacedata/[${Object.keys(standards)}]?query=[["select",["*"]]]&format=[json, flatbuffer]</h3>
-<h3>JSON Schema: schema/[${Object.keys(standards)}]</h3>
-<h3><a href='./schema/omm'>Example Schema</a></h3>
-<h3><a href='./sql'>Generated SQL</a></h3>
-<h3><a href='./app'>TEST APP</a></h3>
-</html>`);
- 
-});*/
+app.get("/docs/swagger-json", (req: Request, res: Response) => {
+    res.json(swaggerFile);
+});
+
 app.get("/providers/:provider?", providers);
 app.get("/schema/:standard", schema);
 app.get("/spacedata/:standard/:provider/:cid?", get);
