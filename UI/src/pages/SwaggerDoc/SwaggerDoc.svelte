@@ -1,22 +1,21 @@
 <script lang="ts">
   import swaggerDoc from "@/swagger-output.json";
   import { compile } from "path-to-regexp";
+  import type { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 
-  let swagger = null;
-  let baseurl = "";
-  let active = {};
-  let responses = {};
-  let requestParams = {};
+  let swagger: any = null;
+  let baseurl: any = "";
+  let active: any = {};
+  let responses: any = {};
+  let requestParams: any = {};
   let requestBodyExample = {};
-  let paths = {};
+  let paths: KeyValueDataStructure = {};
   const loadSwagger = async () => {
     swagger = swaggerDoc;
     baseurl = window.location.host;
     Object.entries(swagger.paths).forEach((route, routeIdx) => {
-      console.log("route", Object.values(route[1]));
-
       let category = Object.values(route[1])[0]?.tags;
-      category = category ? category[0] : "default";
+      category = category ? category[0] : "Default";
       Object.entries(route[1]).map((method, methodIdx) => {
         const id = `${routeIdx}-${methodIdx}`;
         if (method[1].requestBody) {
@@ -125,15 +124,14 @@
 
 <div class="text-left">
   <h1 class="text-xl font-bold mt-0 mb-6">{swaggerDoc.info.title}</h1>
-
 </div>
-<div class="accordion" id="accordionExample">
-  <div class="accordion-item bg-white border border-gray-200">
-    <h2 class="accordion-header mb-0" id="headingOne">
-      <button
-        class="
-          blue
-          accordion-button
+
+{#each Object.entries(paths) as [category, routes], ID}
+  <div class="accordion" id="main_category_{ID}">
+    <div class="accordion-item border border-gray-200">
+      <h2 class="accordion-header mb-0" id="heading_category_{ID}">
+        <button
+          class="blue accordion-button
           relative
           flex
           items-center
@@ -144,72 +142,142 @@
           border-0
           rounded-none
           transition
-          focus:outline-none
-        "
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#collapseOne"
-        aria-expanded="true"
-        aria-controls="collapseOne">
-        <div class="flex items-center gap-2 text-black">
-          <div class="p-1 pl-6 pr-6 bg-blue-400 text-white rounded font-bold">
-            GET
-          </div>
-          <div>/</div>
-        </div>
-      </button>
-    </h2>
-    <div
-      id="collapseOne"
-      class="accordion-collapse collapse show"
-      aria-labelledby="headingOne"
-      data-bs-parent="#accordionExample">
-      <div class="accordion-body py-4 px-5 flex flex-col gap-2">
-        <div class="flex flex-col">
-          <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-              <div class="overflow-hidden">
-                <table class="min-w-full">
-                  <thead class="border-b">
-                    <tr>
-                      <th
-                        scope="col"
-                        class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                        Name
-                      </th>
-                      <th
-                        scope="col"
-                        class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                        Description
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-left">
-                    <tr class="border-b">
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                        >Name</td>
-                      <td
-                        class="flex flex-col gap-2 text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                        <div>Test Parameter</div>
-                        <input
-                          type="text"
-                          class="w-1/3 border-2 border-gray-400 rounded" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+          focus:outline-none;"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#category_{ID}"
+          aria-expanded="true"
+          aria-controls="category_{ID}">
+          <div class="flex items-center gap-2 text-black">
+            <div class="p-1 pl-6 pr-6 bg-blue-400 text-white rounded font-bold">
+              {category}
             </div>
+            {swaggerDoc.tags?.find((t) => t.name === category)[0].description ||
+              ""}
+          </div>
+        </button>
+      </h2>
+      <div
+        id="category_{ID}"
+        class="accordion-collapse collapse show"
+        aria-labelledby="heading_category_{ID}"
+        data-bs-parent="#main_category_{ID}">
+        <div class="accordion-body py-4 px-5 flex flex-col gap-2">
+          <div
+            id="collapseOne"
+            class="accordion-collapse collapse show"
+            aria-labelledby="headingOne"
+            data-bs-parent="#accordionExample">
+            <!--ts-ignore-->
+            {#each routes as route, r}
+              <div class="accordion" id="main_category_{route.id}">
+                <div class="accordion-item border border-gray-200">
+                  <h2
+                    class="accordion-header mb-0"
+                    id="heading_category_{route.id}">
+                    <button
+                      style="border-radius:5px"
+                      class="blue accordion-button
+                      relative
+                      collapsed
+                      flex
+                      items-center
+                      w-full
+                      py-2
+                      px-3
+                      text-base text-gray-800 text-left
+                      border-0
+                      rounded-none
+                      transition
+                      focus:outline-none"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#category_{route.id}"
+                      aria-expanded="false"
+                      aria-controls="category_{route.id}">
+                      <div class="flex items-center gap-2 text-black">
+                        <div
+                          class="p-1 pl-6 pr-6 bg-blue-400 text-white rounded font-bold">
+                          {route.method.toUpperCase()}
+                        </div>
+                        {swaggerDoc.tags?.find((t) => t.name === category)[0]
+                          .description || ""}
+                      </div>
+                    </button>
+                  </h2>
+                  <div
+                    id="category_{route.id}"
+                    class="accordion-collapse collapse"
+                    aria-labelledby="heading_category_{route.id}"
+                    data-bs-parent="#main_category_{route.id}">
+                    <div class="accordion-body py-4 px-5 flex flex-col gap-2">
+                      <div class="flex flex-col">
+                        <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                          <div
+                            class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                            <div class="overflow-hidden">
+                              <table class="min-w-full">
+                                <thead class="border-b">
+                                  <tr>
+                                    <th
+                                      scope="col"
+                                      class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                      Name
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                      Description
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody class="text-left">
+                                  <tr class="border-b">
+                                    <td
+                                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                                      >Name</td>
+                                    <td
+                                      class="flex flex-col gap-2 text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                      <div>Test Parameter</div>
+                                      <input
+                                        type="text"
+                                        class="w-1/3 border-2 border-gray-400 rounded" />
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {/each}
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+{/each}
 
 <style lang="postcss">
   .blue {
     @apply bg-blue-100 border-2 border-blue-300;
   }
+  /*.headerButton {
+    @apply blue accordion-button
+            relative
+            flex
+            items-center
+            w-full
+            py-2
+            px-3
+            text-base text-gray-800 text-left
+            border-0
+            rounded-none
+            transition
+            focus:outline-none;
+  }*/
 </style>
