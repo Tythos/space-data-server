@@ -1,0 +1,15 @@
+{
+  "watch": ["scripts/data_fetch/**/src/*"],
+  "ignore": [
+    "packages",
+    "lib/class/standards",
+    "lib/class/TypeGen",
+    "lib/standards/",
+    "config.json",
+    "lib/config/*.json"
+  ],
+  "ext": "ts,mjs,js,json,graphql",
+  "exec": "npm run build:celestrak:parsers && node ./scripts/data_fetch/celestrak/index.js",
+  "legacyWatch": true,
+  "verbose": true
+}

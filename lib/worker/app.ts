@@ -15,17 +15,8 @@ import { sql } from "@/lib/routes/standards/sql";
 import { schema } from "@/lib/routes/standards/schema";
 import apicache from "apicache";
 import swaggerFile from "@/swagger-output.json";
-import { ui, swaggerUI } from "@/lib/ui/index";
-import packageJSON from "package.json";
+import { ui } from "@/lib/ui/index";
 const rawUI = Buffer.from(ui, "base64").toString();
-const rawSwaggerUI = Buffer.from(swaggerUI, "base64").toString();
-
-swaggerFile.host = "";
-swaggerFile.info = {
-    version: packageJSON.version,
-    title: "Space Data Server",
-    description: `MVP Space Data Service based on the data standards at: <a href="https://SpaceDataStandards.org">SpaceDataStandards.org</a>, version ${packageJSON.standardsVersion}`
-}
 
 let cache = apicache.middleware;
 
@@ -48,9 +39,7 @@ app.use(bodyParser.raw({ inflate: true, limit: "2GB", type: '*/*' }));
 app.get("/", (req: Request, res: Response) => {
     res.end(rawUI);
 });
-app.get("/docs", (req: Request, res: Response) => {
-    res.end(rawSwaggerUI);
-});
+
 app.get("/swagger-json", (req: Request, res: Response) => {
     res.json(swaggerFile);
 });

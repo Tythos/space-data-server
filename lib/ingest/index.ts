@@ -187,8 +187,6 @@ async function processData() {
             write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
         }
 
-        let { CID: latestCID } = await connection("FILE_IMPORT_TABLE").select("*").where({ "PROVIDER": signedEthAddress }).orderBy("created_at").first();
-
         if (config.data.copyOnRead) {
             const writePath = join(
                 config.data.public,

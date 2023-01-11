@@ -33,7 +33,7 @@ const forkWorkers = (worker?: Worker) => {
 export default {
     init: async function () {
         if (!existsSync(databaseConfig.connection.filename)) {
-            await generateDatabase(standardsArray, databaseConfig.connection.filename, `./.database/standards.sql`, connection, databaseConfig.version);
+            await generateDatabase(standardsArray, databaseConfig.connection.filename, `./${config.database.path}/standards.sql`, connection, databaseConfig.version);
         }
 
         console.log(`Number of CPUs is ${totalCPUs}`);

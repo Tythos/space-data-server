@@ -13,7 +13,7 @@ const standardsJSON: KeyValueDataStructure = _standardsJSON;
 
 export const latestStatic = async (req: any, res: any, next: any) => {
   let { standard, provider } = req.params;
-  let { format = "fbs" } = req.query;
+  let { format = "json" } = req.query;
   format = format.toLowerCase();
   standard = standard.toUpperCase();
   //@ts-ignore
@@ -44,23 +44,28 @@ export const latestStatic = async (req: any, res: any, next: any) => {
 
 export const latest = async (req: any, res: any, next: any) => {
   let { standard, provider } = req.params;
-  let { format } = req.query;
+  let { format = "json" } = req.query;
   standard = standard.toUpperCase();
-  let { CID: latestCID } = await connection("FILE_IMPORT_TABLE").select("*").where({
+  const fIT = await connection("FILE_IMPORT_TABLE").select("*").where({
     "PROVIDER": provider,
     "STANDARD": standard
   }).orderBy("created_at").first();
+  if (fIT) {
+    let { CID: latestCID } = fIT;
+    let payload = await read(
+      connection,
+      standard,
+      standardsJSON[standard],
+      [["where", ["file_id", "=", latestCID]]]
+    );
 
-  let payload = await read(
-    connection,
-    standard,
-    standardsJSON[standard],
-    [["where", ["file_id", "=", latestCID]]]
-  );
-  if (format === "json") {
-    payload = JSON.stringify(payload);
+    if (format === "json") {
+      payload = JSON.stringify(payload);
+    } else {
+      payload = writeFB(payload);
+    }
+    res.end(payload);
   } else {
-    payload = writeFB(payload);
+    res.json([]);
   }
-  res.end(payload);
 };

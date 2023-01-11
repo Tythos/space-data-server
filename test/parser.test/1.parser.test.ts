@@ -23,6 +23,7 @@ const databasePath: string = "test/output/database";
 
 //@ts-ignore
 var databaseConfig = config.database.config[config.database.config.primary];
+
 const sqlfilename = join(dirname(databaseConfig.connection.filename), "standards.sql");
 
 let knexConnection: any;
@@ -45,12 +46,12 @@ describe("Parse Data Into Flatbuffers", () => {
         const standard = "OMM";
         let oFBS = writeFB(ommCollection);
         let iFBS = readFB(oFBS, standard, standards[standard]);
-        let writePath = `./${config.data.ingest}/${standard}/${await ethWallet.getAddress()}/`;
+        let writePath = `./${config.data.ingest}/${await ethWallet.getAddress()}/`;
         mkdirSync(writePath, { recursive: true });
-        writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.fbs`, oFBS);
+        writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.${standard}.fbs`, oFBS);
         let resultBufferIPFSCID: string = await ipfsHash.of(oFBS);
         let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
-        writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.fbs.sig`, signatureBufferETH);
+        writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.${standard}.fbs.sig`, signatureBufferETH);
         expect(JSON.stringify(ommCollection.RECORDS.map((m: OMMT) => {
             let rM: KeyValueDataStructure = {};
             for (let x in m) {
