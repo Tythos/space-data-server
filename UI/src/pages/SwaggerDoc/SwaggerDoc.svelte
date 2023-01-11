@@ -131,7 +131,7 @@
     <div class="accordion-item border border-gray-200">
       <h2 class="accordion-header mb-0" id="heading_category_{ID}">
         <button
-          class="blue accordion-button
+          class="fixRound blue accordion-button
           relative
           flex
           items-center
@@ -165,7 +165,7 @@
         <div class="accordion-body py-4 px-5 flex flex-col gap-2">
           <div
             id="collapseOne"
-            class="accordion-collapse collapse show"
+            class="flex flex-col gap-2 accordion-collapse collapse show"
             aria-labelledby="headingOne"
             data-bs-parent="#accordionExample">
             <!--ts-ignore-->
@@ -176,8 +176,11 @@
                     class="accordion-header mb-0"
                     id="heading_category_{route.id}">
                     <button
-                      style="border-radius:5px"
-                      class="blue accordion-button
+                      class:blue={route.method.toUpperCase() === "GET"}
+                      class:green={route.method.toUpperCase() === "POST"}
+                      class:orange={route.method.toUpperCase() === "PUT"}
+                      class:red={route.method.toUpperCase() === "DELETE"}
+                      class="fixRound accordion-button
                       relative
                       collapsed
                       flex
@@ -195,13 +198,23 @@
                       data-bs-target="#category_{route.id}"
                       aria-expanded="false"
                       aria-controls="category_{route.id}">
-                      <div class="flex items-center gap-2 text-black">
+                      <div
+                        class="flex items-center gap-4 text-gray-800 text-sm">
                         <div
-                          class="p-1 pl-6 pr-6 bg-blue-400 text-white rounded font-bold">
+                          class:bg-blue-400={route.method.toUpperCase() ===
+                            "GET"}
+                          class:bg-green-400={route.method.toUpperCase() ===
+                            "POST"}
+                          class:bg-purple-400={route.method.toUpperCase() ===
+                            "PUT"}
+                          class:bg-red-400={route.method.toUpperCase() ===
+                            "DELETE"}
+                          class="w-32 flex item--center justify-center p-1 pl-6 pr-6 text-white rounded font-bold">
                           {route.method.toUpperCase()}
                         </div>
-                        {swaggerDoc.tags?.find((t) => t.name === category)[0]
-                          .description || ""}
+                        <div class="font-bold">
+                          {route.route}
+                        </div>
                       </div>
                     </button>
                   </h2>
@@ -263,8 +276,20 @@
 {/each}
 
 <style lang="postcss">
+  .fixRound {
+    border-radius: 5px;
+  }
   .blue {
     @apply bg-blue-100 border-2 border-blue-300;
+  }
+  .green {
+    @apply bg-green-100 border-2 border-green-300;
+  }
+  .orange {
+    @apply bg-orange-100 border-2 border-orange-300;
+  }
+  .red {
+    @apply bg-red-100 border-2 border-red-300;
   }
   /*.headerButton {
     @apply blue accordion-button

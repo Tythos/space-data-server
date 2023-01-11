@@ -8,7 +8,7 @@
 
 <nav
   style="position:fixed;z-index:100"
-  class="navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center w-full justify-between">
+  class="font-sans navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center w-full justify-between">
   <div class="px-6 w-full flex flex-wrap items-center justify-between">
     <div class="flex items-center">
       <button
@@ -54,7 +54,7 @@
   <!-- Navbar -->
 
   <!-- Navbar -->
-  <div class="text-center text-gray-800 py-20 px-6">
+  <div class="font-sans text-center text-gray-800 py-20 px-6">
     <Router {routes} />
   </div>
 </header>
