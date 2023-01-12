@@ -53,7 +53,7 @@ app.get("/schema/:standard", schema);
 app.get("/spacedata/:standard/:provider/:cid?", get);
 app.get('/spacedatalatest/:standard/:provider',
     cache(config.data.cache, (req: any, res: any) => res.statusCode === 200), latest);
-app.post("/spacedata/:standard?", (post as any));
+app.post("/spacedata/:standard", (post as any));
 app.get("/standards/:standard?", standardsRoute);
 app.get("/sql/", sql);
 

@@ -10,6 +10,7 @@
   let requestParams: any = {};
   let requestBodyExample = {};
   let paths: KeyValueDataStructure = {};
+
   const loadSwagger = async () => {
     swagger = swaggerDoc;
     baseurl = window.location.host;
@@ -120,6 +121,10 @@
   };
   loadSwagger();
   console.log(paths);
+
+  $: {
+    console.log(active);
+  }
 </script>
 
 <div class="text-left">
@@ -199,7 +204,7 @@
                       aria-expanded="false"
                       aria-controls="category_{route.id}">
                       <div
-                        class="flex items-center gap-4 text-gray-800 text-sm">
+                        class="flex items-center gap-4 text-gray-800 sm:text-xs text-sm">
                         <div
                           class:bg-blue-400={route.method.toUpperCase() ===
                             "GET"}
@@ -212,7 +217,7 @@
                           class="w-32 flex item--center justify-center p-1 pl-6 pr-6 text-white rounded font-bold">
                           {route.method.toUpperCase()}
                         </div>
-                        <div class="font-bold">
+                        <div class="font-bold text-sm break-all pr-2">
                           {route.route}
                         </div>
                       </div>
@@ -223,46 +228,112 @@
                     class="accordion-collapse collapse"
                     aria-labelledby="heading_category_{route.id}"
                     data-bs-parent="#main_category_{route.id}">
-                    <div class="accordion-body py-4 px-5 flex flex-col gap-2">
+                    <div class="accordion-body flex flex-col gap-2">
                       <div class="flex flex-col">
                         <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                          <div
-                            class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                            <div class="overflow-hidden">
-                              <table class="min-w-full">
-                                <thead class="border-b">
-                                  <tr>
-                                    <th
-                                      scope="col"
-                                      class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                      Name
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                      Description
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody class="text-left">
-                                  <tr class="border-b">
-                                    <td
-                                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                                      >Name</td>
-                                    <td
-                                      class="flex flex-col gap-2 text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                      <div>Test Parameter</div>
-                                      <input
-                                        type="text"
-                                        class="w-1/3 border-2 border-gray-400 rounded" />
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
+                          <div class="inline-block min-w-full sm:px-6 lg:px-8">
+                            <div
+                              class:bg-blue-100={route.method.toUpperCase() ===
+                                "GET"}
+                              class:bg-green-100={route.method.toUpperCase() ===
+                                "POST"}
+                              class:bg-purple-100={route.method.toUpperCase() ===
+                                "PUT"}
+                              class:bg-red-100={route.method.toUpperCase() ===
+                                "DELETE"}
+                              class="text-black flex text-left text-xs flex px-4 py-6">
+                              {route.description || "No Description"}
+                            </div>
+                            <div
+                              class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-2 px-4">
+                              <div>Parameters</div>
+                              <button
+                                class="p-2 border-2 rounded w-24"
+                                on:click={() => (active = route)}
+                                >Try It Out</button>
+                            </div>
+                            <div
+                              class:bg-blue-100={route.method.toUpperCase() ===
+                                "GET"}
+                              class:bg-green-100={route.method.toUpperCase() ===
+                                "POST"}
+                              class:bg-purple-100={route.method.toUpperCase() ===
+                                "PUT"}
+                              class:bg-red-100={route.method.toUpperCase() ===
+                                "DELETE"}
+                              class="overflow-hidden flex flex-col items-start justify-center p-8">
+                              <div class="w-full">
+                                {#if !route.parameters.length}
+                                  <h2
+                                    class="flex h-24 items-center justify-center">
+                                    No Parameters
+                                  </h2>
+                                {:else}
+                                  <table class="min-w-full">
+                                    <thead
+                                      class="border-b border-black text-left">
+                                      <tr>
+                                        <th
+                                          scope="col"
+                                          class="text-sm font-medium text-gray-900 py-4 text-left">
+                                          Name
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          class="text-sm font-medium text-gray-900 py-4 text-left">
+                                          Description
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="text-left">
+                                      {#each route.parameters as param, p}
+                                        <tr class="border-b">
+                                          <td
+                                            class=" py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                                            ><div>
+                                              <div>
+                                                {param.name.replace("?", "")}
+                                              </div>
+                                              <div class="font-bold">
+                                                {param.type}
+                                              </div>
+                                              <div class="italic">
+                                                ({param.in})
+                                              </div>
+                                            </div>
+                                          </td>
+                                          <td
+                                            class="flex flex-col gap-2 text-sm text-gray-900 font-light py-4 whitespace-nowrap">
+                                            <div>{param.description || ""}</div>
+                                            <input
+                                              type="text"
+                                              class="w-1/3 border-2 border-gray-400 rounded p-1" />
+                                          </td>
+                                        </tr>
+                                      {/each}
+                                    </tbody>
+                                  </table>
+                                {/if}
+                              </div>
+                              {#if active?.id === route.id}
+                                <div class="flex gap-2 mt-5 w-full">
+                                  <button
+                                    class="flex items-center justify-center w-1/2 bg-blue-500 text-white font-bold rounded p-1"
+                                    >Execute</button>
+                                  <button
+                                    on:click={() => {
+                                      active = {};
+                                      console.log(active);
+                                    }}
+                                    class="flex items-center justify-center w-1/2 text-black font-bold rounded border border-black p-1"
+                                    >Clear</button>
+                                </div>
+                              {/if}
                             </div>
                           </div>
                         </div>
                       </div>
+                      <!--End Body-->
                     </div>
                   </div>
                 </div>
