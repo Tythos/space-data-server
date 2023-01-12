@@ -4,8 +4,20 @@
   import type { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 
   let swagger: any = null;
+  let httpV = "http";
   let baseurl: any = "";
-  let active: any = {};
+  let active: any = {
+    id: "1-0",
+    route: "/swagger-json",
+    method: "get",
+    description: "",
+    parameters: [],
+    responses: {
+      "200": {
+        description: "OK",
+      },
+    },
+  };
   let responses: any = {};
   let requestParams: any = {};
   let requestBodyExample = {};
@@ -225,7 +237,7 @@
                   </h2>
                   <div
                     id="category_{route.id}"
-                    class="accordion-collapse collapse"
+                    class=".accordion-collapse .collapse"
                     aria-labelledby="heading_category_{route.id}"
                     data-bs-parent="#main_category_{route.id}">
                     <div class="accordion-body flex flex-col gap-2">
@@ -330,6 +342,38 @@
                                 </div>
                               {/if}
                             </div>
+                            {#if active?.id === route.id}
+                              <div
+                                class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-3 px-4">
+                                <div>Responses</div>
+                                <div
+                                  class="flex gap-2 items-center justify-center text-xs">
+                                  <div>Response Content Type</div>
+                                  <select
+                                    class="border-black border rounded p-2">
+                                    {#each swaggerDoc.produces as popt, p}
+                                      <option>{popt}</option>
+                                    {/each}
+                                  </select>
+                                </div>
+                              </div>
+                              <div
+                                class:bg-blue-100={route.method.toUpperCase() ===
+                                  "GET"}
+                                class:bg-green-100={route.method.toUpperCase() ===
+                                  "POST"}
+                                class:bg-purple-100={route.method.toUpperCase() ===
+                                  "PUT"}
+                                class:bg-red-100={route.method.toUpperCase() ===
+                                  "DELETE"}
+                                class="flex flex-col gap-2 items-start text-xs font-bold p-4 w-full">
+                                <div>Curl</div>
+                                <code
+                                  class="w-full p-2 bg-gray-800 rounded text-white text-left">
+                                  curl -X '{active.method.toUpperCase()}' '{httpV}://{window
+                                    .location.host}{active.route}'</code>
+                              </div>
+                            {/if}
                           </div>
                         </div>
                       </div>
