@@ -16,7 +16,15 @@ const doc = {
     schemes: ['http', 'https'],
     consumes: responseTypes,
     produces: responseTypes,
-
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Home",
+                "parameters": [],
+                "responses": {}
+            }
+        }
+    }
 }
 
 const outputFile = '../swagger-output.json'

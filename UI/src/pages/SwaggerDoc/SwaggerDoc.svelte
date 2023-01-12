@@ -4,7 +4,7 @@
   import type { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 
   let swagger: any = null;
-  let httpV = "http";
+
   let baseurl: any = "";
   let active: any = {
     id: "1-0",
@@ -21,6 +21,8 @@
   let activeHeaders = {
     accept: "",
   };
+  let responseCode = 400;
+  let responseHeaders = {};
   let responses: any = {};
   let requestParams: any = {};
   let requestBodyExample = {};
@@ -135,26 +137,44 @@
     //response.json(); // parses JSON response into native JavaScript objects
   };
   loadSwagger();
-  console.log(paths);
 
   const changeHeader = (header, e) => {
     activeHeaders[header] = e.target.value;
   };
   $: {
-    console.log(active);
+    console.log(paths);
   }
+
+  let httpV = [
+    { id: "0", value: "HTTP" },
+    { id: "1", value: "HTTPS" },
+  ];
+  let selectedHttpV = "0";
+  $: selectedHttpVO = httpV.find((o) => o.id === selectedHttpV);
 </script>
 
 <div class="text-left">
-  <h1 class="text-xl font-bold mt-0 mb-6">{swaggerDoc.info.title}</h1>
+  <h1 class="text-4xl text-gray-600 font-bold mt-0 mb-6 flex gap-2">
+    {swaggerDoc.info.title}
+    <div class="h-6 bg-gray-500 rounded-3xl text-xs flex items-center justify-center p-1 text-white">{swaggerDoc.info.version}</div>
+  </h1>
 </div>
-
+<div class="text-sm font-bold flex flex-col gap-1 w-24 h-24 text-left">
+  Schemes
+  <select
+    bind:value={selectedHttpV}
+    class="bg-white border-black border rounded p-1 pl-4 pr-4">
+    {#each httpV as option}
+      <option value={option.id}>{option.value}</option>
+    {/each}
+  </select>
+</div>
 {#each Object.entries(paths) as [category, routes], ID}
   <div class="accordion" id="main_category_{ID}">
     <div class="accordion-item border border-gray-200">
       <h2 class="accordion-header mb-0" id="heading_category_{ID}">
         <button
-          class="fixRound blue accordion-button
+          class="fixRound accordion-button
           relative
           flex
           items-center
@@ -172,7 +192,8 @@
           aria-expanded="true"
           aria-controls="category_{ID}">
           <div class="flex items-center gap-2 text-black">
-            <div class="p-1 pl-6 pr-6 bg-blue-400 text-white rounded font-bold">
+            <div
+              class="p-1 pl-6 pr-6 text-gray-500 text-xl text-white rounded font-bold">
               {category}
             </div>
             {swaggerDoc.tags?.find((t) => t.name === category)[0].description ||
@@ -387,12 +408,59 @@
                                   class="w-full p-2 bg-gray-800 rounded text-white text-left">
                                   curl -X '{active.method.toUpperCase()}' \
                                   <br />
-                                  '{httpV}://{window.location
-                                    .host}{active.route}' \ <br />
+                                  '{selectedHttpVO?.value?.toLowerCase()}://{window
+                                    .location.host}{active.route}' \ <br />
                                   {#each Object.entries(activeHeaders) as [header, value], h}
                                     -H '{header}: {value}'
                                   {/each}
                                 </code>
+                                <div>Request URL</div>
+                                <code
+                                  class="w-full p-2 bg-gray-800 rounded text-white text-left">
+                                  {selectedHttpVO?.value?.toLowerCase()}://{window
+                                    .location.host}{active.route}
+                                </code>
+                                <div class="text-md mt-3">Server Response</div>
+                                <table class="min-w-full">
+                                  <thead
+                                    class="border-b border-black text-left">
+                                    <tr>
+                                      <th
+                                        scope="col"
+                                        class="text-sm font-medium text-gray-900 py-4 text-left">
+                                        Code
+                                      </th>
+                                      <th
+                                        scope="col"
+                                        class="text-sm font-medium text-gray-900 py-4 text-left">
+                                        Details
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody class="text-left">
+                                    <tr
+                                      ><td
+                                        style="width:10px"
+                                        class="m-0 w-6 flex pt-2">
+                                        {responseCode}
+                                      </td><td>
+                                        <div class="flex flex-col gap-2 p-2">
+                                          <div>Response Body</div>
+                                          <code
+                                            class="w-full p-2 bg-gray-800 rounded text-white text-left">
+                                            Stuff
+                                          </code>
+                                          <div>Response Headers</div>
+                                          <code
+                                            class="w-full p-2 bg-gray-800 rounded text-white text-left h-12">
+                                            {#each Object.entries(responseHeaders) as [header, value], h}
+                                              {header}:{value}<br />
+                                            {/each}
+                                          </code>
+                                        </div>
+                                      </td></tr>
+                                  </tbody>
+                                </table>
                               </div>
                             {/if}
                           </div>

@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "1.0.921+1673553394302",
+    "version": "1.0.923+1673554437854",
     "title": "Space Data Server",
     "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
   },
@@ -22,7 +22,7 @@
   "paths": {
     "/": {
       "get": {
-        "description": "",
+        "description": "Home",
         "parameters": [],
         "responses": {}
       }
@@ -125,8 +125,15 @@
     },
     "/spacedata/{standard}": {
       "post": {
-        "description": "",
-        "parameters": [],
+        "description": "PostUp",
+        "parameters": [
+          {
+            "name": "standard",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {}
       }
     },

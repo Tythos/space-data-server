@@ -37,6 +37,7 @@ app.use(cors());
 app.use(bodyParser.raw({ inflate: true, limit: "2GB", type: '*/*' }));
 
 app.get("/", (req: Request, res: Response) => {
+    // #swagger.description = 'Home'
     res.end(rawUI);
 });
 
@@ -53,7 +54,10 @@ app.get("/schema/:standard", schema);
 app.get("/spacedata/:standard/:provider/:cid?", get);
 app.get('/spacedatalatest/:standard/:provider',
     cache(config.data.cache, (req: any, res: any) => res.statusCode === 200), latest);
-app.post("/spacedata/:standard", (post as any));
+app.post("/spacedata/:standard", (req: any, res: any, next: any) => {
+    // #swagger.description = 'PostUp'
+    post(req, res, next);
+});
 app.get("/standards/:standard?", standardsRoute);
 app.get("/sql/", sql);
 
