@@ -18,6 +18,9 @@
       },
     },
   };
+  let activeHeaders = {
+    accept: "",
+  };
   let responses: any = {};
   let requestParams: any = {};
   let requestBodyExample = {};
@@ -134,6 +137,9 @@
   loadSwagger();
   console.log(paths);
 
+  const changeHeader = (header, e) => {
+    activeHeaders[header] = e.target.value;
+  };
   $: {
     console.log(active);
   }
@@ -187,12 +193,18 @@
             data-bs-parent="#accordionExample">
             <!--ts-ignore-->
             {#each routes as route, r}
-              <div class="accordion" id="main_category_{route.id}">
-                <div class="accordion-item border border-gray-200">
+              <div
+                class="accordion border border-gray-400 border rounded-lg"
+                id="main_category_{route.id}">
+                <div class="accordion-item border rounded-lg">
                   <h2
+                    style="border:0px;"
                     class="accordion-header mb-0"
                     id="heading_category_{route.id}">
                     <button
+                      style="border:0px;
+                         border-bottom:1px #aaa solid;
+                         border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;"
                       class:blue={route.method.toUpperCase() === "GET"}
                       class:green={route.method.toUpperCase() === "POST"}
                       class:orange={route.method.toUpperCase() === "PUT"}
@@ -261,8 +273,10 @@
                               <div>Parameters</div>
                               <button
                                 class="p-2 border-2 rounded w-24"
-                                on:click={() => (active = route)}
-                                >Try It Out</button>
+                                on:click={() => {
+                                  active = route;
+                                  activeHeaders.accept = swaggerDoc.produces[0];
+                                }}>Try It Out</button>
                             </div>
                             <div
                               class:bg-blue-100={route.method.toUpperCase() ===
@@ -350,6 +364,7 @@
                                   class="flex gap-2 items-center justify-center text-xs">
                                   <div>Response Content Type</div>
                                   <select
+                                    bind:value={activeHeaders.accept}
                                     class="border-black border rounded p-2">
                                     {#each swaggerDoc.produces as popt, p}
                                       <option>{popt}</option>
@@ -370,8 +385,14 @@
                                 <div>Curl</div>
                                 <code
                                   class="w-full p-2 bg-gray-800 rounded text-white text-left">
-                                  curl -X '{active.method.toUpperCase()}' '{httpV}://{window
-                                    .location.host}{active.route}'</code>
+                                  curl -X '{active.method.toUpperCase()}' \
+                                  <br />
+                                  '{httpV}://{window.location
+                                    .host}{active.route}' \ <br />
+                                  {#each Object.entries(activeHeaders) as [header, value], h}
+                                    -H '{header}: {value}'
+                                  {/each}
+                                </code>
                               </div>
                             {/if}
                           </div>

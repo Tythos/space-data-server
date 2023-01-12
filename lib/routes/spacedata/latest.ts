@@ -8,6 +8,7 @@ import { join, resolve } from "path";
 import { connection } from "@/lib/database/connection";
 import read from "@/lib/database/read";
 import { writeFB } from "@/lib/utility/flatbufferConversion";
+import { formatResponse } from "./responseFormat";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 
@@ -58,12 +59,13 @@ export const latest = async (req: any, res: any, next: any) => {
       standardsJSON[standard],
       [["where", ["file_id", "=", latestCID]]]
     );
-
-    if (format === "json") {
-      payload = JSON.stringify(payload);
-    } else {
-      payload = writeFB(payload);
-    }
+    payload = formatResponse(req, res, payload);
+    /*
+  if (format === "json") {
+    payload = JSON.stringify(payload);
+  } else {
+    payload = writeFB(payload);
+  }*/
     res.end(payload);
   } else {
     res.json([]);

@@ -6,6 +6,7 @@ import read from "@/lib/database/read";
 import { writeFB } from "@/lib/utility/flatbufferConversion";
 import { connection } from "@/lib/database/connection";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
+import { formatResponse } from "./responseFormat";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 
@@ -22,7 +23,8 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     res.send(Object.keys(standards));
   } else {
     standard = standard.toUpperCase();
-    let { query, format = "json", schema } = req.query;
+    let { query, schema } = req.query;
+
     if (schema) {
       res.end(JSON.stringify(standardsJSON[standard], null, 4));
     } else {
@@ -38,11 +40,8 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       }
 
       let payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
-      if (format === "json") {
-        payload = JSON.stringify(payload);
-      } else {
-        payload = writeFB(payload);
-      }
+      payload = formatResponse(req, res, payload);
+
       res.end(payload);
     }
   }
