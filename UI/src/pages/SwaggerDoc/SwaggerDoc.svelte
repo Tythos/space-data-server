@@ -270,7 +270,7 @@
                   </h2>
                   <div
                     id="category_{route.id}"
-                    class=".accordion-collapse .collapse"
+                    class="accordion-collapse collapse"
                     aria-labelledby="heading_category_{route.id}"
                     data-bs-parent="#main_category_{route.id}">
                     <div class="accordion-body flex flex-col gap-2">
