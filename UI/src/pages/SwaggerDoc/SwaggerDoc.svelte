@@ -151,12 +151,20 @@
   ];
   let selectedHttpV = "0";
   $: selectedHttpVO = httpV.find((o) => o.id === selectedHttpV);
+
+  const devCSS =
+    window.location.hostname === "localhost"
+      ? ".accordion-collapse .collapse"
+      : "accordion-collapse collapse";
 </script>
 
 <div class="text-left">
   <h1 class="text-4xl text-gray-600 font-bold mt-0 mb-6 flex gap-2">
     {swaggerDoc.info.title}
-    <div class="h-6 bg-gray-500 rounded-3xl text-xs flex items-center justify-center p-1 text-white">{swaggerDoc.info.version}</div>
+    <div
+      class="h-6 bg-gray-500 rounded-3xl text-xs flex items-center justify-center p-1 text-white">
+      {swaggerDoc.info.version}
+    </div>
   </h1>
 </div>
 <div class="text-sm font-bold flex flex-col gap-1 w-24 h-24 text-left">
@@ -270,7 +278,7 @@
                   </h2>
                   <div
                     id="category_{route.id}"
-                    class="accordion-collapse collapse"
+                    class={devCSS}
                     aria-labelledby="heading_category_{route.id}"
                     data-bs-parent="#main_category_{route.id}">
                     <div class="accordion-body flex flex-col gap-2">
