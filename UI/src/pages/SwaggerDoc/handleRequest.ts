@@ -1,4 +1,4 @@
-import { pathToRegexp, match, parse, compile } from "path-to-regexp";
+import { compile } from "path-to-regexp";
 const convertSwaggerPathToExpress = (path) => {
     return path.replace(/{/g, ':').replace(/}/g, '');
 }
@@ -12,7 +12,10 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
         reqParams.forEach((x) => {
             const paramName = `${x[0].split("-")[2]}`;
             const paramIn = paramDetails.find(
-                (param) => param.name === paramName
+                (param) => {
+                    console.log(param.name, paramName)
+                    return param.name === paramName
+                }
             ).in;
             if (paramIn == "query") {
                 params[paramName] = x[1];

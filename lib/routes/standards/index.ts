@@ -13,7 +13,7 @@ export const standards: express.RequestHandler = async (req: Request, res: Respo
         res.end(JSON.stringify(standardsSchema[standard], null, 4));
     } else {
         res.status(404);
-        res.end(`Standard "${standard}" Not Found.  Please select a supported standard: ${Object.keys(standardsSchema)}`)
+        res.json(Object.keys(standardsSchema));
     }
     next();
 

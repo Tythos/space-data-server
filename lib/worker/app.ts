@@ -75,7 +75,9 @@ app.post("/spacedata/:standard", (req: any, res: any, next: any) => {
     // #swagger.description = 'PostUp'
     post(req, res, next);
 });
-app.get("/standards/:standard?", standardsRoute);
+app.get("/standards/:standard?", (req: any, res: any, next: any) => {
+    standardsRoute(req, res, next);
+});
 app.get("/sql/", sql);
 
 export { app };

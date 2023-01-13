@@ -104,12 +104,16 @@ ${Object.entries(activeHeaders)
 
   const execute = async (e) => {
     e.preventDefault();
-    console.log(active);
     let { url, response } = await handleRequest(
       `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
-      active,
+      { ...active, route: active.route.replaceAll("?", "") },
       active.id,
-      active.parameters,
+      [
+        ...active.parameters.map((p) => {
+          p.name = p.name.replaceAll("?", "");
+          return p;
+        }),
+      ],
       requestParams,
       requestBodyExample
     );
@@ -357,7 +361,12 @@ ${Object.entries(activeHeaders)
                                               )}
                                               disabled={active?.id !== route.id}
                                               bind:value={requestParams[
-                                                `${route.id}-${param.name}`
+                                                `${
+                                                  route.id
+                                                }-${param.name.replace(
+                                                  "?",
+                                                  ""
+                                                )}`
                                               ]}
                                               style={active?.id !== route.id
                                                 ? "cursor:not-allowed"
@@ -391,7 +400,7 @@ ${Object.entries(activeHeaders)
                                 </div>
                               {/if}
                             </form>
-                            {#if active?.id === route.id}
+                            {#if active?.id === route.id && activeExecuted}
                               <div
                                 class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-3 px-4">
                                 <div>Responses</div>
@@ -429,51 +438,48 @@ ${Object.entries(activeHeaders)
                                   class="w-full p-2 bg-gray-800 rounded text-white text-left">
                                   {activeURL}
                                 </code>
-                                {#if activeExecuted}
-                                  <div class="text-md mt-3">
-                                    Server Response
-                                  </div>
-                                  <table class="min-w-full">
-                                    <thead
-                                      class="border-b border-black text-left">
-                                      <tr>
-                                        <th
-                                          scope="col"
-                                          class="text-sm font-medium text-gray-900 py-4 text-left">
-                                          Code
-                                        </th>
-                                        <th
-                                          scope="col"
-                                          class="text-sm font-medium text-gray-900 py-4 text-left">
-                                          Details
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody class="text-left">
-                                      <tr
-                                        ><td
-                                          style="width:10px"
-                                          class="m-0 w-6 flex pt-2">
-                                          {responseCode}
-                                        </td><td>
-                                          <div class="flex flex-col gap-2 p-2">
-                                            <div>Response Body</div>
-                                            <code
-                                              class="whitespace-pre w-full p-2 bg-gray-800 rounded text-white text-left max-h-32 overflow-y-scroll overflow-x-hidden">
-                                              {responseBody}
-                                            </code>
-                                            <div>Response Headers</div>
-                                            <code
-                                              class="w-full p-2 bg-gray-800 rounded text-white text-left max-h-32">
-                                              {#each Object.entries(responseHeaders) as [header, value], h}
-                                                {header}: {value}<br />
-                                              {/each}
-                                            </code>
-                                          </div>
-                                        </td></tr>
-                                    </tbody>
-                                  </table>
-                                {/if}
+
+                                <div class="text-md mt-3">Server Response</div>
+                                <table class="min-w-full">
+                                  <thead
+                                    class="border-b border-black text-left">
+                                    <tr>
+                                      <th
+                                        scope="col"
+                                        class="text-sm font-medium text-gray-900 py-4 text-left">
+                                        Code
+                                      </th>
+                                      <th
+                                        scope="col"
+                                        class="text-sm font-medium text-gray-900 py-4 text-left">
+                                        Details
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody class="text-left">
+                                    <tr
+                                      ><td
+                                        style="width:10px"
+                                        class="m-0 w-6 flex pt-2">
+                                        {responseCode}
+                                      </td><td>
+                                        <div class="flex flex-col gap-2 p-2">
+                                          <div>Response Body</div>
+                                          <code
+                                            class="whitespace-pre w-full p-2 bg-gray-800 rounded text-white text-left max-h-32 overflow-y-scroll overflow-x-hidden">
+                                            {responseBody}
+                                          </code>
+                                          <div>Response Headers</div>
+                                          <code
+                                            class="w-full p-2 bg-gray-800 rounded text-white text-left max-h-32">
+                                            {#each Object.entries(responseHeaders) as [header, value], h}
+                                              {header}: {value}<br />
+                                            {/each}
+                                          </code>
+                                        </div>
+                                      </td></tr>
+                                  </tbody>
+                                </table>
                               </div>
                             {/if}
                           </div>
