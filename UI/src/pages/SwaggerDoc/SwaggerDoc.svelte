@@ -36,7 +36,7 @@ ${Object.entries(activeHeaders)
     }
   }
 
-  let responseCode = 400;
+  let responseCode = 0;
   let responseBody = "";
   let responseHeaders = {};
   let responses: any = {};
@@ -123,6 +123,7 @@ ${Object.entries(activeHeaders)
     for (let header of response.headers.entries()) {
       responseHeaders[header[0]] = header[1];
     }
+    responseCode = response.status;
     console.log(responseBody, isJSON);
   };
 
