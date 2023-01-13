@@ -27,6 +27,7 @@
   $: activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
 
   let responseCode = 400;
+  let responseBody = "";
   let responseHeaders = {};
   let responses: any = {};
   let requestParams: any = {};
@@ -110,11 +111,12 @@
       requestParams,
       requestBodyExample
     );
-    console.log(
-      await response[
-        activeHeaders.accept === "application/json" ? "json" : "blob"
-      ]()
-    );
+    const isJSON = activeAccept.name === "application/json";
+    responseBody = await response[isJSON ? "json" : "text"]();
+   
+    if (isJSON) {
+      responseBody = JSON.stringify(responseBody, null, 4);
+    } console.log(responseBody, isJSON)
   };
 
   console.log(swaggerDoc);
@@ -267,11 +269,11 @@
                                 on:click={() => {
                                   active = route;
                                   activeHeaders.accept = route.pro;
-                                  activeProduces = (route?.produces||swaggerDoc.produces).map(
-                                    (p, pid) => {
-                                      return { id: pid, name: p };
-                                    }
-                                  );
+                                  activeProduces = (
+                                    route?.produces || swaggerDoc.produces
+                                  ).map((p, pid) => {
+                                    return { id: pid, name: p };
+                                  });
                                 }}>Try It Out</button>
                             </div>
                             <div
@@ -428,8 +430,8 @@
                                         <div class="flex flex-col gap-2 p-2">
                                           <div>Response Body</div>
                                           <code
-                                            class="w-full p-2 bg-gray-800 rounded text-white text-left">
-                                            Stuff
+                                            class="whitespace-pre w-full p-2 bg-gray-800 rounded text-white text-left max-h-32 overflow-y-scroll overflow-x-hidden">
+                                            {responseBody}
                                           </code>
                                           <div>Response Headers</div>
                                           <code
@@ -490,4 +492,24 @@
             transition
             focus:outline-none;
   }*/
+
+  /* Scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
 </style>
