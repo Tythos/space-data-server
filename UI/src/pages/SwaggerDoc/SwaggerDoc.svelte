@@ -14,6 +14,7 @@
   let selectedAcceptHeader = 0;
   let activeProduces = [];
   let activeAccept;
+  const devMode = window.location.hostname === "localhost";
 
   $: {
     activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
