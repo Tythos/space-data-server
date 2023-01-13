@@ -401,8 +401,7 @@ ${Object.entries(activeHeaders)
                                 <div>Request URL</div>
                                 <code
                                   class="w-full p-2 bg-gray-800 rounded text-white text-left">
-                                  {selectedHttpVO?.value?.toLowerCase()}://{window
-                                    .location.host}{active.route}
+                                  {selectedHttpVO?.value?.toLowerCase()}://{_host}{active.route}
                                 </code>
                                 <div class="text-md mt-3">Server Response</div>
                                 <table class="min-w-full">
@@ -466,6 +465,7 @@ ${Object.entries(activeHeaders)
 <style lang="postcss">
   code {
     white-space: break-spaces;
+    @apply overflow-y-scroll overflow-x-hidden;
   }
   .fixRound {
     border-radius: 5px;
