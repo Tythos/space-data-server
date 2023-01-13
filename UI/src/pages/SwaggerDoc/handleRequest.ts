@@ -13,7 +13,6 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
             const paramName = `${x[0].split("-")[2]}`;
             const paramIn = paramDetails.find(
                 (param) => {
-                    console.log(param.name, paramName)
                     return param.name === paramName
                 }
             ).in;
@@ -28,14 +27,15 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
         let rr = reqParams.find((param) => param[0] === `${methodId}-${x.name}`);
 
         if (x.in === "path") {
+            let nonOPName = x.name.replaceAll("?", "");
             if (
                 reqParams.length > 0 && rr && rr[1]
             ) {
-                inPath[x.name] = reqParams.find(
+                inPath[nonOPName] = reqParams.find(
                     (param) => param[0] === `${methodId}-${x.name}`
-                )[1]; // paramDetails.indexOf(param => param.name === x.name)params[x.name]
+                )[1];
             } else {
-                inPath[x.name] = null;
+                inPath[nonOPName] = null;
             }
         }
         if (x.in === "header") {
@@ -49,7 +49,8 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
             }
         }
     });
-    const toPath = compile(convertSwaggerPathToExpress(route), { encode: encodeURIComponent });
+
+    const toPath = compile(convertSwaggerPathToExpress(route), { encode: encodeURIComponent, });
     const encodedUri = toPath(inPath);
     console.log(encodedUri)
     const queryString = Object.keys(params)

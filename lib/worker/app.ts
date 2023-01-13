@@ -76,6 +76,7 @@ app.post("/spacedata/:standard", (req: any, res: any, next: any) => {
     post(req, res, next);
 });
 app.get("/standards/:standard?", (req: any, res: any, next: any) => {
+    // #swagger.produces = ['application/json']
     standardsRoute(req, res, next);
 });
 app.get("/sql/", sql);

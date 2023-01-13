@@ -104,16 +104,12 @@ ${Object.entries(activeHeaders)
 
   const execute = async (e) => {
     e.preventDefault();
+
     let { url, response } = await handleRequest(
       `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
-      { ...active, route: active.route.replaceAll("?", "") },
+      { ...active, route: active.route},
       active.id,
-      [
-        ...active.parameters.map((p) => {
-          p.name = p.name.replaceAll("?", "");
-          return p;
-        }),
-      ],
+      active.parameters,
       requestParams,
       requestBodyExample
     );
@@ -127,7 +123,6 @@ ${Object.entries(activeHeaders)
     for (let header of response.headers.entries()) {
       responseHeaders[header[0]] = header[1];
     }
-    console.log(response.headers);
     responseCode = response.status;
     activeExecuted = true;
   };
@@ -361,12 +356,7 @@ ${Object.entries(activeHeaders)
                                               )}
                                               disabled={active?.id !== route.id}
                                               bind:value={requestParams[
-                                                `${
-                                                  route.id
-                                                }-${param.name.replace(
-                                                  "?",
-                                                  ""
-                                                )}`
+                                                `${route.id}-${param.name}`
                                               ]}
                                               style={active?.id !== route.id
                                                 ? "cursor:not-allowed"
