@@ -459,6 +459,9 @@
 {/each}
 
 <style lang="postcss">
+  code {
+    white-space: break-spaces;
+  }
   .fixRound {
     border-radius: 5px;
   }
