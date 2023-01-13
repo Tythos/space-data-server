@@ -24,7 +24,7 @@
     activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
     activeHeaders.accept = activeAccept?.name;
     if (active) {
-      curlTemplate = `curl -X "${active.method.toUpperCase()}" \\
+      curlTemplate = `curl -X "${active.method?.toUpperCase()}" \\
 "${selectedHttpVO?.value?.toLowerCase()}://${_host}${active.route}" ${
         Object.entries(activeHeaders).length ? "\\" : ""
       }
@@ -206,10 +206,10 @@ ${Object.entries(activeHeaders)
                       style="border:0px;
                          border-bottom:1px #aaa solid;
                          border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;"
-                      class:blue={route.method.toUpperCase() === "GET"}
-                      class:green={route.method.toUpperCase() === "POST"}
-                      class:orange={route.method.toUpperCase() === "PUT"}
-                      class:red={route.method.toUpperCase() === "DELETE"}
+                      class:blue={route.method?.toUpperCase() === "GET"}
+                      class:green={route.method?.toUpperCase() === "POST"}
+                      class:orange={route.method?.toUpperCase() === "PUT"}
+                      class:red={route.method?.toUpperCase() === "DELETE"}
                       class="fixRound accordion-button
                       relative
                       collapsed
@@ -231,16 +231,16 @@ ${Object.entries(activeHeaders)
                       <div
                         class="flex items-center gap-4 text-gray-800 sm:text-xs text-sm">
                         <div
-                          class:bg-blue-400={route.method.toUpperCase() ===
+                          class:bg-blue-400={route.method?.toUpperCase() ===
                             "GET"}
-                          class:bg-green-400={route.method.toUpperCase() ===
+                          class:bg-green-400={route.method?.toUpperCase() ===
                             "POST"}
-                          class:bg-purple-400={route.method.toUpperCase() ===
+                          class:bg-purple-400={route.method?.toUpperCase() ===
                             "PUT"}
-                          class:bg-red-400={route.method.toUpperCase() ===
+                          class:bg-red-400={route.method?.toUpperCase() ===
                             "DELETE"}
                           class="w-32 flex item--center justify-center p-1 pl-6 pr-6 text-white rounded font-bold">
-                          {route.method.toUpperCase()}
+                          {route.method?.toUpperCase()}
                         </div>
                         <div class="font-bold text-sm break-all pr-2">
                           {route.route}
@@ -258,13 +258,13 @@ ${Object.entries(activeHeaders)
                         <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                           <div class="inline-block min-w-full sm:px-6 lg:px-8">
                             <div
-                              class:bg-blue-100={route.method.toUpperCase() ===
+                              class:bg-blue-100={route.method?.toUpperCase() ===
                                 "GET"}
-                              class:bg-green-100={route.method.toUpperCase() ===
+                              class:bg-green-100={route.method?.toUpperCase() ===
                                 "POST"}
-                              class:bg-purple-100={route.method.toUpperCase() ===
+                              class:bg-purple-100={route.method?.toUpperCase() ===
                                 "PUT"}
-                              class:bg-red-100={route.method.toUpperCase() ===
+                              class:bg-red-100={route.method?.toUpperCase() ===
                                 "DELETE"}
                               class="text-black flex text-left text-xs flex px-4 py-6">
                               {route.description || "No Description"}
@@ -285,13 +285,13 @@ ${Object.entries(activeHeaders)
                                 }}>Try It Out</button>
                             </div>
                             <div
-                              class:bg-blue-100={route.method.toUpperCase() ===
+                              class:bg-blue-100={route.method?.toUpperCase() ===
                                 "GET"}
-                              class:bg-green-100={route.method.toUpperCase() ===
+                              class:bg-green-100={route.method?.toUpperCase() ===
                                 "POST"}
-                              class:bg-purple-100={route.method.toUpperCase() ===
+                              class:bg-purple-100={route.method?.toUpperCase() ===
                                 "PUT"}
-                              class:bg-red-100={route.method.toUpperCase() ===
+                              class:bg-red-100={route.method?.toUpperCase() ===
                                 "DELETE"}
                               class="overflow-hidden flex flex-col items-start justify-center p-8">
                               <div class="w-full">
@@ -338,9 +338,13 @@ ${Object.entries(activeHeaders)
                                             class="flex flex-col gap-2 text-sm text-gray-900 font-light py-4 whitespace-nowrap">
                                             <div>{param.description || ""}</div>
                                             <input
+                                              disabled={!active}
                                               bind:value={requestParams[
                                                 `${route.id}-${param.name}`
                                               ]}
+                                              style={!active
+                                                ? "cursor:not-allowed"
+                                                : ""}
                                               type="text"
                                               class="w-1/3 border-2 border-gray-400 rounded p-1" />
                                           </td>
@@ -358,7 +362,8 @@ ${Object.entries(activeHeaders)
                                     >Execute</button>
                                   <button
                                     on:click={() => {
-                                      active = {};
+                                      active = null;
+                                      requestParams = {};
                                     }}
                                     class="flex items-center justify-center w-1/2 text-black font-bold rounded border border-black p-1"
                                     >Clear</button>
@@ -384,13 +389,13 @@ ${Object.entries(activeHeaders)
                                 </div>
                               </div>
                               <div
-                                class:bg-blue-100={route.method.toUpperCase() ===
+                                class:bg-blue-100={route.method?.toUpperCase() ===
                                   "GET"}
-                                class:bg-green-100={route.method.toUpperCase() ===
+                                class:bg-green-100={route.method?.toUpperCase() ===
                                   "POST"}
-                                class:bg-purple-100={route.method.toUpperCase() ===
+                                class:bg-purple-100={route.method?.toUpperCase() ===
                                   "PUT"}
-                                class:bg-red-100={route.method.toUpperCase() ===
+                                class:bg-red-100={route.method?.toUpperCase() ===
                                   "DELETE"}
                                 class="flex flex-col gap-2 items-start text-xs font-bold p-4 w-full">
                                 <div>Curl</div>
