@@ -359,7 +359,6 @@ ${Object.entries(activeHeaders)
                                   <button
                                     on:click={() => {
                                       active = {};
-                                      console.log(active);
                                     }}
                                     class="flex items-center justify-center w-1/2 text-black font-bold rounded border border-black p-1"
                                     >Clear</button>
@@ -436,7 +435,7 @@ ${Object.entries(activeHeaders)
                                           </code>
                                           <div>Response Headers</div>
                                           <code
-                                            class="w-full p-2 bg-gray-800 rounded text-white text-left h-12">
+                                            class="w-full p-2 bg-gray-800 rounded text-white text-left max-h-32">
                                             {#each Object.entries(responseHeaders) as [header, value], h}
                                               {header}: {value}<br />
                                             {/each}
