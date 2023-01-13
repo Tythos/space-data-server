@@ -14,11 +14,26 @@
   let selectedAcceptHeader = 0;
   let activeProduces = [];
   let activeAccept;
+  let curlTemplate;
   const devMode = window.location.hostname === "localhost";
-
+  const _host =
+    swaggerDoc.host || devMode
+      ? window.location.hostname + ":8080"
+      : window.location.host;
   $: {
     activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
     activeHeaders.accept = activeAccept?.name;
+    if (active) {
+      curlTemplate = `curl -X "${active.method.toUpperCase()}" \\
+"${selectedHttpVO?.value?.toLowerCase()}://${_host}${active.route}" ${
+        Object.entries(activeHeaders).length ? "\\" : ""
+      }
+${Object.entries(activeHeaders)
+  .map(([header, value], h) => {
+    return `-H '${header}: ${value}'`;
+  })
+  .join("\\ \n")};`;
+    }
   }
 
   let responseCode = 400;
@@ -76,9 +91,6 @@
     return swagger[division[0]][division[1]][division[2]];
   };
 
-  const changeHeader = (header, e) => {
-    activeHeaders[header] = e.target.value;
-  };
   $: {
     console.log(requestParams);
   }
@@ -95,11 +107,7 @@
 
   const execute = async () => {
     let response = await handleRequest(
-      `${selectedHttpVO.value.toLowerCase()}://${
-        swaggerDoc.host || devMode
-          ? window.location.hostname + ":8080"
-          : window.location.host
-      }`,
+      `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
       active,
       active.id,
       active.parameters,
@@ -111,6 +119,9 @@
 
     if (isJSON) {
       responseBody = JSON.stringify(responseBody, null, 4);
+    }
+    for (let header of response.headers.entries()) {
+      responseHeaders[header[0]] = header[1];
     }
     console.log(responseBody, isJSON);
   };
@@ -385,13 +396,7 @@
                                 <div>Curl</div>
                                 <code
                                   class="w-full p-2 bg-gray-800 rounded text-white text-left">
-                                  curl -X '{active.method.toUpperCase()}' \
-                                  <br />
-                                  '{selectedHttpVO?.value?.toLowerCase()}://{window
-                                    .location.host}{active.route}' \ <br />
-                                  {#each Object.entries(activeHeaders) as [header, value], h}
-                                    -H '{header}: {value}'
-                                  {/each}
+                                  {curlTemplate}
                                 </code>
                                 <div>Request URL</div>
                                 <code
@@ -433,7 +438,7 @@
                                           <code
                                             class="w-full p-2 bg-gray-800 rounded text-white text-left h-12">
                                             {#each Object.entries(responseHeaders) as [header, value], h}
-                                              {header}:{value}<br />
+                                              {header}: {value}<br />
                                             {/each}
                                           </code>
                                         </div>
