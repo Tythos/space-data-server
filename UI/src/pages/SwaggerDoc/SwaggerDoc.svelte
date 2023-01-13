@@ -24,7 +24,12 @@
   };
   let selectedAcceptHeader = 0;
   let activeProduces = [];
-  $: activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
+  let activeAccept;
+  
+  $: {
+    activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
+    activeHeaders.accept = activeAccept.name;
+  }
 
   let responseCode = 400;
   let responseBody = "";
@@ -94,16 +99,17 @@
   ];
   let selectedHttpV = "0";
   $: selectedHttpVO = httpV.find((o) => o.id === selectedHttpV);
-
-  const devCSS =
-    window.location.hostname === "localhost"
-      ? ".accordion-collapse .collapse"
-      : "accordion-collapse collapse";
+  const devMode = window.location.hostname === "localhost";
+  const devCSS = devMode
+    ? ".accordion-collapse .collapse"
+    : "accordion-collapse collapse";
 
   const execute = async () => {
     let response = await handleRequest(
       `${selectedHttpVO.value.toLowerCase()}://${
-        swaggerDoc.host || window.location.hostname + ":8080"
+        swaggerDoc.host || devMode
+          ? window.location.hostname + ":8080"
+          : window.location.host
       }`,
       active,
       active.id,
@@ -113,10 +119,11 @@
     );
     const isJSON = activeAccept.name === "application/json";
     responseBody = await response[isJSON ? "json" : "text"]();
-   
+
     if (isJSON) {
       responseBody = JSON.stringify(responseBody, null, 4);
-    } console.log(responseBody, isJSON)
+    }
+    console.log(responseBody, isJSON);
   };
 
   console.log(swaggerDoc);
