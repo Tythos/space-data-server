@@ -7,25 +7,14 @@
 
   let baseurl: any = "";
   /* Active */
-  let active: any = {
-    id: "1-0",
-    route: "/swagger-json",
-    method: "get",
-    description: "",
-    parameters: [],
-    responses: {
-      "200": {
-        description: "OK",
-      },
-    },
-  };
+  let active: any;
   let activeHeaders = {
     accept: "",
   };
   let selectedAcceptHeader = 0;
   let activeProduces = [];
   let activeAccept;
-  
+
   $: {
     activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
     activeHeaders.accept = activeAccept.name;
@@ -99,7 +88,6 @@
   ];
   let selectedHttpV = "0";
   $: selectedHttpVO = httpV.find((o) => o.id === selectedHttpV);
-  const devMode = window.location.hostname === "localhost";
   const devCSS = devMode
     ? ".accordion-collapse .collapse"
     : "accordion-collapse collapse";
