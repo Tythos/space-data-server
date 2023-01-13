@@ -40,45 +40,161 @@ app.use(cors());
 app.use(bodyParser.raw({ inflate: true, limit: "2GB", type: '*/*' }));
 
 app.get("/", (req: Request, res: Response) => {
-    // #swagger.description = 'Home'
+    // #swagger.ignore = true
     res.end(rawUI);
 });
 
 app.get("/swagger-json", (req: Request, res: Response) => {
     res.json(swaggerFile);
-    /*
-    #swagger.produces = ['application/json']
-    */
+    /**
+     #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: ""
+                    }  
+                }
+            }
+        } 
+     */
 });
 
 app.get("/docs/swagger-json", (req: Request, res: Response) => {
     res.json(swaggerFile);
-    /*
-    #swagger.produces = ['application/json']
-    */
+    /**
+      #swagger.requestBody = {
+             required: true,
+             content: {
+                 "application/json": {
+                     schema: {
+                         $ref: ""
+                     }  
+                 }
+             }
+         } 
+      */
 });
 
 app.get("/providers/:provider?", (req: any, res: any, next: any) => {
-    /*
-    #swagger.produces = ['application/json']
-    */
+    /**
+     #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: ""
+                    }  
+                }
+            }
+        } 
+     */
     providers(req, res, next);
 });
 app.get("/schema/:standard", (req: any, res: any, next: any) => {
     res.set("Content-Type", "application/json");
+    /**
+     #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: ""
+                    }  
+                }
+            }
+        } 
+     */
     schema(req, res, next)
 });
-app.get("/spacedata/:standard/:provider/:cid?", get);
+app.get("/spacedata/:standard/:provider/:cid?", (req: any, res: any, next: any) => {
+    /**
+    #swagger.requestBody = {
+           required: true,
+           content: {
+               "application/json": {
+                   schema: {
+                       $ref: ""
+                   }  
+               }
+           }
+       } 
+    */
+    get(req, res, next)
+});
 app.get('/spacedatalatest/:standard/:provider',
-    cache(config.data.cache, (req: any, res: any) => res.statusCode === 200), latest);
+    cache(config.data.cache, (req: any, res: any) => res.statusCode === 200),
+    (req: any, res: any, next: any) => {
+        /**
+         #swagger.requestBody = {
+                required: true,
+                content: {
+                    "application/json": {
+                        schema: {
+                            $ref: ""
+                        }  
+                    },
+                    "application/octet-stream": {
+                        schema: {
+                            $ref: ""
+                        }  
+                    }
+                }
+            } 
+     */
+        latest(req, res, next);
+    });
 app.post("/spacedata/:standard", (req: any, res: any, next: any) => {
-    // #swagger.description = 'PostUp'
+    /**
+     #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: ""
+                    }  
+                },
+                "application/octet-stream": {
+                    schema: {
+                        $ref: ""
+                    }  
+                }
+            }
+        } 
+     */
     post(req, res, next);
 });
+
 app.get("/standards/:standard?", (req: any, res: any, next: any) => {
-    // #swagger.produces = ['application/json']
+    /**
+     #swagger.requestBody = {
+            required: true,
+            content: {
+                "application/json": {
+                    schema: {
+                        $ref: ""
+                    }  
+                }
+            }
+        } 
+     */
     standardsRoute(req, res, next);
 });
-app.get("/sql/", sql);
+
+app.get("/sql/", (req: any, res: any, next: any) => {
+    /**
+    #swagger.requestBody = {
+           required: true,
+           content: {
+               "application/text-plain": {
+                   schema: {
+                       $ref: ""
+                   }  
+               }
+           }
+       } 
+    */
+    sql(req, res, next);
+});
 
 export { app };

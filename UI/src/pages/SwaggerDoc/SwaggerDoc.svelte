@@ -11,8 +11,9 @@
   let activeHeaders = {
     accept: "",
   };
-  let selectedAcceptHeader = 0;
-  let activeProduces = [];
+
+  let responseContentTypes = {};
+  let currentResponseContentType = {};
   let activeAccept;
   let curlTemplate;
   let activeURL;
@@ -24,8 +25,10 @@
       ? window.location.hostname + ":8080"
       : window.location.host;
   $: {
-    activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
-    activeHeaders.accept = activeAccept?.name;
+    activeHeaders.accept = active?.id
+      ? responseContentTypes[active.id][currentResponseContentType[active.id]]
+          .name
+      : "";
     if (active) {
       curlTemplate = `curl -X "${active.method?.toUpperCase()}" \\
 "${activeURL}" ${Object.entries(activeHeaders).length ? "\\" : ""}
@@ -45,6 +48,10 @@ ${Object.entries(activeHeaders)
   let requestBodyExample = {};
   let paths: KeyValueDataStructure = {};
 
+  $: {
+    console.log(currentResponseContentType);
+  }
+
   onMount(async () => {
     swagger = swaggerDoc;
     baseurl = window.location.host;
@@ -54,6 +61,16 @@ ${Object.entries(activeHeaders)
       category = category ? category[0] : "Default";
       Object.entries(route[1]).map((method, methodIdx) => {
         const id = `${routeIdx}-${methodIdx}`;
+        responseContentTypes[id] = (
+          method[1]?.produces ||
+          swaggerDoc?.produces ||
+          method[1]?.requestBody?.content
+            ? Object.keys(method[1].requestBody.content)
+            : ["application/octet-stream"]
+        ).map((p, pid) => {
+          return { id: pid, name: p };
+        });
+        currentResponseContentType[id] = 0;
         if (method[1].requestBody) {
           Object.entries(method[1].requestBody.content).forEach(
             (item: any, fiel) => {
@@ -89,7 +106,11 @@ ${Object.entries(activeHeaders)
   });
   const getSchema = (refName) => {
     const division = refName.replace("#/", "").split("/");
-    return swagger[division[0]][division[1]][division[2]];
+    if (division.length == 3) {
+      return swagger[division[0]][division[1]][division[2]];
+    } else {
+      return {};
+    }
   };
 
   let httpV = [
@@ -107,14 +128,14 @@ ${Object.entries(activeHeaders)
 
     let { url, response } = await handleRequest(
       `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
-      { ...active, route: active.route},
+      { ...active, route: active.route },
       active.id,
       active.parameters,
       requestParams,
       requestBodyExample
     );
     activeURL = url;
-    const isJSON = activeAccept?.name === "application/json";
+    const isJSON = activeHeaders.accept === "application/json";
     responseBody = await response[isJSON ? "json" : "text"]();
 
     if (isJSON) {
@@ -154,7 +175,7 @@ ${Object.entries(activeHeaders)
   </select>
 </div>
 {#each Object.entries(paths) as [category, routes], ID}
-  <div class="accordion" id="main_category_{ID}">
+  <div class="accordion  lg:w-3/4 m-auto" id="main_category_{ID}">
     <div class="accordion-item border border-gray-200">
       <h2 class="accordion-header mb-0" id="heading_category_{ID}">
         <button
@@ -190,7 +211,8 @@ ${Object.entries(activeHeaders)
         class="accordion-collapse collapse show"
         aria-labelledby="heading_category_{ID}"
         data-bs-parent="#main_category_{ID}">
-        <div class="accordion-body py-4 px-5 flex flex-col gap-2">
+        <div
+          class="overflow-hidden accordion-body py-4 px-5 flex flex-col gap-2">
           <div
             id="collapseOne"
             class="flex flex-col gap-2 accordion-collapse collapse show"
@@ -259,7 +281,7 @@ ${Object.entries(activeHeaders)
                     data-bs-parent="#main_category_{route.id}">
                     <div class="accordion-body flex flex-col gap-2">
                       <div class="flex flex-col">
-                        <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="overflow-x-hidden flex sm:-mx-6 lg:-mx-8">
                           <div class="inline-block min-w-full sm:px-6 lg:px-8">
                             <div
                               class:bg-blue-100={route.method?.toUpperCase() ===
@@ -281,11 +303,6 @@ ${Object.entries(activeHeaders)
                                 on:click={() => {
                                   active = route;
                                   activeHeaders.accept = route.pro;
-                                  activeProduces = (
-                                    route?.produces || swaggerDoc.produces
-                                  ).map((p, pid) => {
-                                    return { id: pid, name: p };
-                                  });
                                 }}>Try It Out</button>
                             </div>
                             <form
@@ -331,16 +348,16 @@ ${Object.entries(activeHeaders)
                                               <div>
                                                 <span
                                                   class="font-bold text-[1.1rem]">
-                                                  {param.name.replace("?", "")}
+                                                  {param.name}
                                                 </span>
-                                                {#if !~param.name.indexOf("?")}
+                                                {#if param.required}
                                                   <sup
-                                                    class="text-xs text-red-500"
+                                                    class="text-[.55rem] relative -top-2 text-red-500"
                                                     >Required</sup>
                                                 {/if}
                                               </div>
-                                              <div class="font-bold">
-                                                {param.type}
+                                              <div class="font-semibold">
+                                                {param.schema.type}
                                               </div>
                                               <div class="italic">
                                                 ({param.in})
@@ -362,7 +379,7 @@ ${Object.entries(activeHeaders)
                                                 ? "cursor:not-allowed"
                                                 : ""}
                                               type="text"
-                                              class="w-1/3 border-2 border-gray-400 rounded p-1" />
+                                              class="w-full border-2 border-gray-400 rounded p-1" />
                                           </td>
                                         </tr>
                                       {/each}
@@ -390,24 +407,24 @@ ${Object.entries(activeHeaders)
                                 </div>
                               {/if}
                             </form>
-                            {#if active?.id === route.id && activeExecuted}
+                            <div
+                              class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-3 px-4">
+                              <div>Responses</div>
                               <div
-                                class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-3 px-4">
-                                <div>Responses</div>
-                                <div
-                                  class="flex gap-2 items-center justify-center text-xs">
-                                  <div>Response Content Type</div>
-
-                                  <select
-                                    bind:value={selectedAcceptHeader}
-                                    class="border-black border rounded p-2">
-                                    {#each activeProduces as popt, p}
-                                      <option value={popt.id}
-                                        >{popt.name}</option>
-                                    {/each}
-                                  </select>
-                                </div>
+                                class="flex gap-2 items-center justify-center text-xs">
+                                <div>Response Content Type</div>
+                                <select
+                                  bind:value={currentResponseContentType[
+                                    route.id
+                                  ]}
+                                  class="border-black border rounded p-2">
+                                  {#each responseContentTypes[route.id] as popt, p}
+                                    <option value={popt.id}>{popt.name}</option>
+                                  {/each}
+                                </select>
                               </div>
+                            </div>
+                            {#if active?.id === route.id && activeExecuted}
                               <div
                                 class:bg-blue-100={route.method?.toUpperCase() ===
                                   "GET"}
@@ -430,46 +447,51 @@ ${Object.entries(activeHeaders)
                                 </code>
 
                                 <div class="text-md mt-3">Server Response</div>
-                                <table class="min-w-full">
-                                  <thead
-                                    class="border-b border-black text-left">
-                                    <tr>
-                                      <th
-                                        scope="col"
-                                        class="text-sm font-medium text-gray-900 py-4 text-left">
-                                        Code
-                                      </th>
-                                      <th
-                                        scope="col"
-                                        class="text-sm font-medium text-gray-900 py-4 text-left">
-                                        Details
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody class="text-left">
-                                    <tr
-                                      ><td
-                                        style="width:10px"
-                                        class="m-0 w-6 flex pt-2">
-                                        {responseCode}
-                                      </td><td>
-                                        <div class="flex flex-col gap-2 p-2">
-                                          <div>Response Body</div>
-                                          <code
-                                            class="whitespace-pre w-full p-2 bg-gray-800 rounded text-white text-left max-h-32 overflow-y-scroll overflow-x-hidden">
-                                            {responseBody}
-                                          </code>
-                                          <div>Response Headers</div>
-                                          <code
-                                            class="w-full p-2 bg-gray-800 rounded text-white text-left max-h-32">
-                                            {#each Object.entries(responseHeaders) as [header, value], h}
-                                              {header}: {value}<br />
-                                            {/each}
-                                          </code>
-                                        </div>
-                                      </td></tr>
-                                  </tbody>
-                                </table>
+                                <div class="flex overflow-x-auto w-full">
+                                  <table class="w-full">
+                                    <thead
+                                      class="border-b border-black text-left">
+                                      <tr>
+                                        <th
+                                          scope="col"
+                                          class="text-sm font-medium text-gray-900 py-4 text-left"
+                                          >Code</th>
+                                        <th
+                                          scope="col"
+                                          class="text-sm font-medium text-gray-900 py-4 text-left"
+                                          >Details</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="text-left">
+                                      <tr>
+                                        <td
+                                          class="m-0 w-6 flex pt-2"
+                                          >{responseCode}</td>
+                                        <td>
+                                          <div
+                                            class="flex flex-col gap-2 p-2 w-full">
+                                            <div>Response Body</div>
+                                            <div class="overflow-x-auto">
+                                              <code
+                                                class="whitespace-pre p-2 bg-gray-800 rounded text-white text-left max-h-[100px] overflow-y-scroll">
+                                                {responseBody}
+                                              </code>
+                                            </div>
+                                            <div>Response Headers</div>
+                                            <div class="overflow-x-auto">
+                                              <code
+                                                class="p-2 bg-gray-800 rounded text-white text-left">
+                                                {#each Object.entries(responseHeaders) as [header, value], h}
+                                                  {header}: {value}<br />
+                                                {/each}
+                                              </code>
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
                               </div>
                             {/if}
                           </div>
@@ -490,8 +512,10 @@ ${Object.entries(activeHeaders)
 
 <style lang="postcss">
   code {
+    word-break: break-all;
+    display: inline-block;
     white-space: break-spaces;
-    @apply overflow-y-scroll overflow-x-hidden;
+    @apply w-full overflow-y-scroll overflow-x-hidden;
   }
   .fixRound {
     border-radius: 5px;

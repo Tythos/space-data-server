@@ -1,7 +1,7 @@
 import sA from 'swagger-autogen';
 import packageJSON from "../package.json" assert {type: "json"};
 
-const swaggerAutogen = sA();
+const swaggerAutogen = sA({ openapi: '3.0.0' });
 
 const responseTypes = ['application/json', 'application/octet-stream'];
 
