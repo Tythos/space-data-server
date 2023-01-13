@@ -22,10 +22,11 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
     const headers = { "Content-Type": "application/json" };
     const inPath = {};
     paramDetails.forEach((x) => {
+        let rr = reqParams.find((param) => param[0] === `${methodId}-${x.name}`);
+
         if (x.in === "path") {
             if (
-                reqParams.length > 0 &&
-                reqParams.find((param) => param[0] === `${methodId}-${x.name}`)[1]
+                reqParams.length > 0 && rr && rr[1]
             ) {
                 inPath[x.name] = reqParams.find(
                     (param) => param[0] === `${methodId}-${x.name}`
@@ -36,8 +37,8 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
         }
         if (x.in === "header") {
             if (
-                reqParams.length > 0 &&
-                reqParams.find((param) => param[0] === `${methodId}-${x.name}`)[1]
+                reqParams.length > 0 && rr && rr[1]
+
             ) {
                 headers[x.name] = reqParams.find(
                     (param) => param[0] === `${methodId}-${x.name}`
@@ -53,16 +54,20 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
         .join("&");
     const url = `${baseurl}${encodedUri}${queryString ? `?${queryString}` : ""
         }`;
-    return await fetch(url, {
-        method: method.toUpperCase(), // *GET, POST, PUT, DELETE, etc.
-        // mode: 'cors', // no-cors, *cors, same-origin
-        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: "same-origin", // include, *same-origin, omit
-        headers: headers,
-        redirect: "follow", // manual, *follow, error
-        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: requestBodyExample[methodId], // JSON.stringify(data) // body data type must match "Content-Type" header
-    });
+
+    return {
+        url,
+        response: await fetch(url, {
+            method: method.toUpperCase(), // *GET, POST, PUT, DELETE, etc.
+            // mode: 'cors', // no-cors, *cors, same-origin
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, *same-origin, omit
+            headers: headers,
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: requestBodyExample[methodId], // JSON.stringify(data) // body data type must match "Content-Type" header
+        })
+    }
 
     //response.json(); // parses JSON response into native JavaScript objects
 };

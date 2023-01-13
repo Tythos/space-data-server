@@ -15,6 +15,9 @@
   let activeProduces = [];
   let activeAccept;
   let curlTemplate;
+  let activeURL;
+  let activeExecuted;
+
   const devMode = window.location.hostname === "localhost";
   const _host =
     swaggerDoc.host || devMode
@@ -25,9 +28,7 @@
     activeHeaders.accept = activeAccept?.name;
     if (active) {
       curlTemplate = `curl -X "${active.method?.toUpperCase()}" \\
-"${selectedHttpVO?.value?.toLowerCase()}://${_host}${active.route}" ${
-        Object.entries(activeHeaders).length ? "\\" : ""
-      }
+"${activeURL}" ${Object.entries(activeHeaders).length ? "\\" : ""}
 ${Object.entries(activeHeaders)
   .map(([header, value], h) => {
     return `-H '${header}: ${value}'`;
@@ -91,8 +92,6 @@ ${Object.entries(activeHeaders)
     return swagger[division[0]][division[1]][division[2]];
   };
 
- 
-
   let httpV = [
     { id: "0", value: "HTTP" },
     { id: "1", value: "HTTPS" },
@@ -103,9 +102,10 @@ ${Object.entries(activeHeaders)
     ? ".accordion-collapse .collapse"
     : "accordion-collapse collapse";
 
-  const execute = async () => {
-    console.log(active)
-    let response = await handleRequest(
+  const execute = async (e) => {
+    e.preventDefault();
+    console.log(active);
+    let { url, response } = await handleRequest(
       `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
       active,
       active.id,
@@ -113,6 +113,7 @@ ${Object.entries(activeHeaders)
       requestParams,
       requestBodyExample
     );
+    activeURL = url;
     const isJSON = activeAccept?.name === "application/json";
     responseBody = await response[isJSON ? "json" : "text"]();
 
@@ -122,10 +123,15 @@ ${Object.entries(activeHeaders)
     for (let header of response.headers.entries()) {
       responseHeaders[header[0]] = header[1];
     }
-    console.log(response.headers)
+    console.log(response.headers);
     responseCode = response.status;
+    activeExecuted = true;
   };
 
+  const resetActive = () => {
+    active = null;
+    activeExecuted = false;
+  };
   console.log(swaggerDoc);
 </script>
 
@@ -283,7 +289,8 @@ ${Object.entries(activeHeaders)
                                   });
                                 }}>Try It Out</button>
                             </div>
-                            <div
+                            <form
+                              on:submit={execute}
                               class:bg-blue-100={route.method?.toUpperCase() ===
                                 "GET"}
                               class:bg-green-100={route.method?.toUpperCase() ===
@@ -323,7 +330,15 @@ ${Object.entries(activeHeaders)
                                             class=" py-4 whitespace-nowrap text-sm font-medium text-gray-900"
                                             ><div>
                                               <div>
-                                                {param.name.replace("?", "")}
+                                                <span
+                                                  class="font-bold text-[1.1rem]">
+                                                  {param.name.replace("?", "")}
+                                                </span>
+                                                {#if !~param.name.indexOf("?")}
+                                                  <sup
+                                                    class="text-xs text-red-500"
+                                                    >Required</sup>
+                                                {/if}
                                               </div>
                                               <div class="font-bold">
                                                 {param.type}
@@ -337,6 +352,9 @@ ${Object.entries(activeHeaders)
                                             class="flex flex-col gap-2 text-sm text-gray-900 font-light py-4 whitespace-nowrap">
                                             <div>{param.description || ""}</div>
                                             <input
+                                              required={!~param.name.indexOf(
+                                                "?"
+                                              )}
                                               disabled={active?.id !== route.id}
                                               bind:value={requestParams[
                                                 `${route.id}-${param.name}`
@@ -356,19 +374,23 @@ ${Object.entries(activeHeaders)
                               {#if active?.id === route.id}
                                 <div class="flex gap-2 mt-5 w-full">
                                   <button
-                                    on:click={execute}
-                                    class="flex items-center justify-center w-1/2 bg-blue-500 text-white font-bold rounded p-1"
+                                    type="submit"
+                                    class="{activeExecuted
+                                      ? 'w-1/2'
+                                      : 'w-full'} flex items-center justify-center bg-blue-500 text-white font-bold rounded p-1"
                                     >Execute</button>
-                                  <button
-                                    on:click={() => {
-                                      active = null;
-                                      requestParams = {};
-                                    }}
-                                    class="flex items-center justify-center w-1/2 text-black font-bold rounded border border-black p-1"
-                                    >Clear</button>
+                                  {#if activeExecuted}
+                                    <button
+                                      on:click={() => {
+                                        resetActive();
+                                        requestParams = {};
+                                      }}
+                                      class="flex items-center justify-center w-1/2 text-black font-bold rounded border border-black p-1"
+                                      >Clear</button>
+                                  {/if}
                                 </div>
                               {/if}
-                            </div>
+                            </form>
                             {#if active?.id === route.id}
                               <div
                                 class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-3 px-4">
@@ -405,49 +427,53 @@ ${Object.entries(activeHeaders)
                                 <div>Request URL</div>
                                 <code
                                   class="w-full p-2 bg-gray-800 rounded text-white text-left">
-                                  {selectedHttpVO?.value?.toLowerCase()}://{_host}{active.route}
+                                  {activeURL}
                                 </code>
-                                <div class="text-md mt-3">Server Response</div>
-                                <table class="min-w-full">
-                                  <thead
-                                    class="border-b border-black text-left">
-                                    <tr>
-                                      <th
-                                        scope="col"
-                                        class="text-sm font-medium text-gray-900 py-4 text-left">
-                                        Code
-                                      </th>
-                                      <th
-                                        scope="col"
-                                        class="text-sm font-medium text-gray-900 py-4 text-left">
-                                        Details
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody class="text-left">
-                                    <tr
-                                      ><td
-                                        style="width:10px"
-                                        class="m-0 w-6 flex pt-2">
-                                        {responseCode}
-                                      </td><td>
-                                        <div class="flex flex-col gap-2 p-2">
-                                          <div>Response Body</div>
-                                          <code
-                                            class="whitespace-pre w-full p-2 bg-gray-800 rounded text-white text-left max-h-32 overflow-y-scroll overflow-x-hidden">
-                                            {responseBody}
-                                          </code>
-                                          <div>Response Headers</div>
-                                          <code
-                                            class="w-full p-2 bg-gray-800 rounded text-white text-left max-h-32">
-                                            {#each Object.entries(responseHeaders) as [header, value], h}
-                                              {header}: {value}<br />
-                                            {/each}
-                                          </code>
-                                        </div>
-                                      </td></tr>
-                                  </tbody>
-                                </table>
+                                {#if activeExecuted}
+                                  <div class="text-md mt-3">
+                                    Server Response
+                                  </div>
+                                  <table class="min-w-full">
+                                    <thead
+                                      class="border-b border-black text-left">
+                                      <tr>
+                                        <th
+                                          scope="col"
+                                          class="text-sm font-medium text-gray-900 py-4 text-left">
+                                          Code
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          class="text-sm font-medium text-gray-900 py-4 text-left">
+                                          Details
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="text-left">
+                                      <tr
+                                        ><td
+                                          style="width:10px"
+                                          class="m-0 w-6 flex pt-2">
+                                          {responseCode}
+                                        </td><td>
+                                          <div class="flex flex-col gap-2 p-2">
+                                            <div>Response Body</div>
+                                            <code
+                                              class="whitespace-pre w-full p-2 bg-gray-800 rounded text-white text-left max-h-32 overflow-y-scroll overflow-x-hidden">
+                                              {responseBody}
+                                            </code>
+                                            <div>Response Headers</div>
+                                            <code
+                                              class="w-full p-2 bg-gray-800 rounded text-white text-left max-h-32">
+                                              {#each Object.entries(responseHeaders) as [header, value], h}
+                                                {header}: {value}<br />
+                                              {/each}
+                                            </code>
+                                          </div>
+                                        </td></tr>
+                                    </tbody>
+                                  </table>
+                                {/if}
                               </div>
                             {/if}
                           </div>
