@@ -26,6 +26,9 @@ app.use(compression({
     }
 }));
 
+app.use(helmet());
+app.enable('x-powered-by');
+
 app.use("/raw", express.static(config.data.public));
 app.use("/app", express.static("UI/dist"));
 app.use(bodyParser.json({
@@ -61,7 +64,10 @@ app.get("/providers/:provider?", (req: any, res: any, next: any) => {
     */
     providers(req, res, next);
 });
-app.get("/schema/:standard", schema);
+app.get("/schema/:standard", (req: any, res: any, next: any) => {
+    res.set("Content-Type", "application/json");
+    schema(req, res, next)
+});
 app.get("/spacedata/:standard/:provider/:cid?", get);
 app.get('/spacedatalatest/:standard/:provider',
     cache(config.data.cache, (req: any, res: any) => res.statusCode === 200), latest);

@@ -1,5 +1,7 @@
 import { pathToRegexp, match, parse, compile } from "path-to-regexp";
-
+const convertSwaggerPathToExpress = (path) => {
+    return path.replace(/{/g, ':').replace(/}/g, '');
+}
 export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails, requestParams, requestBodyExample) => {
     const { route, method } = activeRoute;
     const reqParams = Object.entries(requestParams).filter(
@@ -43,9 +45,7 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
             }
         }
     });
-    console.log(baseurl)
-    const toPath = compile(route, { encode: encodeURIComponent });
-    console.log(inPath)
+    const toPath = compile(convertSwaggerPathToExpress(route), { encode: encodeURIComponent });
     const encodedUri = toPath(inPath);
     console.log(encodedUri)
     const queryString = Object.keys(params)

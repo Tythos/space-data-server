@@ -91,9 +91,7 @@ ${Object.entries(activeHeaders)
     return swagger[division[0]][division[1]][division[2]];
   };
 
-  $: {
-    console.log(requestParams);
-  }
+ 
 
   let httpV = [
     { id: "0", value: "HTTP" },
@@ -106,6 +104,7 @@ ${Object.entries(activeHeaders)
     : "accordion-collapse collapse";
 
   const execute = async () => {
+    console.log(active)
     let response = await handleRequest(
       `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
       active,
@@ -123,8 +122,8 @@ ${Object.entries(activeHeaders)
     for (let header of response.headers.entries()) {
       responseHeaders[header[0]] = header[1];
     }
+    console.log(response.headers)
     responseCode = response.status;
-    console.log(responseBody, isJSON);
   };
 
   console.log(swaggerDoc);
@@ -338,11 +337,11 @@ ${Object.entries(activeHeaders)
                                             class="flex flex-col gap-2 text-sm text-gray-900 font-light py-4 whitespace-nowrap">
                                             <div>{param.description || ""}</div>
                                             <input
-                                              disabled={!active}
+                                              disabled={active?.id !== route.id}
                                               bind:value={requestParams[
                                                 `${route.id}-${param.name}`
                                               ]}
-                                              style={!active
+                                              style={active?.id !== route.id
                                                 ? "cursor:not-allowed"
                                                 : ""}
                                               type="text"
