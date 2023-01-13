@@ -18,7 +18,7 @@
 
   $: {
     activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
-    activeHeaders.accept = activeAccept.name;
+    activeHeaders.accept = activeAccept?.name;
   }
 
   let responseCode = 400;
@@ -106,7 +106,7 @@
       requestParams,
       requestBodyExample
     );
-    const isJSON = activeAccept.name === "application/json";
+    const isJSON = activeAccept?.name === "application/json";
     responseBody = await response[isJSON ? "json" : "text"]();
 
     if (isJSON) {
