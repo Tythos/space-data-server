@@ -36,7 +36,7 @@
     <div
       class="navbar-collapse collapse grow items-center"
       id="navbarSupportedContentY">
-      <ul class="navbar-nav mr-auto lg:flex">
+      <ul class="navbar-nav mr-auto min-[990px]:flex ">
         {#each Object.entries(routes) as [route, value], i}
           <li class="nav-item">
             <a
