@@ -43,13 +43,24 @@ app.get("/", (req: Request, res: Response) => {
 
 app.get("/swagger-json", (req: Request, res: Response) => {
     res.json(swaggerFile);
+    /*
+    #swagger.produces = ['application/json']
+    */
 });
 
 app.get("/docs/swagger-json", (req: Request, res: Response) => {
     res.json(swaggerFile);
+    /*
+    #swagger.produces = ['application/json']
+    */
 });
 
-app.get("/providers/:provider?", providers);
+app.get("/providers/:provider?", (req: any, res: any, next: any) => {
+    /*
+    #swagger.produces = ['application/json']
+    */
+    providers(req, res, next);
+});
 app.get("/schema/:standard", schema);
 app.get("/spacedata/:standard/:provider/:cid?", get);
 app.get('/spacedatalatest/:standard/:provider',

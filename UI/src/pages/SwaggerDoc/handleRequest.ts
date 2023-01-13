@@ -1,6 +1,7 @@
-import { compile } from "path-to-regexp";
+import { pathToRegexp, match, parse, compile } from "path-to-regexp";
 
-export const handleRequest = async (baseurl, route, method, methodId, paramDetails, requestParams, requestBodyExample, responses) => {
+export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails, requestParams, requestBodyExample) => {
+    const { route, method } = activeRoute;
     const reqParams = Object.entries(requestParams).filter(
         (x) => x[0].indexOf(methodId) > -1
     );
@@ -42,14 +43,17 @@ export const handleRequest = async (baseurl, route, method, methodId, paramDetai
             }
         }
     });
+    console.log(baseurl)
     const toPath = compile(route, { encode: encodeURIComponent });
+    console.log(inPath)
     const encodedUri = toPath(inPath);
+    console.log(encodedUri)
     const queryString = Object.keys(params)
         .map((key) => key + "=" + params[key])
         .join("&");
     const url = `${baseurl}${encodedUri}${queryString ? `?${queryString}` : ""
         }`;
-    const response = await fetch(url, {
+    return await fetch(url, {
         method: method.toUpperCase(), // *GET, POST, PUT, DELETE, etc.
         // mode: 'cors', // no-cors, *cors, same-origin
         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
@@ -59,7 +63,6 @@ export const handleRequest = async (baseurl, route, method, methodId, paramDetai
         referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: requestBodyExample[methodId], // JSON.stringify(data) // body data type must match "Content-Type" header
     });
-    responses[methodId] = response;
-    return responses;
+
     //response.json(); // parses JSON response into native JavaScript objects
 };

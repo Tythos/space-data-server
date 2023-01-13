@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "1.0.923+1673554437854",
+    "version": "1.0.934+1673624368151",
     "title": "Space Data Server",
     "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
   },
@@ -30,6 +30,9 @@
     "/swagger-json": {
       "get": {
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -41,6 +44,9 @@
     "/docs/swagger-json": {
       "get": {
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -52,6 +58,9 @@
     "/providers/{provider?}": {
       "get": {
         "description": "",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "provider?",

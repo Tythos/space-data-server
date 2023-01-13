@@ -2,9 +2,11 @@
   import swaggerDoc from "@/swagger-output.json";
   import type { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
   import { onMount } from "svelte";
+  import { handleRequest } from "./handleRequest";
   let swagger: any = null;
 
   let baseurl: any = "";
+  /* Active */
   let active: any = {
     id: "1-0",
     route: "/swagger-json",
@@ -20,6 +22,10 @@
   let activeHeaders = {
     accept: "",
   };
+  let selectedAcceptHeader = 0;
+  let activeProduces = [];
+  $: activeAccept = activeProduces.find((o) => o.id === selectedAcceptHeader);
+
   let responseCode = 400;
   let responseHeaders = {};
   let responses: any = {};
@@ -30,6 +36,7 @@
   onMount(async () => {
     swagger = swaggerDoc;
     baseurl = window.location.host;
+
     Object.entries(swagger.paths).forEach((route, routeIdx) => {
       let category = Object.values(route[1])[0]?.tags;
       category = category ? category[0] : "Default";
@@ -77,7 +84,7 @@
     activeHeaders[header] = e.target.value;
   };
   $: {
-    console.log(paths);
+    console.log(requestParams);
   }
 
   let httpV = [
@@ -91,6 +98,26 @@
     window.location.hostname === "localhost"
       ? ".accordion-collapse .collapse"
       : "accordion-collapse collapse";
+
+  const execute = async () => {
+    let response = await handleRequest(
+      `${selectedHttpVO.value.toLowerCase()}://${
+        swaggerDoc.host || window.location.hostname + ":8080"
+      }`,
+      active,
+      active.id,
+      active.parameters,
+      requestParams,
+      requestBodyExample
+    );
+    console.log(
+      await response[
+        activeHeaders.accept === "application/json" ? "json" : "blob"
+      ]()
+    );
+  };
+
+  console.log(swaggerDoc);
 </script>
 
 <div class="text-left">
@@ -239,7 +266,12 @@
                                 class="p-2 border-2 rounded w-24"
                                 on:click={() => {
                                   active = route;
-                                  activeHeaders.accept = swaggerDoc.produces[0];
+                                  activeHeaders.accept = route.pro;
+                                  activeProduces = (route?.produces||swaggerDoc.produces).map(
+                                    (p, pid) => {
+                                      return { id: pid, name: p };
+                                    }
+                                  );
                                 }}>Try It Out</button>
                             </div>
                             <div
@@ -296,6 +328,9 @@
                                             class="flex flex-col gap-2 text-sm text-gray-900 font-light py-4 whitespace-nowrap">
                                             <div>{param.description || ""}</div>
                                             <input
+                                              bind:value={requestParams[
+                                                `${route.id}-${param.name}`
+                                              ]}
                                               type="text"
                                               class="w-1/3 border-2 border-gray-400 rounded p-1" />
                                           </td>
@@ -308,6 +343,7 @@
                               {#if active?.id === route.id}
                                 <div class="flex gap-2 mt-5 w-full">
                                   <button
+                                    on:click={execute}
                                     class="flex items-center justify-center w-1/2 bg-blue-500 text-white font-bold rounded p-1"
                                     >Execute</button>
                                   <button
@@ -327,11 +363,13 @@
                                 <div
                                   class="flex gap-2 items-center justify-center text-xs">
                                   <div>Response Content Type</div>
+
                                   <select
-                                    bind:value={activeHeaders.accept}
+                                    bind:value={selectedAcceptHeader}
                                     class="border-black border rounded p-2">
-                                    {#each swaggerDoc.produces as popt, p}
-                                      <option>{popt}</option>
+                                    {#each activeProduces as popt, p}
+                                      <option value={popt.id}
+                                        >{popt.name}</option>
                                     {/each}
                                   </select>
                                 </div>
