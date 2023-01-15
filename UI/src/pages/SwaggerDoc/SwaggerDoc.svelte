@@ -134,7 +134,7 @@ ${Object.entries(activeHeaders)
     const isJSON = activeHeaders.accept === "application/json";
     responses[active.id] = responses[active.id] || {
       responseBody: null,
-      responseHeaders: null,
+      responseHeaders: {},
       responseCode: 0,
     };
 
