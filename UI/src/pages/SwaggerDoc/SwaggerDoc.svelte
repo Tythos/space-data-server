@@ -14,7 +14,6 @@
 
   let responseContentTypes = {};
   let currentResponseContentType = {};
-  let activeAccept;
   let curlTemplate;
   let activeURL;
   let activeExecuted;
@@ -40,9 +39,6 @@ ${Object.entries(activeHeaders)
     }
   }
 
-  let responseCode = 0;
-  let responseBody = "";
-  let responseHeaders = {};
   let responses: any = {};
   let requestParams: any = {};
   let requestBodyExample = {};
@@ -136,15 +132,27 @@ ${Object.entries(activeHeaders)
     );
     activeURL = url;
     const isJSON = activeHeaders.accept === "application/json";
-    responseBody = await response[isJSON ? "json" : "text"]();
+    responses[active.id] = responses[active.id] || {
+      responseBody: null,
+      responseHeaders: null,
+      responseCode: 0,
+    };
+
+    responses[active.id].responseBody = await response[
+      isJSON ? "json" : "text"
+    ]();
 
     if (isJSON) {
-      responseBody = JSON.stringify(responseBody, null, 4);
+      responses[active.id].responseBody = JSON.stringify(
+        responses[active.id].responseBody,
+        null,
+        4
+      );
     }
     for (let header of response.headers.entries()) {
-      responseHeaders[header[0]] = header[1];
+      responses[active.id].responseHeaders[header[0]] = header[1];
     }
-    responseCode = response.status;
+    responses[active.id].responseCode = response.status;
     activeExecuted = true;
   };
 
@@ -464,9 +472,9 @@ ${Object.entries(activeHeaders)
                                     </thead>
                                     <tbody class="text-left">
                                       <tr>
-                                        <td
-                                          class="m-0 w-6 flex pt-2"
-                                          >{responseCode}</td>
+                                        <td class="m-0 w-6 flex pt-2"
+                                          >{responses[route.id]
+                                            .responseCode}</td>
                                         <td>
                                           <div
                                             class="flex flex-col gap-2 p-2 w-full">
@@ -474,14 +482,15 @@ ${Object.entries(activeHeaders)
                                             <div class="overflow-x-auto">
                                               <code
                                                 class="whitespace-pre p-2 bg-gray-800 rounded text-white text-left max-h-[100px] overflow-y-scroll">
-                                                {responseBody}
+                                                {responses[route.id]
+                                                  ?.responseBody}
                                               </code>
                                             </div>
                                             <div>Response Headers</div>
                                             <div class="overflow-x-auto">
                                               <code
                                                 class="p-2 bg-gray-800 rounded text-white text-left">
-                                                {#each Object.entries(responseHeaders) as [header, value], h}
+                                                {#each Object.entries(responses[route.id]?.responseHeaders) as [header, value], h}
                                                   {header}: {value}<br />
                                                 {/each}
                                               </code>
