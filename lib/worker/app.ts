@@ -146,6 +146,13 @@ app.get('/spacedatalatest/:standard/:provider',
     });
 app.post("/spacedata/:standard", (req: any, res: any, next: any) => {
     /**
+     #swagger.parameters["authorization"] = {
+        in:"header",
+        description:"An EIP-4361 signed message",
+        type:"string",
+        format:"utf-8"
+     }
+     
      #swagger.requestBody = {
             required: true,
             content: {

@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "1.0.1022+1673822679037",
+    "version": "1.0.1030+1673888102160",
     "title": "Space Data Server",
     "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
   },
@@ -190,6 +190,15 @@
             "name": "standard",
             "in": "path",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "An EIP-4361 signed message",
+            "format": "utf-8",
             "schema": {
               "type": "string"
             }
