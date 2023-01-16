@@ -26,6 +26,7 @@ app.use(compression({
     }
 }));
 
+/*
 app.use(helmet());
 
 app.use(helmet.contentSecurityPolicy({
@@ -40,7 +41,7 @@ app.use(helmet.contentSecurityPolicy({
         mediaSrc: ["'self'"],
         frameSrc: ["'self'"],
     }
-}));
+}));*/
 
 app.enable('x-powered-by');
 

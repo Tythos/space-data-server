@@ -1,269 +1,1745 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "version": "1.0.1045+1673889020014",
-    "title": "Space Data Server",
-    "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
-  },
-  "host": "",
-  "paths": {
-    "/swagger-json": {
-      "get": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.1052+1673905297135",
+        "title": "Space Data Server",
+        "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
+    },
+    "host": "",
+    "paths": {
+        "/swagger-json": {
+            "get": {
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
+            }
         },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": ""
-              }
+        "/docs/swagger-json": {
+            "get": {
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
             }
-          }
-        }
-      }
-    },
-    "/docs/swagger-json": {
-      "get": {
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
         },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": ""
-              }
+        "/providers/{provider?}": {
+            "get": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "provider?",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {},
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
             }
-          }
+        },
+        "/schema/{standard}": {
+            "get": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {},
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/spacedata/{standard}/{provider}/{cid?}": {
+            "get": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cid?",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {},
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/spacedatalatest/{standard}/{provider}": {
+            "get": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {},
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        },
+                        "application/octet-stream": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/spacedata/{standard}": {
+            "post": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "description": "An EIP-4361 signed message",
+                        "format": "utf-8",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {},
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        },
+                        "application/octet-stream": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/standards/{standard?}": {
+            "get": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "standard?",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {},
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/sql/": {
+            "get": {
+                "description": "",
+                "parameters": [],
+                "responses": {},
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/text-plain": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
+            }
         }
-      }
     },
-    "/providers/{provider?}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "provider?",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {},
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": ""
-              }
-            }
-          }
-        }
-      }
-    },
-    "/schema/{standard}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "standard",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {},
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": ""
-              }
-            }
-          }
-        }
-      }
-    },
-    "/spacedata/{standard}/{provider}/{cid?}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "standard",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "provider",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cid?",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {},
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": ""
-              }
-            }
-          }
-        }
-      }
-    },
-    "/spacedatalatest/{standard}/{provider}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "standard",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "provider",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {},
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": ""
-              }
+    "definitions": {
+        "CAT": {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "definitions": {
+                "objectType": {
+                    "type": "string",
+                    "enum": [
+                        "PAYLOAD",
+                        "ROCKET_BODY",
+                        "DEBRIS",
+                        "UNKNOWN"
+                    ]
+                },
+                "opsStatusCode": {
+                    "type": "string",
+                    "enum": [
+                        "OPERATIONAL",
+                        "NONOPERATIONAL",
+                        "PARTIALLY_OPERATIONAL",
+                        "BACKUP_STANDBY",
+                        "SPARE",
+                        "EXTENDED_MISSION",
+                        "DECAYED",
+                        "UNKNOWN"
+                    ]
+                },
+                "dataStatusCode": {
+                    "type": "string",
+                    "enum": [
+                        "NO_CURRENT_ELEMENTS",
+                        "NO_INITIAL_ELEMENTS",
+                        "NO_ELEMENTS_AVAILABLE",
+                        "OK"
+                    ]
+                },
+                "orbitType": {
+                    "type": "string",
+                    "enum": [
+                        "ORBIT",
+                        "LANDING",
+                        "IMPACT",
+                        "DOCKED",
+                        "ROUNDTRIP"
+                    ]
+                },
+                "massType": {
+                    "type": "string",
+                    "enum": [
+                        "DRY",
+                        "WET"
+                    ]
+                },
+                "CAT": {
+                    "type": "object",
+                    "properties": {
+                        "OBJECT_NAME": {
+                            "type": "string"
+                        },
+                        "OBJECT_ID": {
+                            "type": "string"
+                        },
+                        "NORAD_CAT_ID": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "OBJECT_TYPE": {
+                            "$ref": "#/definitions/objectType"
+                        },
+                        "OPS_STATUS_CODE": {
+                            "$ref": "#/definitions/opsStatusCode"
+                        },
+                        "OWNER": {
+                            "type": "string"
+                        },
+                        "LAUNCH_DATE": {
+                            "type": "string"
+                        },
+                        "LAUNCH_SITE": {
+                            "type": "string"
+                        },
+                        "DECAY_DATE": {
+                            "type": "string"
+                        },
+                        "PERIOD": {
+                            "type": "number"
+                        },
+                        "INCLINATION": {
+                            "type": "number"
+                        },
+                        "APOGEE": {
+                            "type": "number"
+                        },
+                        "PERIGEE": {
+                            "type": "number"
+                        },
+                        "RCS": {
+                            "type": "number"
+                        },
+                        "DATA_STATUS_CODE": {
+                            "$ref": "#/definitions/dataStatusCode"
+                        },
+                        "ORBIT_CENTER": {
+                            "type": "string"
+                        },
+                        "ORBIT_TYPE": {
+                            "$ref": "#/definitions/orbitType"
+                        },
+                        "DEPLOYMENT_DATE": {
+                            "type": "string"
+                        },
+                        "MANEUVERABLE": {
+                            "type": "boolean"
+                        },
+                        "SIZE": {
+                            "type": "number"
+                        },
+                        "MASS": {
+                            "type": "number"
+                        },
+                        "MASS_TYPE": {
+                            "$ref": "#/definitions/massType"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "CATCOLLECTION": {
+                    "type": "object",
+                    "properties": {
+                        "RECORDS": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/CAT"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
             },
-            "application/octet-stream": {
-              "schema": {
-                "$ref": ""
-              }
-            }
-          }
-        }
-      }
-    },
-    "/spacedata/{standard}": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "standard",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "description": "An EIP-4361 signed message",
-            "format": "utf-8",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {},
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": ""
-              }
+            "$ref": "#/definitions/CAT"
+        },
+        "OMM": {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "definitions": {
+                "referenceFrame": {
+                    "type": "string",
+                    "enum": [
+                        "EME2000",
+                        "GCRF",
+                        "GRC",
+                        "ICRF",
+                        "ITRF2000",
+                        "ITRF93",
+                        "ITRF97",
+                        "MCI",
+                        "TDR",
+                        "TEME",
+                        "TOD"
+                    ]
+                },
+                "ephemerisType": {
+                    "type": "string",
+                    "enum": [
+                        "SGP",
+                        "SGP4",
+                        "SDP4",
+                        "SGP8",
+                        "SDP8"
+                    ]
+                },
+                "timeSystem": {
+                    "type": "string",
+                    "enum": [
+                        "GMST",
+                        "GPS",
+                        "MET",
+                        "MRT",
+                        "SCLK",
+                        "TAI",
+                        "TCB",
+                        "TDB",
+                        "TCG",
+                        "TT",
+                        "UT1",
+                        "UTC"
+                    ]
+                },
+                "meanElementTheory": {
+                    "type": "string",
+                    "enum": [
+                        "SGP4",
+                        "DSST",
+                        "USM"
+                    ]
+                },
+                "manCovRefFrame": {
+                    "type": "string",
+                    "enum": [
+                        "RSW",
+                        "RTN",
+                        "TNW"
+                    ]
+                },
+                "OMM": {
+                    "type": "object",
+                    "properties": {
+                        "CCSDS_OMM_VERS": {
+                            "type": "number"
+                        },
+                        "CREATION_DATE": {
+                            "type": "string"
+                        },
+                        "ORIGINATOR": {
+                            "type": "string"
+                        },
+                        "OBJECT_NAME": {
+                            "type": "string"
+                        },
+                        "OBJECT_ID": {
+                            "type": "string"
+                        },
+                        "CENTER_NAME": {
+                            "type": "string"
+                        },
+                        "REF_FRAME": {
+                            "$ref": "#/definitions/referenceFrame"
+                        },
+                        "REF_FRAME_EPOCH": {
+                            "type": "string"
+                        },
+                        "TIME_SYSTEM": {
+                            "$ref": "#/definitions/timeSystem"
+                        },
+                        "MEAN_ELEMENT_THEORY": {
+                            "$ref": "#/definitions/meanElementTheory"
+                        },
+                        "COMMENT": {
+                            "type": "string"
+                        },
+                        "EPOCH": {
+                            "type": "string"
+                        },
+                        "SEMI_MAJOR_AXIS": {
+                            "type": "number"
+                        },
+                        "MEAN_MOTION": {
+                            "type": "number"
+                        },
+                        "ECCENTRICITY": {
+                            "type": "number"
+                        },
+                        "INCLINATION": {
+                            "type": "number"
+                        },
+                        "RA_OF_ASC_NODE": {
+                            "type": "number"
+                        },
+                        "ARG_OF_PERICENTER": {
+                            "type": "number"
+                        },
+                        "MEAN_ANOMALY": {
+                            "type": "number"
+                        },
+                        "GM": {
+                            "type": "number"
+                        },
+                        "MASS": {
+                            "type": "number"
+                        },
+                        "SOLAR_RAD_AREA": {
+                            "type": "number"
+                        },
+                        "SOLAR_RAD_COEFF": {
+                            "type": "number"
+                        },
+                        "DRAG_AREA": {
+                            "type": "number"
+                        },
+                        "DRAG_COEFF": {
+                            "type": "number"
+                        },
+                        "EPHEMERIS_TYPE": {
+                            "$ref": "#/definitions/ephemerisType"
+                        },
+                        "CLASSIFICATION_TYPE": {
+                            "type": "string"
+                        },
+                        "NORAD_CAT_ID": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "ELEMENT_SET_NO": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "REV_AT_EPOCH": {
+                            "type": "number"
+                        },
+                        "BSTAR": {
+                            "type": "number"
+                        },
+                        "MEAN_MOTION_DOT": {
+                            "type": "number"
+                        },
+                        "MEAN_MOTION_DDOT": {
+                            "type": "number"
+                        },
+                        "COV_REF_FRAME": {
+                            "$ref": "#/definitions/manCovRefFrame"
+                        },
+                        "CX_X": {
+                            "type": "number"
+                        },
+                        "CY_X": {
+                            "type": "number"
+                        },
+                        "CY_Y": {
+                            "type": "number"
+                        },
+                        "CZ_X": {
+                            "type": "number"
+                        },
+                        "CZ_Y": {
+                            "type": "number"
+                        },
+                        "CZ_Z": {
+                            "type": "number"
+                        },
+                        "CX_DOT_X": {
+                            "type": "number"
+                        },
+                        "CX_DOT_Y": {
+                            "type": "number"
+                        },
+                        "CX_DOT_Z": {
+                            "type": "number"
+                        },
+                        "CX_DOT_X_DOT": {
+                            "type": "number"
+                        },
+                        "CY_DOT_X": {
+                            "type": "number"
+                        },
+                        "CY_DOT_Y": {
+                            "type": "number"
+                        },
+                        "CY_DOT_Z": {
+                            "type": "number"
+                        },
+                        "CY_DOT_X_DOT": {
+                            "type": "number"
+                        },
+                        "CY_DOT_Y_DOT": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_X": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Y": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Z": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_X_DOT": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Y_DOT": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Z_DOT": {
+                            "type": "number"
+                        },
+                        "USER_DEFINED_BIP_0044_TYPE": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "USER_DEFINED_OBJECT_DESIGNATOR": {
+                            "type": "string"
+                        },
+                        "USER_DEFINED_EARTH_MODEL": {
+                            "type": "string"
+                        },
+                        "USER_DEFINED_EPOCH_TIMESTAMP": {
+                            "type": "number"
+                        },
+                        "USER_DEFINED_MICROSECONDS": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "OMMCOLLECTION": {
+                    "type": "object",
+                    "properties": {
+                        "RECORDS": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/OMM"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
             },
-            "application/octet-stream": {
-              "schema": {
-                "$ref": ""
-              }
-            }
-          }
+            "$ref": "#/definitions/OMM"
+        },
+        "CDM": {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "definitions": {
+                "referenceFrame": {
+                    "type": "string",
+                    "enum": [
+                        "EME2000",
+                        "GCRF",
+                        "ITRF"
+                    ]
+                },
+                "objectCenteredReferenceFrame": {
+                    "type": "string",
+                    "enum": [
+                        "RTN",
+                        "TVN"
+                    ]
+                },
+                "screeningVolumeShape": {
+                    "type": "string",
+                    "enum": [
+                        "ELLIPSOID",
+                        "BOX"
+                    ]
+                },
+                "objectNumber": {
+                    "type": "string",
+                    "enum": [
+                        "OBJECT1",
+                        "OBJECT2"
+                    ]
+                },
+                "objectType": {
+                    "type": "string",
+                    "enum": [
+                        "PAYLOAD",
+                        "ROCKET_BODY",
+                        "DEBRIS",
+                        "UNKNOWN",
+                        "OTHER"
+                    ]
+                },
+                "covarianceMethod": {
+                    "type": "string",
+                    "enum": [
+                        "CALCULATED",
+                        "DEFAULT"
+                    ]
+                },
+                "maneuverableType": {
+                    "type": "string",
+                    "enum": [
+                        "YES",
+                        "NO",
+                        "NA"
+                    ]
+                },
+                "CDMObject": {
+                    "type": "object",
+                    "properties": {
+                        "COMMENT": {
+                            "type": "string"
+                        },
+                        "OBJECT": {
+                            "$ref": "#/definitions/objectNumber"
+                        },
+                        "OBJECT_DESIGNATOR": {
+                            "type": "string"
+                        },
+                        "CATALOG_NAME": {
+                            "type": "string"
+                        },
+                        "OBJECT_NAME": {
+                            "type": "string"
+                        },
+                        "INTERNATIONAL_DESIGNATOR": {
+                            "type": "string"
+                        },
+                        "OBJECT_TYPE": {
+                            "$ref": "#/definitions/objectType"
+                        },
+                        "OPERATOR_CONTACT_POSITION": {
+                            "type": "string"
+                        },
+                        "OPERATOR_ORGANIZATION": {
+                            "type": "string"
+                        },
+                        "EPHEMERIS_NAME": {
+                            "type": "string"
+                        },
+                        "COVARIANCE_METHOD": {
+                            "$ref": "#/definitions/covarianceMethod"
+                        },
+                        "MANEUVERABLE": {
+                            "$ref": "#/definitions/maneuverableType"
+                        },
+                        "ORBIT_CENTER": {
+                            "type": "string"
+                        },
+                        "REF_FRAME": {
+                            "$ref": "#/definitions/referenceFrame"
+                        },
+                        "GRAVITY_MODEL": {
+                            "type": "string"
+                        },
+                        "ATMOSPHERIC_MODEL": {
+                            "type": "string"
+                        },
+                        "N_BODY_PERTURBATIONS": {
+                            "type": "string"
+                        },
+                        "SOLAR_RAD_PRESSURE": {
+                            "type": "boolean"
+                        },
+                        "EARTH_TIDES": {
+                            "type": "boolean"
+                        },
+                        "INTRACK_THRUST": {
+                            "type": "boolean"
+                        },
+                        "TIME_LASTOB_START": {
+                            "type": "string"
+                        },
+                        "TIME_LASTOB_END": {
+                            "type": "string"
+                        },
+                        "RECOMMENDED_OD_SPAN": {
+                            "type": "number"
+                        },
+                        "ACTUAL_OD_SPAN": {
+                            "type": "number"
+                        },
+                        "OBS_AVAILABLE": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "OBS_USED": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "TRACKS_AVAILABLE": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "TRACKS_USED": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "RESIDUALS_ACCEPTED": {
+                            "type": "number"
+                        },
+                        "WEIGHTED_RMS": {
+                            "type": "number"
+                        },
+                        "AREA_PC": {
+                            "type": "number"
+                        },
+                        "AREA_DRG": {
+                            "type": "number"
+                        },
+                        "AREA_SRP": {
+                            "type": "number"
+                        },
+                        "MASS": {
+                            "type": "number"
+                        },
+                        "CR_AREA_OVER_MASS": {
+                            "type": "number"
+                        },
+                        "THRUST_ACCELERATION": {
+                            "type": "number"
+                        },
+                        "SEDR": {
+                            "type": "number"
+                        },
+                        "X": {
+                            "type": "number"
+                        },
+                        "Y": {
+                            "type": "number"
+                        },
+                        "Z": {
+                            "type": "number"
+                        },
+                        "X_DOT": {
+                            "type": "number"
+                        },
+                        "Y_DOT": {
+                            "type": "number"
+                        },
+                        "Z_DOT": {
+                            "type": "number"
+                        },
+                        "CR_R": {
+                            "type": "number"
+                        },
+                        "CT_R": {
+                            "type": "number"
+                        },
+                        "CT_T": {
+                            "type": "number"
+                        },
+                        "CN_R": {
+                            "type": "number"
+                        },
+                        "CN_T": {
+                            "type": "number"
+                        },
+                        "CN_N": {
+                            "type": "number"
+                        },
+                        "CRDOT_R": {
+                            "type": "number"
+                        },
+                        "CRDOT_T": {
+                            "type": "number"
+                        },
+                        "CRDOT_N": {
+                            "type": "number"
+                        },
+                        "CRDOT_RDOT": {
+                            "type": "number"
+                        },
+                        "CTDOT_R": {
+                            "type": "number"
+                        },
+                        "CTDOT_T": {
+                            "type": "number"
+                        },
+                        "CTDOT_N": {
+                            "type": "number"
+                        },
+                        "CTDOT_RDOT": {
+                            "type": "number"
+                        },
+                        "CTDOT_TDOT": {
+                            "type": "number"
+                        },
+                        "CNDOT_R": {
+                            "type": "number"
+                        },
+                        "CNDOT_T": {
+                            "type": "number"
+                        },
+                        "CNDOT_N": {
+                            "type": "number"
+                        },
+                        "CNDOT_RDOT": {
+                            "type": "number"
+                        },
+                        "CNDOT_TDOT": {
+                            "type": "number"
+                        },
+                        "CNDOT_NDOT": {
+                            "type": "number"
+                        },
+                        "CDRG_R": {
+                            "type": "number"
+                        },
+                        "CDRG_T": {
+                            "type": "number"
+                        },
+                        "CDRG_N": {
+                            "type": "number"
+                        },
+                        "CDRG_RDOT": {
+                            "type": "number"
+                        },
+                        "CDRG_TDOT": {
+                            "type": "number"
+                        },
+                        "CDRG_NDOT": {
+                            "type": "number"
+                        },
+                        "CDRG_DRG": {
+                            "type": "number"
+                        },
+                        "CSRP_R": {
+                            "type": "number"
+                        },
+                        "CSRP_T": {
+                            "type": "number"
+                        },
+                        "CSRP_N": {
+                            "type": "number"
+                        },
+                        "CSRP_RDOT": {
+                            "type": "number"
+                        },
+                        "CSRP_TDOT": {
+                            "type": "number"
+                        },
+                        "CSRP_NDOT": {
+                            "type": "number"
+                        },
+                        "CSRP_DRG": {
+                            "type": "number"
+                        },
+                        "CSRP_SRP": {
+                            "type": "number"
+                        },
+                        "CTHR_R": {
+                            "type": "number"
+                        },
+                        "CTHR_T": {
+                            "type": "number"
+                        },
+                        "CTHR_N": {
+                            "type": "number"
+                        },
+                        "CTHR_RDOT": {
+                            "type": "number"
+                        },
+                        "CTHR_TDOT": {
+                            "type": "number"
+                        },
+                        "CTHR_NDOT": {
+                            "type": "number"
+                        },
+                        "CTHR_DRG": {
+                            "type": "number"
+                        },
+                        "CTHR_SRP": {
+                            "type": "number"
+                        },
+                        "CTHR_THR": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "CDM": {
+                    "type": "object",
+                    "properties": {
+                        "CCSDS_CDM_VERS": {
+                            "type": "number"
+                        },
+                        "CREATION_DATE": {
+                            "type": "string"
+                        },
+                        "ORIGINATOR": {
+                            "type": "string"
+                        },
+                        "MESSAGE_FOR": {
+                            "type": "string"
+                        },
+                        "MESSAGE_ID": {
+                            "type": "string"
+                        },
+                        "TCA": {
+                            "type": "string"
+                        },
+                        "MISS_DISTANCE": {
+                            "type": "number"
+                        },
+                        "RELATIVE_SPEED": {
+                            "type": "number"
+                        },
+                        "RELATIVE_POSITION_R": {
+                            "type": "number"
+                        },
+                        "RELATIVE_POSITION_T": {
+                            "type": "number"
+                        },
+                        "RELATIVE_POSITION_N": {
+                            "type": "number"
+                        },
+                        "RELATIVE_VELOCITY_R": {
+                            "type": "number"
+                        },
+                        "RELATIVE_VELOCITY_T": {
+                            "type": "number"
+                        },
+                        "RELATIVE_VELOCITY_N": {
+                            "type": "number"
+                        },
+                        "START_SCREEN_PERIOD": {
+                            "type": "string"
+                        },
+                        "STOP_SCREEN_PERIOD": {
+                            "type": "string"
+                        },
+                        "SCREEN_VOLUME_FRAME": {
+                            "$ref": "#/definitions/objectCenteredReferenceFrame"
+                        },
+                        "SCREEN_VOLUME_SHAPE": {
+                            "$ref": "#/definitions/screeningVolumeShape"
+                        },
+                        "SCREEN_VOLUME_X": {
+                            "type": "number"
+                        },
+                        "SCREEN_VOLUME_Y": {
+                            "type": "number"
+                        },
+                        "SCREEN_VOLUME_Z": {
+                            "type": "number"
+                        },
+                        "SCREEN_ENTRY_TIME": {
+                            "type": "string"
+                        },
+                        "SCREEN_EXIT_TIME": {
+                            "type": "string"
+                        },
+                        "COLLISION_PROBABILITY": {
+                            "type": "number"
+                        },
+                        "COLLISION_PROBABILITY_METHOD": {
+                            "type": "string"
+                        },
+                        "OBJECT1": {
+                            "$ref": "#/definitions/CDMObject"
+                        },
+                        "OBJECT2": {
+                            "$ref": "#/definitions/CDMObject"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "CDMCOLLECTION": {
+                    "type": "object",
+                    "properties": {
+                        "RECORDS": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/CDM"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "$ref": "#/definitions/CDM"
+        },
+        "OPM": {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "definitions": {
+                "referenceFrame": {
+                    "type": "string",
+                    "enum": [
+                        "EME2000",
+                        "GCRF",
+                        "GRC",
+                        "ICRF",
+                        "ITRF2000",
+                        "ITRF93",
+                        "ITRF97",
+                        "MCI",
+                        "TDR",
+                        "TEME",
+                        "TOD"
+                    ]
+                },
+                "timeSystem": {
+                    "type": "string",
+                    "enum": [
+                        "GMST",
+                        "GPS",
+                        "MET",
+                        "MRT",
+                        "SCLK",
+                        "TAI",
+                        "TCB",
+                        "TDB",
+                        "TCG",
+                        "TT",
+                        "UT1",
+                        "UTC"
+                    ]
+                },
+                "manCovRefFrame": {
+                    "type": "string",
+                    "enum": [
+                        "RSW",
+                        "RTN",
+                        "TNW"
+                    ]
+                },
+                "maneuverParameters": {
+                    "type": "object",
+                    "properties": {
+                        "MAN_EPOCH_IGNITION": {
+                            "type": "string"
+                        },
+                        "MAN_DURATION": {
+                            "type": "number"
+                        },
+                        "MAN_DELTA_MASS": {
+                            "type": "number"
+                        },
+                        "MAN_REF_FRAME": {
+                            "$ref": "#/definitions/manCovRefFrame"
+                        },
+                        "MAN_DV_1": {
+                            "type": "number"
+                        },
+                        "MAN_DV_2": {
+                            "type": "number"
+                        },
+                        "MAN_DV_3": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "OPM": {
+                    "type": "object",
+                    "properties": {
+                        "CCSDS_OPM_VERS": {
+                            "type": "number"
+                        },
+                        "CREATION_DATE": {
+                            "type": "string"
+                        },
+                        "ORIGINATOR": {
+                            "type": "string"
+                        },
+                        "OBJECT_NAME": {
+                            "type": "string"
+                        },
+                        "OBJECT_ID": {
+                            "type": "string"
+                        },
+                        "CENTER_NAME": {
+                            "type": "string"
+                        },
+                        "REF_FRAME": {
+                            "$ref": "#/definitions/referenceFrame"
+                        },
+                        "REF_FRAME_EPOCH": {
+                            "type": "string"
+                        },
+                        "TIME_SYSTEM": {
+                            "$ref": "#/definitions/timeSystem"
+                        },
+                        "COMMENT": {
+                            "type": "string"
+                        },
+                        "EPOCH": {
+                            "type": "string"
+                        },
+                        "X": {
+                            "type": "number"
+                        },
+                        "Y": {
+                            "type": "number"
+                        },
+                        "Z": {
+                            "type": "number"
+                        },
+                        "X_DOT": {
+                            "type": "number"
+                        },
+                        "Y_DOT": {
+                            "type": "number"
+                        },
+                        "Z_DOT": {
+                            "type": "number"
+                        },
+                        "SEMI_MAJOR_AXIS": {
+                            "type": "number"
+                        },
+                        "ECCENTRICITY": {
+                            "type": "number"
+                        },
+                        "INCLINATION": {
+                            "type": "number"
+                        },
+                        "RA_OF_ASC_NODE": {
+                            "type": "number"
+                        },
+                        "ARG_OF_PERICENTER": {
+                            "type": "number"
+                        },
+                        "TRUE_ANOMALY": {
+                            "type": "number"
+                        },
+                        "MEAN_ANOMALY": {
+                            "type": "number"
+                        },
+                        "GM": {
+                            "type": "number"
+                        },
+                        "MASS": {
+                            "type": "number"
+                        },
+                        "SOLAR_RAD_AREA": {
+                            "type": "number"
+                        },
+                        "SOLAR_RAD_COEFF": {
+                            "type": "number"
+                        },
+                        "DRAG_AREA": {
+                            "type": "number"
+                        },
+                        "DRAG_COEFF": {
+                            "type": "number"
+                        },
+                        "COV_REF_FRAME": {
+                            "$ref": "#/definitions/manCovRefFrame"
+                        },
+                        "CX_X": {
+                            "type": "number"
+                        },
+                        "CY_X": {
+                            "type": "number"
+                        },
+                        "CY_Y": {
+                            "type": "number"
+                        },
+                        "CZ_X": {
+                            "type": "number"
+                        },
+                        "CZ_Y": {
+                            "type": "number"
+                        },
+                        "CZ_Z": {
+                            "type": "number"
+                        },
+                        "CX_DOT_X": {
+                            "type": "number"
+                        },
+                        "CX_DOT_Y": {
+                            "type": "number"
+                        },
+                        "CX_DOT_Z": {
+                            "type": "number"
+                        },
+                        "CX_DOT_X_DOT": {
+                            "type": "number"
+                        },
+                        "CY_DOT_X": {
+                            "type": "number"
+                        },
+                        "CY_DOT_Y": {
+                            "type": "number"
+                        },
+                        "CY_DOT_Z": {
+                            "type": "number"
+                        },
+                        "CY_DOT_X_DOT": {
+                            "type": "number"
+                        },
+                        "CY_DOT_Y_DOT": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_X": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Y": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Z": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_X_DOT": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Y_DOT": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Z_DOT": {
+                            "type": "number"
+                        },
+                        "MANEUVERS": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/maneuverParameters"
+                            }
+                        },
+                        "USER_DEFINED_BIP_0044_TYPE": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "USER_DEFINED_OBJECT_DESIGNATOR": {
+                            "type": "string"
+                        },
+                        "USER_DEFINED_EARTH_MODEL": {
+                            "type": "string"
+                        },
+                        "USER_DEFINED_EPOCH_TIMESTAMP": {
+                            "type": "number"
+                        },
+                        "USER_DEFINED_EPOCH_MICROSECONDS": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "OPMCOLLECTION": {
+                    "type": "object",
+                    "properties": {
+                        "RECORDS": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/OPM"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "$ref": "#/definitions/OPM"
+        },
+        "OEM": {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "definitions": {
+                "referenceFrame": {
+                    "type": "string",
+                    "enum": [
+                        "EME2000",
+                        "GCRF",
+                        "GRC",
+                        "ICRF",
+                        "ITRF2000",
+                        "ITRF93",
+                        "ITRF97",
+                        "MCI",
+                        "TDR",
+                        "TEME",
+                        "TOD"
+                    ]
+                },
+                "timeSystem": {
+                    "type": "string",
+                    "enum": [
+                        "GMST",
+                        "GPS",
+                        "MET",
+                        "MRT",
+                        "SCLK",
+                        "TAI",
+                        "TCB",
+                        "TDB",
+                        "TCG",
+                        "TT",
+                        "UT1",
+                        "UTC"
+                    ]
+                },
+                "manCovRefFrame": {
+                    "type": "string",
+                    "enum": [
+                        "RSW",
+                        "RTN",
+                        "TNW"
+                    ]
+                },
+                "ephemerisDataLine": {
+                    "type": "object",
+                    "properties": {
+                        "EPOCH": {
+                            "type": "string"
+                        },
+                        "X": {
+                            "type": "number"
+                        },
+                        "Y": {
+                            "type": "number"
+                        },
+                        "Z": {
+                            "type": "number"
+                        },
+                        "X_DOT": {
+                            "type": "number"
+                        },
+                        "Y_DOT": {
+                            "type": "number"
+                        },
+                        "Z_DOT": {
+                            "type": "number"
+                        },
+                        "X_DDOT": {
+                            "type": "number"
+                        },
+                        "Y_DDOT": {
+                            "type": "number"
+                        },
+                        "Z_DDOT": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "covarianceMatrixLine": {
+                    "type": "object",
+                    "properties": {
+                        "EPOCH": {
+                            "type": "string"
+                        },
+                        "COV_REF_FRAME": {
+                            "$ref": "#/definitions/manCovRefFrame"
+                        },
+                        "CX_X": {
+                            "type": "number"
+                        },
+                        "CY_X": {
+                            "type": "number"
+                        },
+                        "CY_Y": {
+                            "type": "number"
+                        },
+                        "CZ_X": {
+                            "type": "number"
+                        },
+                        "CZ_Y": {
+                            "type": "number"
+                        },
+                        "CZ_Z": {
+                            "type": "number"
+                        },
+                        "CX_DOT_X": {
+                            "type": "number"
+                        },
+                        "CX_DOT_Y": {
+                            "type": "number"
+                        },
+                        "CX_DOT_Z": {
+                            "type": "number"
+                        },
+                        "CX_DOT_X_DOT": {
+                            "type": "number"
+                        },
+                        "CY_DOT_X": {
+                            "type": "number"
+                        },
+                        "CY_DOT_Y": {
+                            "type": "number"
+                        },
+                        "CY_DOT_Z": {
+                            "type": "number"
+                        },
+                        "CY_DOT_X_DOT": {
+                            "type": "number"
+                        },
+                        "CY_DOT_Y_DOT": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_X": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Y": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Z": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_X_DOT": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Y_DOT": {
+                            "type": "number"
+                        },
+                        "CZ_DOT_Z_DOT": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "ephemerisDataBlock": {
+                    "type": "object",
+                    "properties": {
+                        "COMMENT": {
+                            "type": "string"
+                        },
+                        "OBJECT_NAME": {
+                            "type": "string"
+                        },
+                        "OBJECT_ID": {
+                            "type": "string"
+                        },
+                        "CENTER_NAME": {
+                            "type": "string"
+                        },
+                        "REF_FRAME": {
+                            "$ref": "#/definitions/referenceFrame"
+                        },
+                        "REF_FRAME_EPOCH": {
+                            "type": "string"
+                        },
+                        "TIME_SYSTEM": {
+                            "$ref": "#/definitions/timeSystem"
+                        },
+                        "START_TIME": {
+                            "type": "string"
+                        },
+                        "USEABLE_START_TIME": {
+                            "type": "string"
+                        },
+                        "USEABLE_STOP_TIME": {
+                            "type": "string"
+                        },
+                        "STOP_TIME": {
+                            "type": "string"
+                        },
+                        "INTERPOLATION": {
+                            "type": "string"
+                        },
+                        "INTERPOLATION_DEGREE": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 4294967295
+                        },
+                        "EPHEMERIS_DATA_LINES": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ephemerisDataLine"
+                            }
+                        },
+                        "COVARIANCE_MATRIX_LINES": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/covarianceMatrixLine"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "OEM": {
+                    "type": "object",
+                    "properties": {
+                        "CCSDS_OEM_VERS": {
+                            "type": "number"
+                        },
+                        "CREATION_DATE": {
+                            "type": "string"
+                        },
+                        "ORIGINATOR": {
+                            "type": "string"
+                        },
+                        "EPHEMERIS_DATA_BLOCK": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ephemerisDataBlock"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "OEMCOLLECTION": {
+                    "type": "object",
+                    "properties": {
+                        "RECORDS": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/OEM"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "$ref": "#/definitions/OEM"
+        },
+        "MPE": {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "definitions": {
+                "referenceFrame": {
+                    "type": "string",
+                    "enum": [
+                        "EME2000",
+                        "GCRF",
+                        "GRC",
+                        "ICRF",
+                        "ITRF2000",
+                        "ITRF93",
+                        "ITRF97",
+                        "MCI",
+                        "TDR",
+                        "TEME",
+                        "TOD"
+                    ]
+                },
+                "timeSystem": {
+                    "type": "string",
+                    "enum": [
+                        "GMST",
+                        "GPS",
+                        "MET",
+                        "MRT",
+                        "SCLK",
+                        "TAI",
+                        "TCB",
+                        "TDB",
+                        "TCG",
+                        "TT",
+                        "UT1",
+                        "UTC"
+                    ]
+                },
+                "meanElementTheory": {
+                    "type": "string",
+                    "enum": [
+                        "SGP4",
+                        "DSST",
+                        "USM"
+                    ]
+                },
+                "MPE": {
+                    "type": "object",
+                    "properties": {
+                        "ENTITY_ID": {
+                            "type": "string"
+                        },
+                        "USER_DEFINED_EPOCH_TIMESTAMP": {
+                            "type": "number"
+                        },
+                        "MEAN_MOTION": {
+                            "type": "number"
+                        },
+                        "ECCENTRICITY": {
+                            "type": "number"
+                        },
+                        "INCLINATION": {
+                            "type": "number"
+                        },
+                        "RA_OF_ASC_NODE": {
+                            "type": "number"
+                        },
+                        "ARG_OF_PERICENTER": {
+                            "type": "number"
+                        },
+                        "MEAN_ANOMALY": {
+                            "type": "number"
+                        },
+                        "BSTAR": {
+                            "type": "number"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "MPECOLLECTION": {
+                    "type": "object",
+                    "properties": {
+                        "CLASSIFICATION_TYPE": {
+                            "type": "string"
+                        },
+                        "REF_FRAME": {
+                            "$ref": "#/definitions/referenceFrame"
+                        },
+                        "REF_FRAME_EPOCH": {
+                            "type": "number"
+                        },
+                        "TIME_SYSTEM": {
+                            "$ref": "#/definitions/timeSystem"
+                        },
+                        "MEAN_ELEMENT_THEORY": {
+                            "$ref": "#/definitions/meanElementTheory"
+                        },
+                        "RECORDS": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/MPE"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "$ref": "#/definitions/MPE"
         }
-      }
-    },
-    "/standards/{standard?}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "standard?",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {},
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": ""
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sql/": {
-      "get": {
-        "description": "",
-        "parameters": [],
-        "responses": {},
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/text-plain": {
-              "schema": {
-                "$ref": ""
-              }
-            }
-          }
-        }
-      }
     }
-  }
 }
