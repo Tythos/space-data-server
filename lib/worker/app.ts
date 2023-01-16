@@ -41,6 +41,11 @@ app.use(bodyParser.raw({ inflate: true, limit: "2GB", type: '*/*' }));
 
 app.get("/", (req: Request, res: Response) => {
     // #swagger.ignore = true
+    res.setHeader("content-type", "text/html");
+    res.set(
+        "Content-Security-Policy",
+        "default-src *; img-src 'self' data:; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'");
+
     res.end(rawUI);
 });
 
