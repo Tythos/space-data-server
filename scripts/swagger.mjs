@@ -35,13 +35,18 @@ const doc = {
     }
 }
 
-const outputFile = '../swagger-output.json'
-const endpointsFiles = ['../lib/worker/app']
+const outputFile = '../swagger-output.json';
+const endpointsFiles = ['../lib/worker/app'];
 
-swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
+swaggerAutogen(outputFile, endpointsFiles).then(() => {
     const _path = (join(__dirname, outputFile));
     let swaggerJSON = JSON.parse(readFileSync(_path, "utf8"));
     swaggerJSON.definitions = standardsJSON;
+    swaggerJSON.definitions.STANDARDS = {
+        "type": "string",
+        "description": "List of SpaceDataStandards.org Standards Loaded into this node.",
+        "enum": Object.keys(standardsJSON)
+    };
+    swaggerJSON = Object.assign({}, doc, swaggerJSON);
     writeFileSync(_path, JSON.stringify(swaggerJSON, null, 4));
-    console.log(swaggerJSON);
 })

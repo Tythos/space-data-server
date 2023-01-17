@@ -3,6 +3,8 @@
   import type { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
   import { onMount } from "svelte";
   import { handleRequest } from "./handleRequest";
+  import JSONTree from "svelte-json-tree";
+
   let swagger: any = null;
 
   let baseurl: any = "";
@@ -57,12 +59,16 @@ ${Object.entries(activeHeaders)
       category = category ? category[0] : "Default";
       Object.entries(route[1]).map((method, methodIdx) => {
         const id = `${routeIdx}-${methodIdx}`;
+
+        const hasReqBodyContent =
+          method[1].hasOwnProperty("requestBody") &&
+          method[1].requestBody.content;
         responseContentTypes[id] = (
           method[1]?.produces ||
           swaggerDoc?.produces ||
-          method[1]?.requestBody?.content
+          (hasReqBodyContent
             ? Object.keys(method[1].requestBody.content)
-            : ["application/octet-stream"]
+            : ["application/octet-stream"])
         ).map((p, pid) => {
           return { id: pid, name: p };
         });
@@ -183,7 +189,7 @@ ${Object.entries(activeHeaders)
   </select>
 </div>
 {#each Object.entries(paths) as [category, routes], ID}
-  <div class="accordion  lg:w-3/4 m-auto" id="main_category_{ID}">
+  <div class="accordion lg:w-3/4 m-auto" id="main_category_{ID}">
     <div class="accordion-item border border-gray-200">
       <h2 class="accordion-header mb-0" id="heading_category_{ID}">
         <button
@@ -324,6 +330,9 @@ ${Object.entries(activeHeaders)
                               class:bg-red-100={route.method?.toUpperCase() ===
                                 "DELETE"}
                               class="overflow-hidden flex flex-col items-start justify-center p-8">
+                              <div class="text-left">
+                                <JSONTree value={swaggerDoc.definitions.CDM} />
+                              </div>
                               <div class="w-full">
                                 {#if !route.parameters.length}
                                   <h2

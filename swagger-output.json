@@ -1,57 +1,38 @@
 {
-    "openapi": "3.0.0",
     "info": {
-        "version": "1.0.1052+1673905297135",
-        "title": "Space Data Server",
-        "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
+        "version": "1.0.0",
+        "title": "REST API",
+        "description": ""
     },
     "host": "",
+    "basePath": "/",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "consumes": [
+        "application/json",
+        "application/octet-stream"
+    ],
+    "produces": [
+        "application/json",
+        "application/octet-stream"
+    ],
     "paths": {
         "/swagger-json": {
             "get": {
-                "description": "",
+                "description": "Returns the OpenAPI 3.0 JSON API file.",
                 "parameters": [],
                 "responses": {
                     "200": {
                         "description": "OK"
-                    }
-                },
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/docs/swagger-json": {
-            "get": {
-                "description": "",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        }
                     }
                 }
             }
         },
         "/providers/{provider?}": {
             "get": {
-                "description": "",
+                "description": "Returns a list of all of the providers available on the node.",
                 "parameters": [
                     {
                         "name": "provider?",
@@ -62,22 +43,12 @@
                         }
                     }
                 ],
-                "responses": {},
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/schema/{standard}": {
             "get": {
-                "description": "",
+                "description": "Returns a JSON Schema for the standard.",
                 "parameters": [
                     {
                         "name": "standard",
@@ -88,22 +59,28 @@
                         }
                     }
                 ],
-                "responses": {},
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
+                "responses": {}
+            }
+        },
+        "/idl/{standard}": {
+            "get": {
+                "description": "Returns the Flatbuffer Interface Description Language (IDL) for the standard.",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
-                }
+                ],
+                "responses": {}
             }
         },
         "/spacedata/{standard}/{provider}/{cid?}": {
             "get": {
-                "description": "",
+                "description": "Returns data by standard, provider, and optionally the Content Identifier (<a href='https://github.com/multiformats/cid'>CID</a>).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-cid-flatbuffer\".",
                 "parameters": [
                     {
                         "name": "standard",
@@ -130,56 +107,7 @@
                         }
                     }
                 ],
-                "responses": {},
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/spacedatalatest/{standard}/{provider}": {
-            "get": {
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "standard",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "provider",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {},
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        },
-                        "application/octet-stream": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/spacedata/{standard}": {
@@ -193,33 +121,9 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "authorization",
-                        "in": "header",
-                        "description": "An EIP-4361 signed message",
-                        "format": "utf-8",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
-                "responses": {},
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        },
-                        "application/octet-stream": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/standards/{standard?}": {
@@ -235,37 +139,23 @@
                         }
                     }
                 ],
-                "responses": {},
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/sql/": {
             "get": {
                 "description": "",
                 "parameters": [],
-                "responses": {},
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/text-plain": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        }
-                    }
-                }
+                "responses": {}
             }
         }
     },
+    "openapi": "3.0.0",
+    "servers": [
+        {
+            "url": "http://localhost:3000/"
+        }
+    ],
     "definitions": {
         "CAT": {
             "$schema": "https://json-schema.org/draft/2019-09/schema",
@@ -1740,6 +1630,18 @@
                 }
             },
             "$ref": "#/definitions/MPE"
+        },
+        "STANDARDS": {
+            "type": "string",
+            "description": "List of SpaceDataStandards.org Standards Loaded into this node.",
+            "enum": [
+                "CAT",
+                "OMM",
+                "CDM",
+                "OPM",
+                "OEM",
+                "MPE"
+            ]
         }
     }
 }

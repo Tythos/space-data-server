@@ -25,8 +25,10 @@
   },
   "dependencies": {
     "path-to-regexp": "^6.2.1",
+    "svelte-json-tree": "^1.0.0",
     "svelte-spa-router": "^3.3.0",
     "swagger-ui": "^4.15.5",
+    "swagger-ui-dist": "^4.15.5",
     "tw-elements": "^1.0.0-alpha13"
   }
 }

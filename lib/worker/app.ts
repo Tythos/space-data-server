@@ -60,164 +60,41 @@ app.get("/", (req: Request, res: Response) => {
     res.setHeader("content-type", "text/html");
     res.end(rawUI);
 });
-
 app.get("/swagger-json", (req: Request, res: Response) => {
+    //#swagger.description = "Returns the OpenAPI 3.0 JSON API file."
     res.json(swaggerFile);
-    /**
-     #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: {
-                        $ref: ""
-                    }  
-                }
-            }
-        } 
-     */
 });
-
-app.get("/docs/swagger-json", (req: Request, res: Response) => {
-    res.json(swaggerFile);
-    /**
-      #swagger.requestBody = {
-             required: true,
-             content: {
-                 "application/json": {
-                     schema: {
-                         $ref: ""
-                     }  
-                 }
-             }
-         } 
-      */
-});
-
 app.get("/providers/:provider?", (req: any, res: any, next: any) => {
-    /**
-     #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: {
-                        $ref: ""
-                    }  
-                }
-            }
-        } 
-     */
+    //#swagger.description = "Returns a list of all of the providers available on the node."
     providers(req, res, next);
 });
 app.get("/schema/:standard", (req: any, res: any, next: any) => {
+    //#swagger.description = "Returns a JSON Schema for the standard."
     res.set("Content-Type", "application/json");
-    /**
-     #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: {
-                        $ref: ""
-                    }  
-                }
-            }
-        } 
-     */
+    schema(req, res, next)
+});
+app.get("/idl/:standard", (req: any, res: any, next: any) => {
+    //#swagger.description = "Returns the Flatbuffer Interface Description Language (IDL) for the standard."
+    res.set("Content-Type", "application/json");
     schema(req, res, next)
 });
 app.get("/spacedata/:standard/:provider/:cid?", (req: any, res: any, next: any) => {
-    /**
-    #swagger.requestBody = {
-           required: true,
-           content: {
-               "application/json": {
-                   schema: {
-                       $ref: ""
-                   }  
-               }
-           }
-       } 
+    /*
+    #swagger.description = `Returns data by standard, provider,
+and optionally the Content Identifier (<a href='https://github.com/multiformats/cid'>CID</a>).  
+The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected. 
+If no CID is specified, the most recent CID is used.  
+The CID is always returned in the header "x-cid-flatbuffer".`;
     */
-    get(req, res, next)
+    get(req, res, next);
 });
-app.get('/spacedatalatest/:standard/:provider',
-    cache(config.data.cache, (req: any, res: any) => res.statusCode === 200),
-    (req: any, res: any, next: any) => {
-        /**
-         #swagger.requestBody = {
-                required: true,
-                content: {
-                    "application/json": {
-                        schema: {
-                            $ref: ""
-                        }  
-                    },
-                    "application/octet-stream": {
-                        schema: {
-                            $ref: ""
-                        }  
-                    }
-                }
-            } 
-     */
-        latest(req, res, next);
-    });
 app.post("/spacedata/:standard", (req: any, res: any, next: any) => {
-    /**
-     #swagger.parameters["authorization"] = {
-        in:"header",
-        description:"An EIP-4361 signed message",
-        type:"string",
-        format:"utf-8"
-     }
-     
-     #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: {
-                        $ref: ""
-                    }  
-                },
-                "application/octet-stream": {
-                    schema: {
-                        $ref: ""
-                    }  
-                }
-            }
-        } 
-     */
     post(req, res, next);
 });
-
 app.get("/standards/:standard?", (req: any, res: any, next: any) => {
-    /**
-     #swagger.requestBody = {
-            required: true,
-            content: {
-                "application/json": {
-                    schema: {
-                        $ref: ""
-                    }  
-                }
-            }
-        } 
-     */
     standardsRoute(req, res, next);
 });
-
 app.get("/sql/", (req: any, res: any, next: any) => {
-    /**
-    #swagger.requestBody = {
-           required: true,
-           content: {
-               "application/text-plain": {
-                   schema: {
-                       $ref: ""
-                   }  
-               }
-           }
-       } 
-    */
     sql(req, res, next);
 });
 
