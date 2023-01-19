@@ -31,6 +31,45 @@ const doc = {
                 "parameters": [],
                 "responses": {}
             }
+        },
+        "/spacedatalatest/{standard}/{provider}": {
+            "get": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {},
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        },
+                        "application/octet-stream": {
+                            "schema": {
+                                "$ref": ""
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

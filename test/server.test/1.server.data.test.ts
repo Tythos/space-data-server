@@ -8,7 +8,6 @@ import { existsSync, readFileSync, rmdirSync, rmSync } from "node:fs";
 import { ethWallet, untrustedEthWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
 import * as jose from "jose";
 import { keyconvert, pubKeyToEthAddress } from "@/packages/keyconvert";
-import Web3Token from 'web3-token';
 import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
 import standardsJSON from "@/lib/standards/schemas.json";
@@ -69,85 +68,58 @@ describe("POST /endpoint", () => {
             expect(JSON.stringify(jsonFile)).toEqual(jsonFileString);
 
             /**
-             * Support for:
-             * - EIP-4361 signed messages (https://github.com/ethereum/EIPs/blob/master/EIPS/eip-4361.md)
-             * - JOSE signed messages     (https://datatracker.ietf.org/doc/rfc7515/)
+             * JOSE signed messages     (https://datatracker.ietf.org/doc/rfc7515/)
              */
 
-            let fileBuff = new TextEncoder().encode(jsonFileString);
-            const jweNoKey = await new jose
-                .GeneralSign(fileBuff)
-                .addSignature(ecJosePrivateKey)
-                .setProtectedHeader({ alg: "ES256K" })
-                .sign();
+            let jsonBinary: Uint8Array = new TextEncoder().encode(jsonFileString);
+            const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
 
-            const jwe = await new jose
-                .GeneralSign(fileBuff)
-                .addSignature(ecJosePrivateKey)
-                .setUnprotectedHeader({ kid: ethWallet.address, signature: await ethWallet.signMessage(await ipfsHash.of(fileBuff)) })
-                .setProtectedHeader({ jwk: ecJWKExportPublicKey, alg: "ES256K" })
-                .sign();
+            const ipfsCIDJSON = await ipfsHash.of(jsonBinary);
+            const ipfsCIDFB = await ipfsHash.of(flatbufferBinary);
 
-            const { payload } = await jose.generalVerify(jwe, ecJosePublicKey);
-            expect(payload.toString()).toEqual(jsonFileString);
+            /*Fail Test*/
+
+            const jwsF = await new jose.CompactSign(
+                new TextEncoder().encode(ipfsCIDFB)
+            )
+                .setProtectedHeader({
+                    jwk: {},
+                    alg: 'ES256K',
+                    kid: ethWallet.address,
+                    signature: ""
+                })
+                .sign(ecJosePrivateKey);
+
+
             const jsonResponseError = await request(app)
                 .post(`/spacedata/${standard}`)
-                .send(jweNoKey);
+                .set("Content-Type", "application/octet-stream")
+                .set("authorization", `Bearer ${jwsF}`)
+                .send(flatbufferBinary);
 
             expect(jsonResponseError.status).toBe(401);
 
             expect(jsonResponseError.body.error).toMatch(`Signature invalid or key missing.`);
-            const jsonResponse = await request(app)
+
+            const jws = await new jose.CompactSign(
+                new TextEncoder().encode(ipfsCIDFB)
+            )
+                .setProtectedHeader({
+                    jwk: jwkETHPublic as any,
+                    alg: 'ES256K',
+                    kid: ethWallet.address,
+                    signature: await ethWallet.signMessage(ipfsCIDFB)
+                })
+                .sign(ecJosePrivateKey);
+
+            const { payload: payloadFB } = await jose.compactVerify(jws, ecJosePublicKey);
+            expect(payloadFB.toString()).toEqual(ipfsCIDFB);
+            const fbResponse = await request(app)
                 .post(`/spacedata/${standard}`)
-                .send(jwe);
-            expect(jsonResponse.status).toBe(200);
-
-            const ipfsCIDJSON = await ipfsHash.of(fileBuff);
-            let statement = `${ipfsCIDJSON}:${await ethWallet.signMessage(ipfsCIDJSON)}`;
-
-            const jsonToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
-                statement,
-                expires_in: '1 day',
-                nonce: performance.now(),
-            });
-
-            const jsonResponseEIP4361 = await request(app)
-                .post(`/spacedata/${standard}`)
-                .set("authorization", jsonToken)
-                .send(jsonFile);
-            expect(jsonResponseEIP4361.status).toBe(200);
-
-            const flatbuffer: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
-            const ipfsCIDFBS = await ipfsHash.of(flatbuffer);
-
-            statement = `${ipfsCIDFBS}:${await ethWallet.signMessage(ipfsCIDFBS)}`;
-
-            const fbToken = await Web3Token.sign(async (msg: any) => await ethWallet.signMessage(msg), {
-                statement,
-                expires_in: '1 day',
-                nonce: performance.now(),
-            });
-
-            const fbResponseEIP4361 = await request(app)
-                .post(`/spacedata/${standard}`)
-                .set("authorization", fbToken)
-                .set('Content-Type', 'application/octet-stream')
-                .send(flatbuffer);
-            expect(fbResponseEIP4361.status).toBe(200);
-
-            //Untrusted Wallet
-            const ufbToken = await Web3Token.sign(async (msg: any) => await untrustedEthWallet.signMessage(msg), {
-                statement,
-                expires_in: '1 day',
-                nonce: performance.now(),
-            });
-
-            const ufbResponseEIP4361 = await request(app)
-                .post(`/spacedata/${standard}`)
-                .set("authorization", ufbToken)
-                .set('Content-Type', 'application/octet-stream')
-                .send(flatbuffer);
-            expect(ufbResponseEIP4361.status).toBe(401);
+                .set("Content-Type", "application/octet-stream")
+                .set("authorization", `Bearer ${jws}`)
+                .send(flatbufferBinary);
+            expect(fbResponse.status).toBe(200);
         }
         await new Promise(r => setTimeout(r, 5000));
     }, 30000);

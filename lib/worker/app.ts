@@ -84,7 +84,7 @@ app.get("/spacedata/:standard/:provider/:cid?", (req: any, res: any, next: any) 
 and optionally the Content Identifier (<a href='https://github.com/multiformats/cid'>CID</a>).  
 The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected. 
 If no CID is specified, the most recent CID is used.  
-The CID is always returned in the header "x-cid-flatbuffer".`;
+The CID is always returned in the header "x-content-identifier".`;
     */
     get(req, res, next);
 });

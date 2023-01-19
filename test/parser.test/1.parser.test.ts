@@ -13,6 +13,7 @@ import { config } from "@/lib/config/config";
 import { describe, expect, test, beforeAll } from "@jest/globals";
 import { generateDatabase, refRootName } from "@/lib/database/generateTables";
 import knex from "knex";
+import { utils } from "ethers";
 import standardsJSON from "@/lib/standards/schemas.json";
 
 import { JSONSchema4 } from "json-schema";
@@ -46,7 +47,8 @@ describe("Parse Data Into Flatbuffers", () => {
         const standard = "OMM";
         let oFBS = writeFB(ommCollection);
         let iFBS = readFB(oFBS, standard, standards[standard]);
-        let writePath = `./${config.data.ingest}/${await ethWallet.getAddress()}/`;
+        let ethAddress = await ethWallet.getAddress();
+        let writePath = `./${config.data.ingest}/${ethAddress}/`;
         mkdirSync(writePath, { recursive: true });
         writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.${standard}.fbs`, oFBS);
         let resultBufferIPFSCID: string = await ipfsHash.of(oFBS);
@@ -62,5 +64,6 @@ describe("Parse Data Into Flatbuffers", () => {
             return rM;
         }))).toEqual(JSON.stringify(ommJSON));
         expect(JSON.stringify(iFBS)).toEqual(JSON.stringify(ommCollection));
+        expect(ethAddress).toEqual(utils.verifyMessage(resultBufferIPFSCID, signatureBufferETH));
     });
 });
