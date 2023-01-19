@@ -1,9 +1,4 @@
 {
-    "info": {
-        "version": "1.0.0",
-        "title": "REST API",
-        "description": ""
-    },
     "host": "",
     "basePath": "/",
     "schemes": [
@@ -80,7 +75,7 @@
         },
         "/spacedata/{standard}/{provider}/{cid?}": {
             "get": {
-                "description": "Returns data by standard, provider, and optionally the Content Identifier (<a href='https://github.com/multiformats/cid'>CID</a>).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-cid-flatbuffer\".",
+                "description": "Returns data by standard, provider, and optionally the Content Identifier (<a href='https://github.com/multiformats/cid'>CID</a>).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
                 "parameters": [
                     {
                         "name": "standard",
@@ -151,6 +146,11 @@
         }
     },
     "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.1083+1674167917954",
+        "title": "Space Data Server",
+        "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
+    },
     "servers": [
         {
             "url": "http://localhost:3000/"
