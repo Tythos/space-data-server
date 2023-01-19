@@ -147,7 +147,7 @@
     },
     "openapi": "3.0.0",
     "info": {
-        "version": "1.0.1083+1674167917954",
+        "version": "1.0.1084+1674167988195",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
     },
