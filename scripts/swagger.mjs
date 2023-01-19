@@ -14,11 +14,6 @@ const swaggerAutogen = sA({ openapi: '3.0.0' });
 const responseTypes = ['application/json', 'application/octet-stream'];
 
 const doc = {
-    info: {
-        version: packageJSON.version,
-        title: "Space Data Server",
-        description: `MVP Space Data Service based on the data standards at: <a href="https://SpaceDataStandards.org">SpaceDataStandards.org</a>, version ${packageJSON.standardsVersion}`
-    },
     host: "",
     basePath: "/",
     schemes: ['http', 'https'],
@@ -85,6 +80,11 @@ swaggerAutogen(outputFile, endpointsFiles).then(() => {
         "type": "string",
         "description": "List of SpaceDataStandards.org Standards Loaded into this node.",
         "enum": Object.keys(standardsJSON)
+    };
+    swaggerJSON.info = {
+        version: packageJSON.version,
+        title: "Space Data Server",
+        description: `MVP Space Data Service based on the data standards at: <a href="https://SpaceDataStandards.org">SpaceDataStandards.org</a>, version ${packageJSON.standardsVersion}`
     };
     swaggerJSON = Object.assign({}, doc, swaggerJSON);
     writeFileSync(_path, JSON.stringify(swaggerJSON, null, 4));
