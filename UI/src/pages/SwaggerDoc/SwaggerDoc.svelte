@@ -63,15 +63,25 @@ ${Object.entries(activeHeaders)
         const hasReqBodyContent =
           method[1].hasOwnProperty("requestBody") &&
           method[1].requestBody.content;
-        responseContentTypes[id] = (
-          method[1]?.produces ||
-          swaggerDoc?.produces ||
-          (hasReqBodyContent
-            ? Object.keys(method[1].requestBody.content)
-            : ["application/octet-stream"])
-        ).map((p, pid) => {
+
+        /*ResponseContentTypes OPENAPI v3.0*/
+        responseContentTypes[id] = responseContentTypes[id] || [];
+        for (let response in method[1].responses) {
+          if (method[1].responses[response].content) {
+            for (let content in method[1].responses[response].content) {
+              responseContentTypes[id].push(content);
+            }
+          }
+        }
+
+        if (!responseContentTypes[id].length) {
+          responseContentTypes[id] = ["application/octet-stream"];
+        }
+
+        responseContentTypes[id] = responseContentTypes[id].map((p, pid) => {
           return { id: pid, name: p };
         });
+        
         currentResponseContentType[id] = 0;
         if (method[1].requestBody) {
           Object.entries(method[1].requestBody.content).forEach(
@@ -336,7 +346,7 @@ ${Object.entries(activeHeaders)
                               <div class="w-full">
                                 {#if !route.parameters.length}
                                   <h2
-                                    class="flex h-24 items-center justify-center">
+                                    class="flex h-12 items-center justify-center">
                                     No Parameters
                                   </h2>
                                 {:else}
@@ -386,7 +396,9 @@ ${Object.entries(activeHeaders)
                                           </td>
                                           <td
                                             class="flex flex-col gap-2 text-sm text-gray-900 font-light py-4 whitespace-nowrap">
-                                            <div>{@html param.description || ""}</div>
+                                            <div>
+                                              {@html param.description || ""}
+                                            </div>
                                             {#if resolver(param.schema, swaggerDoc).enum}
                                               <select
                                                 required={param.required}
@@ -546,7 +558,9 @@ ${Object.entries(activeHeaders)
 {/each}
 
 <style lang="postcss">
-  :global(a) { color: blue }
+  :global(a) {
+    color: blue;
+  }
 
   code {
     word-break: break-all;

@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1104+1674407072269",
+        "version": "1.0.1108+1674430807717",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
     },
@@ -144,9 +144,20 @@
         },
         "/sql/": {
             "get": {
-                "description": "",
+                "description": "SQL used to generate the database structure for this server.",
                 "parameters": [],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "Successfully returns the raw SQL as a string.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/": {

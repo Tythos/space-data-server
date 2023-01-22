@@ -38,7 +38,7 @@ const doc = {
                 "parameters": [
                     {
                         "name": "standard",
-                        "description":"Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
+                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -48,7 +48,7 @@ const doc = {
                     },
                     {
                         "name": "provider",
-                        "description":"The globally unique identifier (GUID) for a data provider.",
+                        "description": "The globally unique identifier (GUID) for a data provider.",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -70,6 +70,25 @@ const doc = {
                                 "$ref": ""
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/sql/": {
+            "get": {
+                "description": "SQL used to generate the database structure for this server.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Successfully returns the raw SQL as a string.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+
                     }
                 }
             }
