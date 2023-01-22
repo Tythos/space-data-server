@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
   import { handleRequest } from "./handleRequest";
   import JSONTree from "svelte-json-tree";
-
+  import { resolver } from "@/lib/utility/resolver";
   let swagger: any = null;
 
   let baseurl: any = "";
@@ -331,7 +331,7 @@ ${Object.entries(activeHeaders)
                                 "DELETE"}
                               class="overflow-hidden flex flex-col items-start justify-center p-8">
                               <div class="text-left">
-                                <JSONTree value={swaggerDoc.definitions.CDM} />
+                                <!--<JSONTree value={swaggerDoc.definitions.CDM} />-->
                               </div>
                               <div class="w-full">
                                 {#if !route.parameters.length}
@@ -374,7 +374,10 @@ ${Object.entries(activeHeaders)
                                                 {/if}
                                               </div>
                                               <div class="font-semibold">
-                                                {param.schema.type}
+                                                {resolver(
+                                                  param.schema,
+                                                  swaggerDoc
+                                                ).type}
                                               </div>
                                               <div class="italic">
                                                 ({param.in})
@@ -383,20 +386,34 @@ ${Object.entries(activeHeaders)
                                           </td>
                                           <td
                                             class="flex flex-col gap-2 text-sm text-gray-900 font-light py-4 whitespace-nowrap">
-                                            <div>{param.description || ""}</div>
-                                            <input
-                                              required={!~param.name.indexOf(
-                                                "?"
-                                              )}
-                                              disabled={active?.id !== route.id}
-                                              bind:value={requestParams[
-                                                `${route.id}-${param.name}`
-                                              ]}
-                                              style={active?.id !== route.id
-                                                ? "cursor:not-allowed"
-                                                : ""}
-                                              type="text"
-                                              class="w-full border-2 border-gray-400 rounded p-1" />
+                                            <div>{@html param.description || ""}</div>
+                                            {#if resolver(param.schema, swaggerDoc).enum}
+                                              <select
+                                                required={param.required}
+                                                disabled={active?.id !==
+                                                  route.id}
+                                                class="border-black border rounded p-2"
+                                                bind:value={requestParams[
+                                                  `${route.id}-${param.name}`
+                                                ]}>
+                                                {#each resolver(param.schema, swaggerDoc).enum as en, e}
+                                                  <option>{en}</option>
+                                                {/each}
+                                              </select>
+                                            {:else}
+                                              <input
+                                                required={param.required}
+                                                disabled={active?.id !==
+                                                  route.id}
+                                                bind:value={requestParams[
+                                                  `${route.id}-${param.name}`
+                                                ]}
+                                                style={active?.id !== route.id
+                                                  ? "cursor:not-allowed"
+                                                  : ""}
+                                                type="text"
+                                                class="w-full border-2 border-gray-400 rounded p-1" />
+                                            {/if}
                                           </td>
                                         </tr>
                                       {/each}
@@ -529,6 +546,8 @@ ${Object.entries(activeHeaders)
 {/each}
 
 <style lang="postcss">
+  :global(a) { color: blue }
+
   code {
     word-break: break-all;
     display: inline-block;

@@ -14,6 +14,11 @@ const swaggerAutogen = sA({ openapi: '3.0.0' });
 const responseTypes = ['application/json', 'application/octet-stream'];
 
 const doc = {
+    info: {
+        version: packageJSON.version,
+        title: "Space Data Server",
+        description: `MVP Space Data Service based on the data standards at: <a href="https://SpaceDataStandards.org">SpaceDataStandards.org</a>, version ${packageJSON.standardsVersion}`
+    },
     host: "",
     basePath: "/",
     schemes: ['http', 'https'],
@@ -33,14 +38,17 @@ const doc = {
                 "parameters": [
                     {
                         "name": "standard",
+                        "description":"Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
                         }
                     },
                     {
                         "name": "provider",
+                        "description":"The globally unique identifier (GUID) for a data provider.",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -81,11 +89,8 @@ swaggerAutogen(outputFile, endpointsFiles).then(() => {
         "description": "List of SpaceDataStandards.org Standards Loaded into this node.",
         "enum": Object.keys(standardsJSON)
     };
-    swaggerJSON.info = {
-        version: packageJSON.version,
-        title: "Space Data Server",
-        description: `MVP Space Data Service based on the data standards at: <a href="https://SpaceDataStandards.org">SpaceDataStandards.org</a>, version ${packageJSON.standardsVersion}`
-    };
+    delete swaggerJSON.info;
     swaggerJSON = Object.assign({}, doc, swaggerJSON);
+    swaggerJSON.paths = Object.assign({}, swaggerJSON.paths, doc.paths);
     writeFileSync(_path, JSON.stringify(swaggerJSON, null, 4));
 })

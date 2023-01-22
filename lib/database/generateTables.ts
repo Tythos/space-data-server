@@ -2,6 +2,8 @@ import { Knex } from "knex";
 import { writeFileSync, rmSync, existsSync } from "fs";
 import { JSONSchema4 } from "json-schema";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
+import { resolver } from "@/lib/utility/resolver";
+export { resolver } from "@/lib/utility/resolver";
 
 let tSchema: Knex.SchemaBuilder;
 
@@ -23,26 +25,6 @@ const foreignTypes: Array<any> = ["object", "array", "union"];
 export const fTCheck = (ftPredicate: string | undefined) => ~foreignTypes.indexOf(ftPredicate);
 
 export const refRootName = ($ref: string = ""): any => $ref.split("/").pop();
-
-export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema4 => {
-    prop = prop?.items || prop;
-    let { $ref, $$ref } = prop;
-    if ($ref) {
-        let rpath = $ref.split("/").slice(1);
-        let fprop = jsonSchema;
-        for (let i = 0; i < rpath.length; i++) {
-            try {
-                fprop = fprop[rpath[i]];
-            } catch (e) {
-                console.log(fprop);
-            }
-        }
-        fprop.$$ref = $ref || $$ref;
-        return resolver(fprop, jsonSchema);
-    } else {
-        return prop;
-    }
-};
 
 const builder = (predicateName: string, predicate: JSONSchema4, jsonSchema: JSONSchema4, rootPredicate: string, parentPredicate?: string): any => {
     let { type, $ref, $$ref, properties, items } = predicate;
