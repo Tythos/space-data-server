@@ -27,7 +27,7 @@
   let activeURL;
   let activeExecuted;
 
-  const devMode = window.location.hostname === "localhost";
+  const devMode = false; //window.location.hostname === "localhost";
   const _host =
     swaggerDoc.host || devMode
       ? window.location.hostname + ":8080"
@@ -253,10 +253,9 @@ ${Object.entries(activeHeaders)
         <div
           class="overflow-hidden accordion-body py-4 px-5 flex flex-col gap-2">
           <div
-            id="collapseOne"
             class="flex flex-col gap-2 accordion-collapse collapse show"
             aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample">
+            data-bs-parent="#model-box">
             <!--ts-ignore-->
             {#each routes as route, r}
               <div
@@ -585,6 +584,84 @@ ${Object.entries(activeHeaders)
     </div>
   </div>
 {/each}
+<div class="accordion lg:w-3/4 m-auto mt-5" id="model-box">
+  <div class="accordion-item bg-white border border-gray-200">
+    <h2 class="accordion-header mb-0" id="headingOne">
+      <button
+        class="
+        accordion-button
+        relative
+        flex
+        items-center
+        w-full
+        py-4
+        px-5
+        text-base text-gray-800 text-left
+        bg-white
+        border-0
+        rounded-none
+        transition
+        focus:outline-none
+      "
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#model-body"
+        aria-expanded="true"
+        aria-controls="model-body">
+        Models
+      </button>
+    </h2>
+    <div
+      id="model-body"
+      class="accordion-collapse collapse show"
+      aria-labelledby="headingOne"
+      data-bs-parent="#model-box">
+      <div class="accordion-body py-4 px-5">
+        {#each Object.entries(swagger?.definitions || {}) as [modelName, model], m}
+          <div
+            class="accordion-item bg-white border border-gray-200"
+            id="{modelName}-model">
+            <h2 class="accordion-header mb-0" id="headingOne">
+              <button
+                class="
+  accordion-button
+  relative
+  flex
+  items-center
+  w-full
+  py-4
+  px-5
+  text-base text-gray-800 text-left
+  bg-white
+  border-0
+  rounded-none
+  transition
+  focus:outline-none
+  collapsed
+"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#{modelName}-body"
+                aria-expanded="true"
+                aria-controls="{modelName}-body">
+                {modelName}
+              </button>
+            </h2>
+            <div
+              id="{modelName}-body"
+              class="accordion-collapse collapse"
+              aria-labelledby="headingOne"
+              data-bs-parent="#{modelName}-model">
+              <div class="accordion-body text-left py-4 px-5">
+                <JSONTree value={model} />
+              </div>
+            </div>
+          </div>
+        {/each}
+      </div>
+    </div>
+  </div>
+</div>
 
 <style lang="postcss">
   :global(a) {
