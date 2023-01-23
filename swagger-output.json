@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1117+1674431592662",
+        "version": "1.0.1124+1674433722191",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
     },
@@ -121,8 +121,30 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
+                        },
+                        "description": "JWT token in the format of 'Bearer <token>'"
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "in": "body",
+                    "content": {
+                        "application/octet-stream": {
+                            "schema": {
+                                "type": "string",
+                                "format": "binary"
+                            }
+                        }
+                    }
+                },
                 "responses": {}
             }
         },
@@ -154,48 +176,6 @@
                                 "schema": {
                                     "type": "string"
                                 }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/spacedatalatest/{standard}/{provider}": {
-            "get": {
-                "description": "",
-                "parameters": [
-                    {
-                        "name": "standard",
-                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "$ref": "#/definitions/STANDARDS"
-                        }
-                    },
-                    {
-                        "name": "provider",
-                        "description": "The globally unique identifier (GUID) for a data provider.",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {},
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        },
-                        "application/octet-stream": {
-                            "schema": {
-                                "$ref": ""
                             }
                         }
                     }

@@ -1,6 +1,7 @@
 import { JSONSchema4 } from "json-schema";
 
 export const resolver = (prop: JSONSchema4, jsonSchema: JSONSchema4): JSONSchema4 => {
+    if(!prop) return {};
     prop = prop?.items || prop;
     let { $ref, $$ref } = prop;
     if ($ref) {

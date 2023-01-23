@@ -25,46 +25,42 @@ const doc = {
     consumes: responseTypes,
     produces: responseTypes,
     "paths": {
-        "/spacedatalatest/{standard}/{provider}": {
-            "get": {
+        "/spacedata/{standard}": {
+            "post": {
                 "description": "",
                 "parameters": [
                     {
                         "name": "standard",
-                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "$ref": "#/definitions/STANDARDS"
-                        }
-                    },
-                    {
-                        "name": "provider",
-                        "description": "The globally unique identifier (GUID) for a data provider.",
                         "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
+                        },
+                        "description": "JWT token in the format of 'Bearer <token>'"
                     }
                 ],
-                "responses": {},
                 "requestBody": {
                     "required": true,
+                    "in": "body",
                     "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": ""
-                            }
-                        },
                         "application/octet-stream": {
                             "schema": {
-                                "$ref": ""
+                                "type": "string",
+                                "format": "binary"
                             }
                         }
                     }
-                }
+                },
+                "responses": {}
             }
         },
         "/sql/": {

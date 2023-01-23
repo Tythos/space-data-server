@@ -53,10 +53,6 @@ ${Object.entries(activeHeaders)
   let requestBodyExample = {};
   let paths: KeyValueDataStructure = {};
 
-  $: {
-    console.log(currentResponseContentType);
-  }
-
   onMount(async () => {
     swagger = swaggerDoc;
     baseurl = window.location.host;
@@ -71,6 +67,17 @@ ${Object.entries(activeHeaders)
           method[1].hasOwnProperty("requestBody") &&
           method[1].requestBody.content;
 
+        /*Add Body To Parameters*/
+        if (method[1].requestBody) {
+          method[1].parameters = [
+            ...method[1].parameters,
+            {
+              name: "body",
+              schema: { type: Object.keys(method[1].requestBody.content).join(",") },
+              ...method[1].requestBody,
+            },
+          ];
+        }
         /*ResponseContentTypes OPENAPI v3.0*/
         responseContentTypes[id] = responseContentTypes[id] || [];
         for (let response in method[1].responses) {
@@ -183,7 +190,6 @@ ${Object.entries(activeHeaders)
     active = null;
     activeExecuted = false;
   };
-  console.log(swaggerDoc);
 </script>
 
 <div class="text-left">
@@ -406,7 +412,7 @@ ${Object.entries(activeHeaders)
                                             <div>
                                               {@html param.description || ""}
                                             </div>
-                                            {#if resolver(param.schema, swaggerDoc).enum}
+                                            {#if resolver(param?.schema ? param.schema : param, swaggerDoc).enum}
                                               <select
                                                 required={param.required}
                                                 disabled={active?.id !==
