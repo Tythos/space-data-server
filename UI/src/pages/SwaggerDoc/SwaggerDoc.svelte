@@ -73,7 +73,9 @@ ${Object.entries(activeHeaders)
             ...method[1].parameters,
             {
               name: "body",
-              schema: { type: Object.keys(method[1].requestBody.content).join(",") },
+              schema: {
+                type: Object.keys(method[1].requestBody.content).join(","),
+              },
               ...method[1].requestBody,
             },
           ];
@@ -421,7 +423,7 @@ ${Object.entries(activeHeaders)
                                                 bind:value={requestParams[
                                                   `${route.id}-${param.name}`
                                                 ]}>
-                                                {#each resolver(param.schema, swaggerDoc).enum as en, e}
+                                                {#each resolver(param.schema, swaggerDoc).enum.filter( (s) => (param.required ? s.toString().length : true) ) as en, e}
                                                   <option>{en}</option>
                                                 {/each}
                                               </select>

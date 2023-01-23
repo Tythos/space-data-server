@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1124+1674433722191",
+        "version": "1.0.1133+1674434281069",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
     },
@@ -116,10 +116,12 @@
                 "parameters": [
                     {
                         "name": "standard",
+                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
                         }
                     },
                     {
@@ -130,7 +132,7 @@
                             "type": "string",
                             "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
                         },
-                        "description": "JWT token in the format of 'Bearer <token>'"
+                        "description": "JSON Web Signature Token in the format of 'Bearer <token>'"
                     }
                 ],
                 "requestBody": {
@@ -150,32 +152,52 @@
         },
         "/standards/{standard?}": {
             "get": {
-                "description": "",
+                "description": "Returns the JSON Schema document for a SpaceDataStandards.org standard.  Defaults to sending back all standards.",
                 "parameters": [
                     {
                         "name": "standard?",
+                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
                         "in": "path",
-                        "required": true,
+                        "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "JSON Schema of standards.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/sql/": {
             "get": {
-                "description": "SQL used to generate the database structure for this server.",
+                "description": "",
                 "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "Successfully returns the raw SQL as a string.",
-                        "content": {
-                            "application/text": {
-                                "schema": {
-                                    "type": "string"
-                                }
+                "responses": {}
+            }
+        }
+    },
+    "/sql/": {
+        "get": {
+            "description": "SQL used to generate the database structure for this server.",
+            "parameters": [],
+            "responses": {
+                "200": {
+                    "description": "Successfully returns the raw SQL as a string.",
+                    "content": {
+                        "application/text": {
+                            "schema": {
+                                "type": "string"
                             }
                         }
                     }
@@ -1668,6 +1690,7 @@
             "type": "string",
             "description": "List of SpaceDataStandards.org Standards Loaded into this node.",
             "enum": [
+                "",
                 "CAT",
                 "OMM",
                 "CDM",

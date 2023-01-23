@@ -31,10 +31,12 @@ const doc = {
                 "parameters": [
                     {
                         "name": "standard",
+                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
                         }
                     },
                     {
@@ -45,7 +47,7 @@ const doc = {
                             "type": "string",
                             "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
                         },
-                        "description": "JWT token in the format of 'Bearer <token>'"
+                        "description": "JSON Web Signature Token in the format of 'Bearer <token>'"
                     }
                 ],
                 "requestBody": {
@@ -63,17 +65,28 @@ const doc = {
                 "responses": {}
             }
         },
-        "/sql/": {
+        "/standards/{standard?}": {
             "get": {
-                "description": "SQL used to generate the database structure for this server.",
-                "parameters": [],
+                "description": "Returns the JSON Schema document for a SpaceDataStandards.org standard.  Defaults to sending back all standards.",
+                "parameters": [
+                    {
+                        "name": "standard?",
+                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
+                        "in": "path",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+                    },
+                ],
                 "responses": {
                     "200": {
-                        "description": "Successfully returns the raw SQL as a string.",
+                        "description": "JSON Schema of standards.",
                         "content": {
-                            "application/text": {
+                            "application/json": {
                                 "schema": {
-                                    "type": "string"
+                                    "type": "object"
                                 }
                             }
                         }
@@ -82,8 +95,28 @@ const doc = {
                 }
             }
         }
+    },
+    "/sql/": {
+        "get": {
+            "description": "SQL used to generate the database structure for this server.",
+            "parameters": [],
+            "responses": {
+                "200": {
+                    "description": "Successfully returns the raw SQL as a string.",
+                    "content": {
+                        "application/text": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
     }
-}
+};
+
 
 const outputFile = '../swagger-output.json';
 const endpointsFiles = ['../lib/worker/app'];
@@ -95,7 +128,7 @@ swaggerAutogen(outputFile, endpointsFiles).then(() => {
     swaggerJSON.definitions.STANDARDS = {
         "type": "string",
         "description": "List of SpaceDataStandards.org Standards Loaded into this node.",
-        "enum": Object.keys(standardsJSON)
+        "enum": ["", ...Object.keys(standardsJSON)]
     };
     delete swaggerJSON.info;
     swaggerJSON = Object.assign({}, doc, swaggerJSON);
