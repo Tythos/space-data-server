@@ -25,13 +25,6 @@ const doc = {
     consumes: responseTypes,
     produces: responseTypes,
     "paths": {
-        "/": {
-            "get": {
-                "description": "Home",
-                "parameters": [],
-                "responses": {}
-            }
-        },
         "/spacedatalatest/{standard}/{provider}": {
             "get": {
                 "description": "",

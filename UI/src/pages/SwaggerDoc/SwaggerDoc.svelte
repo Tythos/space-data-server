@@ -5,6 +5,13 @@
   import { handleRequest } from "./handleRequest";
   import JSONTree from "svelte-json-tree";
   import { resolver } from "@/lib/utility/resolver";
+  import Icon from "svelte-awesome";
+  import { copy } from "svelte-awesome/icons";
+
+  function copyText(element) {
+    navigator.clipboard.writeText(element.innerText);
+  }
+
   let swagger: any = null;
 
   let baseurl: any = "";
@@ -81,7 +88,7 @@ ${Object.entries(activeHeaders)
         responseContentTypes[id] = responseContentTypes[id].map((p, pid) => {
           return { id: pid, name: p };
         });
-        
+
         currentResponseContentType[id] = 0;
         if (method[1].requestBody) {
           Object.entries(method[1].requestBody.content).forEach(
@@ -500,7 +507,7 @@ ${Object.entries(activeHeaders)
                                       <tr>
                                         <th
                                           scope="col"
-                                          class="text-sm font-medium text-gray-900 py-4 text-left"
+                                          class="text-sm font-medium text-gray-900 py-4 text-left w-20"
                                           >Code</th>
                                         <th
                                           scope="col"
@@ -516,10 +523,24 @@ ${Object.entries(activeHeaders)
                                         <td>
                                           <div
                                             class="flex flex-col gap-2 p-2 w-full">
-                                            <div>Response Body</div>
-                                            <div class="overflow-x-auto">
+                                            <div>
+                                              <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                              Response Body
+                                              <span
+                                                on:click={(e) =>
+                                                  copyText(
+                                                    document.getElementById(
+                                                      route.id + "-body"
+                                                    )
+                                                  )}
+                                                class="cursor-pointer text-gray-500 ml-2"
+                                                ><Icon data={copy} /></span>
+                                            </div>
+                                            <div
+                                              class="overflow-x-auto relative max-h-[100px]">
                                               <code
-                                                class="whitespace-pre p-2 bg-gray-800 rounded text-white text-left max-h-[100px] overflow-y-scroll">
+                                                id="{route.id}-body"
+                                                class="h-full whitespace-pre p-2 bg-gray-800 rounded text-white text-left overflow-y-scroll">
                                                 {responses[route.id]
                                                   ?.responseBody}
                                               </code>
