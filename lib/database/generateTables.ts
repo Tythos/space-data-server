@@ -179,21 +179,32 @@ export const generateDatabase = async (
     }
 
     tSchema.createTable("FILE_IMPORT_TABLE", function (table: any) {
-        //TODO: Reference https://public.ccsds.org/Pubs/357x0b1.pdf
         table.string("CID").notNullable().primary();
         table.string("DIGITAL_SIGNATURE");
         table.string("PROVIDER");
         table.string("STANDARD");
         table.integer("RECORD_COUNT").unsigned().notNullable();
+
         table.timestamps();
     });
 
+    tSchema.createTable("PROVIDER", function (table: any) {
+        table.integer("id").notNullable().unsigned().primary();
+        table.string("ETH_ADDRESS").notNullable().unique();
+        table.string("NAME");
+        table.string("DESCRIPTION");
+        table.timestamps();
+    });
 
     return tSchema.then(() => {
         if (sqlFilename.length) {
             writeFileSync(
                 sqlFilename,
-                `/*${version}*/
+                `/*
+Generated From: 
+https://SpaceDataStandards.org 
+version: ${version}
+*/
 ` +
                 tSchema
                     .toString()

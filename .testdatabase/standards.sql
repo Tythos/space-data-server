@@ -1,4 +1,8 @@
-/*0.0.2+1672861763163*/
+/*
+Generated From: 
+https://SpaceDataStandards.org 
+version: 0.0.2+1675110065585
+*/
 create table `CAT` (
  `file_id` varchar(
  255),
@@ -534,6 +538,122 @@ create index `mpe_id_index` on `MPE` (
  `id`);
 
 
+create table `DPM` (
+ `file_id` varchar(
+ 255),
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `GUID` text,
+ `NAME` text,
+ `SAME_AS` text,
+ `URL` text,
+ `DESCRIPTION` text,
+ primary key (
+ `id`));
+
+
+create index `dpm_file_id_index` on `DPM` (
+ `file_id`);
+
+
+create index `dpm_id_index` on `DPM` (
+ `id`);
+
+
+create table `PERSON` (
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `DPM_id` integer,
+ `GUID` text,
+ `NAME` text,
+ `ALTERNATE_NAME` text,
+ `DESCRIPTION` text,
+ `IMAGE` text,
+ `SAME_AS` text,
+ `URL` text,
+ `TELEPHONE` text,
+ `EMAIL` text,
+ `JOB_TITLE` text,
+ `CONTACT_POINT` integer,
+ `ADDRESS` integer,
+ foreign key(
+ `DPM_id`) references `DPM`(
+ `id`) on delete CASCADE,
+ primary key (
+ `id`));
+
+
+create index `person_id_index` on `PERSON` (
+ `id`);
+
+
+create index `person_dpm_id_index` on `PERSON` (
+ `DPM_id`);
+
+
+create index `person_contact_point_index` on `PERSON` (
+ `CONTACT_POINT`);
+
+
+create index `person_address_index` on `PERSON` (
+ `ADDRESS`);
+
+
+create table `CONTACT_POINT` (
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `PERSON_id` integer,
+ `GUID` text,
+ `CONTACT_TYPE` text,
+ `EMAIL` text,
+ `TELEPHONE` text,
+ `CONTACT_OPTION` text,
+ `AREA_SERVED` text,
+ `AVAILABLE_LANGUAGE` text,
+ foreign key(
+ `PERSON_id`) references `PERSON`(
+ `id`) on delete CASCADE,
+ primary key (
+ `id`));
+
+
+create index `contact_point_id_index` on `CONTACT_POINT` (
+ `id`);
+
+
+create index `contact_point_person_id_index` on `CONTACT_POINT` (
+ `PERSON_id`);
+
+
+create table `POSTAL_ADDRESS` (
+ `id` integer not null,
+ `created_at` datetime not null default CURRENT_TIMESTAMP,
+ `updated_at` datetime not null default CURRENT_TIMESTAMP,
+ `PERSON_id` integer,
+ `GUID` text,
+ `ADDRESS_COUNTRY` text,
+ `ADDRESS_REGION` text,
+ `ADDRESS_LOCALITY` text,
+ `POSTAL_CODE` text,
+ `STREET_ADDRESS` text,
+ foreign key(
+ `PERSON_id`) references `PERSON`(
+ `id`) on delete CASCADE,
+ primary key (
+ `id`));
+
+
+create index `postal_address_id_index` on `POSTAL_ADDRESS` (
+ `id`);
+
+
+create index `postal_address_person_id_index` on `POSTAL_ADDRESS` (
+ `PERSON_id`);
+
+
 create table `FILE_IMPORT_TABLE` (
  `CID` varchar(
  255) not null,
@@ -547,4 +667,22 @@ create table `FILE_IMPORT_TABLE` (
  `created_at` datetime,
  `updated_at` datetime,
  primary key (
- `CID`))
+ `CID`));
+
+
+create table `PROVIDER` (
+ `id` integer not null,
+ `ETH_ADDRESS` varchar(
+ 255) not null,
+ `NAME` varchar(
+ 255),
+ `DESCRIPTION` varchar(
+ 255),
+ `created_at` datetime,
+ `updated_at` datetime,
+ primary key (
+ `id`));
+
+
+create unique index `provider_eth_address_unique` on `PROVIDER` (
+ `ETH_ADDRESS`)

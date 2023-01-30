@@ -25,6 +25,55 @@ const doc = {
     consumes: responseTypes,
     produces: responseTypes,
     "paths": {
+        "/providers/{provider?}": {
+            "get": {
+                "description": "Returns a list of all of the providers available on the node.",
+                "parameters": [
+                    {
+                        "name": "provider?",
+                        "in": "path",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/spacedata/{standard}/{provider}/{cid?}": {
+            "get": {
+                "description": "Returns data by standard, provider, and optionally the Content Identifier (CID).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+                    },
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cid?",
+                        "in": "path",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/spacedata/{standard}": {
             "post": {
                 "description": "",
@@ -47,7 +96,7 @@ const doc = {
                             "type": "string",
                             "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
                         },
-                        "description": "JSON Web Signature Token in the format of 'Bearer <token>'"
+                        "description": "JSON Web Signature Token in the format of 'Bearer {token}'"
                     }
                 ],
                 "requestBody": {

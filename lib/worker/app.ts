@@ -10,7 +10,7 @@ import * as standards from "@/lib/standards/standards";
 import { standards as standardsRoute } from "../routes/standards";
 const app: Express = express();
 const totalCPUs = cpus().length;
-import { providers } from "@/lib/routes/spacedata/providers";
+import { providers, provider, cid } from "@/lib/routes/spacedata/providers";
 import { sql } from "@/lib/routes/standards/sql";
 import { schema } from "@/lib/routes/standards/schema";
 import apicache from "apicache";
@@ -65,8 +65,12 @@ app.get("/swagger-json", (req: Request, res: Response) => {
     res.json(swaggerFile);
 });
 app.get("/providers/:provider?", (req: any, res: any, next: any) => {
-    //#swagger.description = "Returns a list of all of the providers available on the node."
     providers(req, res, next);
+});
+app.get("/cid/:provider/:standard/:latest?", (req: any, res: any, next: any) => {
+    //#swagger.description = "Returns the latest Content Identifier for a provider by standard.  If the `latest` argument is omitted, returns the entire list of content identifiers."
+    res.set("Content-Type", "application/json");
+    cid(req, res, next)
 });
 app.get("/schema/:standard", (req: any, res: any, next: any) => {
     //#swagger.description = "Returns a JSON Schema for the standard."
@@ -81,7 +85,7 @@ app.get("/idl/:standard", (req: any, res: any, next: any) => {
 app.get("/spacedata/:standard/:provider/:cid?", (req: any, res: any, next: any) => {
     /*
     #swagger.description = `Returns data by standard, provider,
-and optionally the Content Identifier (<a href='https://github.com/multiformats/cid'>CID</a>).  
+and optionally the Content Identifier (CID).  
 The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected. 
 If no CID is specified, the most recent CID is used.  
 The CID is always returned in the header "x-content-identifier".`;

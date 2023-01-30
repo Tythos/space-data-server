@@ -12,6 +12,7 @@ import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
 import standardsJSON from "@/lib/standards/schemas.json";
 import { JSONSchema4 } from "json-schema";
+import { get, post } from "@/lib/routes/spacedata";
 
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
@@ -48,7 +49,7 @@ describe("POST /endpoint", () => {
 
     it("should accept JSON and Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
-            if (standard !== "OMM") continue;
+            //if (standard !== "OMM") continue;
             let ethKeyConvert = new keyconvert({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as any);
             await ethKeyConvert.import(ethWallet.privateKey, "hex");
             expect(await ethKeyConvert.publicKeyHex()).toEqual(ethWallet.publicKey.slice(2,));
@@ -120,8 +121,13 @@ describe("POST /endpoint", () => {
                 .set("authorization", `Bearer ${jws}`)
                 .send(flatbufferBinary);
             expect(fbResponse.status).toBe(200);
+
+            const postedCID = await request(app)
+                .get(`/cid/${ethWallet.address}/${standard}/true`);
+            console.log(postedCID.body);
+
         }
-        await new Promise(r => setTimeout(r, 5000));
+        await new Promise(r => setTimeout(r, 5000)); //!IMPORTANT
     }, 30000);
 });
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import swaggerDoc from "@/swagger-output.json";
+  import rawSwaggerDoc from "@/swagger-output.json";
   import type { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
   import { onMount } from "svelte";
   import { handleRequest } from "./handleRequest";
@@ -7,6 +7,8 @@
   import { resolver } from "@/lib/utility/resolver";
   import Icon from "svelte-awesome";
   import { copy } from "svelte-awesome/icons";
+
+  const swaggerDoc: any = rawSwaggerDoc;
 
   function copyText(element) {
     navigator.clipboard.writeText(element.innerText);
@@ -27,7 +29,7 @@
   let activeURL;
   let activeExecuted;
 
-  const devMode = false; //window.location.hostname === "localhost";
+  const devMode = window.location.hostname === "localhost";
   const _host =
     swaggerDoc.host || devMode
       ? window.location.hostname + ":8080"
@@ -59,7 +61,7 @@ ${Object.entries(activeHeaders)
 
     Object.entries(swagger.paths).forEach((route, routeIdx) => {
       let category = Object.values(route[1])[0]?.tags;
-      category = category ? category[0] : "Default";
+      category = category ? category[0] : "MAIN";
       Object.entries(route[1]).map((method, methodIdx) => {
         const id = `${routeIdx}-${methodIdx}`;
 
@@ -74,7 +76,17 @@ ${Object.entries(activeHeaders)
             {
               name: "body",
               schema: {
-                type: Object.keys(method[1].requestBody.content).join(","),
+                type: Object.keys(method[1].requestBody.content)
+                  .map((m) => {
+                    if (m === "application/text") {
+                      return "string";
+                    } else if (m === "application/json") {
+                      return "object";
+                    } else if (m === "application/octet-stream") {
+                      return "buffer";
+                    }
+                  })
+                  .join(","),
               },
               ...method[1].requestBody,
             },
@@ -331,7 +343,7 @@ ${Object.entries(activeHeaders)
                               class:bg-red-100={route.method?.toUpperCase() ===
                                 "DELETE"}
                               class="text-black flex text-left text-xs flex px-4 py-6">
-                              {route.description || "No Description"}
+                              {@html route.description || "No Description"}
                             </div>
                             <div
                               class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-2 px-4">
@@ -608,7 +620,7 @@ ${Object.entries(activeHeaders)
         data-bs-target="#model-body"
         aria-expanded="true"
         aria-controls="model-body">
-        Models
+        MODELS
       </button>
     </h2>
     <div

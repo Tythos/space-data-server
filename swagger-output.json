@@ -1,8 +1,8 @@
 {
     "info": {
-        "version": "1.0.1136+1674434568115",
+        "version": "1.0.1166+1675111927128",
         "title": "Space Data Server",
-        "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1672861763163"
+        "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1675110065585"
     },
     "host": "",
     "basePath": "/",
@@ -37,7 +37,7 @@
                     {
                         "name": "provider?",
                         "in": "path",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "string"
                         }
@@ -80,14 +80,15 @@
         },
         "/spacedata/{standard}/{provider}/{cid?}": {
             "get": {
-                "description": "Returns data by standard, provider, and optionally the Content Identifier (<a href='https://github.com/multiformats/cid'>CID</a>).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
+                "description": "Returns data by standard, provider, and optionally the Content Identifier (CID).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
                 "parameters": [
                     {
                         "name": "standard",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
                         }
                     },
                     {
@@ -101,7 +102,7 @@
                     {
                         "name": "cid?",
                         "in": "path",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "string"
                         }
@@ -132,7 +133,7 @@
                             "type": "string",
                             "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
                         },
-                        "description": "JSON Web Signature Token in the format of 'Bearer <token>'"
+                        "description": "JSON Web Signature Token in the format of 'Bearer {token}'"
                     }
                 ],
                 "requestBody": {
@@ -1686,6 +1687,144 @@
             },
             "$ref": "#/definitions/MPE"
         },
+        "DPM": {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "definitions": {
+                "PERSON": {
+                    "type": "object",
+                    "properties": {
+                        "GUID": {
+                            "type": "string"
+                        },
+                        "NAME": {
+                            "type": "string"
+                        },
+                        "ALTERNATE_NAME": {
+                            "type": "string"
+                        },
+                        "DESCRIPTION": {
+                            "type": "string"
+                        },
+                        "IMAGE": {
+                            "type": "string"
+                        },
+                        "SAME_AS": {
+                            "type": "string"
+                        },
+                        "URL": {
+                            "type": "string"
+                        },
+                        "TELEPHONE": {
+                            "type": "string"
+                        },
+                        "EMAIL": {
+                            "type": "string"
+                        },
+                        "CONTACT_POINT": {
+                            "$ref": "#/definitions/CONTACT_POINT"
+                        },
+                        "ADDRESS": {
+                            "$ref": "#/definitions/POSTAL_ADDRESS"
+                        },
+                        "JOB_TITLE": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "CONTACT_POINT": {
+                    "type": "object",
+                    "properties": {
+                        "GUID": {
+                            "type": "string"
+                        },
+                        "CONTACT_TYPE": {
+                            "type": "string"
+                        },
+                        "EMAIL": {
+                            "type": "string"
+                        },
+                        "TELEPHONE": {
+                            "type": "string"
+                        },
+                        "CONTACT_OPTION": {
+                            "type": "string"
+                        },
+                        "AREA_SERVED": {
+                            "type": "string"
+                        },
+                        "AVAILABLE_LANGUAGE": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "POSTAL_ADDRESS": {
+                    "type": "object",
+                    "properties": {
+                        "GUID": {
+                            "type": "string"
+                        },
+                        "ADDRESS_COUNTRY": {
+                            "type": "string"
+                        },
+                        "ADDRESS_REGION": {
+                            "type": "string"
+                        },
+                        "ADDRESS_LOCALITY": {
+                            "type": "string"
+                        },
+                        "POSTAL_CODE": {
+                            "type": "string"
+                        },
+                        "STREET_ADDRESS": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "DPM": {
+                    "type": "object",
+                    "properties": {
+                        "GUID": {
+                            "type": "string"
+                        },
+                        "NAME": {
+                            "type": "string"
+                        },
+                        "SAME_AS": {
+                            "type": "string"
+                        },
+                        "URL": {
+                            "type": "string"
+                        },
+                        "DESCRIPTION": {
+                            "type": "string"
+                        },
+                        "CONTACTS": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/PERSON"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "DPMCOLLECTION": {
+                    "type": "object",
+                    "properties": {
+                        "RECORDS": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/DPM"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "$ref": "#/definitions/DPM"
+        },
         "STANDARDS": {
             "type": "string",
             "description": "List of SpaceDataStandards.org Standards Loaded into this node.",
@@ -1696,7 +1835,8 @@
                 "CDM",
                 "OPM",
                 "OEM",
-                "MPE"
+                "MPE",
+                "DPM"
             ]
         }
     }

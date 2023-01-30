@@ -1472,5 +1472,143 @@
             }
         },
         "$ref": "#/definitions/MPE"
+    },
+    "DPM": {
+        "$schema": "https://json-schema.org/draft/2019-09/schema",
+        "definitions": {
+            "PERSON": {
+                "type": "object",
+                "properties": {
+                    "GUID": {
+                        "type": "string"
+                    },
+                    "NAME": {
+                        "type": "string"
+                    },
+                    "ALTERNATE_NAME": {
+                        "type": "string"
+                    },
+                    "DESCRIPTION": {
+                        "type": "string"
+                    },
+                    "IMAGE": {
+                        "type": "string"
+                    },
+                    "SAME_AS": {
+                        "type": "string"
+                    },
+                    "URL": {
+                        "type": "string"
+                    },
+                    "TELEPHONE": {
+                        "type": "string"
+                    },
+                    "EMAIL": {
+                        "type": "string"
+                    },
+                    "CONTACT_POINT": {
+                        "$ref": "#/definitions/CONTACT_POINT"
+                    },
+                    "ADDRESS": {
+                        "$ref": "#/definitions/POSTAL_ADDRESS"
+                    },
+                    "JOB_TITLE": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "CONTACT_POINT": {
+                "type": "object",
+                "properties": {
+                    "GUID": {
+                        "type": "string"
+                    },
+                    "CONTACT_TYPE": {
+                        "type": "string"
+                    },
+                    "EMAIL": {
+                        "type": "string"
+                    },
+                    "TELEPHONE": {
+                        "type": "string"
+                    },
+                    "CONTACT_OPTION": {
+                        "type": "string"
+                    },
+                    "AREA_SERVED": {
+                        "type": "string"
+                    },
+                    "AVAILABLE_LANGUAGE": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "POSTAL_ADDRESS": {
+                "type": "object",
+                "properties": {
+                    "GUID": {
+                        "type": "string"
+                    },
+                    "ADDRESS_COUNTRY": {
+                        "type": "string"
+                    },
+                    "ADDRESS_REGION": {
+                        "type": "string"
+                    },
+                    "ADDRESS_LOCALITY": {
+                        "type": "string"
+                    },
+                    "POSTAL_CODE": {
+                        "type": "string"
+                    },
+                    "STREET_ADDRESS": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DPM": {
+                "type": "object",
+                "properties": {
+                    "GUID": {
+                        "type": "string"
+                    },
+                    "NAME": {
+                        "type": "string"
+                    },
+                    "SAME_AS": {
+                        "type": "string"
+                    },
+                    "URL": {
+                        "type": "string"
+                    },
+                    "DESCRIPTION": {
+                        "type": "string"
+                    },
+                    "CONTACTS": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/PERSON"
+                        }
+                    }
+                },
+                "additionalProperties": false
+            },
+            "DPMCOLLECTION": {
+                "type": "object",
+                "properties": {
+                    "RECORDS": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/DPM"
+                        }
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "$ref": "#/definitions/DPM"
     }
 }
