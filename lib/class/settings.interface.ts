@@ -34,7 +34,8 @@ export interface Settings {
         "raw": string,
         "public": string,
         "copyOnRead": Boolean,
-        "cache": string
+        "cache": string,
+        "verbose": Boolean
     },
     "cronjobs": Array<cronJob>,
     "trustedAddresses": trustedAddressMap,

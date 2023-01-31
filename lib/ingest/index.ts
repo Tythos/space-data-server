@@ -119,7 +119,9 @@ async function processData() {
         returnFunc();
         return;
     }
-
+    if (config.data.verbose) {
+        console.log(`${Date.now()} - Ingesting File ${file}`);
+    }
     let trimmedFile = basename(file);
 
     const [fileName, fstandard, ext] = trimmedFile.split(".");
