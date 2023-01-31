@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1187+1675188624355",
+        "version": "1.0.1188+1675188695474",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1675110065585"
     },
@@ -46,9 +46,9 @@
                 "responses": {}
             }
         },
-        "/cid/{provider}/{standard}/": {
+        "/cid/{provider}/{standard}": {
             "get": {
-                "description": "Returns the latest Content Identifier for a provider by standard. If a query is provided, it will return the CIDs for a date range.",
+                "description": "Returns the latest Content Identifier for a provider by standard. If the query parameters `start` and `stop` are omitted, it will returnt the latest CID.",
                 "parameters": [
                     {
                         "name": "provider",
@@ -63,8 +63,29 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
                         }
+                    },
+                    {
+                        "in": "query",
+                        "name": "start",
+                        "description": "Start date",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "stop",
+                        "description": "Stop date",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": true
                     }
                 ],
                 "responses": {}
@@ -208,51 +229,6 @@
             "get": {
                 "description": "",
                 "parameters": [],
-                "responses": {}
-            }
-        },
-        "/cid/{provider}/{standard}": {
-            "get": {
-                "description": "Returns the latest Content Identifier for a provider by standard. If the query parameters `start` and `stop` are omitted, it will returnt the latest CID.",
-                "parameters": [
-                    {
-                        "name": "provider",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "standard",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "$ref": "#/definitions/STANDARDS"
-                        }
-                    },
-                    {
-                        "in": "query",
-                        "name": "start",
-                        "description": "Start date",
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        },
-                        "required": true
-                    },
-                    {
-                        "in": "query",
-                        "name": "stop",
-                        "description": "Stop date",
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        },
-                        "required": true
-                    }
-                ],
                 "responses": {}
             }
         }
