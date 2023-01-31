@@ -25,7 +25,7 @@ const doc = {
     consumes: responseTypes,
     produces: responseTypes,
     "paths": {
-        "/cid/{provider}/{standard}/{latest?}": {
+        "/cid/{provider}/{standard}/": {
             "get": {
                 "description": "Returns the latest Content Identifier for a provider by standard. If the `latest` argument is omitted, returns the entire list of content identifiers.",
                 "parameters": [
@@ -47,12 +47,24 @@ const doc = {
                         }
                     },
                     {
-                        "name": "latest?",
-                        "in": "path",
-                        "required": false,
+                        "in": "query",
+                        "name": "start",
+                        "description": "Start date",
                         "schema": {
-                            "type": "string"
-                        }
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "stop",
+                        "description": "Stop date",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": true
                     }
                 ],
                 "responses": {}

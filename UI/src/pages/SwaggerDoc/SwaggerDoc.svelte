@@ -58,7 +58,7 @@ ${Object.entries(activeHeaders)
   onMount(async () => {
     swagger = swaggerDoc;
     baseurl = window.location.host;
-
+    console.log(swagger);
     Object.entries(swagger.paths).forEach((route, routeIdx) => {
       let category = Object.values(route[1])[0]?.tags;
       category = category ? category[0] : "MAIN";
@@ -438,6 +438,32 @@ ${Object.entries(activeHeaders)
                                                   <option>{en}</option>
                                                 {/each}
                                               </select>
+                                            {:else if param.schema.format === "date"}
+                                              <input
+                                                required={param.required}
+                                                disabled={active?.id !==
+                                                  route.id}
+                                                bind:value={requestParams[
+                                                  `${route.id}-${param.name}`
+                                                ]}
+                                                style={active?.id !== route.id
+                                                  ? "cursor:not-allowed"
+                                                  : ""}
+                                                type="datetime-local"
+                                                class="w-full border-2 border-gray-400 rounded p-1" />
+                                            {:else if param.schema.type === "number"}
+                                              <input
+                                                required={param.required}
+                                                disabled={active?.id !==
+                                                  route.id}
+                                                bind:value={requestParams[
+                                                  `${route.id}-${param.name}`
+                                                ]}
+                                                style={active?.id !== route.id
+                                                  ? "cursor:not-allowed"
+                                                  : ""}
+                                                type="number"
+                                                class="w-full border-2 border-gray-400 rounded p-1" />
                                             {:else}
                                               <input
                                                 required={param.required}

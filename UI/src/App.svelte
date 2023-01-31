@@ -3,7 +3,6 @@
   import "tw-elements/dist/css/index.min.css";
   import Router from "svelte-spa-router";
   import { routes } from "@/UI/src/routes/routes";
-  console.log(routes);
 </script>
 
 <nav

@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1172+1675135316300",
+        "version": "1.0.1181+1675179810467",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1675110065585"
     },
@@ -46,7 +46,7 @@
                 "responses": {}
             }
         },
-        "/cid/{provider}/{standard}/{latest?}": {
+        "/cid/{provider}/{standard}/": {
             "get": {
                 "description": "Returns the latest Content Identifier for a provider by standard. If the `latest` argument is omitted, returns the entire list of content identifiers.",
                 "parameters": [
@@ -68,12 +68,24 @@
                         }
                     },
                     {
-                        "name": "latest?",
-                        "in": "path",
-                        "required": false,
+                        "in": "query",
+                        "name": "start",
+                        "description": "Start date",
                         "schema": {
-                            "type": "string"
-                        }
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "stop",
+                        "description": "Stop date",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": true
                     }
                 ],
                 "responses": {}
