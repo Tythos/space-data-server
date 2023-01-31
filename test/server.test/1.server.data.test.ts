@@ -27,6 +27,7 @@ const outputStandardFiles: any = {};
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 
 beforeAll(async () => {
+    rmSync(databaseConfig.connection.filename);
     if (!existsSync(databaseConfig.connection.filename)) {
         await generateDatabase(standardsArray, databaseConfig.connection.filename, `${config.database.path}/standards.sql`, connection, databaseConfig.version);
     }
@@ -122,10 +123,24 @@ describe("POST /endpoint", () => {
                 .send(flatbufferBinary);
             expect(fbResponse.status).toBe(200);
 
-            const postedCID = await request(app)
-                .get(`/cid/${ethWallet.address}/${standard}/true`);
-            console.log(postedCID.body);
-
+            let postedCID;
+            let timerCount = 0;
+            while (!postedCID && timerCount < 10) {
+                console.clear();
+                console.log(`${Date.now()} - Trying CID Service...`);
+                postedCID = (await request(app)
+                    .get(`/cid/${ethWallet.address}/${standard}/true`)).body[0];
+                if (!postedCID) {
+                    await new Promise(r => setTimeout(r, 2000));
+                }
+                timerCount++;
+            }
+            if (!postedCID) {
+                throw Error("Too Many Attempts");
+            }
+            expect(standard).toEqual(postedCID.STANDARD);
+            expect(ethWallet.address.toLowerCase()).toEqual(postedCID.PROVIDER);
+            expect(ipfsCIDFB).toEqual(postedCID.CID);
         }
         await new Promise(r => setTimeout(r, 5000)); //!IMPORTANT
     }, 30000);

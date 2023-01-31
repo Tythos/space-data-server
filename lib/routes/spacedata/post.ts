@@ -25,6 +25,7 @@ const writeToDisk = async (vM: any, standard: string, extension: string, signatu
     if (!existsSync(filePath)) {
         await mkdir(filePath, { recursive: true });
     }
+
     let completePath = `${filePath}/${fileName}.${standard}.${extension}`;
     await writeFile(completePath, vM.payload);
     await writeFile(completePath + ".sig", signature);
