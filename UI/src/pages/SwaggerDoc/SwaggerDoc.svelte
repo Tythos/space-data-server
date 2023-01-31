@@ -117,7 +117,7 @@ ${Object.entries(activeHeaders)
         }
 
         if (!responseContentTypes[id].length) {
-          responseContentTypes[id] = ["application/octet-stream"];
+          responseContentTypes[id] = ["application/json"];
         }
 
         responseContentTypes[id] = responseContentTypes[id].map((p, pid) => {

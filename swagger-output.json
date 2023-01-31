@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1211+1675193736926",
+        "version": "1.0.1217+1675202507784",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1675110065585"
     },
@@ -43,7 +43,18 @@
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "JSON Of Providers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/cid/{provider}/{standard}": {
@@ -88,7 +99,18 @@
                         "required": true
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "JSON CID entry",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/schema/{standard}": {
