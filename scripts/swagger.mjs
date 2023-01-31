@@ -25,6 +25,39 @@ const doc = {
     consumes: responseTypes,
     produces: responseTypes,
     "paths": {
+        "/cid/{provider}/{standard}/{latest?}": {
+            "get": {
+                "description": "Returns the latest Content Identifier for a provider by standard. If the `latest` argument is omitted, returns the entire list of content identifiers.",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+                    },
+                    {
+                        "name": "latest?",
+                        "in": "path",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
         "/providers/{provider?}": {
             "get": {
                 "description": "Returns a list of all of the providers available on the node.",

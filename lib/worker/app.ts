@@ -69,6 +69,17 @@ app.get("/providers/:provider?", (req: any, res: any, next: any) => {
 });
 app.get("/cid/:provider/:standard/:latest?", (req: any, res: any, next: any) => {
     //#swagger.description = "Returns the latest Content Identifier for a provider by standard.  If the `latest` argument is omitted, returns the entire list of content identifiers."
+    /*#swagger.parameters["standard"] = {
+        in: <string>,
+        description: <string>,
+        required: true,
+        type: <string>,
+        format: <string>,
+        schema: {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+    }*/
     res.set("Content-Type", "application/json");
     cid(req, res, next)
 });
