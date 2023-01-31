@@ -45199,8 +45199,6 @@ var import_path = require("path");
     (0, import_fs.writeFileSync)(`${nwritePath}/${await import_pure_ipfs_only_hash.default.of(oFBS)}.omm.fbs.error`, e);
   }
   setTimeout(() => {
-    (0, import_fs.rmSync)(signatureFileName, { force: true, recursive: true });
-    (0, import_fs.rmSync)(fileName, { force: true, recursive: true });
     console.log(signatureFileName, fileName);
   }, 1e3);
 })();
