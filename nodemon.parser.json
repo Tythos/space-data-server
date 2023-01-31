@@ -9,7 +9,7 @@
     "lib/config/*.json"
   ],
   "ext": "ts,mjs,js,json,graphql",
-  "exec": "npm run build:celestrak:parsers && node ./scripts/data_fetch/celestrak/index.js",
+  "exec": "npm run build:celestrak:parsers && node ./scripts/data_fetch/celestrak/index.cjs",
   "legacyWatch": true,
   "verbose": true
 }
