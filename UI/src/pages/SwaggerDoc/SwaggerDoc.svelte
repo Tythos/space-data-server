@@ -10,8 +10,8 @@
 
   const swaggerDoc: any = rawSwaggerDoc;
 
-  function copyText(element) {
-    navigator.clipboard.writeText(element.innerText);
+  function copyText(text) {
+    navigator.clipboard.writeText(text);
   }
 
   let swagger: any = null;
@@ -30,13 +30,16 @@
   let activeExecuted;
 
   const devMode = window.location.hostname === "localhost";
+  const devProvider = devMode
+    ? "0x9858effd232b4033e47d90003d41ec34ecaeda94"
+    : null;
   const _host =
     swaggerDoc.host || devMode
       ? window.location.hostname + ":8080"
       : window.location.host;
   $: {
     activeHeaders.accept = active?.id
-      ? responseContentTypes[active.id][currentResponseContentType[active.id]]
+      ? responseContentTypes[active?.id][currentResponseContentType[active?.id]]
           .name
       : "";
     if (active) {
@@ -58,7 +61,7 @@ ${Object.entries(activeHeaders)
   onMount(async () => {
     swagger = swaggerDoc;
     baseurl = window.location.host;
-    console.log(swagger);
+
     Object.entries(swagger.paths).forEach((route, routeIdx) => {
       let category = Object.values(route[1])[0]?.tags;
       category = category ? category[0] : "MAIN";
@@ -163,17 +166,24 @@ ${Object.entries(activeHeaders)
     ? ".accordion-collapse .collapse"
     : "accordion-collapse collapse";
 
+  let requestOut = false;
+
   const execute = async (e) => {
     e.preventDefault();
 
+    requestOut = true;
+
+    console.log("before request", activeHeaders);
     let { url, response } = await handleRequest(
       `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
       { ...active, route: active.route },
       active.id,
       active.parameters,
       requestParams,
-      requestBodyExample
+      requestBodyExample,
+      activeHeaders
     );
+    requestOut = false;
     activeURL = url;
     const isJSON = activeHeaders.accept === "application/json";
     responses[active.id] = responses[active.id] || {
@@ -488,6 +498,7 @@ ${Object.entries(activeHeaders)
                               {#if active?.id === route.id}
                                 <div class="flex gap-2 mt-5 w-full">
                                   <button
+                                    disabled={requestOut}
                                     type="submit"
                                     class="{activeExecuted
                                       ? 'w-1/2'
@@ -564,7 +575,7 @@ ${Object.entries(activeHeaders)
                                       <tr>
                                         <td class="m-0 w-6 flex pt-2"
                                           >{responses[route.id]
-                                            .responseCode}</td>
+                                            ?.responseCode}</td>
                                         <td>
                                           <div
                                             class="flex flex-col gap-2 p-2 w-full">
@@ -574,9 +585,8 @@ ${Object.entries(activeHeaders)
                                               <span
                                                 on:click={(e) =>
                                                   copyText(
-                                                    document.getElementById(
-                                                      route.id + "-body"
-                                                    )
+                                                    responses[route.id]
+                                                      ?.responseBody
                                                   )}
                                                 class="cursor-pointer text-gray-500 ml-2"
                                                 ><Icon data={copy} /></span>
@@ -586,18 +596,27 @@ ${Object.entries(activeHeaders)
                                               <code
                                                 id="{route.id}-body"
                                                 class="h-full whitespace-pre p-2 bg-gray-800 rounded text-white text-left overflow-y-scroll">
-                                                {responses[route.id]
-                                                  ?.responseBody}
+                                                {responses[
+                                                  route.id
+                                                ]?.responseBody?.slice(
+                                                  0,
+                                                  1000
+                                                )}{responses[route.id]
+                                                  ?.responseBody?.length > 1000
+                                                  ? "..."
+                                                  : ""}
                                               </code>
                                             </div>
                                             <div>Response Headers</div>
                                             <div class="overflow-x-auto">
-                                              <code
-                                                class="p-2 bg-gray-800 rounded text-white text-left">
-                                                {#each Object.entries(responses[route.id]?.responseHeaders) as [header, value], h}
-                                                  {header}: {value}<br />
-                                                {/each}
-                                              </code>
+                                              {#if responses[route.id]?.responseHeaders}
+                                                <code
+                                                  class="p-2 bg-gray-800 rounded text-white text-left">
+                                                  {#each Object.entries(responses[route.id]?.responseHeaders) as [header, value], h}
+                                                    {header}: {value}<br />
+                                                  {/each}
+                                                </code>
+                                              {/if}
                                             </div>
                                           </div>
                                         </td>

@@ -2,7 +2,7 @@ import { compile } from "path-to-regexp";
 const convertSwaggerPathToExpress = (path) => {
     return path.replace(/{/g, ':').replace(/}/g, '');
 }
-export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails, requestParams, requestBodyExample) => {
+export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails, requestParams, requestBodyExample, headers) => {
     const { route, method } = activeRoute;
     const reqParams = Object.entries(requestParams).filter(
         (x) => x[0].indexOf(methodId) > -1
@@ -21,7 +21,9 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
             }
         });
     }
-    const headers = { "Content-Type": "application/json" };
+    console.log("headers", headers)
+   // headers = Object.assign({ "Content-Type": "application/json" }, headers);
+
     const inPath = {};
     paramDetails.forEach((x) => {
         let rr = reqParams.find((param) => param[0] === `${methodId}-${x.name}`);

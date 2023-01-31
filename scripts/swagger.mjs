@@ -117,7 +117,24 @@ const doc = {
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "JSON Schema of standards.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            },
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "Buffer"
+                                }
+                            }
+                        }
+
+                    }
+                }
             }
         },
         "/spacedata/{standard}": {

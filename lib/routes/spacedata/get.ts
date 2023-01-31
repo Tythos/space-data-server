@@ -38,9 +38,11 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       res.end();
     }
 
-    let currentCID = await connection("FILE_IMPORT_TABLE").orderBy("CID").first();
-    
-    console.log(currentCID);
+    let { CID: currentCID } = await connection("FILE_IMPORT_TABLE").orderBy("CID").first();
+
+    if (!parsedQuery.length) {
+      parsedQuery = [["where", ["file_id", "=", currentCID]]];
+    }
 
     let payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
     payload = formatResponse(req, res, payload);
