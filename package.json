@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1182+1675179832610",
+    "version": "1.0.1183+1675183190738",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -10,6 +10,7 @@
         "build": "npm run build:standards && cp -R ./node_modules/better-sqlite3/build/Release/* build/ && npm run build:esbuild && node ./scripts/updateVersion.mjs",
         "build:ui": "cd UI && npm run build",
         "build:esbuild": "esbuild index.ts --sourcemap --external:pg-native --external:better_sqlite3 --bundle --platform=node --outfile=./build/server.cjs",
+        "build:celestrak": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.omm.ts --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.omm.cjs",
         "build:standards": "cd packages/spacedatastandards.org && git reset --hard && git checkout main && git pull && cd ../../ && node ./lib/utility/generator.mjs",
         "build:swagger": "node ./scripts/swagger.mjs",
         "start": "npm run build && node ./build/server.cjs",

@@ -25,9 +25,9 @@ const doc = {
     consumes: responseTypes,
     produces: responseTypes,
     "paths": {
-        "/cid/{provider}/{standard}/": {
+        "/cid/{provider}/{standard}": {
             "get": {
-                "description": "Returns the latest Content Identifier for a provider by standard. If the `latest` argument is omitted, returns the entire list of content identifiers.",
+                "description": "Returns the latest Content Identifier for a provider by standard. If the query parameters `start` and `stop` are omitted, it will returnt the latest CID.",
                 "parameters": [
                     {
                         "name": "provider",
