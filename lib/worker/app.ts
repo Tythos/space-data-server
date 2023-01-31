@@ -83,7 +83,7 @@ app.get("/idl/:standard", (req: any, res: any, next: any) => {
     res.set("Content-Type", "application/json");
     schema(req, res, next)
 });
-app.get("/spacedata/:standard/:provider/:cid?", (req: any, res: any, next: any) => {
+app.get("/spacedata/:provider/:standard/:cid?", (req: any, res: any, next: any) => {
     /*
     #swagger.description = `Returns data by standard, provider,
 and optionally the Content Identifier (CID).  
