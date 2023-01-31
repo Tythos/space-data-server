@@ -21,8 +21,6 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
             }
         });
     }
-    console.log("headers", headers)
-   // headers = Object.assign({ "Content-Type": "application/json" }, headers);
 
     const inPath = {};
     paramDetails.forEach((x) => {

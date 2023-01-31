@@ -7,11 +7,22 @@
   import { resolver } from "@/lib/utility/resolver";
   import Icon from "svelte-awesome";
   import { copy } from "svelte-awesome/icons";
+  import downloadjs from "downloadjs";
+  import ipfsHash from "pure-ipfs-only-hash";
 
   const swaggerDoc: any = rawSwaggerDoc;
 
-  function copyText(text) {
-    navigator.clipboard.writeText(text);
+  async function copyText(responseBody) {
+    if (activeHeaders.accept === "application/json") {
+      navigator.clipboard.writeText(responseBody);
+    } else if ((activeHeaders.accept = "application/octet-stream")) {
+      let bContent = new Uint8Array(responseBody);
+      downloadjs(
+        bContent,
+        `${await ipfsHash.of(bContent)}.fbs`,
+        activeHeaders.accept
+      );
+    }
   }
 
   let swagger: any = null;
@@ -173,7 +184,6 @@ ${Object.entries(activeHeaders)
 
     requestOut = true;
 
-    console.log("before request", activeHeaders);
     let { url, response } = await handleRequest(
       `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
       { ...active, route: active.route },
@@ -193,7 +203,7 @@ ${Object.entries(activeHeaders)
     };
 
     responses[active.id].responseBody = await response[
-      isJSON ? "json" : "text"
+      isJSON ? "json" : "arrayBuffer"
     ]();
 
     if (isJSON) {

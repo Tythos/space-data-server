@@ -24,6 +24,7 @@
     "vite-tsconfig-paths": "^4.0.3"
   },
   "dependencies": {
+    "downloadjs": "^1.4.7",
     "path-to-regexp": "^6.2.1",
     "svelte-awesome": "^3.0.1",
     "svelte-json-tree": "^1.0.0",
