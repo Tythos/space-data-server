@@ -6,7 +6,7 @@
   import JSONTree from "svelte-json-tree";
   import { resolver } from "@/lib/utility/resolver";
   import Icon from "svelte-awesome";
-  import { copy } from "svelte-awesome/icons";
+  import { copy, download } from "svelte-awesome/icons";
   import downloadjs from "downloadjs";
   import ipfsHash from "pure-ipfs-only-hash";
 
@@ -600,6 +600,15 @@ ${Object.entries(activeHeaders)
                                                   )}
                                                 class="cursor-pointer text-gray-500 ml-2"
                                                 ><Icon data={copy} /></span>
+                                                <!-- svelte-ignore a11y-click-events-have-key-events 
+                                                <span
+                                                on:click={(e) =>
+                                                  copyText(
+                                                    responses[route.id]
+                                                      ?.responseBody
+                                                  )}
+                                                class="cursor-pointer text-gray-500 ml-2"
+                                                ><Icon data={copy} /></span>-->
                                             </div>
                                             <div
                                               class="overflow-x-auto relative max-h-[100px]">
