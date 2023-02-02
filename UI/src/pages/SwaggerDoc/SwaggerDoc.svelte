@@ -213,7 +213,6 @@ ${Object.entries(activeHeaders)
         4
       );
     }
-    console.log(response)
     for (let header of response.headers.entries()) {
       responses[active.id].responseHeaders[header[0]] = header[1];
     }
@@ -601,7 +600,7 @@ ${Object.entries(activeHeaders)
                                                   )}
                                                 class="cursor-pointer text-gray-500 ml-2"
                                                 ><Icon data={copy} /></span>
-                                                <!-- svelte-ignore a11y-click-events-have-key-events 
+                                              <!-- svelte-ignore a11y-click-events-have-key-events 
                                                 <span
                                                 on:click={(e) =>
                                                   copyText(

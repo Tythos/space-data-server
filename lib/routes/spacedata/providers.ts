@@ -27,8 +27,8 @@ export const cid: express.RequestHandler = async (req: Request, res: Response, n
     .orderBy("created_at", "desc");
 
   if (start && stop) {
-    let StartDate = new Date(start.toString());//.toISOString();
-    let StopDate = new Date(stop.toString());//.toISOString();
+    let StartDate = new Date(start.toString()).toISOString();
+    let StopDate = new Date(stop.toString()).toISOString();
     console.log(StartDate, StopDate);
     cidQuery = cidQuery.whereBetween("created_at", [StartDate, StopDate]);
   } else {
