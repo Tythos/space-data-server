@@ -52,7 +52,7 @@ app.use(bodyParser.json({
         (req as any).rawBody = buf;
     }
 }));
-app.use(cors());
+app.use(cors({ exposedHeaders: ["*"] }));
 app.use(bodyParser.raw({ inflate: true, limit: "2GB", type: '*/*' }));
 
 app.get("/", (req: Request, res: Response) => {

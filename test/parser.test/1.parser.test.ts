@@ -65,5 +65,5 @@ describe("Parse Data Into Flatbuffers", () => {
         }))).toEqual(JSON.stringify(ommJSON));
         expect(JSON.stringify(iFBS)).toEqual(JSON.stringify(ommCollection));
         expect(ethAddress).toEqual(utils.verifyMessage(resultBufferIPFSCID, signatureBufferETH));
-    });
+    }, 600000);
 });

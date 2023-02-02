@@ -16,7 +16,6 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     res.status(500);
     res.end("ERROR: No Provider Selected.")
   }
-
   //@ts-ignore
   if (!standards[standard]) {
 

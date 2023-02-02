@@ -213,6 +213,7 @@ ${Object.entries(activeHeaders)
         4
       );
     }
+    console.log(response)
     for (let header of response.headers.entries()) {
       responses[active.id].responseHeaders[header[0]] = header[1];
     }

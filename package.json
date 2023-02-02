@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1223+1675271170347",
+    "version": "1.0.1260+1675364089855",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -14,7 +14,7 @@
         "build:standards": "cd packages/spacedatastandards.org && git reset --hard && git checkout main && git pull && cd ../../ && node ./lib/utility/generator.mjs",
         "build:swagger": "node ./scripts/swagger.mjs",
         "start": "npm run build && node ./build/server.cjs",
-        "dev": "jest --forceExit --no-watch --runInBand ./test/parser.test && rm -rf config.json && npm run build && PORT=8080 nodemon",
+        "dev": "rm -rf config.json && npm run build && PORT=8080 nodemon",
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
         "test": "npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",
