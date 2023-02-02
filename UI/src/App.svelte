@@ -3,6 +3,7 @@
   import "tw-elements/dist/css/index.min.css";
   import Router from "svelte-spa-router";
   import { routes } from "@/UI/src/routes/routes";
+  import LoginModal from "./pages/User/LoginModal.svelte";
 </script>
 
 <nav
@@ -48,12 +49,15 @@
       </ul>
     </div>
   </div>
+  <div class="mr-6"><LoginModal /></div>
 </nav>
 <header>
-  <!-- Navbar -->
-
-  <!-- Navbar -->
   <div class="font-sans text-center text-gray-800 py-20 px-6">
     <Router {routes} />
   </div>
 </header>
+<style>
+  :global(.modal-backdrop){
+    z-index: 0;
+  }
+</style>
