@@ -38,7 +38,7 @@
   </script>
   <h1>Test 2</h1>
   <main
-    class="w-full flex flex-col items-center border border-2 border-gray-400 background-black">
+    class="w-full flex flex-col items-center border border-2 border-gray-400 bg-opacity-400 bg-black">
     <input
       class="p-2 w-1/2 rounded-md border-solid border-2 border-gray-400"
       bind:value={templateURL} />

@@ -3,11 +3,12 @@
   import "tw-elements/dist/css/index.min.css";
   import Router from "svelte-spa-router";
   import { routes } from "@/UI/src/routes/routes";
-  import LoginModal from "./pages/User/LoginModal.svelte";
+  import LoginButton from "./pages/User/LoginButton.svelte";
 </script>
 
 <div
-  class="flex flex-col items-stretch h-full w-100vw fixed border-red-500 border-2 overflow-hidden m-0 p-0">
+  style="z-index:-2"
+  class="flex flex-col items-stretch h-screen w-screen fixed border-2 overflow-hidden m-0 p-0">
   <nav
     style="z-index:100"
     class="w-100vw font-sans navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center w-full justify-between">
@@ -39,7 +40,7 @@
         class="navbar-collapse collapse grow items-center"
         id="navbarSupportedContentY">
         <ul class="navbar-nav mr-auto min-[990px]:flex ">
-          {#each Object.entries(routes) as [route, value], i}
+          {#each Object.entries(routes).filter((a)=>a[1].navBar) as [route, value], i}
             <li class="nav-item">
               <a
                 class="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
@@ -51,7 +52,7 @@
         </ul>
       </div>
     </div>
-    <div class="mr-6"><LoginModal /></div>
+    <div class="mr-6"><LoginButton /></div>
   </nav>
 
   <div
@@ -62,6 +63,7 @@
 
 <style>
   :global(.modal-backdrop) {
-    z-index: 0;
+    display: fixed;
+    z-index: -1;
   }
 </style>
