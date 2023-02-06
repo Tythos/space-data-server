@@ -56,7 +56,7 @@
   </nav>
 
   <div
-    class="overflow-y-scroll font-sans text-center text-gray-800 py-20 px-6 h-full">
+    class="overflow-y-auto font-sans text-center text-gray-800 py-20 px-6 h-full">
     <Router {routes} />
   </div>
 </div>
