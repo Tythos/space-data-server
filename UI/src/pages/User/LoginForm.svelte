@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { Wallet } from "ethers";
+  import { Wallet, utils, providers } from "ethers";
   import { Icon } from "svelte-awesome";
   import argon2 from "argon2-browser/dist/argon2-bundled.min";
   import { entropyToMnemonic, mnemonicToSeed, wordlists } from "bip39";
   import { infoCircle } from "svelte-awesome/icons";
   import SeedPhrase from "./SeedPhrase.svelte";
-  import { ethWallet } from "@/UI/src/stores/user";
+  import {
+    ethWallet,
+    getBIP32Path,
+    derivationPath,
+    provider,
+  } from "@/UI/src/stores/user";
   const MODES = {
     PASSWORD: 0,
     MNEMONIC: 1,
@@ -14,6 +19,24 @@
   let mode = MODES.PASSWORD;
 
   let username, password, seedPhrase, error;
+  const connectWallet = async () => {
+    const windowEthereum = window["ethereum"];
+    const externalEthAddress = await windowEthereum.request({
+      method: "eth_requestAccounts",
+    });
+    var provider = new providers.Web3Provider(windowEthereum);
+
+    if (externalEthAddress.length) {
+      $ethWallet = {
+        address: externalEthAddress[0],
+        signMessage: async (message) => {
+          const signer = provider.getSigner();
+          return signer.signMessage(message);
+        },
+      };
+    }
+  };
+
   const login = async (e) => {
     e.preventDefault();
     if (!seedPhrase) {
@@ -24,21 +47,45 @@
       });
       seedPhrase = entropyToMnemonic(hashHex);
     }
-    console.log(seedPhrase)
     try {
-      $ethWallet = Wallet.fromMnemonic(seedPhrase);
+      $ethWallet = utils.HDNode.fromMnemonic(seedPhrase).derivePath(
+        getBIP32Path($derivationPath)
+      );
     } catch (e) {
-        error = e;
+      error = e;
     }
   };
-  $: {
-    console.log(seedPhrase);
-  }
 </script>
 
 <div class="py-12 h-full text-gray-800">
-  <div class="w-full flex items-center justify-center mb-12 md:mb-0">
-    <form class="w-1/2 lg:w-1/2 xs:w-3/4" on:submit={login}>
+  <div
+    class="w-full flex flex-col gap-4 items-center justify-center mb-12 md:mb-0">
+    <div
+      on:keyup={connectWallet}
+      on:click={connectWallet}
+      class="sm:w-3/4 md:w-1/2 lg:w-1/3 h-8 text-xs flex items-center justify-center px-12
+      bg-blue-600
+      text-white
+      font-medium
+      text-xs
+      leading-tight
+      uppercase
+      rounded
+      shadow-md
+      hover:bg-blue-700 hover:shadow-lg
+      focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+      active:bg-blue-800 active:shadow-lg
+      transition
+      duration-150
+      ease-in-out">
+      Connect Wallet
+    </div>
+    <div class="w-1/2 relative flex py-5 items-center">
+      <div class="flex-grow border-t border-gray-400" />
+      <span class="flex-shrink mx-4 text-gray-400">OR</span>
+      <div class="flex-grow border-t border-gray-400" />
+    </div>
+    <form class="w-full lg:w-1/2 xs:w-2/3" on:submit={login}>
       {#if mode === MODES.PASSWORD}
         <!-- Email input -->
         <div class="mb-6">
@@ -67,12 +114,13 @@
           <SeedPhrase bind:seedPhrase bind:error />
         </div>
       {/if}
-      <div class="flex justify-between items-center mb-6">
-        <div class="form-group form-check">
+      <div class="flex justify-between items-center mb-6 text-sm lg:text-xs">
+        <div
+          class="form-group form-check flex items-center justify-center gap-1">
           {#if mode === MODES.PASSWORD}
             <input
               type="checkbox"
-              class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+              class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 align-top bg-no-repeat bg-center bg-contain float-left cursor-pointer"
               id="exampleCheck2" />
             <label
               class="form-check-label inline-block text-gray-800"
@@ -98,18 +146,14 @@
           class="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
           Login
         </button>
-        <h2 class="font-bold mt-6">Note:</h2>
-        <p class="text-sm font-semibold mt-2 pt-1 mb-0 w-full">
-          Your username and password generate a unique <a
+        <h2 class="font-bold mt-6 text-sm">Note:</h2>
+        <p class="text-xs font-semibold mt-2 pt-1 mb-0 w-full">
+          Your username and password create a unique <a
             href="https://ethereum.org/en/developers/docs/accounts/"
             >Ethereum</a>
           keypair in your browser and are not stored anywhere else. If you forget
           your login details, you won't be able to access your account, so keep them
           safe.
-          <!--<a
-            href="#!"
-            class="text-red-600 hover:text-red-700 focus:text-red-700 transition duration-200 ease-in-out"
-            >More Information</a>-->
         </p>
       </div>
     </form>

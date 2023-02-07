@@ -226,7 +226,7 @@ ${Object.entries(activeHeaders)
   };
 </script>
 
-<div class="text-left">
+<div class="text-left py-6">
   <h1 class="text-4xl text-gray-600 font-bold mt-0 mb-6 flex gap-2">
     {swaggerDoc.info.title}
     <div

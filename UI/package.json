@@ -34,6 +34,8 @@
     "buffer": "^6.0.3",
     "downloadjs": "^1.4.7",
     "ethereumjs-util": "^7.1.5",
+    "i": "^0.3.7",
+    "npm": "^9.4.1",
     "path-to-regexp": "^6.2.1",
     "qrcode": "^1.5.1",
     "qrcode-reader": "^1.0.4",
@@ -42,6 +44,7 @@
     "svelte-spa-router": "^3.3.0",
     "swagger-ui": "^4.15.5",
     "swagger-ui-dist": "^4.15.5",
-    "tw-elements": "^1.0.0-alpha13"
+    "tw-elements": "^1.0.0-alpha13",
+    "vcard-cryptoperson": "^1.0.2"
   }
 }
