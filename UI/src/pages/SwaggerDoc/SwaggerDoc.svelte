@@ -9,12 +9,16 @@
   import { copy, download } from "svelte-awesome/icons";
   import downloadjs from "downloadjs";
   import ipfsHash from "pure-ipfs-only-hash";
+  import cc from "copy-to-clipboard";
 
   const swaggerDoc: any = rawSwaggerDoc;
 
   async function copyText(responseBody) {
     if (activeHeaders.accept === "application/json") {
-      navigator.clipboard.writeText(responseBody);
+      cc(responseBody, {
+        debug: true,
+        message: "Press #{key} to copy",
+      });
     } else if ((activeHeaders.accept = "application/octet-stream")) {
       let bContent = new Uint8Array(responseBody);
       downloadjs(

@@ -48,7 +48,12 @@
             <div class="text-3xl font-bold mb-6 pb-2 flex flex-col gap-2">
               <div class="text-sm">{$ethWallet.address}</div>
               <div />
-              <div>{ensAddress || "----"}</div>
+              <a
+                class="text-gray-800"
+                target="_blank"
+                rel="noreferrer"
+                href={`https://app.ens.domains/name/${ensAddress}/details`}>
+                {ensAddress || "----"}</a>
             </div>
             <p class="text-gray-500 mb-6 pb-2">
               Balance: {balance || 0} ETH

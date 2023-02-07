@@ -77,7 +77,7 @@
       active:bg-blue-800 active:shadow-lg
       transition
       duration-150
-      ease-in-out">
+      ease-in-out whitespace-nowrap">
       Connect Wallet
     </div>
     <div class="w-1/2 relative flex py-5 items-center">
