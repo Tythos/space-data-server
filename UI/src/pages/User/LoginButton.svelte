@@ -1,10 +1,11 @@
 <script lang="ts">
   import { Icon } from "svelte-awesome";
   import { user } from "svelte-awesome/icons";
+  import { provider, ethWallet } from "@/UI/src/stores/user";
 </script>
 
-<a href="#/user"
-
+<a
+  href="#/user"
   type="button"
   class="px-6
       py-2.5
@@ -22,5 +23,5 @@
       transition
       duration-150
       ease-in-out">
-  Login
+  {$ethWallet?.address ? "Account" : "Login"}
 </a>
