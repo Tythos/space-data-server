@@ -488,6 +488,8 @@ ${Object.entries(activeHeaders)
                                                   : ""}
                                                 type="number"
                                                 class="w-full border-2 border-gray-400 rounded p-1" />
+                                            {:else if param.schema.type === "buffer"}
+                                              <input type="file" />
                                             {:else}
                                               <input
                                                 required={param.required}
