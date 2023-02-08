@@ -1,14 +1,13 @@
 <script lang="ts">
   import "tw-elements";
   import "tw-elements/dist/css/index.min.css";
-  import Router from "svelte-spa-router";
+  import Router_ from "svelte-spa-router";
   import { routes } from "@/UI/src/routes/routes";
   import LoginButton from "./pages/User/LoginButton.svelte";
+  const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
 
-<div
-  style="z-index:-2"
-  class="flex flex-col items-stretch h-screen w-screen fixed border-2 overflow-hidden m-0 p-0">
+<div class="wrap-safe-pad flex flex-col h-full w-full fixed">
   <nav
     style="z-index:100"
     class="w-100vw font-sans navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center w-full justify-between">
@@ -39,8 +38,8 @@
       <div
         class="navbar-collapse collapse grow items-center"
         id="navbarSupportedContentY">
-        <ul class="navbar-nav mr-auto min-[990px]:flex ">
-          {#each Object.entries(routes).filter((a)=>a[1].navBar) as [route, value], i}
+        <ul class="navbar-nav mr-auto min-[990px]:flex">
+          {#each Object.entries(routes).filter((a) => a[1].navBar) as [route, value], i}
             <li class="nav-item">
               <a
                 class="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
@@ -54,14 +53,41 @@
     </div>
     <div class="mr-6"><LoginButton /></div>
   </nav>
-
   <div
-    class="overflow-y-auto font-sans text-center text-gray-800 py-6 px-6 h-full">
+    class="bg-white overflow-y-scroll overflow-x-hidden break-all body-safe-pad">
     <Router {routes} />
   </div>
 </div>
 
 <style>
+  .body-safe-pad {
+    overscroll-behavior: initial;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .wrap-safe-pad {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  @supports (-webkit-touch-callout: none) {
+    body {
+      /* The hack for Safari */
+      height: -webkit-fill-available;
+      width: -webkit-fill-available;
+    }
+  }
+  :global(body, html) {
+    overflow: hidden;
+    min-height: 100vh;
+    height: 100vh;
+    overscroll-behavior: none;
+    /* mobile viewport bug fix */
+    min-height: -webkit-fill-available;
+    min-width: -webkit-fill-available;
+    width: 100vw;
+    padding: 0px;
+    margin: 0px;
+  }
   :global(.modal-backdrop) {
     display: fixed;
     z-index: -1;

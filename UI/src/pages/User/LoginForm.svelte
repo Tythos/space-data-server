@@ -63,7 +63,7 @@
   };
 </script>
 
-<div class="py-12 h-full text-gray-800">
+<div class="py-12 h-full text-gray-800 bg-white-300">
   <div
     class="w-full flex flex-col gap-4 items-center justify-center mb-12 md:mb-0">
     {#if window.ethereum}

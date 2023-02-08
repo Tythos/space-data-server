@@ -25,10 +25,10 @@
   });
 </script>
 
-<section class="w-full flex items-center justify-center">
+<div class="w-full flex items-center justify-center p-4">
   {#if !$ethWallet}
     <LoginForm />
   {:else}
     <UserInfo />
   {/if}
-</section>
+</div>
