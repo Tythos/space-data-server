@@ -51,7 +51,7 @@
         </ul>
       </div>
     </div>
-    <div class="mr-6"><LoginButton /></div>
+    <div class="mr-6 h-full flex items-center"><LoginButton /></div>
   </nav>
   <div
     class="bg-white overflow-y-scroll overflow-x-hidden break-all body-safe-pad">

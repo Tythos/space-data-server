@@ -235,7 +235,7 @@ ${Object.entries(activeHeaders)
     <h1 class="lg:text-4xl text-2xl text-gray-600 font-bold mt-0 mb-6 flex gap-2">
       {swaggerDoc.info.title}
       <div
-        class="h-6 bg-gray-500 rounded-3xl text-[.65rem] lg:text-xs flex items-center justify-center p-1 text-white">
+        class="h-6 bg-gray-500 rounded-3xl text-[.5rem] lg:text-xs flex items-center justify-center p-1 pl-2 pr-2 text-white">
         {swaggerDoc.info.version}
       </div>
     </h1>
