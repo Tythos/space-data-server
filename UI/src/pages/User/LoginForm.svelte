@@ -96,7 +96,7 @@
         <div class="flex-grow border-t border-gray-400" />
       </div>
     {/if}
-    <form class="w-full lg:w-1/2 xs:w-2/3" on:submit={login}>
+    <form class="md:w-1/2 sm:w-1/2 lg:w-1/2 xs:w-2/3" on:submit={login}>
       {#if mode === MODES.PASSWORD}
         <!-- Email input -->
         <div class="mb-6">
