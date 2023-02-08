@@ -54,7 +54,7 @@
     <div class="mr-6 h-full flex items-center"><LoginButton /></div>
   </nav>
   <div
-    class="bg-white overflow-y-scroll overflow-x-hidden break-all body-safe-pad">
+    class="bg-white overflow-y-auto overflow-x-hidden break-all body-safe-pad">
     <Router {routes} />
   </div>
 </div>
