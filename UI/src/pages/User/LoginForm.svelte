@@ -19,21 +19,27 @@
   let mode = MODES.PASSWORD;
 
   let username, password, seedPhrase, error;
-  const connectWallet = async () => {
-    const windowEthereum = window["ethereum"];
-    const externalEthAddress = await windowEthereum.request({
-      method: "eth_requestAccounts",
-    });
-    var provider = new providers.Web3Provider(windowEthereum);
 
-    if (externalEthAddress.length) {
-      $ethWallet = {
-        address: externalEthAddress[0],
-        signMessage: async (message) => {
-          const signer = provider.getSigner();
-          return signer.signMessage(message);
-        },
-      };
+  const connectWallet = async () => {
+    error = "";
+    try {
+      const windowEthereum = window["ethereum"] || window["web3"];
+      const externalEthAddress = await windowEthereum.request({
+        method: "eth_requestAccounts",
+      });
+      var provider = new providers.Web3Provider(windowEthereum);
+
+      if (externalEthAddress.length) {
+        $ethWallet = {
+          address: externalEthAddress[0],
+          signMessage: async (message) => {
+            const signer = provider.getSigner();
+            return signer.signMessage(message);
+          },
+        };
+      }
+    } catch (e) {
+      error = e;
     }
   };
 
@@ -60,10 +66,11 @@
 <div class="py-12 h-full text-gray-800">
   <div
     class="w-full flex flex-col gap-4 items-center justify-center mb-12 md:mb-0">
-    <div
-      on:keyup={connectWallet}
-      on:click={connectWallet}
-      class="sm:w-3/4 md:w-1/2 lg:w-1/3 h-8 text-xs flex items-center justify-center px-12
+    {#if window.ethereum}
+      <div
+        on:keyup={connectWallet}
+        on:click={connectWallet}
+        class="sm:w-3/4 md:w-1/2 lg:w-1/3 h-8 text-xs flex items-center justify-center px-12
       bg-blue-600
       text-white
       font-medium
@@ -78,13 +85,17 @@
       transition
       duration-150
       ease-in-out whitespace-nowrap">
-      Connect Wallet
-    </div>
-    <div class="w-1/2 relative flex py-5 items-center">
-      <div class="flex-grow border-t border-gray-400" />
-      <span class="flex-shrink mx-4 text-gray-400">OR</span>
-      <div class="flex-grow border-t border-gray-400" />
-    </div>
+        Connect Wallet
+      </div>
+      {#if error}
+        <div class="text-red-500 text-xs font-thin">{error}</div>
+      {/if}
+      <div class="w-1/2 relative flex py-5 items-center">
+        <div class="flex-grow border-t border-gray-400" />
+        <span class="flex-shrink mx-4 text-gray-400">OR</span>
+        <div class="flex-grow border-t border-gray-400" />
+      </div>
+    {/if}
     <form class="w-full lg:w-1/2 xs:w-2/3" on:submit={login}>
       {#if mode === MODES.PASSWORD}
         <!-- Email input -->

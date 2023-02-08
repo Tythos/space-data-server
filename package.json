@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1286+1675810184597",
+    "version": "1.0.1289+1675864633420",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
