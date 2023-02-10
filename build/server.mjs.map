@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../index.ts"],
+  "sourcesContent": ["\nimport PrimaryProcess from \"./lib/primary/primary.js\";\nimport WorkerProcess from \"./lib/worker/worker.js\";\nimport cluster from \"cluster\";\nconst { isPrimary } = cluster;\n\n(async function () {\n    await (isPrimary ? PrimaryProcess : WorkerProcess).init();\n})()\n"],
+  "mappings": ";AACA,OAAO,oBAAoB;AAC3B,OAAO,mBAAmB;AAC1B,OAAO,aAAa;AACpB,MAAM,EAAE,UAAU,IAAI;AAAA,CAErB,iBAAkB;AACf,SAAO,YAAY,iBAAiB,eAAe,KAAK;AAC5D,GAAG;",
+  "names": []
+}

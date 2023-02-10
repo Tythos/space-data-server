@@ -262,23 +262,52 @@ const doc = {
                     }
                 }
             }
-        }
-    },
-    "/sql/": {
-        "get": {
-            "description": "SQL used to generate the database structure for this server.",
-            "parameters": [],
-            "responses": {
-                "200": {
-                    "description": "Successfully returns the raw SQL as a string.",
-                    "content": {
-                        "application/text": {
-                            "schema": {
-                                "type": "string"
+        },
+        "/sql/": {
+            "get": {
+                "description": "SQL used to generate the database structure for this server.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Successfully returns the raw SQL as a string.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
                             }
                         }
+    
                     }
-
+                }
+            }
+        },
+        "/idl/{standard}": {
+            "get": {
+                "description": "Returns the Flatbuffer Interface Description Language (IDL) for the standard.",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully returns the raw IDL as a string.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+    
+                    }
                 }
             }
         }

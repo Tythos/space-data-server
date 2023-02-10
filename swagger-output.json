@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1297+1675892585264",
+        "version": "1.0.1314+1676050094252",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1675110065585"
     },
@@ -116,23 +116,6 @@
         "/schema/{standard}": {
             "get": {
                 "description": "Returns a JSON Schema for the standard.",
-                "parameters": [
-                    {
-                        "name": "standard",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "$ref": "#/definitions/STANDARDS"
-                        }
-                    }
-                ],
-                "responses": {}
-            }
-        },
-        "/idl/{standard}": {
-            "get": {
-                "description": "Returns the Flatbuffer Interface Description Language (IDL) for the standard.",
                 "parameters": [
                     {
                         "name": "standard",
@@ -267,23 +250,44 @@
         },
         "/sql/": {
             "get": {
-                "description": "",
+                "description": "SQL used to generate the database structure for this server.",
                 "parameters": [],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "Successfully returns the raw SQL as a string.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
             }
-        }
-    },
-    "/sql/": {
-        "get": {
-            "description": "SQL used to generate the database structure for this server.",
-            "parameters": [],
-            "responses": {
-                "200": {
-                    "description": "Successfully returns the raw SQL as a string.",
-                    "content": {
-                        "application/text": {
-                            "schema": {
-                                "type": "string"
+        },
+        "/idl/{standard}": {
+            "get": {
+                "description": "Returns the Flatbuffer Interface Description Language (IDL) for the standard.",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully returns the raw IDL as a string.",
+                        "content": {
+                            "application/text": {
+                                "schema": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }

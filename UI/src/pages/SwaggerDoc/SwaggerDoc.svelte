@@ -200,6 +200,7 @@ ${Object.entries(activeHeaders)
     requestOut = false;
     activeURL = url;
     const isJSON = activeHeaders.accept === "application/json";
+    const isText = activeHeaders.accept === "application/text"
     responses[active.id] = responses[active.id] || {
       responseBody: null,
       responseHeaders: {},
@@ -207,7 +208,7 @@ ${Object.entries(activeHeaders)
     };
 
     responses[active.id].responseBody = await response[
-      isJSON ? "json" : "arrayBuffer"
+      isJSON ? "json" : isText? "text": "arrayBuffer"
     ]();
 
     if (isJSON) {
@@ -683,27 +684,30 @@ ${Object.entries(activeHeaders)
     <div class="accordion-item bg-white border border-gray-200">
       <h2 class="accordion-header mb-0" id="headingOne">
         <button
-          class="
-        accordion-button
+          class="fixRound accordion-button
         relative
         flex
         items-center
         w-full
-        py-4
-        px-5
+        py-2
+        px-3
         text-base text-gray-800 text-left
-        bg-white
         border-0
         rounded-none
         transition
-        focus:outline-none
-      "
+        focus:outline-none;"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#model-body"
           aria-expanded="true"
           aria-controls="model-body">
-          MODELS
+          <div class="flex items-center gap-2 text-black">
+            <div
+              class="p-1 pl-6 pr-6 text-gray-500 text-xl text-white rounded font-bold">
+              MODELS
+            </div>
+          
+          </div>
         </button>
       </h2>
       <div

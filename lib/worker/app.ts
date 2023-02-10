@@ -13,6 +13,7 @@ const totalCPUs = cpus().length;
 import { providers, provider, cid } from "@/lib/routes/spacedata/providers";
 import { sql } from "@/lib/routes/standards/sql";
 import { schema } from "@/lib/routes/standards/schema";
+import { idl } from "@/lib/routes/standards/idl";
 import apicache from "apicache";
 import swaggerFile from "@/swagger-output.json";
 import { ui } from "@/lib/ui/index";
@@ -79,9 +80,9 @@ app.get("/schema/:standard", (req: any, res: any, next: any) => {
     schema(req, res, next)
 });
 app.get("/idl/:standard", (req: any, res: any, next: any) => {
-    //#swagger.description = "Returns the Flatbuffer Interface Description Language (IDL) for the standard."
+    // #swagger.ignore = true
     res.set("Content-Type", "application/json");
-    schema(req, res, next)
+    idl(req, res, next)
 });
 app.get("/spacedata/:provider/:standard/:cid?", (req: any, res: any, next: any) => {
     /*
