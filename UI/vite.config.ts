@@ -5,7 +5,7 @@ import { viteSingleFile } from "vite-plugin-singlefile"
 import postcss from './postcss.config.js';
 import buildEnd from "./scripts/buildEnd.mjs";
 import wasm from "vite-plugin-wasm";
-import {nodePolyfills} from 'vite-plugin-node-polyfills'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 
 // https://vitejs.dev/config/

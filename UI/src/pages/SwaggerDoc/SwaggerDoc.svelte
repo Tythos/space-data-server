@@ -1,5 +1,4 @@
 <script lang="ts">
-  import "webcrypto-liner";
   import rawSwaggerDoc from "@/swagger-output.json";
   import type { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
   import { onMount } from "svelte";
@@ -11,9 +10,6 @@
   import downloadjs from "downloadjs";
   import ipfsHash from "pure-ipfs-only-hash";
   import cc from "copy-to-clipboard";
-  import * as jose from "jose/dist/node/esm/index";
-  import { keyconvert } from "@/packages/keyconvert";
-  import { ethWallet } from "@/test/utility/generate.crypto.wallets";
 
   const swaggerDoc: any = rawSwaggerDoc;
 
@@ -231,34 +227,7 @@ ${Object.entries(activeHeaders)
         binaryString = String.fromCharCode.apply(null, array);
 
       const CID = await ipfsHash.of(array);
-
-      let ethKeyConvert = new keyconvert({
-        kty: "EC",
-        name: "ECDSA",
-        namedCurve: "K-256",
-        hash: "SHA-256",
-      } as any);
-
-      await ethKeyConvert.import(ethWallet.privateKey, "hex");
-      let jwkETHPrivate = await ethKeyConvert.export("jwk", "private");
-      console.log(jwkETHPrivate);
-      const ecJosePrivateKey = await jose.importJWK(
-        { ...(jwkETHPrivate as any), crv: "secp256k1" },
-        "ES256"
-      );
-      /* 
-      await ethKeyConvert.import(ethWallet.privateKey, "hex");
-      let jwkETHPublic = await ethKeyConvert.export("jwk", "public");
-      await ethKeyConvert.import(ethWallet.privateKey, "hex");
-     const jws = await new jose.CompactSign(new TextEncoder().encode(CID))
-        .setProtectedHeader({
-          jwk: jwkETHPublic as any,
-          alg: "ES256K",
-          kid: ethWallet.address,
-          signature: await ethWallet.signMessage(CID),
-        })
-        .sign(ecJosePrivateKey);
-      requestParams[`${route.id}-Authorization`] = `bearer ${jws}`;*/
+      requestParams[`${route.id}-Authorization`] = `bearer ${CID}`;
     };
   };
 </script>
