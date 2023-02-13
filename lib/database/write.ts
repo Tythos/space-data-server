@@ -119,6 +119,7 @@ export const write = async (
     created_at: string = ""
 ) => {
     knexConnection = currentKnexConnection;
+
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,
@@ -126,7 +127,9 @@ export const write = async (
         STANDARD,
         RECORD_COUNT: queryArray.length,
         created_at
-    }]);
+    }]).catch((e: any) => {
+
+    });
 
     knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
 

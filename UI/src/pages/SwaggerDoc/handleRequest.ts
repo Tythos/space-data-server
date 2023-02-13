@@ -2,12 +2,14 @@ import { compile } from "path-to-regexp";
 const convertSwaggerPathToExpress = (path) => {
     return path.replace(/{/g, ':').replace(/}/g, '');
 }
-export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails, requestParams, requestBodyExample, headers) => {
+export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails, requestParams, headers) => {
+    console.log(requestParams)
     const { route, method } = activeRoute;
-    const reqParams = Object.entries(requestParams).filter(
+    const reqParams: any = Object.entries(requestParams).filter(
         (x) => x[0].indexOf(methodId) > -1
     );
-    const params = {};
+    const params: any = {};
+
     if (reqParams.length > 0) {
         reqParams.forEach((x) => {
             const paramName = `${x[0].split("-")[2]}`;
@@ -23,6 +25,8 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
     }
 
     const inPath = {};
+    let body = null;
+
     paramDetails.forEach((x) => {
         let rr = reqParams.find((param) => param[0] === `${methodId}-${x.name}`);
 
@@ -47,6 +51,8 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
                     (param) => param[0] === `${methodId}-${x.name}`
                 )[1];
             }
+        } else if (x.in === "body") {
+            body = rr[1];
         }
     });
 
@@ -69,7 +75,7 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
             headers: headers,
             redirect: "follow", // manual, *follow, error
             referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body: requestBodyExample[methodId], // JSON.stringify(data) // body data type must match "Content-Type" header
+            body, // JSON.stringify(data) // body data type must match "Content-Type" header
         })
     }
 

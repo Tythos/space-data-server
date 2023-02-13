@@ -1,4 +1,5 @@
 <script lang="ts">
+  import "webcrypto-liner";
   import rawSwaggerDoc from "@/swagger-output.json";
   import type { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
   import { onMount } from "svelte";
@@ -10,6 +11,9 @@
   import downloadjs from "downloadjs";
   import ipfsHash from "pure-ipfs-only-hash";
   import cc from "copy-to-clipboard";
+  import * as jose from "jose/dist/node/esm/index";
+  import { keyconvert } from "@/packages/keyconvert";
+  import { ethWallet } from "@/test/utility/generate.crypto.wallets";
 
   const swaggerDoc: any = rawSwaggerDoc;
 
@@ -70,7 +74,6 @@ ${Object.entries(activeHeaders)
 
   let responses: any = {};
   let requestParams: any = {};
-  let requestBodyExample = {};
   let paths: KeyValueDataStructure = {};
 
   onMount(async () => {
@@ -129,19 +132,7 @@ ${Object.entries(activeHeaders)
         });
 
         currentResponseContentType[id] = 0;
-        if (method[1].requestBody) {
-          Object.entries(method[1].requestBody.content).forEach(
-            (item: any, fiel) => {
-              if ("$ref" in item[1].schema) {
-                requestBodyExample[id] = JSON.stringify(
-                  getSchema(item[1].schema["$ref"]).example,
-                  null,
-                  2
-                );
-              }
-            }
-          );
-        }
+
         if (category in paths) {
           paths[category].push({
             id,
@@ -194,7 +185,6 @@ ${Object.entries(activeHeaders)
       active.id,
       active.parameters,
       requestParams,
-      requestBodyExample,
       activeHeaders
     );
     requestOut = false;
@@ -228,6 +218,48 @@ ${Object.entries(activeHeaders)
   const resetActive = () => {
     active = null;
     activeExecuted = false;
+  };
+
+  const bufferSign = (e, route, param) => {
+    let file = e.target.files[0];
+    requestParams[`${route.id}-${param.name}`] = file;
+    let reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onload = async () => {
+      let arrayBuffer = reader.result,
+        array = new Uint8Array(arrayBuffer as any),
+        binaryString = String.fromCharCode.apply(null, array);
+
+      const CID = await ipfsHash.of(array);
+
+      let ethKeyConvert = new keyconvert({
+        kty: "EC",
+        name: "ECDSA",
+        namedCurve: "K-256",
+        hash: "SHA-256",
+      } as any);
+
+      await ethKeyConvert.import(ethWallet.privateKey, "hex");
+      let jwkETHPrivate = await ethKeyConvert.export("jwk", "private");
+      console.log(jwkETHPrivate);
+      const ecJosePrivateKey = await jose.importJWK(
+        { ...(jwkETHPrivate as any), crv: "secp256k1" },
+        "ES256"
+      );
+      /* 
+      await ethKeyConvert.import(ethWallet.privateKey, "hex");
+      let jwkETHPublic = await ethKeyConvert.export("jwk", "public");
+      await ethKeyConvert.import(ethWallet.privateKey, "hex");
+     const jws = await new jose.CompactSign(new TextEncoder().encode(CID))
+        .setProtectedHeader({
+          jwk: jwkETHPublic as any,
+          alg: "ES256K",
+          kid: ethWallet.address,
+          signature: await ethWallet.signMessage(CID),
+        })
+        .sign(ecJosePrivateKey);
+      requestParams[`${route.id}-Authorization`] = `bearer ${jws}`;*/
+    };
   };
 </script>
 
@@ -495,12 +527,11 @@ ${Object.entries(activeHeaders)
                                               {:else if param.schema.type === "buffer"}
                                                 <input
                                                   type="file"
+                                                  on:change={(e) =>
+                                                    bufferSign(e, route, param)}
                                                   required={param.required}
                                                   disabled={active?.id !==
-                                                    route.id}
-                                                  bind:value={requestParams[
-                                                    `${route.id}-${param.name}`
-                                                  ]} />
+                                                    route.id} />
                                               {:else}
                                                 <input
                                                   required={param.required}
@@ -515,10 +546,12 @@ ${Object.entries(activeHeaders)
                                                   type="text"
                                                   class="w-full border-2 border-gray-400 rounded p-1" />
                                               {/if}
-                                             
+
                                               {#if active?.id && param?.content}
                                                 <select
-                                                  bind:value={activeHeaders["Content-Type"]}
+                                                  bind:value={activeHeaders[
+                                                    "Content-Type"
+                                                  ]}
                                                   class="border-black border rounded p-1 w-1/2 text-xs">
                                                   {#each Object.entries(param.content) as [key, value], p}
                                                     <option value={key}

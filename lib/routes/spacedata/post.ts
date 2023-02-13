@@ -3,11 +3,10 @@ import standardsJSON from "@/lib/standards/schemas.json";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
 import * as ethers from "ethers";
-import * as jose from "jose";
 import { existsSync, mkdirSync } from "node:fs";
 import { writeFile, mkdir } from "node:fs/promises";
 import { config } from "@/lib/config/config"
-import { join } from "path";
+import Web3Token from 'web3-token';
 
 const errors = {
     sig: "Signature invalid or key missing."
@@ -31,14 +30,6 @@ const writeToDisk = async (vM: any, standard: string, extension: string, signatu
     await writeFile(completePath + ".sig", signature);
 }
 
-export const verifySig = (msg: any, ethAddress: any, signature: any) => {
-    let signingEthAccount = ethers.utils.verifyMessage(msg, signature).toLowerCase();
-    if (!ethAddress) {
-        ethAddress = signingEthAccount;
-    }
-    return (ethAddress.toLowerCase() === signingEthAccount) ? signingEthAccount : ""
-}
-
 // Middleware function that accepts FlatBuffer file
 export const post: express.RequestHandler = async (req, res, next) => {
     const standard = req.params.standard.toUpperCase();
@@ -46,36 +37,30 @@ export const post: express.RequestHandler = async (req, res, next) => {
         res.status(500);
         res.json({ error: `Unknown standard.` });
     }
+    //console.log(req.body.toString())
     if (!Buffer.isBuffer(req.body)) {
         res.status(500);
         res.json({ error: `Unknown payload format.` });
     }
     try {
-        const authHeader: string[] = req.headers["authorization"]?.match(/^Bearer\s+(.+)$/i) || [];
-        let jwsString: string = authHeader[1];
+        const authHeader: string | undefined = req.headers["authorization"];
         let CID: string = "";
-        let address: string = "";
         let signature: string = "";
         let isValidated: boolean = false;
+
         if (authHeader) {
-            let { jwk, kid, signature: ethSignature } = jose.decodeProtectedHeader(jwsString);
-            let ecJosePublicKey;
-            ecJosePublicKey = await jose.importJWK({ ...jwk as any, crv: "secp256k1" }, "ES256");
-            if (ecJosePublicKey) {
-                const { payload: bCID } = await jose.compactVerify(jwsString, ecJosePublicKey);
-                CID = bCID.toString();
-            } else {
-                res.status(401);
-                res.json({ "error": errors.sig });
-            }
-            if (!await verifySig(CID, kid, ethSignature)) {
+            const { CID, signature: inputSignature } = JSON.parse(Buffer.from(authHeader, "base64").toString());
+            const address = ethers.utils.verifyMessage(CID, inputSignature).toLowerCase();
+            if (!config.trustedAddresses[address]) {
                 res.status(401);
                 res.json({ "error": errors.sig });
             } else {
-                signature = ethSignature as string;
-                address = kid!;
                 isValidated = true;
+                signature = inputSignature;
             }
+        } else {
+            res.status(401);
+            res.json({ "error": errors.sig });
         }
         if (isValidated) {
             await writeToDisk({ payload: req.body }, standard, "fbs", signature);

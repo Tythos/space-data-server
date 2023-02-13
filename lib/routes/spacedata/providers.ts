@@ -21,6 +21,7 @@ export const provider: express.RequestHandler = async (req: Request, res: Respon
 export const cid: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
   const { provider, standard } = req.params;
   const { start, stop } = req.query;
+
   let cidQuery = connection("FILE_IMPORT_TABLE")
     .whereRaw("LOWER(PROVIDER) = LOWER(?)", [provider])
     .andWhereRaw("LOWER(STANDARD) = LOWER(?)", [standard])
@@ -29,13 +30,12 @@ export const cid: express.RequestHandler = async (req: Request, res: Response, n
   if (start && stop) {
     let StartDate = new Date(start.toString()).toISOString();
     let StopDate = new Date(stop.toString()).toISOString();
-    console.log(StartDate, StopDate);
     cidQuery = cidQuery.whereBetween("created_at", [StartDate, StopDate]);
   } else {
     cidQuery = cidQuery.limit(1);
   }
-
   const cids = await cidQuery;
+
   res.json(cids);
   next();
 }

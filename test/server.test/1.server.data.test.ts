@@ -6,7 +6,6 @@ import * as standards from "@/lib/standards/standards";
 import { dirname, extname, join } from "node:path";
 import { existsSync, readFileSync, rmdirSync, rmSync } from "node:fs";
 import { ethWallet, untrustedEthWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
-import * as jose from "jose";
 import { keyconvert, pubKeyToEthAddress } from "@/packages/keyconvert";
 import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
@@ -50,76 +49,35 @@ describe("POST /endpoint", () => {
 
     it("should accept JSON and Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
-            //if (standard !== "OMM") continue;
-            let ethKeyConvert = new keyconvert({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as any);
-            await ethKeyConvert.import(ethWallet.privateKey, "hex");
-            expect(await ethKeyConvert.publicKeyHex()).toEqual(ethWallet.publicKey.slice(2,));
-            let jwkETHPrivate = await ethKeyConvert.export("jwk", "private");
-            let jwkETHPublic = await ethKeyConvert.export("jwk", "public");
 
-            const ecJosePrivateKey = await jose.importJWK({ ...jwkETHPrivate as any, crv: "secp256k1" }, "ES256");
-            const ecJosePublicKey = await jose.importJWK({ ...jwkETHPublic as any, crv: "secp256k1" }, "ES256");
 
-            const ecJWKExportPrivateKey = await jose.exportJWK(ecJosePrivateKey);
-            const ecJWKExportPublicKey = await jose.exportJWK(ecJosePublicKey);
-
-            await ethKeyConvert.import(ecJWKExportPrivateKey, "jwk");
-            expect(ethWallet.publicKey.slice(2,)).toEqual(await ethKeyConvert.export("hex", "public"));
-            const jsonFileString = readFileSync(join(dataPath, outputStandardFiles[standard].json), "utf8");
-            const jsonFile = JSON.parse(jsonFileString);
-            expect(JSON.stringify(jsonFile)).toEqual(jsonFileString);
-
-            /**
-             * JOSE signed messages     (https://datatracker.ietf.org/doc/rfc7515/)
-             */
-
-            let jsonBinary: Uint8Array = new TextEncoder().encode(jsonFileString);
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
 
-            const ipfsCIDJSON = await ipfsHash.of(jsonBinary);
-            const ipfsCIDFB = await ipfsHash.of(flatbufferBinary);
+            const CID = await ipfsHash.of(flatbufferBinary);
 
             /*Fail Test*/
-
-            const jwsF = await new jose.CompactSign(
-                new TextEncoder().encode(ipfsCIDFB)
-            )
-                .setProtectedHeader({
-                    jwk: {},
-                    alg: 'ES256K',
-                    kid: ethWallet.address,
-                    signature: ""
-                })
-                .sign(ecJosePrivateKey);
-
 
             const jsonResponseError = await request(app)
                 .post(`/spacedata/${standard}`)
                 .set("Content-Type", "application/octet-stream")
-                .set("authorization", `Bearer ${jwsF}`)
+                .set("authorization", `{}`)
                 .send(flatbufferBinary);
 
             expect(jsonResponseError.status).toBe(401);
 
             expect(jsonResponseError.body.error).toMatch(`Signature invalid or key missing.`);
 
-            const jws = await new jose.CompactSign(
-                new TextEncoder().encode(ipfsCIDFB)
-            )
-                .setProtectedHeader({
-                    jwk: jwkETHPublic as any,
-                    alg: 'ES256K',
-                    kid: ethWallet.address,
-                    signature: await ethWallet.signMessage(ipfsCIDFB)
-                })
-                .sign(ecJosePrivateKey);
+            const authMessage = {
+                CID,
+                signature: await ethWallet.signMessage(CID),
+                nonce: performance.now(),
+            };
+            const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
 
-            const { payload: payloadFB } = await jose.compactVerify(jws, ecJosePublicKey);
-            expect(payloadFB.toString()).toEqual(ipfsCIDFB);
             const fbResponse = await request(app)
                 .post(`/spacedata/${standard}`)
                 .set("Content-Type", "application/octet-stream")
-                .set("authorization", `Bearer ${jws}`)
+                .set("authorization", authHeader)
                 .send(flatbufferBinary);
             expect(fbResponse.status).toBe(200);
 
@@ -129,7 +87,7 @@ describe("POST /endpoint", () => {
                 console.clear();
                 console.log(`${Date.now()} - Trying CID Service...`);
                 postedCID = (await request(app)
-                    .get(`/cid/${ethWallet.address}/${standard}/true`)).body[0];
+                    .get(`/cid/${ethWallet.address}/${standard}`)).body[0];
                 if (!postedCID) {
                     await new Promise(r => setTimeout(r, 2000));
                 }
@@ -140,7 +98,8 @@ describe("POST /endpoint", () => {
             }
             expect(standard).toEqual(postedCID.STANDARD);
             expect(ethWallet.address.toLowerCase()).toEqual(postedCID.PROVIDER);
-            expect(ipfsCIDFB).toEqual(postedCID.CID);
+            expect(CID).toEqual(postedCID.CID);
+
         }
         await new Promise(r => setTimeout(r, 5000)); //!IMPORTANT
     }, 30000);

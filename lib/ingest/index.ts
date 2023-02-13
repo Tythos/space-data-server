@@ -8,7 +8,7 @@ import * as standards from "@/lib/standards/standards";
 import write from "@/lib/database/write";
 import { connection } from "@/lib/database/connection";
 import { join } from "path";
-import { verifySig } from '../routes/spacedata/post';
+import * as ethers from "ethers";
 import { CronJob } from "cron";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash"
@@ -154,11 +154,12 @@ async function processData() {
             inputSignature = await readFile(signatureFile, "utf8");
         }
         let input, signedEthAddress;
+
         if (inputSignature) {
-            signedEthAddress = verifySig(CID, undefined, inputSignature);
+            signedEthAddress = (await ethers.utils.verifyMessage(CID, inputSignature)).toLowerCase()
         }
 
-        if (!signedEthAddress) {
+        if (!signedEthAddress || !config.trustedAddresses[signedEthAddress]) {
             console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid.`);
             return;
         }
@@ -183,11 +184,7 @@ async function processData() {
             return;
         }
 
-        let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
-
-        if (!currentCID) {
-            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
-        }
+        write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
 
         if (config.data.copyOnRead) {
             const writePath = join(
