@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1325+1676327941404",
+    "version": "1.0.1326+1676329350003",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -98,7 +98,6 @@
         "toposort": "^2.0.2",
         "ts-jest": "^29.0.3",
         "typescript": "^4.8.4",
-        "web3-token": "^1.0.2",
         "webcrypto-liner": "^1.4.0"
     },
     "dependencies": {

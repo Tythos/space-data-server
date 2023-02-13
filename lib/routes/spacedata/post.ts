@@ -6,7 +6,6 @@ import * as ethers from "ethers";
 import { existsSync, mkdirSync } from "node:fs";
 import { writeFile, mkdir } from "node:fs/promises";
 import { config } from "@/lib/config/config"
-import Web3Token from 'web3-token';
 
 const errors = {
     sig: "Signature invalid or key missing."
