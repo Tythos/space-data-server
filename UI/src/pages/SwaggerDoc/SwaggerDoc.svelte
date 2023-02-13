@@ -200,7 +200,7 @@ ${Object.entries(activeHeaders)
     requestOut = false;
     activeURL = url;
     const isJSON = activeHeaders.accept === "application/json";
-    const isText = activeHeaders.accept === "application/text"
+    const isText = activeHeaders.accept === "application/text";
     responses[active.id] = responses[active.id] || {
       responseBody: null,
       responseHeaders: {},
@@ -208,7 +208,7 @@ ${Object.entries(activeHeaders)
     };
 
     responses[active.id].responseBody = await response[
-      isJSON ? "json" : isText? "text": "arrayBuffer"
+      isJSON ? "json" : isText ? "text" : "arrayBuffer"
     ]();
 
     if (isJSON) {
@@ -233,7 +233,8 @@ ${Object.entries(activeHeaders)
 
 <div class="p-4">
   <div class="text-left py-6">
-    <h1 class="lg:text-4xl text-2xl text-gray-600 font-bold mt-0 mb-6 flex gap-2">
+    <h1
+      class="lg:text-4xl text-2xl text-gray-600 font-bold mt-0 mb-6 flex gap-2">
       {swaggerDoc.info.title}
       <div
         class="h-6 bg-gray-500 rounded-3xl text-[.5rem] lg:text-xs flex items-center justify-center p-1 pl-2 pr-2 text-white">
@@ -514,6 +515,17 @@ ${Object.entries(activeHeaders)
                                                   type="text"
                                                   class="w-full border-2 border-gray-400 rounded p-1" />
                                               {/if}
+                                             
+                                              {#if active?.id && param?.content}
+                                                <select
+                                                  bind:value={activeHeaders["Content-Type"]}
+                                                  class="border-black border rounded p-1 w-1/2 text-xs">
+                                                  {#each Object.entries(param.content) as [key, value], p}
+                                                    <option value={key}
+                                                      >{key}</option>
+                                                  {/each}
+                                                </select>
+                                              {/if}
                                             </td>
                                           </tr>
                                         {/each}
@@ -706,7 +718,6 @@ ${Object.entries(activeHeaders)
               class="p-1 pl-6 pr-6 text-gray-500 text-xl text-white rounded font-bold">
               MODELS
             </div>
-          
           </div>
         </button>
       </h2>
