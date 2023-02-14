@@ -11,8 +11,7 @@ import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
 import standardsJSON from "@/lib/standards/schemas.json";
 import { JSONSchema4 } from "json-schema";
-import { get, post } from "@/lib/routes/spacedata";
-
+import type { AuthHeader } from "@/lib/class/authheader.json.interface";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
 import { init, getQueue, deinit } from "@/lib/ingest/index";
@@ -67,7 +66,7 @@ describe("POST /endpoint", () => {
 
             expect(jsonResponseError.body.error).toMatch(`Signature invalid or key missing.`);
 
-            const authMessage = {
+            const authMessage: AuthHeader = {
                 CID,
                 signature: await ethWallet.signMessage(CID),
                 nonce: performance.now(),

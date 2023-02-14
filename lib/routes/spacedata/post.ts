@@ -6,6 +6,7 @@ import * as ethers from "ethers";
 import { existsSync, mkdirSync } from "node:fs";
 import { writeFile, mkdir } from "node:fs/promises";
 import { config } from "@/lib/config/config"
+import type { AuthHeader } from "@/lib/class/authheader.json.interface";
 
 const errors = {
     sig: "Signature invalid or key missing."
@@ -48,7 +49,7 @@ export const post: express.RequestHandler = async (req, res, next) => {
         let isValidated: boolean = false;
 
         if (authHeader) {
-            const { CID, signature: inputSignature } = JSON.parse(Buffer.from(authHeader, "base64").toString());
+            const { CID, signature: inputSignature }: AuthHeader = JSON.parse(Buffer.from(authHeader, "base64").toString());
             const address = ethers.utils.verifyMessage(CID, inputSignature).toLowerCase();
             if (!config.trustedAddresses[address]) {
                 res.status(401);
