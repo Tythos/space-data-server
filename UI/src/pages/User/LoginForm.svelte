@@ -88,7 +88,7 @@
         Connect Wallet
       </div>
       {#if error}
-        <div class="text-red-500 text-xs font-thin">{error}</div>
+        <div class="text-red-500 text-xs font-thin w-1/2">{error}</div>
       {/if}
       <div class="w-1/2 relative flex py-5 items-center">
         <div class="flex-grow border-t border-gray-400" />
