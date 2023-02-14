@@ -592,7 +592,14 @@ ${Object.entries(activeHeaders)
                                   class:bg-red-100={route.method?.toUpperCase() ===
                                     "DELETE"}
                                   class="flex flex-col gap-2 items-start text-xs font-bold p-4 w-full">
-                                  <div>Curl</div>
+                                  <div class="flex justify-between">
+                                    <div>Curl</div>
+                                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                    <span
+                                      on:click={(e) => copyText(curlTemplate)}
+                                      class="cursor-pointer text-gray-500 ml-2"
+                                      ><Icon data={copy} /></span>
+                                  </div>
                                   <code
                                     class="w-full p-2 bg-gray-800 rounded text-white text-left">
                                     {curlTemplate}
