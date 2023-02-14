@@ -17,6 +17,7 @@ import { idl } from "@/lib/routes/standards/idl";
 import apicache from "apicache";
 import swaggerFile from "@/swagger-output.json";
 import { ui } from "@/lib/ui/index";
+import { echo } from "@/lib/routes/spacedata/echo";
 const rawUI = Buffer.from(ui, "base64").toString();
 
 let cache = apicache.middleware;
@@ -93,6 +94,10 @@ If no CID is specified, the most recent CID is used.
 The CID is always returned in the header "x-content-identifier".`;
     */
     get(req, res, next);
+});
+app.post("/echo/:standard", (req: any, res: any, next: any) => {
+    // #swagger.ignore = true
+    echo(req, res, next);
 });
 app.post("/spacedata/:standard", (req: any, res: any, next: any) => {
     post(req, res, next);

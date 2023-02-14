@@ -17,7 +17,7 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
                 (param) => {
                     return param.name === paramName
                 }
-            ).in;
+            )?.in;
             if (paramIn == "query") {
                 params[paramName] = x[1];
             }
@@ -58,7 +58,7 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
 
     const toPath = compile(convertSwaggerPathToExpress(route), { encode: encodeURIComponent, });
     const encodedUri = toPath(inPath);
-    console.log(encodedUri)
+
     const queryString = Object.keys(params)
         .map((key) => key + "=" + params[key])
         .join("&");

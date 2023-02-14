@@ -49,7 +49,6 @@ describe("POST /endpoint", () => {
     it("should accept JSON and Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
 
-
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
 
             const CID = await ipfsHash.of(flatbufferBinary);
@@ -103,7 +102,18 @@ describe("POST /endpoint", () => {
         await new Promise(r => setTimeout(r, 5000)); //!IMPORTANT
     }, 30000);
 });
+describe("POST /echo", async () => {
+    for (let standard in standards) {
 
+        const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
+        const fbResponse = await request(app)
+            .post(`/echo/${standard}`)
+            .set("Content-Type", "application/octet-stream")
+            .send(flatbufferBinary);
+        expect(fbResponse.status).toBe(200);
+    }
+
+});
 afterAll(async () => {
     await deinit();
     //rmSync(config.data.ingest, { recursive: true, force: true });

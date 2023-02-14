@@ -233,6 +233,36 @@ const doc = {
                 "responses": {}
             }
         },
+        "/echo/{standard}": {
+            "post": {
+                "description": "Accepts a flatbuffer as a POST body, returns a JSON representation.  For debugging.",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "in": "body",
+                    "content": {
+                        "application/octet-stream": {
+                            "schema": {
+                                "type": "string",
+                                "format": "binary"
+                            }
+                        }
+                    }
+                },
+                "responses": {}
+            }
+        },
         "/standards/{standard?}": {
             "get": {
                 "description": "Returns the JSON Schema document for a SpaceDataStandards.org standard.  Defaults to sending back all standards.",
@@ -277,7 +307,7 @@ const doc = {
                                 }
                             }
                         }
-    
+
                     }
                 }
             }
@@ -306,7 +336,7 @@ const doc = {
                                 }
                             }
                         }
-    
+
                     }
                 }
             }

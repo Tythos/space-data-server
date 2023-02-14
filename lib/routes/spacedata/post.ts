@@ -37,7 +37,7 @@ export const post: express.RequestHandler = async (req, res, next) => {
         res.status(500);
         res.json({ error: `Unknown standard.` });
     }
-    //console.log(req.body.toString())
+
     if (!Buffer.isBuffer(req.body)) {
         res.status(500);
         res.json({ error: `Unknown payload format.` });
