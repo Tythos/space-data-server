@@ -22,6 +22,6 @@ export const echo: express.RequestHandler = async (req: Request, res: Response, 
     let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
     let parentClass: any = standards[pClassName];
     res.json(readFB(req.body, tableName, parentClass));
-
+    res.end();
     next();
 };

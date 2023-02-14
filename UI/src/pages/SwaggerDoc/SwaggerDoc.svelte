@@ -59,12 +59,18 @@
       : "";
     if (active) {
       curlTemplate = `curl -X "${active.method?.toUpperCase()}" \\
+${[...new Set(Object.entries(requestParams)?.filter((rp: any) => rp[1].isFile))]
+  .map((file: any) => {
+    return `--data-binary "@${file[1].name}"`;
+  })
+  .join(" \\\n")} \\
 "${activeURL}" ${Object.entries(activeHeaders).length ? "\\" : ""}
 ${Object.entries(activeHeaders)
   .map(([header, value], h) => {
     return `-H '${header}: ${value}'`;
   })
-  .join("\\ \n")};`;
+  .join(" \\\n")}`;
+      curlTemplate += ";";
     }
   }
 
@@ -219,6 +225,7 @@ ${Object.entries(activeHeaders)
   const bufferSign = (e, route, param) => {
     let file = e.target.files[0];
     requestParams[`${route.id}-${param.name}`] = file;
+    requestParams[`${route.id}-${param.name}`].isFile = true;
     let reader = new FileReader();
     reader.readAsArrayBuffer(file);
     reader.onload = async () => {
