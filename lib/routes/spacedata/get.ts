@@ -39,7 +39,9 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
 
     let currentCID = cid;
     if (!currentCID) {
-      let { CID } = await connection("FILE_IMPORT_TABLE").orderBy("CID").first();
+      let { CID } = await connection("FILE_IMPORT_TABLE").orderBy("CID").first().catch((e: any) => {
+        res.end({ error: e });
+      });
       currentCID = CID;
     }
     if (!parsedQuery.length) {

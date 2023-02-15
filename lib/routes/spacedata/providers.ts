@@ -34,7 +34,9 @@ export const cid: express.RequestHandler = async (req: Request, res: Response, n
   } else {
     cidQuery = cidQuery.limit(1);
   }
-  const cids = await cidQuery;
+  const cids = await cidQuery.catch((e: any) => {
+    res.json({ error: e })
+  });
 
   res.json(cids);
   next();

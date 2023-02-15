@@ -82,10 +82,18 @@ const insertData = async (
                         const nTable = nTables[nT];
                         const total = resultObject[nTable].length;
                         for (let page = 0; page < total; page += pageSize) {
-                            await trx(nTable).insert(resultObject[nTable].slice(page, page + pageSize));
+                            await trx(nTable)
+                                .insertIgnore(resultObject[nTable].slice(page, page + pageSize))
+                                .onConflict()
+                                .ignore()
+                                .catch((e: any) => {
+
+                                });
                         }
                         resultObject[nTable] = [];
                     }
+                }).catch((e: any) => {
+
                 });
             } catch (e) {
                 console.error(e);
@@ -118,7 +126,7 @@ export const write = async (
     created_at: string = ""
 ) => {
     knexConnection = currentKnexConnection;
-    
+
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,
