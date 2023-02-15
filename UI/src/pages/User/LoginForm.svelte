@@ -3,7 +3,7 @@
   import { Icon } from "svelte-awesome";
   import argon2 from "argon2-browser/dist/argon2-bundled.min";
   import { entropyToMnemonic, mnemonicToSeed, wordlists } from "bip39";
-  import { infoCircle } from "svelte-awesome/icons";
+  import { infoCircle, repeat } from "svelte-awesome/icons";
   import SeedPhrase from "./SeedPhrase.svelte";
   import {
     ethWallet,
@@ -88,7 +88,7 @@
         Connect Wallet
       </div>
       {#if error}
-        <div class="text-red-500 text-xs font-thin w-1/2">{error}</div>
+        <div class="text-red-500 text-xs font-thin">{error}</div>
       {/if}
       <div class="w-1/2 relative flex py-5 items-center">
         <div class="flex-grow border-t border-gray-400" />
@@ -110,7 +110,7 @@
         </div>
 
         <!-- Password input -->
-        <div class="mb-6">
+        <div class="mb-6 ">
           <input
             required
             minlength="24"
@@ -142,12 +142,15 @@
         <div class="flex items-center justify-center gap-2">
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <p
-            class="text-blue-600 cursor-pointer"
+            class:bg-purple-800={(mode === MODES["MNEMONIC"])}
+            class:bg-blue-600={(mode === MODES["PASSWORD"])}
+
+            class="text-white p-2 rounded cursor-pointer flex gap-2 items-center"
             on:click={() => (mode = MODES[!mode ? "MNEMONIC" : "PASSWORD"])}>
-            {!mode ? "Import Seed Phrase" : "UserName / Password"}
+            <Icon data={repeat} />{!mode
+              ? "Import Seed Phrase"
+              : "UserName / Password"}
           </p>
-          <a href="https://en.bitcoin.it/wiki/Seed_phrase" class="text-black">
-            <Icon data={infoCircle} /></a>
         </div>
       </div>
 

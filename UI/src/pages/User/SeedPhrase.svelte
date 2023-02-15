@@ -30,5 +30,5 @@
   bind:value={seedPhrase}
   on:input={validateSeedPhrase} />
 {#if error}
-  <p class="text-red-500 text-left float-left">{error}</p>
+  <p class="text-red-500 text-left float-left w-1/2 text-xs">{error}</p>
 {/if}

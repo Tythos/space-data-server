@@ -387,6 +387,7 @@ ${Object.entries(activeHeaders)
                                 <button
                                   class="p-2 border-2 rounded w-24"
                                   on:click={() => {
+                                    activeExecuted = false;
                                     active = route;
                                     activeHeaders.accept = route.pro;
                                   }}>Try It Out</button>
@@ -604,7 +605,14 @@ ${Object.entries(activeHeaders)
                                     class="w-full p-2 bg-gray-800 rounded text-white text-left">
                                     {curlTemplate}
                                   </code>
-                                  <div>Request URL</div>
+                                  <div class="flex justify-between">
+                                    <div>Request URL</div>
+                                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                    <span
+                                      on:click={(e) => copyText(activeURL)}
+                                      class="cursor-pointer text-gray-500 ml-2"
+                                      ><Icon data={copy} /></span>
+                                  </div>
                                   <code
                                     class="w-full p-2 bg-gray-800 rounded text-white text-left">
                                     {activeURL}

@@ -184,7 +184,11 @@ async function processData() {
             return;
         }
 
-        write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
+        let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
+
+        if (!currentCID) {
+            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
+        }
 
         if (config.data.copyOnRead) {
             const writePath = join(
