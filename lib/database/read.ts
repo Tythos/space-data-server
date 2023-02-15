@@ -2,6 +2,8 @@ import { JSONSchema4 } from "json-schema";
 import { refRootName, resolver } from "@/lib/database/generateTables";
 import * as standards from "@/lib/standards/standards";
 import { readFileSync } from "fs";
+import { runPragmas } from "./pragmas";
+import knex from "knex";
 const standardsJSON = JSON.parse(readFileSync("./lib/standards/schemas.json", "utf-8"));
 let knexConnection: any;
 const toRemoveDefault: Array<string> = ["created_at", "updated_at", "file_id"];
@@ -86,10 +88,11 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
             delete pA.id;
         }
         return pA;
-    })/**/;
+    });
 }
 const read = async (currentKnexConnection: any, standard: string, standardsSchema: JSONSchema4, query: Array<any> = [["select", "*"]], debugProperties: boolean = false) => {
     knexConnection = currentKnexConnection;
+    await runPragmas(knexConnection);
     let currentStandard = standardsJSON[standard];
     let tableName = refRootName(currentStandard.$ref);
     let pClassName: keyof typeof standards = `${tableName}` as unknown as any;

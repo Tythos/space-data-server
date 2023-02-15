@@ -3,7 +3,8 @@ import { JSONSchema4 } from "json-schema";
 import toposort from "toposort";
 import getID from "@/lib/utility/getID";
 import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
-import { writeFileSync } from "fs";
+import { runPragmas } from "./pragmas";
+
 let knexConnection: any;
 let pageSize = 200;
 
@@ -83,7 +84,7 @@ const insertData = async (
                         const total = resultObject[nTable].length;
                         for (let page = 0; page < total; page += pageSize) {
                             await trx(nTable)
-                                .insertIgnore(resultObject[nTable].slice(page, page + pageSize))
+                                .insert(resultObject[nTable].slice(page, page + pageSize))
                                 .onConflict()
                                 .ignore()
                                 .catch((e: any) => {
@@ -126,6 +127,7 @@ export const write = async (
     created_at: string = ""
 ) => {
     knexConnection = currentKnexConnection;
+    await runPragmas(knexConnection)
 
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
