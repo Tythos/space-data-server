@@ -25,7 +25,7 @@
   }
 </script>
 
-<textarea
+<textarea autocomplete="on"
   class="h-32 p-3 border border-gray-300 rounded w-full resize-none"
   bind:value={seedPhrase}
   on:input={validateSeedPhrase} />

@@ -227,26 +227,31 @@ ${Object.entries(activeHeaders)
   };
 
   const bufferSign = (e, route, param) => {
-    let file = e.target.files[0];
-    requestParams[`${route.id}-${param.name}`] = file;
-    requestParams[`${route.id}-${param.name}`].isFile = true;
-    let reader = new FileReader();
-    reader.readAsArrayBuffer(file);
-    reader.onload = async () => {
-      let arrayBuffer = reader.result,
-        array = new Uint8Array(arrayBuffer as any),
-        binaryString = String.fromCharCode.apply(null, array);
+    if (!$ethWallet) {
+      requestParams[`${route.id}-Authorization`] = "NOT LOGGED IN";
+    } else {
+      let file = e.target.files[0];
+      requestParams[`${route.id}-${param.name}`] = file;
+      requestParams[`${route.id}-${param.name}`].isFile = true;
+      let reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onload = async () => {
+        let arrayBuffer = reader.result,
+          array = new Uint8Array(arrayBuffer as any),
+          binaryString = String.fromCharCode.apply(null, array);
 
-      const CID = await ipfsHash.of(array);
-      const authHeader: AuthHeader = {
-        CID,
-        signature: $ethWallet.signMessage(CID),
-        nonce: performance.now(),
+        const CID = await ipfsHash.of(array);
+        console.log($ethWallet.signMessage);
+        const authHeader: AuthHeader = {
+          CID,
+          signature: await $ethWallet.signMessage(CID),
+          nonce: performance.now(),
+        };
+        requestParams[`${route.id}-Authorization`] = `${Buffer.from(
+          JSON.stringify(authHeader)
+        ).toString("base64")}`;
       };
-      requestParams[`${route.id}-Authorization`] = `${Buffer.from(
-        JSON.stringify(authHeader)
-      ).toString("base64")}`;
-    };
+    }
   };
 </script>
 

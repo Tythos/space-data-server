@@ -32,6 +32,7 @@ export const getBIP32Path = (inputPath: Bip32Path): string => {
 };
 
 export const ethWallet = writable(null);
+export const hdNode = writable(null);
 export const provider: Readable<any> = readable(new providers.CloudflareProvider());
 export const derivationPath = writable({
     purpose: { value: 44, h: "'" as Bip32Hardened },

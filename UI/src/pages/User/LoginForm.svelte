@@ -5,12 +5,19 @@
   import { entropyToMnemonic, mnemonicToSeed, wordlists } from "bip39";
   import { infoCircle, repeat } from "svelte-awesome/icons";
   import SeedPhrase from "./SeedPhrase.svelte";
+  import crypto from "crypto";
+  import ecies from "@/node_modules/standard-ecies";
+  console.log(ecies.encrypt);
+  console.log(crypto.createECDH("secp256k1"));
   import {
     ethWallet,
+    hdNode,
     getBIP32Path,
     derivationPath,
     provider,
   } from "@/UI/src/stores/user";
+  import { onMount } from "svelte";
+
   const MODES = {
     PASSWORD: 0,
     MNEMONIC: 1,
@@ -19,6 +26,8 @@
   let mode = MODES.PASSWORD;
 
   let username, password, seedPhrase, error;
+
+  onMount(() => {});
 
   const connectWallet = async () => {
     error = "";
@@ -54,8 +63,10 @@
       seedPhrase = entropyToMnemonic(hashHex);
     }
     try {
-      $ethWallet = utils.HDNode.fromMnemonic(seedPhrase).derivePath(
-        getBIP32Path($derivationPath)
+      $hdNode = utils.HDNode.fromMnemonic(seedPhrase);
+
+      $ethWallet = new Wallet(
+        $hdNode.derivePath(getBIP32Path($derivationPath)).privateKey
       );
     } catch (e) {
       error = e;
@@ -110,7 +121,7 @@
         </div>
 
         <!-- Password input -->
-        <div class="mb-6 ">
+        <div class="mb-2">
           <input
             required
             minlength="24"
@@ -125,27 +136,16 @@
           <SeedPhrase bind:seedPhrase bind:error />
         </div>
       {/if}
-      <div class="flex justify-between items-center mb-6 text-sm lg:text-xs">
+      <div class="flex justify-between items-center mb-2 text-sm lg:text-xs">
         <div
-          class="form-group form-check flex items-center justify-center gap-1">
-          {#if mode === MODES.PASSWORD}
-            <input
-              type="checkbox"
-              class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 align-top bg-no-repeat bg-center bg-contain float-left cursor-pointer"
-              id="exampleCheck2" />
-            <label
-              class="form-check-label inline-block text-gray-800"
-              for="exampleCheck2">Remember me</label>
-          {/if}
-        </div>
+          class="form-group form-check flex items-center justify-center gap-1" />
 
         <div class="flex items-center justify-center gap-2">
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <p
-            class:bg-purple-800={(mode === MODES["MNEMONIC"])}
-            class:bg-blue-600={(mode === MODES["PASSWORD"])}
-
-            class="text-white p-2 rounded cursor-pointer flex gap-2 items-center"
+            class:bg-purple-800={mode === MODES["MNEMONIC"]}
+            class:bg-blue-600={mode === MODES["PASSWORD"]}
+            class="text-white p-1 px-2 rounded cursor-pointer flex gap-2 items-center"
             on:click={() => (mode = MODES[!mode ? "MNEMONIC" : "PASSWORD"])}>
             <Icon data={repeat} />{!mode
               ? "Import Seed Phrase"
@@ -154,21 +154,23 @@
         </div>
       </div>
 
-      <div class="text-left lg:text-left">
+      <div class="flex flex-col gap-4 text-left lg:text-left">
         <button
           type="submit"
-          class="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+          class="w-32 inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
           Login
         </button>
-        <h2 class="font-bold mt-6 text-sm">Note:</h2>
-        <p class="text-xs font-semibold mt-2 pt-1 mb-0 w-full">
-          Your username and password create a unique <a
-            href="https://ethereum.org/en/developers/docs/accounts/"
-            >Ethereum</a>
-          keypair in your browser and are not stored anywhere else. If you forget
-          your login details, you won't be able to access your account, so keep them
-          safe.
-        </p>
+        <div>
+          <h2 class="font-bold text-sm">Note:</h2>
+          <p class="text-xs font-semibold mt-2 pt-1 mb-0 w-full">
+            Your username and password create a unique <a
+              href="https://ethereum.org/en/developers/docs/accounts/"
+              >Ethereum</a>
+            keypair in your browser and are not stored anywhere else. If you forget
+            your login details, you won't be able to access your account, so keep
+            them safe.
+          </p>
+        </div>
       </div>
     </form>
   </div>
