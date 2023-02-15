@@ -10,7 +10,8 @@
   import downloadjs from "downloadjs";
   import ipfsHash from "pure-ipfs-only-hash";
   import cc from "copy-to-clipboard";
-
+  import type { AuthHeader } from "@/lib/class/authheader.json.interface";
+  import { Buffer } from "buffer";
   const swaggerDoc: any = rawSwaggerDoc;
 
   async function copyText(responseBody) {
@@ -231,7 +232,14 @@ ${Object.entries(activeHeaders)
         binaryString = String.fromCharCode.apply(null, array);
 
       const CID = await ipfsHash.of(array);
-      requestParams[`${route.id}-Authorization`] = `bearer ${CID}`;
+      const authHeader: AuthHeader = {
+        CID,
+        signature: "",
+        nonce: performance.now(),
+      };
+      requestParams[`${route.id}-Authorization`] = `${Buffer.from(
+        JSON.stringify(authHeader)
+      ).toString("base64")}`;
     };
   };
 </script>
@@ -551,9 +559,12 @@ ${Object.entries(activeHeaders)
                                       >{requestOut
                                         ? "Executing..."
                                         : "Execute"}</button>
-                                        {#if requestError}
-                                        <p class="text-sm text-red-500 text-center">{requestError}</p>
-                                        {/if}
+                                    {#if requestError}
+                                      <p
+                                        class="text-sm text-red-500 text-center">
+                                        {requestError}
+                                      </p>
+                                    {/if}
                                     {#if activeExecuted}
                                       <button
                                         on:click={() => {
