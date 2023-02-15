@@ -155,14 +155,6 @@ ${Object.entries(activeHeaders)
       });
     });
   });
-  const getSchema = (refName) => {
-    const division = refName.replace("#/", "").split("/");
-    if (division.length == 3) {
-      return swagger[division[0]][division[1]][division[2]];
-    } else {
-      return {};
-    }
-  };
 
   let httpV = [
     { id: "0", value: "HTTP" },
@@ -175,13 +167,13 @@ ${Object.entries(activeHeaders)
     : "accordion-collapse collapse";
 
   let requestOut = false;
-
+  let requestError = null;
   const execute = async (e) => {
     e.preventDefault();
 
     requestOut = true;
 
-    let { url, response } = await handleRequest(
+    let { url, response, error } = await handleRequest(
       `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
       { ...active, route: active.route },
       active.id,
@@ -189,7 +181,12 @@ ${Object.entries(activeHeaders)
       requestParams,
       activeHeaders
     );
-    requestOut = false;
+    requestError = error;
+    setTimeout(() => {
+      requestOut = false;
+      requestError = null;
+    }, 1000);
+
     activeURL = url;
     const isJSON = activeHeaders.accept === "application/json";
     const isText = activeHeaders.accept === "application/text";
@@ -544,14 +541,19 @@ ${Object.entries(activeHeaders)
                                   {/if}
                                 </div>
                                 {#if active?.id === route.id}
-                                  <div class="flex gap-2 mt-5 w-full">
+                                  <div class="flex flex-col gap-2 mt-5 w-full">
                                     <button
                                       disabled={requestOut}
                                       type="submit"
                                       class="{activeExecuted
                                         ? 'w-1/2'
                                         : 'w-full'} flex items-center justify-center bg-blue-500 text-white font-bold rounded p-1"
-                                      >Execute</button>
+                                      >{requestOut
+                                        ? "Executing..."
+                                        : "Execute"}</button>
+                                        {#if requestError}
+                                        <p class="text-sm text-red-500 text-center">{requestError}</p>
+                                        {/if}
                                     {#if activeExecuted}
                                       <button
                                         on:click={() => {

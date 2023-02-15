@@ -64,19 +64,24 @@ export const handleRequest = async (baseurl, activeRoute, methodId, paramDetails
         .join("&");
     const url = `${baseurl}${encodedUri}${queryString ? `?${queryString}` : ""
         }`;
+    let responseError = null;
+    const _response:any = await fetch(url, {
+        method: method.toUpperCase(), // *GET, POST, PUT, DELETE, etc.
+        // mode: 'cors', // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: headers,
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body, // JSON.stringify(data) // body data type must match "Content-Type" header
+    }).catch((e: any) => {
+        responseError = e;
+    });
 
     return {
         url,
-        response: await fetch(url, {
-            method: method.toUpperCase(), // *GET, POST, PUT, DELETE, etc.
-            // mode: 'cors', // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: headers,
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            body, // JSON.stringify(data) // body data type must match "Content-Type" header
-        })
+        response: _response,
+        error: responseError
     }
 
     //response.json(); // parses JSON response into native JavaScript objects
