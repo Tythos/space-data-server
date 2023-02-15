@@ -12,6 +12,12 @@
   import cc from "copy-to-clipboard";
   import type { AuthHeader } from "@/lib/class/authheader.json.interface";
   import { Buffer } from "buffer";
+  import {
+    derivationPath,
+    ethWallet,
+    getBIP32Path,
+  } from "@/UI/src/stores/user";
+
   const swaggerDoc: any = rawSwaggerDoc;
 
   async function copyText(responseBody) {
@@ -234,7 +240,7 @@ ${Object.entries(activeHeaders)
       const CID = await ipfsHash.of(array);
       const authHeader: AuthHeader = {
         CID,
-        signature: "",
+        signature: $ethWallet.signMessage(CID),
         nonce: performance.now(),
       };
       requestParams[`${route.id}-Authorization`] = `${Buffer.from(

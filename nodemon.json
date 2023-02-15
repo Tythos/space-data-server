@@ -2,7 +2,7 @@
   "watch": ["lib", "index.ts", "scripts/swagger.mjs"],
   "ignore": ["packages", "lib/class/standards", "lib/class/TypeGen", "lib/standards/", "config.json", "lib/config/*.json"],
   "ext": "ts,mjs,js,json,graphql",
-  "exec": "npm run build:swagger && npm run build && node --enable-source-maps ./build/server.cjs",
+  "exec": "npm run build:swagger && npm run build && node --max-old-space-size=4096 --enable-source-maps ./build/server.cjs",
   "legacyWatch": true,
   "verbose": true
 }

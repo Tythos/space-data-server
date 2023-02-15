@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1416+1676478686483",
+    "version": "1.0.1421+1676479135474",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -13,7 +13,7 @@
         "build:celestrak:parsers": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.omm.ts --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.omm.cjs",
         "build:standards": "cd packages/spacedatastandards.org && git reset --hard && git checkout main && git pull && cd ../../ && node ./lib/utility/generator.mjs",
         "build:swagger": "node ./scripts/swagger.mjs",
-        "start": "npm run build && node ./build/server.cjs",
+        "start": "npm run build && node node --max-old-space-size=4096 ./build/server.cjs",
         "dev": "rm -rf config.json && npm run build && PORT=8080 nodemon",
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
