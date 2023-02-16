@@ -100,7 +100,10 @@ ${Object.entries(activeHeaders)
           method[1].requestBody.content;
 
         /*Add Body To Parameters*/
-        if (method[1].requestBody) {
+        if (
+          method[1].requestBody &&
+          !method[1].parameters.find((p) => p.name === "body")
+        ) {
           method[1].parameters = [
             ...method[1].parameters,
             {
@@ -678,15 +681,6 @@ ${Object.entries(activeHeaders)
                                                     )}
                                                   class="cursor-pointer text-gray-500 ml-2"
                                                   ><Icon data={copy} /></span>
-                                                <!-- svelte-ignore a11y-click-events-have-key-events 
-                                                <span
-                                                on:click={(e) =>
-                                                  copyText(
-                                                    responses[route.id]
-                                                      ?.responseBody
-                                                  )}
-                                                class="cursor-pointer text-gray-500 ml-2"
-                                                ><Icon data={copy} /></span>-->
                                               </div>
                                               <div
                                                 class="overflow-x-auto relative max-h-[100px]">
