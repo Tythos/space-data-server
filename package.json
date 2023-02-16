@@ -1,12 +1,12 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1427+1676517626122",
+    "version": "1.0.1428+1676517719444",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
     "files": [
         "build",
-        "dist",
+        "lib/class",
         "go-ipfs",
         "swagger-output.json"
     ],
