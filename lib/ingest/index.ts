@@ -129,53 +129,54 @@ async function processData(file: string) {
         let mtime: string = new Date(statSync(signedFile).mtime).toISOString();
         let inputFile: any = readFileSync(signedFile);
         let CID = await ipfsHash.of(inputFile);
-
-        //@ts-ignore
-        let currentStandard = standardsJSON[standard];
-        if (!currentStandard) {
-            return;
-        }
-
-        let tableName = refRootName(currentStandard.$ref);
-        let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
-        let parentClass: any = standards[pClassName];
-
-        let inputSignature: any;
-        if (!existsSync(signatureFile)) {
-            console.warn(`${signedFile}: could not find digital signature.`)
-        } else {
-            inputSignature = await readFile(signatureFile, "utf8");
-        }
-        let input, signedEthAddress;
-
-        if (inputSignature) {
-            signedEthAddress = (await ethers.utils.verifyMessage(CID, inputSignature)).toLowerCase()
-        }
-
-        if (!signedEthAddress || !config.trustedAddresses[signedEthAddress]) {
-            console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid.`);
-            return;
-        }
-
-        if (extname(signedFile) === ".fbs") {
-            input = readFB(inputFile, tableName, parentClass);
-        } else {
-            return;
-        }
-
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
 
         if (!currentCID) {
-            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
-        }
+            //@ts-ignore
+            let currentStandard = standardsJSON[standard];
+            if (!currentStandard) {
+                return;
+            }
 
-        if (config.data.copyOnRead) {
-            const writePath = join(
-                config.data.public,
-                standard.toUpperCase(),
-                signedEthAddress as string,
-                roundToUTCDate(new Date(statSync(signedFile).mtime)).toISOString());
-            writeFiles(writePath, CID, input);
+            let tableName = refRootName(currentStandard.$ref);
+            let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
+            let parentClass: any = standards[pClassName];
+
+            let inputSignature: any;
+            if (!existsSync(signatureFile)) {
+                console.warn(`${signedFile}: could not find digital signature.`)
+            } else {
+                inputSignature = await readFile(signatureFile, "utf8");
+            }
+            let input, signedEthAddress;
+
+            if (inputSignature) {
+                signedEthAddress = (await ethers.utils.verifyMessage(CID, inputSignature)).toLowerCase()
+            }
+
+            if (!signedEthAddress || !config.trustedAddresses[signedEthAddress]) {
+                console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid.`);
+                return;
+            }
+
+            if (extname(signedFile) === ".fbs") {
+                input = readFB(inputFile, tableName, parentClass);
+            } else {
+                return;
+            }
+
+
+            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
+
+
+            if (config.data.copyOnRead) {
+                const writePath = join(
+                    config.data.public,
+                    standard.toUpperCase(),
+                    signedEthAddress as string,
+                    roundToUTCDate(new Date(statSync(signedFile).mtime)).toISOString());
+                writeFiles(writePath, CID, input);
+            }
         }
     }
     if (queue.length) {
