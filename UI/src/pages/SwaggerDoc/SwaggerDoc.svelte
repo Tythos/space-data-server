@@ -241,7 +241,6 @@ ${Object.entries(activeHeaders)
           binaryString = String.fromCharCode.apply(null, array);
 
         const CID = await ipfsHash.of(array);
-        console.log($ethWallet.signMessage);
         const authHeader: AuthHeader = {
           CID,
           signature: await $ethWallet.signMessage(CID),
@@ -560,11 +559,11 @@ ${Object.entries(activeHeaders)
                                   {/if}
                                 </div>
                                 {#if active?.id === route.id}
-                                  <div class="flex flex-col gap-2 mt-5 w-full">
+                                  <div class="flex gap-2 mt-5 w-full">
                                     <button
                                       disabled={requestOut}
                                       type="submit"
-                                      class="{activeExecuted
+                                      class="{activeExecuted || true
                                         ? 'w-1/2'
                                         : 'w-full'} flex items-center justify-center bg-blue-500 text-white font-bold rounded p-1"
                                       >{requestOut
@@ -576,7 +575,7 @@ ${Object.entries(activeHeaders)
                                         {requestError}
                                       </p>
                                     {/if}
-                                    {#if activeExecuted}
+                                    {#if true || activeExecuted}
                                       <button
                                         on:click={() => {
                                           resetActive();

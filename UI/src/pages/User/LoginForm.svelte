@@ -2,13 +2,10 @@
   import { Wallet, utils, providers } from "ethers";
   import { Icon } from "svelte-awesome";
   import argon2 from "argon2-browser/dist/argon2-bundled.min";
-  import { entropyToMnemonic, mnemonicToSeed, wordlists } from "bip39";
-  import { infoCircle, repeat } from "svelte-awesome/icons";
+  import { entropyToMnemonic } from "bip39";
+  import { repeat } from "svelte-awesome/icons";
   import SeedPhrase from "./SeedPhrase.svelte";
-  import crypto from "crypto";
-  import ecies from "@/node_modules/standard-ecies";
-  console.log(ecies.encrypt);
-  console.log(crypto.createECDH("secp256k1"));
+
   import {
     ethWallet,
     hdNode,

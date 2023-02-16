@@ -49,7 +49,8 @@ export const post: express.RequestHandler = async (req, res, next) => {
         let isValidated: boolean = false;
 
         if (authHeader) {
-            const { CID, signature: inputSignature }: AuthHeader = JSON.parse(Buffer.from(authHeader, "base64").toString());
+            const { CID: inputCID, signature: inputSignature }: AuthHeader = JSON.parse(Buffer.from(authHeader, "base64").toString());
+            CID = inputCID;
             const address = ethers.utils.verifyMessage(CID, inputSignature).toLowerCase();
             if (!config.trustedAddresses[address]) {
                 res.status(401);
