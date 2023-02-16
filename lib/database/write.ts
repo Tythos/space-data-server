@@ -127,7 +127,10 @@ export const write = async (
     created_at: string = ""
 ) => {
     knexConnection = currentKnexConnection;
-    await runPragmas(knexConnection)
+    await runPragmas(knexConnection);
+    let currentCID = await knexConnection("FILE_IMPORT_TABLE").where({ CID }).first();
+
+    if (currentCID) return;
 
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,

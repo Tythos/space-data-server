@@ -3,6 +3,7 @@ node_modules
 *.log
 .database/**/*
 .data/**/*
+.datax/**/*
 .testdata
 .testdatabase
 .inputdata

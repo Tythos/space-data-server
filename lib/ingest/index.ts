@@ -20,6 +20,7 @@ import { execSync } from 'node:child_process';
 import { roundToUTCDate } from "@/lib/utility/roundDate"
 
 let queue: Array<string> = [];
+let isProcessing: Boolean = false;
 let CronJobs: Array<CronJob> = [];
 async function readDirectoryRecursively(dir: string): Promise<string[]> {
     const files = await fs.readdir(dir);
@@ -59,6 +60,9 @@ export const init = async (folder: string) => {
     }).on("all", async (event, filename) => {
         if (event === "add" && filename) {
             queue.push(filename);
+            if (!isProcessing) {
+                processData(filename);
+            }
         }
     });
 
@@ -111,7 +115,9 @@ const writeFiles = async (writePath: string, CID: string, input: any) => {
 }
 
 async function processData(file: string) {
+    isProcessing = true;
     if (!file) {
+        isProcessing = false;
         return;
     }
     if (config.data.verbose) {
@@ -182,6 +188,7 @@ async function processData(file: string) {
     if (queue.length) {
         processData(queue.pop() as string);
     }
+    isProcessing = false;
 }
 
 export const getQueue = () => {
