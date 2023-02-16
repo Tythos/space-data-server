@@ -12,6 +12,9 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
       -- [ ] API path
 - [ ] Logging
 - [ ] Authentication
+- [ ] CLI admin tools 
+- [ ] Install script with service 
+- [ ] Home page & About Page
 
 ## Paths
 

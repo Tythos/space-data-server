@@ -215,7 +215,7 @@ const doc = {
                             "type": "string",
                             "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
                         },
-                        "description": "Auth Token <br/><code class='text-xs bg-black text-white p-1 rounded'>JSON.stringify({CID, signature:ethSig(CID), nonce}) => base64</code>"
+                        "description": "Auth Token <br/><code class='text-xs bg-black text-white p-1 rounded overflow-x-auto w-8'>JSON.stringify({CID, signature:ethSig(CID), nonce}) => base64</code>"
                     }
                 ],
                 "requestBody": {

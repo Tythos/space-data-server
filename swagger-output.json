@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1493+1676580103171",
+        "version": "1.0.1503+1676586261908",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1675110065585"
     },
@@ -201,7 +201,7 @@
                             "type": "string",
                             "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
                         },
-                        "description": "Auth Token <br/><code class='text-xs bg-black text-white p-1 rounded'>JSON.stringify({CID, signature:ethSig(CID), nonce}) => base64</code>"
+                        "description": "Auth Token <br/><code class='text-xs bg-black text-white p-1 rounded overflow-x-auto w-8'>JSON.stringify({CID, signature:ethSig(CID), nonce}) => base64</code>"
                     }
                 ],
                 "requestBody": {

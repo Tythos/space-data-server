@@ -563,7 +563,7 @@ ${Object.entries(activeHeaders)
                                     <button
                                       disabled={requestOut}
                                       type="submit"
-                                      class="{activeExecuted || true
+                                      class="{activeExecuted
                                         ? 'w-1/2'
                                         : 'w-full'} flex items-center justify-center bg-blue-500 text-white font-bold rounded p-1"
                                       >{requestOut
@@ -575,7 +575,7 @@ ${Object.entries(activeHeaders)
                                         {requestError}
                                       </p>
                                     {/if}
-                                    {#if true || activeExecuted}
+                                    {#if activeExecuted}
                                       <button
                                         on:click={() => {
                                           resetActive();
