@@ -44,19 +44,21 @@ export const init = async (folder: string) => {
         mkdirSync(folder);
     }
     queue = await readDirectoryRecursively(folder);
-    await processData();
+
+    while (queue.length) {
+        await processData(queue.pop() as string);
+    }
+
     watchPath = folder;
 
-    chokidar.watch(folder, {
+    const watcher = chokidar.watch(folder, {
         awaitWriteFinish: {
             stabilityThreshold: 2000,
-            pollInterval: 200
+            pollInterval: 2000
         }
     }).on("all", async (event, filename) => {
-
         if (event === "add" && filename) {
             queue.push(filename);
-            await processData();
         }
     });
 
@@ -108,15 +110,8 @@ const writeFiles = async (writePath: string, CID: string, input: any) => {
     }
 }
 
-async function processData() {
-    const returnFunc = () => {
-        if (queue.length) {
-            processData();
-        }
-    }
-    let file = queue.pop();
+async function processData(file: string) {
     if (!file) {
-        returnFunc();
         return;
     }
     if (config.data.verbose) {
@@ -130,7 +125,7 @@ async function processData() {
     let signedFile = file.replace(".sig", "");
     let signatureFile = extname(trimmedFile) === ".sig" ? file : `${file}.sig`;
 
-    if (existsSync(signedFile) && ~["fbs", "json"].indexOf(ext)) {
+    if (existsSync(signedFile) && ~["fbs"].indexOf(ext)) {
         let mtime: string = new Date(statSync(signedFile).mtime).toISOString();
         let inputFile: any = readFileSync(signedFile);
         let CID = await ipfsHash.of(inputFile);
@@ -138,14 +133,12 @@ async function processData() {
         //@ts-ignore
         let currentStandard = standardsJSON[standard];
         if (!currentStandard) {
-            returnFunc();
             return;
         }
 
         let tableName = refRootName(currentStandard.$ref);
         let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
         let parentClass: any = standards[pClassName];
-        let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
 
         let inputSignature: any;
         if (!existsSync(signatureFile)) {
@@ -164,21 +157,7 @@ async function processData() {
             return;
         }
 
-        if (extname(signedFile) === ".json") {
-            input = new parentClass[cClassName];
-            let parsedInputFile;
-            try {
-                parsedInputFile = JSON.parse(inputFile.toString("utf8"));
-            } catch (e) {
-                console.log(inputFile, signedFile);
-                console.error(`Unable to parse file ${inputFile}`);
-                returnFunc();
-                return;
-            }
-            for (let s = 0; s < parsedInputFile.RECORDS.length; s++) {
-                input.RECORDS.push(parsedInputFile.RECORDS[s]);
-            }
-        } else if (extname(signedFile) === ".fbs") {
+        if (extname(signedFile) === ".fbs") {
             input = readFB(inputFile, tableName, parentClass);
         } else {
             return;
@@ -199,7 +178,9 @@ async function processData() {
             writeFiles(writePath, CID, input);
         }
     }
-
+    if (queue.length) {
+        processData(queue.pop() as string);
+    }
 }
 
 export const getQueue = () => {
