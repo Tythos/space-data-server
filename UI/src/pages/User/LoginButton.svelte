@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { Icon } from "svelte-awesome";
-  import { user } from "svelte-awesome/icons";
-  import { provider, ethWallet } from "@/UI/src/stores/user";
+  import { ethWallet } from "@/UI/src/stores/user";
+  import { push } from "svelte-spa-router";
 </script>
 
-<a
-  href="#/user"
-  type="button"
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div
+  on:click={(e) => {
+    push("/user");
+  }}
   class="px-6
       py-2.5
       bg-gray-700
@@ -25,4 +26,4 @@
       duration-150
       ease-in-out">
   {$ethWallet?.address ? "Account" : "Login"}
-</a>
+</div>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import "tw-elements";
   import "tw-elements/dist/css/index.min.css";
-  import Router_ from "svelte-spa-router";
+  import Router_, { push } from "svelte-spa-router";
   import { routes } from "@/UI/src/routes/routes";
   import LoginButton from "./pages/User/LoginButton.svelte";
   import { crypto } from "webcrypto-liner/build/index.es";
@@ -46,6 +46,9 @@
           {#each Object.entries(routes).filter((a) => a[1].navBar) as [route, value], i}
             <li class="nav-item">
               <a
+                on:click={(e) => {
+                  push(route);
+                }}
                 class="nav-link block pr-2 lg:px-2 py-2 text-gray-600 hover:text-gray-700 focus:text-gray-700 transition duration-150 ease-in-out"
                 href="#{route}"
                 data-mdb-ripple="true"
