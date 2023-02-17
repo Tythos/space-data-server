@@ -4,6 +4,7 @@
   import Router_ from "svelte-spa-router";
   import { routes } from "@/UI/src/routes/routes";
   import LoginButton from "./pages/User/LoginButton.svelte";
+  import "webcrypto-liner/build/webcrypto-liner.shim";
   const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
 
