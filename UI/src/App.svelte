@@ -6,8 +6,7 @@
   import LoginButton from "./pages/User/LoginButton.svelte";
   import { crypto } from "webcrypto-liner/build/index.es";
 
-  const _window = self;
-  _window["crypto"] = crypto;  ///HAAAAAAAAAAAAAAACK
+  self.crypto.subtle = crypto.subtle; ///HAAAAAAAAAAAAAAACK
 
   const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
