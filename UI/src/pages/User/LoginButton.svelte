@@ -8,7 +8,8 @@
   on:click={(e) => {
     push("/user");
   }}
-  class="px-6
+  class="cursor-pointer 
+      px-6
       py-2.5
       bg-gray-700
       text-white

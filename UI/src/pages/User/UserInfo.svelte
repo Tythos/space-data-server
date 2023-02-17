@@ -43,7 +43,7 @@
           class="items-center justify-center grow-0 shrink-0 basis-auto block flex w-full lg:w-6/12 xl:w-4/12 p-6">
           <img src={qrCodeImage} class="w-1/2 h-1/2" alt="qrcode" />
         </div>
-        <div class="grow-0 shrink-0 basis-auto w-full lg:w-6/12 xl:w-8/12">
+        <div class="text-center grow-0 shrink-0 basis-auto w-full lg:w-6/12 xl:w-8/12">
           <div class="px-2 py-5 md:px-12">
             <div class="text-3xl font-bold mb-6 pb-2 flex flex-col gap-2">
               <div class="text-sm">{$ethWallet.address}</div>
@@ -58,86 +58,6 @@
             <p class="text-gray-500 mb-6 pb-2">
               Balance: {balance || 0} ETH
             </p>
-            <!-- <div class="flex flex-wrap mb-6">
-              <div class="w-full lg:w-6/12 xl:w-4/12 mb-4">
-                <p class="flex items-center justify-center md:justify-start">
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512">
-                    <path
-                      fill="currentColor"
-                      d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z" />
-                  </svg>Noise cancelling
-                </p>
-              </div>
-              <div class="w-full lg:w-6/12 xl:w-4/12 mb-4">
-                <p class="flex items-center justify-center md:justify-start">
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512">
-                    <path
-                      fill="currentColor"
-                      d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z" />
-                  </svg>Touch controls
-                </p>
-              </div>
-              <div class="w-full lg:w-6/12 xl:w-4/12 mb-4">
-                <p class="flex items-center justify-center md:justify-start">
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512">
-                    <path
-                      fill="currentColor"
-                      d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z" />
-                  </svg>Clear calls
-                </p>
-              </div>
-              <div class="w-full lg:w-6/12 xl:w-4/12 mb-4">
-                <p class="flex items-center justify-center md:justify-start">
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512">
-                    <path
-                      fill="currentColor"
-                      d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z" />
-                  </svg>Quite mode
-                </p>
-              </div>
-              <div class="w-full lg:w-6/12 xl:w-4/12 mb-4">
-                <p class="flex items-center justify-center md:justify-start">
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512">
-                    <path
-                      fill="currentColor"
-                      d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z" />
-                  </svg>Secure
-                </p>
-              </div>
-              <div class="w-full lg:w-6/12 xl:w-4/12 mb-4">
-                <p class="flex items-center justify-center md:justify-start">
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    role="img"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 512 512">
-                    <path
-                      fill="currentColor"
-                      d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z" />
-                  </svg>Comfortable
-                </p>
-              </div>
-            </div>-->
             <div>
               <button
                 on:click={(e) => {

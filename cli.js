@@ -24,4 +24,4 @@ console.log(serviceFile);
 writeFileSync(serviceFilePath, serviceFile);
 execSync(`sudo systemctl daemon-reload`);
 execSync(`sudo systemctl enable spacedataserver.service`);
-execSync(`sudo systemctl start spacedataserver.service`);
+execSync(`sudo systemctl restart spacedataserver.service`);
