@@ -4,7 +4,11 @@
   import Router_ from "svelte-spa-router";
   import { routes } from "@/UI/src/routes/routes";
   import LoginButton from "./pages/User/LoginButton.svelte";
-  import "webcrypto-liner/build/webcrypto-liner.shim";
+  import { crypto } from "webcrypto-liner/build/index.es";
+
+  const _window = self;
+  _window["crypto"] = crypto;  ///HAAAAAAAAAAAAAAACK
+
   const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
 

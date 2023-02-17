@@ -9,8 +9,9 @@ export default function (options) {
         },
         buildEnd() {
             setTimeout(() => {
+                console.log("Awaiting file write...");
                 execSync("cd .. && node ./scripts/uiBuild.mjs");
-            }, 1000)
+            }, 5000)
         }
     };
 
