@@ -25,7 +25,10 @@ const outputStandardFiles: any = {};
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 
 beforeAll(async () => {
-    rmSync(databaseConfig.connection.filename);
+    if (existsSync(databaseConfig.connection.filename)) {
+        rmSync(databaseConfig.connection.filename);
+    }
+    rmdirSync(config.data.fileSystemPath, { recursive: true });
     if (!existsSync(databaseConfig.connection.filename)) {
         await generateDatabase(standardsArray, databaseConfig.connection.filename, `${config.database.path}/standards.sql`, connection, databaseConfig.version);
     }
@@ -43,7 +46,7 @@ beforeAll(async () => {
     });
 })
 
-describe("POST /endpoint", () => {
+describe("POST /endpoint Write To Disk", () => {
     rmSync(config.data.ingest, { recursive: true, force: true });
 
     it("should accept JSON and Flatbuffer files and save them to the database", async () => {
@@ -102,17 +105,80 @@ describe("POST /endpoint", () => {
         await new Promise(r => setTimeout(r, 5000)); //!IMPORTANT
     }, 30000);
 });
-describe("POST /echo", async () => {
-    for (let standard in standards) {
 
-        const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
-        const fbResponse = await request(app)
-            .post(`/echo/${standard}`)
-            .set("Content-Type", "application/octet-stream")
-            .send(flatbufferBinary);
-        expect(fbResponse.status).toBe(200);
-    }
+/*
+describe("POST /endpoint Write To Database", () => {
+    rmSync(config.data.ingest, { recursive: true, force: true });
+    it("should accept JSON and Flatbuffer files and save them to the database", async () => {
+        for (let standard in standards) {
 
+            const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
+
+            const CID = await ipfsHash.of(flatbufferBinary);
+
+            /*Fail Test*/
+/*
+            const jsonResponseError = await request(app)
+                .post(`/spacedata/${standard}`)
+                .set("Content-Type", "application/octet-stream")
+                .set("authorization", `{}`)
+                .send(flatbufferBinary);
+
+            expect(jsonResponseError.status).toBe(401);
+
+            expect(jsonResponseError.body.error).toMatch(`Signature invalid or key missing.`);
+
+            const authMessage: AuthHeader = {
+                CID,
+                signature: await ethWallet.signMessage(CID),
+                nonce: performance.now(),
+            };
+            const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
+
+            const fbResponse = await request(app)
+                .post(`/spacedata/${standard}`)
+                .set("Content-Type", "application/octet-stream")
+                .set("authorization", authHeader)
+                .send(flatbufferBinary);
+            expect(fbResponse.status).toBe(200);
+
+            let postedCID;
+            let timerCount = 0;
+            while (!postedCID && timerCount < 10) {
+                console.clear();
+                console.log(`${Date.now()} - Trying CID Service...`);
+                postedCID = (await request(app)
+                    .get(`/cid/${ethWallet.address}/${standard}`)).body[0];
+                if (!postedCID) {
+                    await new Promise(r => setTimeout(r, 2000));
+                }
+                timerCount++;
+            }
+            if (!postedCID) {
+                throw Error("Too Many Attempts");
+            }
+            expect(standard).toEqual(postedCID.STANDARD);
+            expect(ethWallet.address.toLowerCase()).toEqual(postedCID.PROVIDER);
+            expect(CID).toEqual(postedCID.CID);
+
+        }
+        await new Promise(r => setTimeout(r, 5000)); //!IMPORTANT
+    }, 30000);
+});
+*/
+
+describe("POST /echo", () => {
+    it("Echoes input", async () => {
+        for (let standard in standards) {
+
+            const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
+            const fbResponse = await request(app)
+                .post(`/echo/${standard}`)
+                .set("Content-Type", "application/octet-stream")
+                .send(flatbufferBinary);
+            expect(fbResponse.status).toBe(200);
+        }
+    })
 });
 afterAll(async () => {
     await deinit();

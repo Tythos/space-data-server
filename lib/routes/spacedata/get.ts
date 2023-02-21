@@ -6,6 +6,9 @@ import read from "@/lib/database/read";
 import { connection } from "@/lib/database/connection";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { formatResponse } from "./responseFormat";
+import { config } from "@/lib/config/config";
+import { createReadStream } from "fs";
+import { join } from "path";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 
@@ -47,12 +50,15 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     if (!parsedQuery.length) {
       parsedQuery = [["where", ["file_id", "=", currentCID]]];
     }
+    if (config.data.useFileSystem) {
+      createReadStream(join(config.data.fileSystemPath, provider, currentCID)).pipe(res);
+    } else {
+      let payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
 
-    let payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
-    payload = formatResponse(req, res, payload);
-    res.set("x-content-identifier", currentCID);
-    res.end(payload);
-
+      payload = formatResponse(req, res, payload);
+      res.set("x-content-identifier", currentCID);
+      res.end(payload);
+    }
   }
 
   next();

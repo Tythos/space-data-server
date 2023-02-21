@@ -32,8 +32,8 @@ export interface Settings {
     "data": {
         "ingest": string,
         "raw": string,
-        "public": string,
-        "copyOnRead": Boolean,
+        "fileSystemPath": string,
+        "useFileSystem": Boolean,
         "cache": string,
         "verbose": Boolean
     },

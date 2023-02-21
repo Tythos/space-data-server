@@ -17,7 +17,6 @@ import { refRootName } from '../database/generateTables';
 import { readFB, writeFB } from '../utility/flatbufferConversion';
 import { readFile, rename } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
-import { roundToUTCDate } from "@/lib/utility/roundDate"
 
 let queue: Array<string> = [];
 let isProcessing: Boolean = false;
@@ -86,34 +85,6 @@ export const init = async (folder: string) => {
     }
 }
 
-const writeFiles = async (writePath: string, CID: string, input: any) => {
-    if (!input.pack) {
-        throw Error("NO INPUT")
-    }
-
-    mkdirSync(writePath, { recursive: true });
-
-    const fbsPath = join(
-        writePath,
-        `${CID}.fbs`);
-    const jsonPath = join(
-        writePath,
-        `${CID}.json`);
-
-    if (!input) return;
-    try {
-        await access(fbsPath);
-        await writeFile(fbsPath, writeFB(input));
-    } catch (e) {
-
-    }
-    try {
-        await access(jsonPath)
-        await writeFile(jsonPath, JSON.stringify(input));
-    } catch (e) {
-    }
-}
-
 async function processData(file: string) {
     isProcessing = true;
     if (!file) {
@@ -132,7 +103,7 @@ async function processData(file: string) {
     let signatureFile = extname(trimmedFile) === ".sig" ? file : `${file}.sig`;
 
     if (existsSync(signedFile) && ~["fbs"].indexOf(ext)) {
-        let mtime: string = new Date(statSync(signedFile).mtime).toISOString();
+        let mtime: Date = statSync(signedFile).mtime;
         let inputFile: any = readFileSync(signedFile);
         let CID = await ipfsHash.of(inputFile);
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
@@ -172,17 +143,19 @@ async function processData(file: string) {
             }
 
 
-            write(connection, standard, input.RECORDS, currentStandard, CID, inputSignature, signedEthAddress as string, standard.toUpperCase(), mtime);
+            write(
+                connection,
+                standard,
+                input,
+                currentStandard,
+                CID,
+                inputSignature,
+                signedEthAddress as string,
+                standard.toUpperCase(),
+                mtime,
+                config.data.useFileSystem
+            );
 
-
-            if (config.data.copyOnRead) {
-                const writePath = join(
-                    config.data.public,
-                    standard.toUpperCase(),
-                    signedEthAddress as string,
-                    roundToUTCDate(new Date(statSync(signedFile).mtime)).toISOString());
-                writeFiles(writePath, CID, input);
-            }
         }
     }
     if (queue.length) {

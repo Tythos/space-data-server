@@ -1,9 +1,7 @@
 import { JSONSchema4 } from "json-schema";
 import { refRootName, resolver } from "@/lib/database/generateTables";
 import * as standards from "@/lib/standards/standards";
-import { readFileSync } from "fs";
 import { runPragmas } from "./pragmas";
-import knex from "knex";
 import _standardsJSON from "@/lib/standards/schemas.json";
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 

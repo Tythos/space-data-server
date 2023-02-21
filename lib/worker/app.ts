@@ -1,16 +1,13 @@
-import { get, latest, post } from "../routes/spacedata/index";
+import { get, post } from "../routes/spacedata/index";
 import express, { Express, Request, Response } from 'express';
 import helmet from "helmet";
 import cors from "cors";
 import compression from "compression-next";
 import { config } from "@/lib/config/config";
 import bodyParser from "body-parser";
-import { cpus, totalmem, freemem } from "os";
-import * as standards from "@/lib/standards/standards";
 import { standards as standardsRoute } from "../routes/standards";
 const app: Express = express();
-const totalCPUs = cpus().length;
-import { providers, provider, cid } from "@/lib/routes/spacedata/providers";
+import { providers, cid } from "@/lib/routes/spacedata/providers";
 import { sql } from "@/lib/routes/standards/sql";
 import { schema } from "@/lib/routes/standards/schema";
 import { idl } from "@/lib/routes/standards/idl";
@@ -47,7 +44,7 @@ app.use(helmet.contentSecurityPolicy({
 
 app.enable('x-powered-by');
 
-app.use("/raw", express.static(config.data.public));
+app.use("/raw", express.static(config.data.fileSystemPath));
 app.use("/app", express.static("UI/dist"));
 app.use(bodyParser.json({
     type: ['application/json', 'application/*+json'], verify: (req, res, buf) => {

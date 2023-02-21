@@ -4,9 +4,44 @@ import toposort from "toposort";
 import getID from "@/lib/utility/getID";
 import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
 import { runPragmas } from "./pragmas";
+import { mkdirSync, statSync } from "fs";
+import { writeFile, access } from "node:fs/promises"
+import chokidar from "chokidar";
+import { config } from "@/lib/config/config";
+import { promises as fs, readFileSync } from 'fs';
+import standardsJSON from "@/lib/standards/schemas.json";
+import * as standards from "@/lib/standards/standards";
+import { connection } from "@/lib/database/connection";
+import { join } from "path";
+import * as ethers from "ethers";
+import { CronJob } from "cron";
+//@ts-ignore
+import ipfsHash from "pure-ipfs-only-hash"
+import { extname, basename } from 'node:path';
+import { readFB, writeFB } from '../utility/flatbufferConversion';
+import { readFile, rename } from 'node:fs/promises';
+import { execSync } from 'node:child_process';
+import { roundToUTCDate } from "@/lib/utility/roundDate"
 
 let knexConnection: any;
 let pageSize = 200;
+
+const writeFiles = async (writePath: string, CID: string, input: any, DIGITAL_SIGNATURE: string) => {
+    if (!input || !input.pack) {
+        throw Error("NO INPUT")
+    }
+
+    mkdirSync(writePath, { recursive: true });
+
+    const fbsPath = join(
+        writePath,
+        `${CID}.fbs`);
+
+    const fbsPathSig = `${fbsPath}.sig`;
+
+    await writeFile(fbsPath, writeFB(input));
+    await writeFile(fbsPathSig, DIGITAL_SIGNATURE);
+}
 
 const insertData = async (
     tableName: string,
@@ -118,13 +153,14 @@ const insertData = async (
 export const write = async (
     currentKnexConnection: any,
     tableName: string,
-    queryArray: Array<any>,
+    input: any,
     standardsSchema: JSONSchema4,
     CID: string = "no_id",
     DIGITAL_SIGNATURE: string,
     PROVIDER: string,
     STANDARD: string,
-    created_at: string = ""
+    created_at: Date,
+    writeToFileSystem: Boolean = true,
 ) => {
     knexConnection = currentKnexConnection;
     await runPragmas(knexConnection);
@@ -137,20 +173,30 @@ export const write = async (
         DIGITAL_SIGNATURE,
         PROVIDER,
         STANDARD,
-        RECORD_COUNT: queryArray.length,
-        created_at
+        RECORD_COUNT: input.RECORDS.length,
+        created_at: created_at.toISOString()
     }]);
 
-    knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
+    if (!writeToFileSystem) {
+        knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
 
-    return insertData(
-        tableName,
-        queryArray,
-        standardsSchema,
-        undefined,
-        undefined,
-        undefined,
-        CID);
+        return insertData(
+            tableName,
+            input.RECORDS,
+            standardsSchema,
+            undefined,
+            undefined,
+            undefined,
+            CID);
+    } else {
+        const writePath = join(
+            config.data.fileSystemPath,
+            STANDARD.toUpperCase(),
+            PROVIDER as string
+        );
+        writeFiles(writePath, CID, input, DIGITAL_SIGNATURE);
+        return Promise.resolve(CID);
+    }
 }
 
 export default write;
