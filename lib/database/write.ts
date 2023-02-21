@@ -192,7 +192,6 @@ export const write = async (
         );
         writeFiles(writePath, CID, input, DIGITAL_SIGNATURE);
     }
-    console.log(CID);
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,
