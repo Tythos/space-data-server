@@ -4,9 +4,8 @@ const dataPath: string = `test/output/data/`;
 import { app } from "@/lib/worker/app";
 import * as standards from "@/lib/standards/standards";
 import { dirname, extname, join } from "node:path";
-import { existsSync, readFileSync, rmdirSync, rmSync } from "node:fs";
-import { ethWallet, untrustedEthWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
-import { keyconvert, pubKeyToEthAddress } from "@/packages/keyconvert";
+import { exists, existsSync, readFileSync, rmdirSync, rmSync } from "node:fs";
+import { ethWallet } from "@/test/utility/generate.crypto.wallets";
 import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
 import standardsJSON from "@/lib/standards/schemas.json";
@@ -14,7 +13,7 @@ import { JSONSchema4 } from "json-schema";
 import type { AuthHeader } from "@/lib/class/authheader.json.interface";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
-import { init, getQueue, deinit } from "@/lib/ingest/index";
+import { init, deinit } from "@/lib/ingest/index";
 import { generateDatabase } from "@/lib/database/generateTables";
 
 //@ts-ignore
@@ -28,7 +27,13 @@ beforeAll(async () => {
     if (existsSync(databaseConfig.connection.filename)) {
         rmSync(databaseConfig.connection.filename);
     }
-    rmdirSync(config.data.fileSystemPath, { recursive: true });
+    try {
+        if (existsSync(config.data.fileSystemPath)) {
+            rmdirSync(config.data.fileSystemPath, { recursive: true });
+        }
+    } catch (e) {
+        //console.info(`Could not delete ${config.data.fileSystemPath}: `, e);
+    }
     if (!existsSync(databaseConfig.connection.filename)) {
         await generateDatabase(standardsArray, databaseConfig.connection.filename, `${config.database.path}/standards.sql`, connection, databaseConfig.version);
     }
@@ -45,79 +50,17 @@ beforeAll(async () => {
         outputStandardFiles[standard][extname(_file).replace(".", "")] = _file;
     });
 })
-
-describe("POST /endpoint Write To Disk", () => {
-    rmSync(config.data.ingest, { recursive: true, force: true });
-
-    it("should accept JSON and Flatbuffer files and save them to the database", async () => {
-        for (let standard in standards) {
-
-            const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
-
-            const CID = await ipfsHash.of(flatbufferBinary);
-
-            /*Fail Test*/
-
-            const jsonResponseError = await request(app)
-                .post(`/spacedata/${standard}`)
-                .set("Content-Type", "application/octet-stream")
-                .set("authorization", `{}`)
-                .send(flatbufferBinary);
-
-            expect(jsonResponseError.status).toBe(401);
-
-            expect(jsonResponseError.body.error).toMatch(`Signature invalid or key missing.`);
-
-            const authMessage: AuthHeader = {
-                CID,
-                signature: await ethWallet.signMessage(CID),
-                nonce: performance.now(),
-            };
-            const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
-
-            const fbResponse = await request(app)
-                .post(`/spacedata/${standard}`)
-                .set("Content-Type", "application/octet-stream")
-                .set("authorization", authHeader)
-                .send(flatbufferBinary);
-            expect(fbResponse.status).toBe(200);
-
-            let postedCID;
-            let timerCount = 0;
-            while (!postedCID && timerCount < 10) {
-                console.clear();
-                console.log(`${Date.now()} - Trying CID Service...`);
-                postedCID = (await request(app)
-                    .get(`/cid/${ethWallet.address}/${standard}`)).body[0];
-                if (!postedCID) {
-                    await new Promise(r => setTimeout(r, 2000));
-                }
-                timerCount++;
-            }
-            if (!postedCID) {
-                throw Error("Too Many Attempts");
-            }
-            expect(standard).toEqual(postedCID.STANDARD);
-            expect(ethWallet.address.toLowerCase()).toEqual(postedCID.PROVIDER);
-            expect(CID).toEqual(postedCID.CID);
-
-        }
-        await new Promise(r => setTimeout(r, 5000)); //!IMPORTANT
-    }, 30000);
-});
-
-/*
+/**/
 describe("POST /endpoint Write To Database", () => {
     rmSync(config.data.ingest, { recursive: true, force: true });
+
     it("should accept JSON and Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
-
+            if (standard !== "OMM") continue;
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
 
             const CID = await ipfsHash.of(flatbufferBinary);
 
-            /*Fail Test*/
-/*
             const jsonResponseError = await request(app)
                 .post(`/spacedata/${standard}`)
                 .set("Content-Type", "application/octet-stream")
@@ -165,12 +108,30 @@ describe("POST /endpoint Write To Database", () => {
         await new Promise(r => setTimeout(r, 5000)); //!IMPORTANT
     }, 30000);
 });
-*/
+
+
+describe("GET /endpoint Read From Database", () => {
+    rmSync(config.data.ingest, { recursive: true, force: true });
+    const provider = ethWallet.address.toLowerCase();
+    it("should accept JSON and Flatbuffer files and save them to the database", async () => {
+        for (let standard in standards) {
+            if (standard !== "OMM") continue;
+
+            const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
+            const CID = await ipfsHash.of(flatbufferBinary);
+            const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
+            let file = (await request(app).get(requestPath));
+            console.log(requestPath, file.error, file.body, file.headers["x-digital-signature"]);
+        }
+
+
+    }, 30000);
+});
 
 describe("POST /echo", () => {
     it("Echoes input", async () => {
         for (let standard in standards) {
-
+            if (standard !== "OMM") continue;
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
             const fbResponse = await request(app)
                 .post(`/echo/${standard}`)

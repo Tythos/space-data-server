@@ -1,0 +1,42 @@
+{
+  "server": {
+    "port": 3000
+  },
+  "data": {
+    "ingest": ".testdata",
+    "fileSystemPath": "public",
+    "useFileSystem": true,
+    "cache": "5 minutes"
+  },
+  "trustedAddresses": {
+    "0x9858effd232b4033e47d90003d41ec34ecaeda94": {
+      "trust": 4,
+      "comment": "Test Key, Do Not Use In Production"
+    }
+  },
+  "database": {
+    "path": ".testdatabase",
+    "config": {
+      "primary": "sqlite",
+      "sqlite": {
+        "client": "better-sqlite3",
+        "connection": {
+          "filename": "./.testdatabase/spacedatastandards.0.0.2+1668785618858.sqlite"
+        },
+        "useNullAsDefault": true,
+        "version": "0.0.2+1668785618858"
+      },
+      "pg": {
+        "client": "pg",
+        "connection": "postgresql://test@localhost/standards",
+        "pool": {
+          "min": 2,
+          "max": 10
+        },
+        "migrations": {
+          "tableName": "knex_migrations"
+        }
+      }
+    }
+  }
+}

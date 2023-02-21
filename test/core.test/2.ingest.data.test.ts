@@ -9,11 +9,11 @@ import write from "@/lib/database/write";
 import read from "@/lib/database/read";
 import { readFB, writeFB } from "@/lib/utility/flatbufferConversion";
 import { execSync } from "node:child_process";
-import { verifySig } from "@/lib/routes/spacedata/post";
 const dataPath: string = "test/output/data";
 const databasePath: string = "test/output/database";
 import { config } from "@/lib/config/config";
 import { dirname, join } from "path";
+import { ethers } from "ethers";
 
 async function dumpDatabase(connection: any) {
     //const result = await connection.raw('PRAGMA foreign_keys');
@@ -62,7 +62,6 @@ describe('Test Data Entry', () => {
         let standard: keyof typeof standards;
 
         for (standard in standards) {
-            //if (standard !== "OPM") continue;
             let currentStandard = standardsJSON[standard] as any;
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
@@ -71,8 +70,21 @@ describe('Test Data Entry', () => {
             let flatBufferObject = await readFB(flatBufferInput, tableName, parentClass);
             let DIGITAL_SIGNATURE = await readFileSync(`${dataPath}/${tableName}.input.fbs.ethsig`, "utf8");
             let CID = await readFileSync(`${dataPath}/${tableName}.input.fbs.ipfs.cid.txt`, "utf8");
-            let PROVIDER: string = verifySig(CID, "", DIGITAL_SIGNATURE);
-            await write(knexConnection, tableName, flatBufferObject.RECORDS, currentStandard, CID, DIGITAL_SIGNATURE, PROVIDER, standard.toUpperCase());
+            let PROVIDER: string = ethers.utils.verifyMessage(CID, DIGITAL_SIGNATURE).toLowerCase();
+
+            await write(
+                knexConnection,
+                tableName,
+                flatBufferObject,
+                currentStandard,
+                CID,
+                DIGITAL_SIGNATURE,
+                PROVIDER,
+                standard.toUpperCase(),
+                new Date(),
+                false
+            );
+
             const output = await read(knexConnection, standard, currentStandard, [["select", "*"], ["where", ["file_id", "=", CID]]], false);
             expect(JSON.stringify(flatBufferObject, null, 4)).toEqual(JSON.stringify(output, null, 4));
             await knexConnection.raw('PRAGMA foreign_keys = ON');

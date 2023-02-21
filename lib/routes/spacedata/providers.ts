@@ -9,13 +9,11 @@ const standardsJSON: KeyValueDataStructure = _standardsJSON;
 export const providers: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
   const providers = await connection("FILE_IMPORT_TABLE").distinct("PROVIDER").pluck("PROVIDER");
   res.json(providers);
-  next();
 };
 
 export const provider: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
   const providers = await connection("DPM").select(req.params?.provider ? { GUID: req.params?.provider } : "*");
   res.json(providers);
-  next();
 };
 
 export const cid: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
@@ -39,5 +37,4 @@ export const cid: express.RequestHandler = async (req: Request, res: Response, n
   });
 
   res.json(cids);
-  next();
 }

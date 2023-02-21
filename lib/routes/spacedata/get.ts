@@ -7,11 +7,13 @@ import { connection } from "@/lib/database/connection";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { formatResponse } from "./responseFormat";
 import { config } from "@/lib/config/config";
-import { createReadStream } from "fs";
-import { join } from "path";
+import { createReadStream, readFileSync, statSync } from "fs";
+import { join, resolve } from "path";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
-
+const cFP = config?.data?.fileSystemPath;
+const fileReadPath = cFP && cFP[0] === "/" ?
+  cFP : resolve(process.cwd(), cFP);
 export const get: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
   let { standard, provider, cid } = req.params;
   standard = standard.toUpperCase();
@@ -40,26 +42,34 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       res.end();
     }
 
-    let currentCID = cid;
+    let currentCID: string = cid;
+    let currentDigitalSignature: string = "";
     if (!currentCID) {
-      let { CID } = await connection("FILE_IMPORT_TABLE").orderBy("CID").first().catch((e: any) => {
+      let { CID, DIGITAL_SIGNATURE } = await connection("FILE_IMPORT_TABLE")
+        .orderBy("created_at", "desc").first().catch((e: any) => {
+          res.end({ error: e });
+        });
+      currentCID = CID;
+      currentDigitalSignature = DIGITAL_SIGNATURE;
+    } else {
+      let { CID, DIGITAL_SIGNATURE } = await connection("FILE_IMPORT_TABLE").where({ CID: currentCID }).first().catch((e: any) => {
         res.end({ error: e });
       });
-      currentCID = CID;
+      currentDigitalSignature = DIGITAL_SIGNATURE;
     }
-    if (!parsedQuery.length) {
-      parsedQuery = [["where", ["file_id", "=", currentCID]]];
-    }
+    res.set("x-digital-signature", currentDigitalSignature);
     if (config.data.useFileSystem) {
-      createReadStream(join(config.data.fileSystemPath, provider, currentCID)).pipe(res);
+      const filePath = join(fileReadPath, standard, provider, `${currentCID}.fbs`);
+      res.setHeader("Content-Type", "application/octet-stream");
+      res.sendFile(filePath);
     } else {
+      if (!parsedQuery.length) {
+        parsedQuery = [["where", ["file_id", "=", currentCID]]];
+      }
       let payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
-
       payload = formatResponse(req, res, payload);
       res.set("x-content-identifier", currentCID);
       res.end(payload);
     }
   }
-
-  next();
 };

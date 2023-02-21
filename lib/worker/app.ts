@@ -44,7 +44,6 @@ app.use(helmet.contentSecurityPolicy({
 
 app.enable('x-powered-by');
 
-app.use("/raw", express.static(config.data.fileSystemPath));
 app.use("/app", express.static("UI/dist"));
 app.use(bodyParser.json({
     type: ['application/json', 'application/*+json'], verify: (req, res, buf) => {

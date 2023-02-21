@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1529+1676665436965",
+    "version": "1.0.1594+1677007592749",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -22,10 +22,12 @@
         "build:swagger": "node ./scripts/swagger.mjs",
         "start": "npm run build && node node --max-old-space-size=4096 ./build/server.cjs",
         "dev": "rm -rf config.json && npm run build && PORT=8080 nodemon",
+        "dev:database": "cp ./lib/config/default.config.database.json config.json && rm .database/* && npm run build && PORT=8080 nodemon",
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
         "test": "npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",
         "test:server": "cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.test",
+        "test:server:filesystem": "cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.test.filesystem",
         "test:parser": "jest --watchAll --detectOpenHandles --runInBand ./test/parser.test"
     },
     "keywords": [],

@@ -4,8 +4,8 @@
   },
   "data": {
     "ingest": ".testdata",
-    "fileSystemPath": "public",
-    "useFileSystem": true,
+    "fileSystemPath": "",
+    "useFileSystem": false,
     "cache": "5 minutes"
   },
   "trustedAddresses": {

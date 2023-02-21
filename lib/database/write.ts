@@ -147,7 +147,7 @@ const insertData = async (
         await queryLoop(queryArray);
     }
 
-    return resultObject;
+    return true;
 }
 
 export const write = async (
@@ -162,25 +162,21 @@ export const write = async (
     created_at: Date,
     writeToFileSystem: Boolean = true,
 ) => {
+
     knexConnection = currentKnexConnection;
+    PROVIDER = PROVIDER.toLowerCase();
+
     await runPragmas(knexConnection);
-    let currentCID = await knexConnection("FILE_IMPORT_TABLE").where({ CID }).first();
 
+    let currentCID = await knexConnection("FILE_IMPORT_TABLE").where({ CID }).first()
+        .catch((e: any) => {
+
+        });
     if (currentCID) return;
-
-    await knexConnection("FILE_IMPORT_TABLE").insert([{
-        CID,
-        DIGITAL_SIGNATURE,
-        PROVIDER,
-        STANDARD,
-        RECORD_COUNT: input.RECORDS.length,
-        created_at: created_at.toISOString()
-    }]);
 
     if (!writeToFileSystem) {
         knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
-
-        return insertData(
+        insertData(
             tableName,
             input.RECORDS,
             standardsSchema,
@@ -195,8 +191,17 @@ export const write = async (
             PROVIDER as string
         );
         writeFiles(writePath, CID, input, DIGITAL_SIGNATURE);
-        return Promise.resolve(CID);
     }
+    console.log(CID);
+    await knexConnection("FILE_IMPORT_TABLE").insert([{
+        CID,
+        DIGITAL_SIGNATURE,
+        PROVIDER,
+        STANDARD,
+        RECORD_COUNT: input.RECORDS.length,
+        created_at: created_at.toISOString()
+    }]);
+    return Promise.resolve(CID);
 }
 
 export default write;

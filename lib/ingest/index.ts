@@ -106,6 +106,7 @@ async function processData(file: string) {
         let mtime: Date = statSync(signedFile).mtime;
         let inputFile: any = readFileSync(signedFile);
         let CID = await ipfsHash.of(inputFile);
+        
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
 
         if (!currentCID) {
