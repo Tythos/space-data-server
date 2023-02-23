@@ -24,24 +24,30 @@ const outputStandardFiles: any = {};
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 
 beforeAll(async () => {
+    
     let testdbPath: any = path.dirname(databaseConfig.connection.filename).split(path.sep).pop();
 
     if (existsSync(testdbPath)) {
         rmdirSync(testdbPath, { recursive: true });
         mkdirSync(testdbPath);
     }
+
     try {
         if (existsSync(config.data.fileSystemPath)) {
             rmdirSync(config.data.fileSystemPath, { recursive: true });
         }
     } catch (e) {
-        //console.info(`Could not delete ${config.data.fileSystemPath}: `, e);
+        throw new Error(`Could not delete ${config.data.fileSystemPath}`);
     }
+
     if (!existsSync(databaseConfig.connection.filename)) {
         await generateDatabase(standardsArray, databaseConfig.connection.filename, `${config.database.path}/standards.sql`, connection, databaseConfig.version);
     }
+
     await init(config.data.ingest);
+
     const outputPaths = await generateData(1, dataPath);
+
     outputPaths.forEach((p: any) => {
         let _file = p[0].split("/").pop();
         let standard = p[0].split("/").pop().substring(0, 3);
@@ -53,13 +59,12 @@ beforeAll(async () => {
         outputStandardFiles[standard][extname(_file).replace(".", "")] = _file;
     });
 })
-/**/
+
 describe("POST /endpoint Write To FileSystem", () => {
     rmSync(config.data.ingest, { recursive: true, force: true });
 
-    it("should accept JSON and Flatbuffer files and save them to the database", async () => {
+    it("should accept Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
-            if (standard !== "OMM") continue;
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
 
             const CID = await ipfsHash.of(flatbufferBinary);
@@ -91,12 +96,12 @@ describe("POST /endpoint Write To FileSystem", () => {
             let postedCID;
             let timerCount = 0;
             while (!postedCID && timerCount < 10) {
-                //console.clear();
-                console.log(`${Date.now()} - Trying CID Service...`);
+                console.clear();
+                console.log(`${Date.now()} - Trying CID Service for Standard: ${standard}...`);
                 postedCID = (await request(app)
                     .get(`/cid/${ethWallet.address}/${standard}`)).body[0];
                 if (!postedCID) {
-                    await new Promise(r => setTimeout(r, 2000));
+                    await new Promise(r => setTimeout(r, 1000));
                 }
                 timerCount++;
             }
@@ -108,23 +113,20 @@ describe("POST /endpoint Write To FileSystem", () => {
             expect(CID).toEqual(postedCID.CID);
 
         }
-        await new Promise(r => setTimeout(r, 5000)); //!IMPORTANT
-    }, 30000);
+        await new Promise(r => setTimeout(r, 1000)); //!IMPORTANT
+    }, 50000);
 });
 
 
 describe("POST /endpoint Read From File System", () => {
     rmSync(config.data.ingest, { recursive: true, force: true });
     const provider = ethWallet.address.toLowerCase();
-    it("should accept JSON and Flatbuffer files and save them to the database", async () => {
+    it("should accept Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
-            if (standard !== "OMM") continue;
-
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
             const CID = await ipfsHash.of(flatbufferBinary);
             const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
             let file = (await request(app).get(requestPath));
-            console.log(file.error, file.body, file.headers);
         }
 
 

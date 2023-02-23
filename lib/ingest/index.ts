@@ -106,7 +106,7 @@ async function processData(file: string) {
         let mtime: Date = statSync(signedFile).mtime;
         let inputFile: any = readFileSync(signedFile);
         let CID = await ipfsHash.of(inputFile);
-        
+
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
 
         if (!currentCID) {
@@ -139,24 +139,21 @@ async function processData(file: string) {
 
             if (extname(signedFile) === ".fbs") {
                 input = readFB(inputFile, tableName, parentClass);
+                await write(
+                    connection,
+                    standard,
+                    input,
+                    currentStandard,
+                    CID,
+                    inputSignature,
+                    signedEthAddress as string,
+                    standard.toUpperCase(),
+                    mtime,
+                    config.data.useFileSystem
+                );
             } else {
                 return;
             }
-
-
-            write(
-                connection,
-                standard,
-                input,
-                currentStandard,
-                CID,
-                inputSignature,
-                signedEthAddress as string,
-                standard.toUpperCase(),
-                mtime,
-                config.data.useFileSystem
-            );
-
         }
     }
     if (queue.length) {

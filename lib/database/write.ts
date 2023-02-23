@@ -186,7 +186,7 @@ export const write = async (
         RECORD_COUNT: RECORDS.length,
         created_at: created_at.toISOString()
     }]).catch((e: any) => {
-        console.log(e)
+        console.log(e, CID);
     });
 }
 
