@@ -45,9 +45,7 @@ export const init = async (folder: string) => {
     }
     queue = await readDirectoryRecursively(folder);
 
-    while (queue.length) {
-        await processData(queue.pop() as string);
-    }
+    await processData(queue.pop() as string);
 
     watchPath = folder;
 
@@ -57,10 +55,11 @@ export const init = async (folder: string) => {
             pollInterval: 2000
         }
     }).on("all", async (event, filename) => {
-        if (event === "add" && filename) {
-            queue.push(filename);
+        if (event === "add" && filename && !~queue.indexOf(filename)) {
             if (!isProcessing) {
                 processData(filename);
+            } else {
+                queue.push(filename);
             }
         }
     });
@@ -157,7 +156,7 @@ async function processData(file: string) {
         }
     }
     if (queue.length) {
-        processData(queue.pop() as string);
+        await processData(queue.pop() as string);
     }
     isProcessing = false;
 }

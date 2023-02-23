@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1602+1677180253030",
+    "version": "1.0.1622+1677182884155",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -22,7 +22,7 @@
         "build:swagger": "node ./scripts/swagger.mjs",
         "start": "npm run build && node node --max-old-space-size=4096 ./build/server.cjs",
         "dev": "rm -rf config.json && rm -rf public/* && npm run dev:clean:database && npm run build && PORT=8080 nodemon",
-        "dev:clean:database": "rm .database/*",
+        "dev:clean:database": "rm -rf .database/*",
         "dev:database": "cp ./lib/config/default.config.database.json config.json && npm run dev:clean:database && npm run build && PORT=8080 nodemon",
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
