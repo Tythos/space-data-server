@@ -3,8 +3,8 @@ import { generateData } from "../utility/generate.test.data";
 const dataPath: string = `test/output/data/`;
 import { app } from "@/lib/worker/app";
 import * as standards from "@/lib/standards/standards";
-import { dirname, extname, join } from "node:path";
-import { exists, existsSync, readFileSync, rmdirSync, rmSync } from "node:fs";
+import path, { dirname, extname, join } from "node:path";
+import { exists, existsSync, mkdirSync, readFileSync, rmdirSync, rmSync } from "node:fs";
 import { ethWallet } from "@/test/utility/generate.crypto.wallets";
 import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
@@ -24,8 +24,11 @@ const outputStandardFiles: any = {};
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 
 beforeAll(async () => {
-    if (existsSync(databaseConfig.connection.filename)) {
-        rmSync(databaseConfig.connection.filename);
+    let testdbPath: any = path.dirname(databaseConfig.connection.filename).split(path.sep).pop();
+
+    if (existsSync(testdbPath)) {
+        rmdirSync(testdbPath, { recursive: true });
+        mkdirSync(testdbPath);
     }
     try {
         if (existsSync(config.data.fileSystemPath)) {
@@ -54,9 +57,9 @@ beforeAll(async () => {
 describe("POST /endpoint Write To Database", () => {
     rmSync(config.data.ingest, { recursive: true, force: true });
 
-    it("should accept JSON and Flatbuffer files and save them to the database", async () => {
+    it("should accept Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
-            if (standard !== "OMM") continue;
+
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
 
             const CID = await ipfsHash.of(flatbufferBinary);
@@ -89,7 +92,7 @@ describe("POST /endpoint Write To Database", () => {
             let timerCount = 0;
             while (!postedCID && timerCount < 10) {
                 console.clear();
-                console.log(`${Date.now()} - Trying CID Service...`);
+                console.log(`${Date.now()} - Trying CID Service for Standard: ${standard}...`);
                 postedCID = (await request(app)
                     .get(`/cid/${ethWallet.address}/${standard}`)).body[0];
                 if (!postedCID) {
@@ -115,13 +118,11 @@ describe("GET /endpoint Read From Database", () => {
     const provider = ethWallet.address.toLowerCase();
     it("should accept JSON and Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
-            if (standard !== "OMM") continue;
-
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
             const CID = await ipfsHash.of(flatbufferBinary);
             const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
             let file = (await request(app).get(requestPath));
-            console.log(requestPath, file.error, file.body, file.headers["x-digital-signature"]);
+            //console.log(requestPath, file.error, file.body, file.headers["x-digital-signature"]);
         }
 
 

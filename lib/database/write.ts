@@ -4,24 +4,11 @@ import toposort from "toposort";
 import getID from "@/lib/utility/getID";
 import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
 import { runPragmas } from "./pragmas";
-import { mkdirSync, statSync } from "fs";
-import { writeFile, access } from "node:fs/promises"
-import chokidar from "chokidar";
-import { config } from "@/lib/config/config";
-import { promises as fs, readFileSync } from 'fs';
-import standardsJSON from "@/lib/standards/schemas.json";
-import * as standards from "@/lib/standards/standards";
-import { connection } from "@/lib/database/connection";
+import { mkdirSync } from "fs";
+import { writeFile } from "node:fs/promises"
 import { join } from "path";
-import * as ethers from "ethers";
-import { CronJob } from "cron";
-//@ts-ignore
-import ipfsHash from "pure-ipfs-only-hash"
-import { extname, basename } from 'node:path';
-import { readFB, writeFB } from '../utility/flatbufferConversion';
-import { readFile, rename } from 'node:fs/promises';
-import { execSync } from 'node:child_process';
-import { roundToUTCDate } from "@/lib/utility/roundDate"
+import { writeFB } from '../utility/flatbufferConversion';
+import { config } from "@/lib/config/config";
 
 let knexConnection: any;
 let pageSize = 200;
@@ -50,12 +37,14 @@ const insertData = async (
     resultObject: KeyValueDataStructure = {},
     tableTopo: any = [],
     runQuery: boolean = true, fileID: string = "no_id"): Promise<any> => {
+
     if (runQuery) {
         queryArray = structuredClone(queryArray);
         for (let i = 0; i < queryArray.length; i++) {
             queryArray[i].file_id = fileID;
         }
     }
+
     let nTables: Array<string> | null = null;
     if (!tableName) {
         throw Error(`Missing Table Name for Data Like: ${JSON.stringify(queryArray[0], null, 4)}`);
@@ -99,7 +88,6 @@ const insertData = async (
                 } else {
                     for (let fieldName in fields) {
                         let objectRecord = { ...queryBatchInput[i][fieldName] };
-                        //console.log(objectRecord, `${tableName}_id`, queryBatchInput[i].id)
                         objectRecord[`${tableName}_id`] = queryBatchInput[i].id;
                         objectRecord.id = getID();
                         resultObject = await insertData(fTable, [objectRecord], standardsSchema, resultObject, tableTopo, false);
@@ -109,31 +97,30 @@ const insertData = async (
             }
             resultObject[tableName].push(queryBatchInput[i]);
         }
+        console.log(runQuery)
         if (runQuery) {
-            try {
-                await knexConnection.transaction(async (trx: any) => {
-                    nTables = nTables === null ? toposort(tableTopo) : nTables;
-                    nTables = nTables.length ? nTables : [tableName];
-                    for (let nT = 0; nT < nTables.length; nT++) {
-                        const nTable = nTables[nT];
-                        const total = resultObject[nTable].length;
-                        for (let page = 0; page < total; page += pageSize) {
-                            await trx(nTable)
-                                .insert(resultObject[nTable].slice(page, page + pageSize))
-                                .onConflict()
-                                .ignore()
-                                .catch((e: any) => {
 
-                                });
-                        }
-                        resultObject[nTable] = [];
+            await knexConnection.transaction(async (trx: any) => {
+                nTables = nTables === null ? toposort(tableTopo) : nTables;
+                nTables = nTables.length ? nTables : [tableName];
+                for (let nT = 0; nT < nTables.length; nT++) {
+                    const nTable = nTables[nT];
+                    const total = resultObject[nTable].length;
+                    for (let page = 0; page < total; page += pageSize) {
+                        await trx(nTable)
+                            .insert(resultObject[nTable].slice(page, page + pageSize))
+                            .onConflict()
+                            .ignore()
+                            .catch((e: any) => {
+
+                            });
                     }
-                }).catch((e: any) => {
+                    resultObject[nTable] = [];
+                }
+            }).catch((e: any) => {
+                console.log(e)
+            });
 
-                });
-            } catch (e) {
-                console.error(e);
-            }
         }
     }
     if (runQuery) {
@@ -147,60 +134,60 @@ const insertData = async (
         await queryLoop(queryArray);
     }
 
-    return true;
+    return resultObject;
 }
 
 export const write = async (
     currentKnexConnection: any,
     tableName: string,
-    input: any,
+    inputObject: any,
     standardsSchema: JSONSchema4,
     CID: string = "no_id",
     DIGITAL_SIGNATURE: string,
     PROVIDER: string,
     STANDARD: string,
     created_at: Date,
-    writeToFileSystem: Boolean = true,
+    useFileSystem: Boolean = true
 ) => {
-
     knexConnection = currentKnexConnection;
-    PROVIDER = PROVIDER.toLowerCase();
-
     await runPragmas(knexConnection);
+    let currentCID = await knexConnection("FILE_IMPORT_TABLE").where({ CID }).first();
+    let { RECORDS } = inputObject;
 
-    let currentCID = await knexConnection("FILE_IMPORT_TABLE").where({ CID }).first()
-        .catch((e: any) => {
-
-        });
     if (currentCID) return;
 
-    if (!writeToFileSystem) {
-        knexConnection.client.driver().pragma("wal_checkpoint(RESTART)");
-        insertData(
+    if (!useFileSystem) {
+
+        await insertData(
             tableName,
-            input.RECORDS,
+            RECORDS,
             standardsSchema,
             undefined,
             undefined,
             undefined,
             CID);
+
     } else {
+
         const writePath = join(
             config.data.fileSystemPath,
             STANDARD.toUpperCase(),
             PROVIDER as string
         );
-        writeFiles(writePath, CID, input, DIGITAL_SIGNATURE);
+
+        await writeFiles(writePath, CID, inputObject, DIGITAL_SIGNATURE);
     }
+
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,
         PROVIDER,
         STANDARD,
-        RECORD_COUNT: input.RECORDS.length,
+        RECORD_COUNT: RECORDS.length,
         created_at: created_at.toISOString()
-    }]);
-    return Promise.resolve(CID);
+    }]).catch((e: any) => {
+        console.log(e)
+    });
 }
 
 export default write;

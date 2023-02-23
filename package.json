@@ -27,8 +27,8 @@
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
         "test": "npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",
-        "test:server": "cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.test",
-        "test:server:filesystem": "cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.test.filesystem",
+        "test:server": "cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
+        "test:server:filesystem": "cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",
         "test:parser": "jest --watchAll --detectOpenHandles --runInBand ./test/parser.test"
     },
     "keywords": [],

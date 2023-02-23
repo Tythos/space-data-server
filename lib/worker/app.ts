@@ -69,7 +69,7 @@ app.get("/cid/:provider/:standard", (req: any, res: any, next: any) => {
     //#swagger.description = "Returns the latest Content Identifier for a provider by standard.  If a query is provided, it will return the CIDs for a date range."
     //#swagger.autoQuery=true
     res.set("Content-Type", "application/json");
-    cid(req, res, next)
+    cid(req, res, next);
 });
 app.get("/schema/:standard", (req: any, res: any, next: any) => {
     //#swagger.description = "Returns a JSON Schema for the standard."

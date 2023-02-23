@@ -3,8 +3,8 @@ import { generateData } from "../utility/generate.test.data";
 const dataPath: string = `test/output/data/`;
 import { app } from "@/lib/worker/app";
 import * as standards from "@/lib/standards/standards";
-import { dirname, extname, join } from "node:path";
-import { exists, existsSync, readFileSync, rmdirSync, rmSync } from "node:fs";
+import path, { dirname, extname, join } from "node:path";
+import { exists, existsSync, mkdirSync, readFileSync, rmdirSync, rmSync } from "node:fs";
 import { ethWallet } from "@/test/utility/generate.crypto.wallets";
 import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
@@ -24,8 +24,11 @@ const outputStandardFiles: any = {};
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 
 beforeAll(async () => {
-    if (existsSync(databaseConfig.connection.filename)) {
-        rmSync(databaseConfig.connection.filename);
+    let testdbPath: any = path.dirname(databaseConfig.connection.filename).split(path.sep).pop();
+
+    if (existsSync(testdbPath)) {
+        rmdirSync(testdbPath, { recursive: true });
+        mkdirSync(testdbPath);
     }
     try {
         if (existsSync(config.data.fileSystemPath)) {
@@ -88,7 +91,7 @@ describe("POST /endpoint Write To FileSystem", () => {
             let postedCID;
             let timerCount = 0;
             while (!postedCID && timerCount < 10) {
-                console.clear();
+                //console.clear();
                 console.log(`${Date.now()} - Trying CID Service...`);
                 postedCID = (await request(app)
                     .get(`/cid/${ethWallet.address}/${standard}`)).body[0];
