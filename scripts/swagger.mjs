@@ -19,7 +19,7 @@ const doc = {
         title: "Space Data Server",
         description: `MVP Space Data Service based on the data standards at: <a href="https://SpaceDataStandards.org">SpaceDataStandards.org</a>, version ${packageJSON.standardsVersion}`
     },
-    host: "",
+    host: `.`,
     basePath: "/",
     schemes: ['http', 'https'],
     consumes: responseTypes,

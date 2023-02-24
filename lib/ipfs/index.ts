@@ -26,7 +26,8 @@ export interface IPFSController {
     env: {
         IPFS_PATH: string
     },
-    api: Function
+    api: Function,
+    isInstanceActive: Function
 }
 
 export interface IPFSControllerCollection {
@@ -48,6 +49,11 @@ const apiArgs = {
     body: ""
 };
 
+const isInstanceActive = function () {
+    return this.process.exitCode === null;
+
+}
+
 const api = async function (path: string, queryString: object, args: object = {}) {
     args = Object.assign({}, args, apiArgs);
     let apiCall = fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}` + (queryString ? new URLSearchParams(queryString as any) : ""), args);
@@ -67,7 +73,7 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
     const execPath = `${ipfsPath}ipfs`;
 
     try {
-        await execP(`${execPath} init`,  { env });
+        await execP(`${execPath} init`, { env });
     } catch (e) {
     }
 
@@ -82,7 +88,8 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
         process: spawn("/home/tj/software/space-data-server/go-ipfs/ipfs", ["daemon"], { env }),
         gatewayPort,
         apiPort,
-        api
+        api,
+        isInstanceActive
     } as IPFSController;
 
     return ipfsControllerCollection[gatewayPort.toString()];

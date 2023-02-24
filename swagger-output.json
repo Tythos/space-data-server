@@ -1,10 +1,10 @@
 {
     "info": {
-        "version": "1.0.1621+1677182739957",
+        "version": "1.0.1631+1677185564821",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1675110065585"
     },
-    "host": "",
+    "host": ".",
     "basePath": "/",
     "schemes": [
         "http",

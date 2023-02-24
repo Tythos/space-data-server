@@ -51,14 +51,13 @@
   let activeURL;
   let activeExecuted;
 
-  const devMode = window.location.hostname === "localhost";
+  const devMode = window.location.host === "localhost:5173";
   const devProvider = devMode
     ? "0x9858effd232b4033e47d90003d41ec34ecaeda94"
     : null;
-  const _host =
-    swaggerDoc.host || devMode
-      ? window.location.hostname + ":8080"
-      : window.location.host;
+
+  const _host = devMode ? "localhost:8080" : window.location.host;
+
   $: {
     activeHeaders.accept = active?.id
       ? responseContentTypes[active?.id][currentResponseContentType[active?.id]]
@@ -184,7 +183,7 @@ ${Object.entries(activeHeaders)
     requestOut = true;
 
     let { url, response, error } = await handleRequest(
-      `${selectedHttpVO.value.toLowerCase()}://${swaggerDoc.host || _host}`,
+      `${selectedHttpVO.value.toLowerCase()}://${_host}`,
       { ...active, route: active.route },
       active.id,
       active.parameters,
