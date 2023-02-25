@@ -6,17 +6,8 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 [More information here](https://app.gitbook.com/o/Xod6MiZmdLiHApjIyioA/s/HPyJlS0CKXWqCdd5kz6y/space-data-server).
 
 ## TODO
-
-- [x] Finish CRD
-      -- [x] Delete working
-      -- [x] API path
-- [x] Logging
-- [x] Authentication
 - [x] Install script with service 
 - [ ] CLI admin tools 
+- [ ] IPFS pinning / unpinning
+- [ ] 
 - [ ] Home page & About Page
-
-## Paths
-
-- [x] /standards - Lists current loaded standards, and version
-- [x] /spacedata/
