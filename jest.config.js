@@ -13,4 +13,11 @@ module.exports = {
     prefix: "<rootDir>",
     "^(\\.{1,2}/.*)\\.js$": "$1",
   }),
+  transform: {
+    '^.+\\.ts?$': 'ts-jest',
+    "^.+\\.(mjs|js|jsx)$": "babel-jest"
+  },
+  transformIgnorePatterns: [
+    "<rootDir>/node_modules/(?!keyconverter/.*)"
+  ],
 };

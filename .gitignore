@@ -4,6 +4,7 @@ node_modules
 .database/**/*
 .data/**/*
 .datax/**/*
+.keys
 .testdata
 .testdatabase
 .inputdata

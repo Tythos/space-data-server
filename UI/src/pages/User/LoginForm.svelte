@@ -11,7 +11,6 @@
     hdNode,
     getBIP32Path,
     derivationPath,
-    provider,
   } from "@/UI/src/stores/user";
   import { onMount } from "svelte";
 

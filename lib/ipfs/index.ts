@@ -3,9 +3,10 @@ import { ChildProcess, exec } from 'node:child_process';
 import { promisify } from "node:util";
 const execP = promisify(exec);
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
-import { mkdir, existsSync, rmdirSync, mkdirSync } from "fs";
-import { spawn, spawnSync } from "child_process";
-const ipfsPath = join(__dirname, "../../", "go-ipfs/");
+import { mkdir, existsSync, rmdirSync, mkdirSync, writeFileSync, rmSync } from "fs";
+import { execSync, spawn, spawnSync } from "child_process";
+const rootDir = join(__dirname, "../../");
+const ipfsPath = join(rootDir, "go-ipfs/");
 
 /* TODO
 - https://docs.ipfs.tech/how-to/command-line-quick-start/
@@ -27,6 +28,7 @@ export interface IPFSController {
         IPFS_PATH: string
     },
     api: Function,
+    importKey: Function,
     isInstanceActive: Function
 }
 
@@ -51,14 +53,39 @@ const apiArgs = {
 
 const isInstanceActive = function () {
     return this.process.exitCode === null;
-
 }
 
 const api = async function (path: string, queryString: object, args: object = {}) {
-    args = Object.assign({}, args, apiArgs);
-    let apiCall = fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}` + (queryString ? new URLSearchParams(queryString as any) : ""), args);
-    let returnObj = await (await apiCall).json();
-    return returnObj;
+    args = Object.assign({}, apiArgs, args);
+    let apiCall = fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}` + (queryString ? "?" + new URLSearchParams(queryString as any) : ""), args);
+    let returnObj = await (await apiCall).text();
+    let returnContent = returnObj;
+    try {
+        returnContent = JSON.parse(returnObj)
+    } catch (e) {
+
+    }
+    return returnContent;
+}
+
+const importKey = function (key: ArrayBuffer, keyName: string) {
+    const keyPath = `${rootDir}/.keys`;
+    if (!existsSync(keyPath)) {
+        mkdirSync(keyPath);
+    }
+    let { env } = this;
+    let fileName = `${keyPath}/${keyName}.proto`;
+    writeFileSync(fileName, Buffer.from(key as ArrayBuffer));
+    let output: any;
+    try {
+        const options = { stdio: 'pipe' };
+        output = execSync(`${ipfsPath}ipfs key import ${keyName} ${fileName} --allow-any-key-type`, { env }).toString();
+    } catch (error: any) {
+        output = error.toString();
+    }
+
+    rmSync(fileName);
+    return output;
 }
 
 export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 9001, folderPath: string = ""): Promise<any> => {
@@ -82,13 +109,13 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
     await execP(
         cmds.join("&&"),
         { env });
-
     ipfsControllerCollection[gatewayPort.toString()] = {
         env,
-        process: spawn("/home/tj/software/space-data-server/go-ipfs/ipfs", ["daemon"], { env }),
+        process: spawn(`${ipfsPath}ipfs`, ["daemon"], { env }),
         gatewayPort,
         apiPort,
         api,
+        importKey,
         isInstanceActive
     } as IPFSController;
 

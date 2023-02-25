@@ -845,9 +845,9 @@ var require_merge_options = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bytes.js
+// node_modules/multiformats/cjs/src/bytes.js
 var require_bytes = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bytes.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bytes.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var empty = new Uint8Array(0);
@@ -893,9 +893,9 @@ var require_bytes = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/vendor/varint.js
+// node_modules/multiformats/cjs/vendor/varint.js
 var require_varint = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/vendor/varint.js"(exports2, module2) {
+  "node_modules/multiformats/cjs/vendor/varint.js"(exports2, module2) {
     "use strict";
     var encode_1 = encode;
     var MSB = 128;
@@ -958,9 +958,9 @@ var require_varint = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/varint.js
+// node_modules/multiformats/cjs/src/varint.js
 var require_varint2 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/varint.js"(exports2) {
+  "node_modules/multiformats/cjs/src/varint.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var varint$1 = require_varint();
@@ -984,9 +984,9 @@ var require_varint2 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/hashes/digest.js
+// node_modules/multiformats/cjs/src/hashes/digest.js
 var require_digest = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/hashes/digest.js"(exports2) {
+  "node_modules/multiformats/cjs/src/hashes/digest.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var bytes = require_bytes();
@@ -1033,9 +1033,9 @@ var require_digest = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/hashes/hasher.js
+// node_modules/multiformats/cjs/src/hashes/hasher.js
 var require_hasher = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/hashes/hasher.js"(exports2) {
+  "node_modules/multiformats/cjs/src/hashes/hasher.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var digest = require_digest();
@@ -1060,9 +1060,9 @@ var require_hasher = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/hashes/sha2.js
+// node_modules/multiformats/cjs/src/hashes/sha2.js
 var require_sha2 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/hashes/sha2.js"(exports2) {
+  "node_modules/multiformats/cjs/src/hashes/sha2.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var crypto = require("crypto");
@@ -1475,9 +1475,9 @@ var require_murmurhash3js_revisited = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/vendor/base-x.js
+// node_modules/multiformats/cjs/vendor/base-x.js
 var require_base_x = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/vendor/base-x.js"(exports2, module2) {
+  "node_modules/multiformats/cjs/vendor/base-x.js"(exports2, module2) {
     "use strict";
     function base(ALPHABET, name) {
       if (ALPHABET.length >= 255) {
@@ -1616,9 +1616,9 @@ var require_base_x = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base.js
+// node_modules/multiformats/cjs/src/bases/base.js
 var require_base = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var baseX$1 = require_base_x();
@@ -1782,9 +1782,9 @@ var require_base = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/identity.js
+// node_modules/multiformats/cjs/src/bases/identity.js
 var require_identity = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/identity.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/identity.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -1799,9 +1799,9 @@ var require_identity = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base2.js
+// node_modules/multiformats/cjs/src/bases/base2.js
 var require_base2 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base2.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base2.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -1815,9 +1815,9 @@ var require_base2 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base8.js
+// node_modules/multiformats/cjs/src/bases/base8.js
 var require_base8 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base8.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base8.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -1831,9 +1831,9 @@ var require_base8 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base10.js
+// node_modules/multiformats/cjs/src/bases/base10.js
 var require_base10 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base10.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base10.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -1846,9 +1846,9 @@ var require_base10 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base16.js
+// node_modules/multiformats/cjs/src/bases/base16.js
 var require_base16 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base16.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base16.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -1869,9 +1869,9 @@ var require_base16 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base32.js
+// node_modules/multiformats/cjs/src/bases/base32.js
 var require_base32 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base32.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base32.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -1941,9 +1941,9 @@ var require_base32 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base36.js
+// node_modules/multiformats/cjs/src/bases/base36.js
 var require_base36 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base36.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base36.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -1962,9 +1962,9 @@ var require_base36 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base58.js
+// node_modules/multiformats/cjs/src/bases/base58.js
 var require_base58 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base58.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base58.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -1983,9 +1983,9 @@ var require_base58 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base64.js
+// node_modules/multiformats/cjs/src/bases/base64.js
 var require_base64 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base64.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base64.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -2020,9 +2020,9 @@ var require_base64 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base256emoji.js
+// node_modules/multiformats/cjs/src/bases/base256emoji.js
 var require_base256emoji = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/bases/base256emoji.js"(exports2) {
+  "node_modules/multiformats/cjs/src/bases/base256emoji.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var base = require_base();
@@ -2062,9 +2062,9 @@ var require_base256emoji = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/hashes/identity.js
+// node_modules/multiformats/cjs/src/hashes/identity.js
 var require_identity2 = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/hashes/identity.js"(exports2) {
+  "node_modules/multiformats/cjs/src/hashes/identity.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var bytes = require_bytes();
@@ -2083,9 +2083,9 @@ var require_identity2 = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/codecs/raw.js
+// node_modules/multiformats/cjs/src/codecs/raw.js
 var require_raw = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/codecs/raw.js"(exports2) {
+  "node_modules/multiformats/cjs/src/codecs/raw.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var bytes = require_bytes();
@@ -2100,9 +2100,9 @@ var require_raw = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/codecs/json.js
+// node_modules/multiformats/cjs/src/codecs/json.js
 var require_json = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/codecs/json.js"(exports2) {
+  "node_modules/multiformats/cjs/src/codecs/json.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var textEncoder = new TextEncoder();
@@ -2118,9 +2118,9 @@ var require_json = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/cid.js
+// node_modules/multiformats/cjs/src/cid.js
 var require_cid = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/cid.js"(exports2) {
+  "node_modules/multiformats/cjs/src/cid.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var varint = require_varint2();
@@ -2435,9 +2435,9 @@ if (cid) {
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/index.js
+// node_modules/multiformats/cjs/src/index.js
 var require_src = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/index.js"(exports2) {
+  "node_modules/multiformats/cjs/src/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var cid = require_cid();
@@ -2453,9 +2453,9 @@ var require_src = __commonJS({
   }
 });
 
-// node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/basics.js
+// node_modules/multiformats/cjs/src/basics.js
 var require_basics = __commonJS({
-  "node_modules/pure-ipfs-unixfs-importer/node_modules/multiformats/cjs/src/basics.js"(exports2) {
+  "node_modules/multiformats/cjs/src/basics.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     var identity = require_identity();

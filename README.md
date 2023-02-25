@@ -7,16 +7,16 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 
 ## TODO
 
-- [ ] Finish CRD
+- [x] Finish CRD
       -- [x] Delete working
-      -- [ ] API path
-- [ ] Logging
-- [ ] Authentication
+      -- [x] API path
+- [x] Logging
+- [x] Authentication
+- [x] Install script with service 
 - [ ] CLI admin tools 
-- [ ] Install script with service 
 - [ ] Home page & About Page
 
 ## Paths
 
-- [ ] /standards - Lists current loaded standards, and version
-- [ ] /spacedata/
+- [x] /standards - Lists current loaded standards, and version
+- [x] /spacedata/

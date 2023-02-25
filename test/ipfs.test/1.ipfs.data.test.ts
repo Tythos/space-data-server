@@ -1,8 +1,10 @@
-import { IPFSController, startIPFS } from "@/lib/ipfs/index";
-import { ChildProcess, execSync, spawn } from "child_process";
-import * as keyconvert from "@/packages/keyconvert/src/keyconvert";
-console.log(keyconvert);
+import { IPFSController, startIPFS } from "../../lib/ipfs/index";
+import { keyconverter, pubKeyToEthAddress } from "keyconverter/src/keyconverter";
+import { entropyToMnemonic, mnemonicToEntropy } from "bip39";
+import { Wallet, utils, providers } from "ethers";
+
 import delay from "delay";
+import { writeFileSync } from "fs";
 
 const gatewayPort = 5002;
 const apiPort = 9002;
@@ -13,17 +15,13 @@ describe('Test Publishing to IPFS', () => {
 
     beforeAll(async () => {
         ipfsController = await startIPFS(gatewayPort, apiPort);
-
+        await delay(3000);
     });
 
     test('Start Instance', async () => {
-
-        let ipfsController: any = await startIPFS(gatewayPort, apiPort);
         expect(ipfsController.gatewayPort).toEqual(gatewayPort);
         expect(ipfsController.apiPort).toEqual(apiPort);
         expect(ipfsController.isInstanceActive()).toEqual(true);
-        await delay(3000);
-
         let swarm = await ipfsController.api(`/swarm/peers`);
         expect(swarm.Peers.length).toBeGreaterThan(0);
 
@@ -56,29 +54,33 @@ describe('Test Publishing to IPFS', () => {
 
     });
 
-    /*
     test('should add a key to IPFS and return its CID', async () => {
-        const filePath = '/path/to/keyfile';
-        const fileContent = 'key content';
-        let privateKeyHex = "77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a";
-
-        const addedKey = await ipfsController.api('add', {}, {
-            method: 'POST',
-            body: fileContent,
-            headers: {
-                'Content-Type': 'application/octet-stream',
-            },
-        });
-
-        expect(addedKey).toHaveProperty('Hash');
-        expect(typeof addedKey.Hash).toBe('string');
-    });*/
-
-    test("End Instance", async () => {
-        ipfsController.process.kill('SIGKILL');
-        expect(ipfsController.isInstanceActive()).toBe(false);
-        await delay(3000);
-        console.log(ipfsController.process.killed);
+        let keyName = "test-protobuf-key";
+        let kC = new keyconverter({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as EcKeyGenParams);
+        const entropy = mnemonicToEntropy(`${Array(12).join("abandon ")}about`);
+        await kC.import(Buffer.from(entropy).toString('hex'));
+        let binKey = await kC.export("ipfs:protobuf", "private");
+        let hash = ipfsController.importKey(binKey, keyName);
+        expect(typeof hash).toBe('string');
+        const keys = await ipfsController.api("/key/list");
+        // check if current key name exists in the list
+        const keyNames = keys.Keys.map((key: any) => key.Name);
+        expect(keyNames).toContain(keyName);
+        const response = await ipfsController.api(`/key/rm?arg=${keyName}`);
+        const { Name } = response.Keys[0];
+        expect(Name).toBeDefined();
+        expect(Name).toEqual(keyName);
     });
-
+    /*
+        test("End Instance", async () => {
+            ipfsController.process.kill('SIGKILL');
+            expect(ipfsController.isInstanceActive()).toBe(false);
+            await delay(3000);
+            console.log(ipfsController.process.killed);
+        });
+    
+        afterAll(async () => {
+            ipfsController.process.kill('SIGKILL');
+        });
+        */
 });

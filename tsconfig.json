@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "noImplicitThis": false,
+    "noImplicitAny": false,
     "target": "esnext",
     "module": "es2022",
     "moduleResolution": "node",
@@ -18,5 +19,6 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true
   },
-  "exclude": ["packages", "node_modules"]
+  "include": ["node_modules/keyconverter/build/types/src/keyconverter.d.ts"],
+  "exclude": ["node_modules"]
 }
