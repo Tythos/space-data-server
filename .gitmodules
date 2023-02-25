@@ -8,6 +8,3 @@
 	url = https://github.com/DigitalArsenal/spacedatastandards.org.git
 [submodule "./packages/SpaceDataParsers"]
 	url = https://github.com/DigitalArsenal/SpaceDataParsers.git
-[submodule "packages/keyconvert"]
-	path = packages/keyconvert
-	url = git@github.com:DigitalArsenal/keyconvert.git
