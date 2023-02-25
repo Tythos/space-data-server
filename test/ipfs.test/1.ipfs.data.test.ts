@@ -71,16 +71,16 @@ describe('Test Publishing to IPFS', () => {
         expect(Name).toBeDefined();
         expect(Name).toEqual(keyName);
     });
-    /*
-        test("End Instance", async () => {
-            ipfsController.process.kill('SIGKILL');
-            expect(ipfsController.isInstanceActive()).toBe(false);
-            await delay(3000);
-            console.log(ipfsController.process.killed);
-        });
-    
-        afterAll(async () => {
-            ipfsController.process.kill('SIGKILL');
-        });
-        */
+
+    test("End Instance", async () => {
+        ipfsController.process.kill();
+        console.log(ipfsController.process.kill());
+        await delay(3000);
+        expect(ipfsController.isInstanceActive()).toBe(false);
+    }, 10000);
+
+    afterAll(async () => {
+        ipfsController.process.kill('SIGKILL');
+    });
+
 });
