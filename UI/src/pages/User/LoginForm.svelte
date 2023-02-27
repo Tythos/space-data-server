@@ -70,7 +70,7 @@
   };
 </script>
 
-<div class="py-12 h-full text-gray-800 bg-white-300">
+<div class="py-12 h-full text-gray-800 bg-white-300 select-none">
   <div
     class="w-full flex flex-col gap-4 items-center justify-center mb-12 md:mb-0">
     {#if window.ethereum}
@@ -104,43 +104,45 @@
       </div>
     {/if}
     <form class="md:w-1/2 sm:w-1/2 lg:w-1/2 xs:w-2/3" on:submit={login}>
-      {#if mode === MODES.PASSWORD}
-        <!-- Email input -->
-        <div class="mb-6">
-          <input
-            bind:value={username}
-            required
-            type="email"
-            class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-            id="exampleFormControlInput2"
-            placeholder="Email address" />
-        </div>
+      <div class="h-36">
+        {#if mode === MODES.PASSWORD}
+          <!-- Email input -->
+          <div class="mb-6">
+            <input
+              bind:value={username}
+              required
+              type="email"
+              class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+              id="exampleFormControlInput2"
+              placeholder="Email address" />
+          </div>
 
-        <!-- Password input -->
-        <div class="mb-2">
-          <input
-            required
-            minlength="24"
-            bind:value={password}
-            type="password"
-            class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-            id="exampleFormControlInput2"
-            placeholder="Password" />
-        </div>
-      {:else if mode === MODES.MNEMONIC}
-        <div class="p-1">
-          <SeedPhrase bind:seedPhrase bind:error />
-        </div>
-      {/if}
+          <!-- Password input -->
+          <div class="mb-2">
+            <input
+              required
+              minlength="24"
+              bind:value={password}
+              type="password"
+              class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+              id="exampleFormControlInput2"
+              placeholder="Password" />
+          </div>
+        {:else if mode === MODES.MNEMONIC}
+          <div class="p-1">
+            <SeedPhrase bind:seedPhrase bind:error />
+          </div>
+        {/if}
+      </div>
       <div class="flex justify-between items-center mb-2 text-sm lg:text-xs">
         <div
           class="form-group form-check flex items-center justify-center gap-1" />
 
-        <div class="flex items-center justify-center gap-2">
+        <div class="flex items-center justify-center gap-2 text-xs">
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <p
-            class:bg-purple-800={mode === MODES["MNEMONIC"]}
-            class:bg-blue-600={mode === MODES["PASSWORD"]}
+            class:bg-gray-800={mode === MODES["MNEMONIC"]}
+            class:bg-black={mode === MODES["PASSWORD"]}
             class="text-white p-1 px-2 rounded cursor-pointer flex gap-2 items-center"
             on:click={() => (mode = MODES[!mode ? "MNEMONIC" : "PASSWORD"])}>
             <Icon data={repeat} />{!mode
@@ -158,7 +160,7 @@
         </button>
         <div>
           <h2 class="font-bold text-sm">Note:</h2>
-          <p class="text-xs font-semibold mt-2 pt-1 mb-0 w-full">
+          <p class="break-normal text-xs font-semibold mt-2 pt-1 mb-0 w-full">
             Your username and password create a unique <a
               href="https://ethereum.org/en/developers/docs/accounts/"
               >Ethereum</a>
