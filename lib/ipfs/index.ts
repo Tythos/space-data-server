@@ -5,7 +5,7 @@ const execP = promisify(exec);
 import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
 import { mkdir, existsSync, rmdirSync, mkdirSync, writeFileSync, rmSync } from "fs";
 import { execSync, spawn, spawnSync } from "child_process";
-const rootDir = join(__dirname, "../../");
+const rootDir = process.cwd();
 const ipfsPath = join(rootDir, "go-ipfs/");
 
 /* TODO
@@ -57,13 +57,20 @@ const isInstanceActive = function () {
 
 const api = async function (path: string, queryString: object, args: object = {}) {
     args = Object.assign({}, apiArgs, args);
-    let apiCall = fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}` + (queryString ? "?" + new URLSearchParams(queryString as any) : ""), args);
-    let returnObj = await (await apiCall).text();
-    let returnContent = returnObj;
-    try {
-        returnContent = JSON.parse(returnObj)
-    } catch (e) {
+    let returnContent;
 
+    let apiCall = await fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}` + (queryString ? "?" + new URLSearchParams(queryString as any) : ""), args);
+    let { ok, statusText } = apiCall;
+    if (ok) {
+        let returnObj = await apiCall.text();
+        returnContent = returnObj;
+        try {
+            returnContent = JSON.parse(returnObj);
+        } catch (e) {
+
+        }
+    } else {
+        return { error: "not ok", statusText }
     }
     return returnContent;
 }

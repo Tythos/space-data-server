@@ -7,7 +7,7 @@
         "fileSystemPath": "public",
         "useFileSystem": true,
         "cache": "5 minutes",
-        "verbose": true
+        "verbose": false
     },
     "trustedAddresses": {
         "0x9858effd232b4033e47d90003d41ec34ecaeda94": {

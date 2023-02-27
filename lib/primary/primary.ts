@@ -4,11 +4,18 @@ import { cpus } from "os";
 import { pid } from "process";
 import { ChildProcess } from 'node:child_process';
 import { generateDatabase } from "../database/generateTables";
-import { config } from "@/lib/config/config"
+import { config } from "../config/config";
 import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
 import { existsSync } from "fs";
-import standardsJSON from "@/lib/standards/schemas.json";
+import standardsJSON from "../standards/schemas.json" assert {type: "json"};
+import { IPFSController, startIPFS } from "../../lib/ipfs/index";
+
+let ipfsController: IPFSController;
+const gatewayPort = 5002;
+const apiPort = 9002;
+
+//TODO Move to Config
 
 const databaseConfig = (config.database.config as any)[config.database.config.primary as any];
 
@@ -42,13 +49,25 @@ export default {
         // Fork workers.
         forkWorkers();
 
+        // Start IPFS
+        ipfsController = await startIPFS(gatewayPort, apiPort);
+        
+        setTimeout(async () => {
+            const keys = await ipfsController.api("/key/list");
+            if(!keys?.Keys.length){
+                throw Error("IPFS Service Not Started.")
+            }
+        }, 5000);
+
+
         cluster.on("exit", (worker: Worker, code, signal) => {
 
             console.log(`worker ${worker.process.pid} died`);
             console.log("Let's fork another worker!");
-            forkWorkers(worker)
+            forkWorkers(worker);
         });
     },
     deinit: function () {
+        ipfsController.process.kill("SIGKILL");
     }
 } as InitableProcess

@@ -4,7 +4,6 @@ import { entropyToMnemonic, mnemonicToEntropy } from "bip39";
 import { Wallet, utils, providers } from "ethers";
 
 import delay from "delay";
-import { writeFileSync } from "fs";
 
 const gatewayPort = 5002;
 const apiPort = 9002;
@@ -74,7 +73,6 @@ describe('Test Publishing to IPFS', () => {
 
     test("End Instance", async () => {
         ipfsController.process.kill();
-        console.log(ipfsController.process.kill());
         await delay(3000);
         expect(ipfsController.isInstanceActive()).toBe(false);
     }, 10000);
