@@ -542,6 +542,17 @@ ${Object.entries(activeHeaders)
                                                   bind:value={requestParams[
                                                     `${route.id}-${param.name}`
                                                   ]}
+                                                  on:keyup={(e) => {
+                                                    if (
+                                                      route.method.toUpperCase() ===
+                                                      "DELETE"
+                                                    ) {
+                                                      setAuthHeader(
+                                                        e.target["value"],
+                                                        route
+                                                      );
+                                                    }
+                                                  }}
                                                   style={active?.id !== route.id
                                                     ? "cursor:not-allowed"
                                                     : ""}

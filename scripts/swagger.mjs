@@ -215,7 +215,7 @@ const doc = {
                             "type": "string",
                             "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
                         },
-                        "description": "Auth Token <br/><code class='text-xs bg-black text-white p-1 rounded overflow-x-auto w-8'>JSON.stringify({CID, signature:ethSig(CID), nonce}) => base64</code>"
+                        "description": "Auth Token"
                     }
                 ],
                 "requestBody": {
@@ -340,10 +340,37 @@ const doc = {
                     }
                 }
             }
-        }
+        },
+        "/spacedata/{cid?}": {
+            "delete": {
+                "description": "Deletes a file by CID",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
+                        },
+                        "description": "Auth Token"
+                    },
+                    {
+                        "name": "cid?",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
     }
 };
 
+// <br/><code class='text-xs bg-black text-white p-1 rounded overflow-x-auto w-8'>JSON.stringify({CID, signature:ethSig(CID), nonce}) => base64</code>
 
 const outputFile = '../swagger-output.json';
 const endpointsFiles = ['../lib/worker/app'];
