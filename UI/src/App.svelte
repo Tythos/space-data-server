@@ -13,10 +13,10 @@
   const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
 
-<div class="wrap-safe-pad flex flex-col h-full w-full fixed">
+<div class="wrap-safe-pad flex flex-col h-screen select-none">
   <nav
     style="z-index:100"
-    class="w-100vw font-sans navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center w-full justify-between">
+    class="w-100vw font-sans navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center justify-between">
     <div class="px-6 w-full flex flex-wrap items-center justify-between">
       <div class="flex items-center">
         <button
@@ -65,7 +65,7 @@
     <div class="mr-6 h-full flex items-center"><LoginButton /></div>
   </nav>
   <div
-    class="bg-white overflow-y-auto overflow-x-hidden break-all body-safe-pad">
+    class="bg-white overflow-y-auto overflow-x-hidden break-all body-safe-pad flex flex-grow">
     <Router {routes} />
   </div>
 </div>
