@@ -264,7 +264,7 @@ ${Object.entries(activeHeaders)
   };
 </script>
 
-<div class="p-4">
+<div class="p-4 w-full">
   <div class="text-left py-6">
     <h1
       class="lg:text-4xl text-2xl text-gray-600 font-bold mt-0 mb-6 flex gap-2">
