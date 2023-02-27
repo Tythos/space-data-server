@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1672+1677511631458",
+        "version": "1.0.1694+1677527332818",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1675110065585"
     },
@@ -177,6 +177,22 @@
                         }
                     }
                 }
+            }
+        },
+        "/spacedata/{cid?}": {
+            "delete": {
+                "description": "Deletes a file by CID",
+                "parameters": [
+                    {
+                        "name": "cid?",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
             }
         },
         "/spacedata/{standard}": {

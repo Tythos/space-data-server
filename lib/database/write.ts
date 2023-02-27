@@ -97,7 +97,6 @@ const insertData = async (
             }
             resultObject[tableName].push(queryBatchInput[i]);
         }
-        console.log(runQuery)
         if (runQuery) {
 
             await knexConnection.transaction(async (trx: any) => {

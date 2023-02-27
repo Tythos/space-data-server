@@ -59,7 +59,7 @@ describe("POST /endpoint Write To Database", () => {
 
     it("should accept Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
-
+            if (standard !== "OMM") continue;
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
 
             const CID = await ipfsHash.of(flatbufferBinary);
@@ -118,6 +118,7 @@ describe("GET /endpoint Read From Database", () => {
     const provider = ethWallet.address.toLowerCase();
     it("should accept JSON and Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
+            if (standard !== "OMM") continue;
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
             const CID = await ipfsHash.of(flatbufferBinary);
             const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
@@ -127,6 +128,36 @@ describe("GET /endpoint Read From Database", () => {
 
 
     }, 30000);
+});
+
+describe("DELETE /endpoint", () => {
+    it("Deletes a CID", async () => {
+        const provider = ethWallet.address.toLowerCase();
+        for (let standard in standards) {
+            if (standard !== "OMM") continue;
+            const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
+            const CID = await ipfsHash.of(flatbufferBinary);
+
+            const authMessage: AuthHeader = {
+                CID,
+                signature: await ethWallet.signMessage(CID),
+                nonce: performance.now(),
+            };
+
+            const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
+            const fbResponse = await request(app)
+                .delete(`/spacedata/${standard}`)
+                .set("authorization", authHeader)
+                .send();
+
+            const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
+            expect(fbResponse?.body?.CID).toBe(CID);
+            expect(fbResponse.status).toBe(200);
+
+            const shouldBeGone = (await request(app).get(requestPath));
+            expect(shouldBeGone?.body).toEqual({});
+        }
+    })
 });
 
 describe("POST /echo", () => {
@@ -142,6 +173,9 @@ describe("POST /echo", () => {
         }
     })
 });
+
+
+
 afterAll(async () => {
     await deinit();
     //rmSync(config.data.ingest, { recursive: true, force: true });

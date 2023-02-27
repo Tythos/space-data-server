@@ -2,10 +2,9 @@ import { join } from "path";
 import { ChildProcess, exec } from 'node:child_process';
 import { promisify } from "node:util";
 const execP = promisify(exec);
-import { KeyValueDataStructure } from "../class/utility/KeyValueDataStructure";
-import { mkdir, existsSync, rmdirSync, mkdirSync, writeFileSync, rmSync } from "fs";
-import { execSync, spawn, spawnSync } from "child_process";
-const rootDir = process.cwd();
+import { existsSync, mkdirSync, writeFileSync, rmSync } from "fs";
+import { execSync, spawn } from "child_process";
+const rootDir = join(__dirname, "..");
 const ipfsPath = join(rootDir, "go-ipfs/");
 
 /* TODO

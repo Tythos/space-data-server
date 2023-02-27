@@ -24,7 +24,7 @@ const outputStandardFiles: any = {};
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
 
 beforeAll(async () => {
-    
+
     let testdbPath: any = path.dirname(databaseConfig.connection.filename).split(path.sep).pop();
 
     if (existsSync(testdbPath)) {
@@ -121,7 +121,7 @@ describe("POST /endpoint Write To FileSystem", () => {
 describe("POST /endpoint Read From File System", () => {
     rmSync(config.data.ingest, { recursive: true, force: true });
     const provider = ethWallet.address.toLowerCase();
-    it("should accept Flatbuffer files and save them to the database", async () => {
+    it("should accept Flatbuffer files and save them to the filesystem", async () => {
         for (let standard in standards) {
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
             const CID = await ipfsHash.of(flatbufferBinary);
@@ -133,10 +133,38 @@ describe("POST /endpoint Read From File System", () => {
     }, 30000);
 });
 
+describe("DELETE /endpoint", () => {
+    it("Deletes a CID", async () => {
+        const provider = ethWallet.address.toLowerCase();
+        for (let standard in standards) {
+            const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
+            const CID = await ipfsHash.of(flatbufferBinary);
+
+            const authMessage: AuthHeader = {
+                CID,
+                signature: await ethWallet.signMessage(CID),
+                nonce: performance.now(),
+            };
+
+            const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
+            const fbResponse = await request(app)
+                .delete(`/spacedata/${standard}`)
+                .set("authorization", authHeader)
+                .send();
+
+            const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
+            expect(fbResponse?.body?.CID).toBe(CID);
+            expect(fbResponse.status).toBe(200);
+
+            //const shouldBeGone = (await request(app).get(requestPath));
+            //expect(shouldBeGone?.body).toEqual({});
+        }
+    })
+});
+
 describe("POST /echo", () => {
     it("Echoes input", async () => {
         for (let standard in standards) {
-            if (standard !== "OMM") continue;
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
             const fbResponse = await request(app)
                 .post(`/echo/${standard}`)

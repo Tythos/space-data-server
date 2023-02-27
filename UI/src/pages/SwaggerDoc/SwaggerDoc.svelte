@@ -65,11 +65,15 @@
       : "";
     if (active) {
       curlTemplate = `curl -X "${active.method?.toUpperCase()}" \\
-${[...new Set(Object.entries(requestParams)?.filter((rp: any) => rp[1].isFile))]
-  .map((file: any) => {
-    return `--data-binary "@${file[1].name}"`;
-  })
-  .join(" \\\n")} \\
+${[
+  ...new Set(
+    Object.entries(requestParams)
+      ?.filter((rp: any) => rp[1].isFile)
+      .map((file: any) => {
+        return `--data-binary "@${file[1].name}"`;
+      })
+  ),
+].join(" \\\n")} \\
 "${activeURL}" ${Object.entries(activeHeaders).length ? "\\" : ""}
 ${Object.entries(activeHeaders)
   .map(([header, value], h) => {
@@ -228,7 +232,18 @@ ${Object.entries(activeHeaders)
     activeExecuted = false;
   };
 
-  const bufferSign = (e, route, param) => {
+  const setAuthHeader = async (CID, route) => {
+    const authHeader: AuthHeader = {
+      CID,
+      signature: await $ethWallet.signMessage(CID),
+      nonce: performance.now(),
+    };
+    requestParams[`${route.id}-Authorization`] = `${Buffer.from(
+      JSON.stringify(authHeader)
+    ).toString("base64")}`;
+  };
+
+  const bufferSign = (e, route, param, CID?) => {
     if (!$ethWallet) {
       requestParams[`${route.id}-Authorization`] = "NOT LOGGED IN";
     } else {
@@ -243,14 +258,7 @@ ${Object.entries(activeHeaders)
           binaryString = String.fromCharCode.apply(null, array);
 
         const CID = await ipfsHash.of(array);
-        const authHeader: AuthHeader = {
-          CID,
-          signature: await $ethWallet.signMessage(CID),
-          nonce: performance.now(),
-        };
-        requestParams[`${route.id}-Authorization`] = `${Buffer.from(
-          JSON.stringify(authHeader)
-        ).toString("base64")}`;
+        await setAuthHeader(CID, route);
       };
     }
   };

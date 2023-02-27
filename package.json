@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1673+1677512488408",
+    "version": "1.0.1695+1677528922949",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -28,7 +28,7 @@
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
         "test": "npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",
-        "test:server": "cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
+        "test:server:database": "cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
         "test:server:filesystem": "cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",
         "test:parser": "jest --watchAll --detectOpenHandles --runInBand ./test/parser.test",
         "test:ipfs": "jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test"

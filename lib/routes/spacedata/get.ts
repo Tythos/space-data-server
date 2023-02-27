@@ -7,7 +7,6 @@ import { connection } from "@/lib/database/connection";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { formatResponse } from "./responseFormat";
 import { config } from "@/lib/config/config";
-import { createReadStream, readFileSync, statSync } from "fs";
 import { join, resolve } from "path";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
@@ -52,17 +51,41 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       currentCID = CID;
       currentDigitalSignature = DIGITAL_SIGNATURE;
     } else {
-      let { CID, DIGITAL_SIGNATURE } = await connection("FILE_IMPORT_TABLE").where({ CID: currentCID }).first().catch((e: any) => {
-        res.end({ error: e });
+      let record = await connection("FILE_IMPORT_TABLE").where({ CID: currentCID }).first().catch((e: any) => {
+        res.json({ error: e });
+        res.end();
       });
-      currentDigitalSignature = DIGITAL_SIGNATURE;
+
+      if (!record) {
+
+        res.json({});
+        res.end();
+
+      } else {
+
+        let { DIGITAL_SIGNATURE } = record;
+        currentDigitalSignature = DIGITAL_SIGNATURE;
+
+      }
+
     }
+
+    if (!currentDigitalSignature) {
+
+      return;
+
+    }
+
     res.set("x-digital-signature", currentDigitalSignature);
+
     if (config.data.useFileSystem) {
+
       const filePath = join(fileReadPath, standard, provider, `${currentCID}.fbs`);
       res.setHeader("Content-Type", "application/octet-stream");
       res.sendFile(filePath);
+
     } else {
+
       if (!parsedQuery.length) {
         parsedQuery = [["where", ["file_id", "=", currentCID]]];
       }
@@ -70,6 +93,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       payload = formatResponse(req, res, payload);
       res.set("x-content-identifier", currentCID);
       res.end(payload);
+
     }
   }
 };

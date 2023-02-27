@@ -1,4 +1,4 @@
-import { get, post } from "../routes/spacedata/index";
+import { get, post, del } from "../routes/spacedata/index";
 import express, { Express, Request, Response } from 'express';
 import helmet from "helmet";
 import cors from "cors";
@@ -91,6 +91,14 @@ The CID is always returned in the header "x-content-identifier".`;
     */
     get(req, res, next);
 });
+
+app.delete("/spacedata/:cid?", (req: any, res: any, next: any) => {
+    /*
+    #swagger.description = `Deletes a file by CID`;
+    */
+    del(req, res, next);
+});
+
 app.post("/echo/:standard", (req: any, res: any, next: any) => {
     // #swagger.ignore = true
     echo(req, res, next);

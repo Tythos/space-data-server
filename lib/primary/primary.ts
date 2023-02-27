@@ -51,14 +51,13 @@ export default {
 
         // Start IPFS
         ipfsController = await startIPFS(gatewayPort, apiPort);
-        
+
         setTimeout(async () => {
             const keys = await ipfsController.api("/key/list");
             if(!keys?.Keys.length){
                 throw Error("IPFS Service Not Started.")
             }
         }, 5000);
-
 
         cluster.on("exit", (worker: Worker, code, signal) => {
 
