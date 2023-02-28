@@ -65,6 +65,15 @@ app.get("/swagger-json", (req: Request, res: Response) => {
 app.get("/providers/:provider?", (req: any, res: any, next: any) => {
     providers(req, res, next);
 });
+
+app.get("/cid/limit", (req: any, res: any, next: any) => {
+    //#swagger.description = "Returns the page limit for number of CID records."
+    //#swagger.autoQuery=true
+    res.set("Content-Type", "application/json");
+    res.json(config.database.limits);
+    res.end();
+});
+
 app.get("/cid/:provider/:standard", (req: any, res: any, next: any) => {
     //#swagger.description = "Returns the latest Content Identifier for a provider by standard.  If a query is provided, it will return the CIDs for a date range."
     //#swagger.autoQuery=true

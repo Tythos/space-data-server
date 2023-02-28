@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "1.0.1730+1677538075750",
+        "version": "1.0.1747+1677595823437",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1675110065585"
     },
@@ -57,9 +57,20 @@
                 }
             }
         },
+        "/cid/limit": {
+            "get": {
+                "description": "Returns the page limit for number of CID records.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/cid/{provider}/{standard}": {
             "get": {
-                "description": "Returns the latest Content Identifier for a provider by standard. If the query parameters `start` and `stop` are omitted, it will returnt the latest CID.",
+                "description": "Returns the latest Content Identifier for a provider by standard. If the query parameters `start` and `stop` are omitted, it will returnt the latest CID.  Rows returned are limited by `config.limits.database.totalRecords`",
                 "parameters": [
                     {
                         "name": "provider",

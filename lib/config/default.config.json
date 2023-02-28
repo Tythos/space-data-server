@@ -17,6 +17,9 @@
     },
     "database": {
         "path": ".database",
+        "limits": {
+            "totalRecords": 500
+        },
         "config": {
             "primary": "sqlite",
             "sqlite": {

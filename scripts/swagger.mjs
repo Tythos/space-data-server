@@ -61,7 +61,7 @@ const doc = {
         },
         "/cid/{provider}/{standard}": {
             "get": {
-                "description": "Returns the latest Content Identifier for a provider by standard. If the query parameters `start` and `stop` are omitted, it will returnt the latest CID.",
+                "description": "Returns the latest Content Identifier for a provider by standard. If the query parameters `start` and `stop` are omitted, it will returnt the latest CID.  Rows returned are limited by `config.limits.database.totalRecords`",
                 "parameters": [
                     {
                         "name": "provider",

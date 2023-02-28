@@ -53,7 +53,7 @@
                 target="_blank"
                 rel="noreferrer"
                 href={`https://app.ens.domains/name/${ensAddress}/details`}>
-                {ensAddress || "----"}</a>
+                {ensAddress || "NO ENS ENTRY"}</a>
             </div>
             <p class="text-gray-500 mb-6 pb-2">
               Balance: {balance || 0} ETH

@@ -41,6 +41,9 @@ export interface Settings {
     "trustedAddresses": trustedAddressMap,
     "database": {
         "path": string,
+        "limits": {
+            totalRecords: Number
+        },
         "config": {
             "primary": string,
             "sqlite": {

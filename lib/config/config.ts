@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
-import { Settings } from "@/lib/class/settings.interface";
+import type { Settings } from "@/lib/class/settings.interface";
 import defaultConfig from "./default.config.json";
 
 let _config: any;

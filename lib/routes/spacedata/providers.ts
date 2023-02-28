@@ -3,6 +3,7 @@ import * as express from "express";
 import _standardsJSON from "@/lib/standards/schemas.json";
 import { connection } from "@/lib/database/connection";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
+import { config } from "@/lib/config/config";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 
@@ -23,7 +24,8 @@ export const cid: express.RequestHandler = async (req: Request, res: Response, n
   let cidQuery = connection("FILE_IMPORT_TABLE")
     .whereRaw("LOWER(PROVIDER) = LOWER(?)", [provider])
     .andWhereRaw("LOWER(STANDARD) = LOWER(?)", [standard])
-    .orderBy("created_at", "desc");
+    .orderBy("created_at", "desc")
+    .limit(config.database.limits.totalRecords);
 
   if (start && stop) {
     let StartDate = new Date(start.toString()).toISOString();
@@ -35,6 +37,6 @@ export const cid: express.RequestHandler = async (req: Request, res: Response, n
   const cids = await cidQuery.catch((e: any) => {
     res.json({ error: e })
   });
-  
+
   res.json(cids);
 }

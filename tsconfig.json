@@ -19,6 +19,6 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["node_modules/keyconverter/build/types/src/keyconverter.d.ts"],
+  "include": ["node_modules/keyconverter/build/types/src/keyconverter.d.ts", "lib", "packages"],
   "exclude": ["node_modules"]
 }
