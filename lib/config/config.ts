@@ -1,10 +1,11 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import type { Settings } from "@/lib/class/settings.interface";
 import defaultConfig from "./default.config.json";
+import { join } from "path";
 
 let _config: any;
 
-const configPath: any = "./config.json";
+const configPath: any = join(__dirname, "../../config.json");
 
 if (!existsSync(configPath)) {
     writeFileSync(configPath, JSON.stringify(defaultConfig, null, 4));

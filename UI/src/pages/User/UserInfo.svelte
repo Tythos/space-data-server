@@ -41,7 +41,7 @@
         <div
           on:click={(e) => window.open(etherscanLink)}
           class="items-center justify-center grow-0 shrink-0 basis-auto block flex w-full lg:w-6/12 xl:w-4/12 p-6">
-          <img src={qrCodeImage} class="w-1/2 h-1/2" alt="qrcode" />
+          <img src={qrCodeImage} class="w-1/3 h-1/3 pt-12" alt="qrcode" />
         </div>
         <div class="text-center grow-0 shrink-0 basis-auto w-full lg:w-6/12 xl:w-8/12">
           <div class="px-2 py-5 md:px-12">

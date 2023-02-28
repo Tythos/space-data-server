@@ -5,11 +5,18 @@
   import { routes } from "@/UI/src/routes/routes";
   import LoginButton from "./pages/User/LoginButton.svelte";
   import { crypto } from "webcrypto-liner/build/index.es";
-
+  import { ethWallet } from "@/UI/src/stores/user";
   if (!self?.crypto?.subtle) {
     self.crypto.subtle = crypto.subtle; ///HAAAAAAAAAAAAAAACK
   }
 
+  $: {
+    if ($ethWallet) {
+      window.onbeforeunload = () => true;
+    } else {
+      window.onbeforeunload = undefined;
+    }
+  }
   const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
 
