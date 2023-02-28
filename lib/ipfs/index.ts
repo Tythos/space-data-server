@@ -28,6 +28,7 @@ export interface IPFSController {
     },
     api: Function,
     importKey: Function,
+    addDirectory: Function,
     isInstanceActive: Function
 }
 
@@ -94,6 +95,21 @@ const importKey = function (key: ArrayBuffer, keyName: string) {
     return output;
 }
 
+const addDirectory = function (folder: string) {
+    let output;
+    let { env } = this;
+    let start = performance.now();
+    console.log(`Pin started at: ${new Date()} for folder ${folder}`);
+    try {
+        const options = { stdio: 'pipe' };
+        output = execSync(`cd ${folder} && ${ipfsPath}ipfs add -w -r *`, { env }).toString();
+    } catch (error: any) {
+        output = error.toString();
+    }
+    console.log(`Pin took: ${performance.now() - start} for folder ${folder}`);
+    return output.match(/added\s.*/g).pop().split(" ")[1];
+}
+
 export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 9001, folderPath: string = ""): Promise<any> => {
 
     let IPFS_PATH = join(ipfsPath, folderPath.length ? folderPath : gatewayPort.toString());
@@ -122,6 +138,7 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
         apiPort,
         api,
         importKey,
+        addDirectory,
         isInstanceActive
     } as IPFSController;
 

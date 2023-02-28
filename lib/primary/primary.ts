@@ -10,6 +10,7 @@ import { JSONSchema4 } from "json-schema";
 import { existsSync } from "fs";
 import standardsJSON from "../standards/schemas.json" assert {type: "json"};
 import { IPFSController, startIPFS } from "../../lib/ipfs/index";
+import { resolve } from "path";
 
 let ipfsController: IPFSController;
 const gatewayPort = 5002;
@@ -54,10 +55,18 @@ export default {
 
         setTimeout(async () => {
             const keys = await ipfsController.api("/key/list");
-            if(!keys?.Keys.length){
+            if (!keys?.Keys.length) {
                 throw Error("IPFS Service Not Started.")
             }
         }, 5000);
+
+        const folderToPin = resolve(__dirname, "..", config.data.fileSystemPath);
+
+        setTimeout(async () => {
+            console.log('Starting Pin')
+            let CID = await ipfsController.addDirectory(folderToPin);
+            console.log("pins", CID);
+        }, 5000)
 
         cluster.on("exit", (worker: Worker, code, signal) => {
 

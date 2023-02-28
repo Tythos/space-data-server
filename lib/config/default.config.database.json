@@ -4,7 +4,7 @@
     },
     "data": {
         "ingest": ".data",
-        "fileSystemPath": "",
+        "fileSystemPath": "public",
         "useFileSystem": false,
         "cache": "5 minutes",
         "verbose": false

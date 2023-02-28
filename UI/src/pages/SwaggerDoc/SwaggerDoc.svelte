@@ -13,9 +13,7 @@
   import type { AuthHeader } from "@/lib/class/authheader.json.interface";
   import { Buffer } from "buffer";
   import {
-    derivationPath,
     ethWallet,
-    getBIP32Path,
   } from "@/UI/src/stores/user";
 
   const swaggerDoc: any = rawSwaggerDoc;
