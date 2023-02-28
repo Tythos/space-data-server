@@ -20,7 +20,7 @@
   const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
 
-<div class="wrap-safe-pad flex flex-col h-screen select-none">
+<div class="wrap-safe-pad flex flex-col h-screen select-none overflow-hidden">
   <nav
     style="z-index:100"
     class="w-100vw font-sans navbar navbar-expand-lg shadow-md py-2 bg-white relative flex items-center justify-between">
@@ -94,17 +94,14 @@
       width: -webkit-fill-available;
     }
   }
-  :global(body, html) {
+  :global(html) {
     overflow: hidden;
-    min-height: 100vh;
-    height: 100vh;
-    overscroll-behavior: none;
-    /* mobile viewport bug fix */
-    min-height: -webkit-fill-available;
-    min-width: -webkit-fill-available;
-    width: 100vw;
-    padding: 0px;
-    margin: 0px;
+    width: 100%;
+  }
+  :global(body) {
+    height: 100%;
+    position: fixed;
+    overflow: hidden;
   }
   :global(.modal-backdrop) {
     display: fixed;
