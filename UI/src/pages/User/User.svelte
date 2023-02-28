@@ -11,17 +11,11 @@
 
   /*
   - HDWallet - https://docs.ethers.org/v5/api/utils/hdnode/
-  - Person vs Organization Account
   - Import / Export vCard
   - Directory
   */
   onMount(() => {
-    /*const mnemonic: string = `${Array(12).join("abandon ")}about`;
-    const untrustedMnemonic: string = `excess shallow future wheat amazing fee rug hammer hire crazy lumber mean`;
-    $ethWallet = utils.HDNode.fromMnemonic(mnemonic).derivePath(
-      getBIP32Path($derivationPath)
-    );
-    console.log($ethWallet.extendedKey);*/
+
   });
 </script>
 
