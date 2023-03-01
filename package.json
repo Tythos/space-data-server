@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1773+1677678728719",
+    "version": "1.0.1781+1677689726719",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -27,11 +27,11 @@
         "dev:database": "cp ./lib/config/default.config.database.json config.json && npm run dev:clean:database && npm run build && PORT=8080 nodemon",
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
-        "test": "npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",
-        "test:server:database": "cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
-        "test:server:filesystem": "cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",
-        "test:parser": "jest --watchAll --detectOpenHandles --runInBand ./test/parser.test",
-        "test:ipfs": "jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test"
+        "test": "export IPFS_PATH=$PWD/go-ipfs/ && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",
+        "test:server:database": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
+        "test:server:filesystem": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",
+        "test:parser": "export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/parser.test",
+        "test:ipfs": "export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test"
     },
     "keywords": [],
     "author": "",

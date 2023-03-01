@@ -5,7 +5,7 @@ const execP = promisify(exec);
 import { existsSync, mkdirSync, writeFileSync, rmSync } from "fs";
 import { execSync, spawn } from "child_process";
 const rootDir = join(__dirname, "..");
-const ipfsPath = join(rootDir, "go-ipfs/");
+const ipfsPath = process.env.IPFS_PATH || join(rootDir, "go-ipfs/");
 
 /* TODO
 - https://docs.ipfs.tech/how-to/command-line-quick-start/

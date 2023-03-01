@@ -25,6 +25,7 @@
 
   onMount(() => {});
 
+  /*
   const connectWallet = async () => {
     error = "";
     try {
@@ -47,7 +48,7 @@
       error = e;
     }
   };
-
+*/
   const login = async (e) => {
     e.preventDefault();
     if (!seedPhrase) {
@@ -55,8 +56,7 @@
         pass: username,
         salt: password,
         hashLen: 32,
-        time:100
-        
+        time: 100,
       });
       seedPhrase = entropyToMnemonic(hashHex);
     }
@@ -75,6 +75,7 @@
 <div class="py-12 h-full text-gray-800 bg-white-300 select-none">
   <div
     class="w-full flex flex-col gap-4 items-center justify-center mb-12 md:mb-0">
+    <!--
     {#if window.ethereum}
       <div
         on:keyup={connectWallet}
@@ -105,6 +106,7 @@
         <div class="flex-grow border-t border-gray-400" />
       </div>
     {/if}
+    -->
     <form class="md:w-1/2 sm:w-1/2 lg:w-1/2 xs:w-2/3" on:submit={login}>
       <div class="h-36">
         {#if mode === MODES.PASSWORD}

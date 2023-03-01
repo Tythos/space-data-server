@@ -1,7 +1,6 @@
 import { IPFSController, startIPFS } from "../../lib/ipfs/index";
-import { keyconverter, pubKeyToEthAddress } from "keyconverter/src/keyconverter";
-import { entropyToMnemonic, mnemonicToEntropy } from "bip39";
-import { Wallet, utils, providers } from "ethers";
+import { keyconverter } from "keyconverter/src/keyconverter";
+import { mnemonicToEntropy } from "bip39";
 
 import delay from "delay";
 
