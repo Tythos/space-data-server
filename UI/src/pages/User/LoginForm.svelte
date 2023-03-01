@@ -55,6 +55,8 @@
         pass: username,
         salt: password,
         hashLen: 32,
+        time:100
+        
       });
       seedPhrase = entropyToMnemonic(hashHex);
     }

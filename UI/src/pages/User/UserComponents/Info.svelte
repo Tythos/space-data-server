@@ -9,7 +9,6 @@
     qrCodeImage,
     balance,
     etherscanLink,
-    activeTab = 0,
     lastUpdated;
   const getData = async () => {
     if ($ethWallet.address) {
@@ -31,27 +30,44 @@
         });
       lastUpdated = new Date().toISOString();
     }
-  };
 
-  const recipient = "0x9858effd232b4033e47d90003d41ec34ecaeda94";
-  const amount = ethers.utils.parseEther("1");
-  const data = "0x01";
+    let privatekey =
+      "CE75F1A875F2DB7FB064F5DBD302B0C77FFEAA18CC4C314167A5111A04F79AFA";
+    let wallet = new ethers.Wallet(privatekey);
 
-  const transaction = {
-    to: recipient,
-    value: amount,
-    data: data,
+    console.log("Using wallet address " + wallet.address);
+
+    let transaction = {
+      to: "0xa238b6008Bc2FBd9E386A5d4784511980cE504Cd",
+      value: ethers.utils.parseEther("1"),
+      gasLimit: "21000",
+      maxPriorityFeePerGas: ethers.utils.parseUnits("5", "gwei"),
+      maxFeePerGas: ethers.utils.parseUnits("20", "gwei"),
+      nonce: 1,
+      type: 2,
+      chainId: 3,
+      data: utils.RLP.encode(utils.toUtf8Bytes("hi")),
+    };
+
+    // sign and serialize the transaction
+    let rawTransaction = await wallet.signTransaction(transaction);
+
+    //.then((transaction)=>utils.serializeTransaction(transaction as any));//ethers.utils.serializeTransaction(transaction as any));
+
+    // print the raw transaction hash
+    console.log("Raw txhash string " + rawTransaction);
+    console.log("Serial txhash string " + utils.parseTransaction(rawTransaction));
   };
 
   onMount(async () => {
     try {
       getData();
-      $provider.on("block", getData);
+      // $provider.on("block", getData);
     } catch (e) {}
   });
   onDestroy(() => {
     try {
-      $provider.off(getData);
+      //  $provider.off(getData);
     } catch (e) {}
   });
 </script>
@@ -60,7 +76,7 @@
   <div class="block rounded-lg shadow-lg bg-white">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
-      class="w-full flex flex-col items-start justify-start p-2 pl-4 gap-2 text-gray-400"
+      class="cursor-pointer w-full flex flex-col items-start justify-start p-2 pl-4 gap-2 text-gray-400"
       on:click={(e) => cc($ethWallet.address)}>
       <div class="text-xs">{$ethWallet.address}</div>
       <div class="flex items-center justify-center gap-4">

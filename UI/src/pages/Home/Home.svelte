@@ -1,5 +1,5 @@
 <div
-  class="break-normal font-bold text-lg text-gray-600 bg-gray-100 flex flex-col gap-2 justify-start pt-24 items-center w-full text-center">
+  class="break-normal font-bold text-lg text-gray-600 flex flex-col gap-2 justify-start pt-24 items-center w-full text-center">
   <div class="w-2/3">
     <h1 class="text-4xl font-bold mb-4 text-gray-800">Space Data Server</h1>
     <p class="mb-8">
