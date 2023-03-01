@@ -6,7 +6,7 @@ import compression from "compression-next";
 import { config } from "@/lib/config/config";
 import bodyParser from "body-parser";
 import { standards as standardsRoute } from "../routes/standards";
-const app: Express = express();
+
 import { providers, cid } from "@/lib/routes/spacedata/providers";
 import { sql } from "@/lib/routes/standards/sql";
 import { schema } from "@/lib/routes/standards/schema";
@@ -15,9 +15,16 @@ import apicache from "apicache";
 import swaggerFile from "@/swagger-output.json";
 import { ui } from "@/lib/ui/index";
 import { echo } from "@/lib/routes/spacedata/echo";
+import https from "https";
+import { existsSync, readFileSync } from "fs";
+import { join } from "path";
+import { Http2SecureServer } from "http2";
+
 const rawUI = Buffer.from(ui, "base64").toString();
 
 let cache = apicache.middleware;
+
+let app: Express | https.Server = express();
 
 app.use(compression({
     level: 6, minlevel: 6, threshold: 512, filter: (req, res) => {
@@ -121,5 +128,16 @@ app.get("/standards/:standard?", (req: any, res: any, next: any) => {
 app.get("/sql/", (req: any, res: any, next: any) => {
     sql(req, res, next);
 });
+
+
+
+let key = join(__dirname, "..", config.server.key);
+let cert = join(__dirname, "..", config.server.cert);
+
+if (existsSync(key) && existsSync(cert)) {
+    key = readFileSync(key, "utf8");
+    cert = readFileSync(cert, "utf8");
+    app = https.createServer({ key, cert }, app);
+}
 
 export { app };

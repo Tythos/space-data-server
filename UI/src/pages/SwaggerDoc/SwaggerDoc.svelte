@@ -12,9 +12,7 @@
   import cc from "copy-to-clipboard";
   import type { AuthHeader } from "@/lib/class/authheader.json.interface";
   import { Buffer } from "buffer";
-  import {
-    ethWallet,
-  } from "@/UI/src/stores/user";
+  import { ethWallet } from "@/UI/src/stores/user";
 
   const swaggerDoc: any = rawSwaggerDoc;
 
@@ -171,7 +169,9 @@ ${Object.entries(activeHeaders)
     { id: "0", value: "HTTP" },
     { id: "1", value: "HTTPS" },
   ];
-  let selectedHttpV = "0";
+
+  let selectedHttpV = document.location.protocol === "http:" ? "0" : "1";
+
   $: selectedHttpVO = httpV.find((o) => o.id === selectedHttpV);
   const devCSS = devMode
     ? ".accordion-collapse .collapse"
@@ -277,7 +277,7 @@ ${Object.entries(activeHeaders)
     Schemes
     <select
       bind:value={selectedHttpV}
-      class="bg-white border-black border rounded p-1 pl-4 pr-4">
+      class="bg-white border-black border rounded p-1 pl-4 pr-4 text-xs">
       {#each httpV as option}
         <option value={option.id}>{option.value}</option>
       {/each}

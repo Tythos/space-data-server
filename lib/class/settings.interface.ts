@@ -28,6 +28,8 @@ interface cronJob {
 export interface Settings {
     "server": {
         "port": number,
+        "key": string,
+        "cert": string
     },
     "data": {
         "ingest": string,
