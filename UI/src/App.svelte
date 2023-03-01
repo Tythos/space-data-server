@@ -32,7 +32,7 @@
               push(route);
             }}
             class:border-b-2={$location === route}
-            class="p-2">
+            class="p-2 cursor-pointer">
             {value.name}
           </li>
         {/each}
