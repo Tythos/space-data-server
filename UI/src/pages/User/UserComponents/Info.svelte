@@ -30,7 +30,7 @@
         });
       lastUpdated = new Date().toISOString();
     }
-
+    /*
     let privatekey =
       "CE75F1A875F2DB7FB064F5DBD302B0C77FFEAA18CC4C314167A5111A04F79AFA";
     let wallet = new ethers.Wallet(privatekey);
@@ -56,7 +56,7 @@
 
     // print the raw transaction hash
     console.log("Raw txhash string " + rawTransaction);
-    console.log("Serial txhash string " + utils.parseTransaction(rawTransaction));
+    console.log("Serial txhash string " + utils.parseTransaction(rawTransaction));*/
   };
 
   onMount(async () => {
@@ -78,7 +78,7 @@
     <div
       class="cursor-pointer w-full flex flex-col items-start justify-start p-2 pl-4 gap-2 text-gray-400"
       on:click={(e) => cc($ethWallet.address)}>
-      <div class="text-xs">{$ethWallet.address}</div>
+      <div class="break-all text-left text-[.5rem] md:text-xs">{$ethWallet.address}</div>
       <div class="flex items-center justify-center gap-4">
         <a
           class="text-blue-800 text-base"

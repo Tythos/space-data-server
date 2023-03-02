@@ -9,5 +9,5 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [x] Install script with service 
 - [ ] CLI admin tools 
 - [ ] IPFS pinning / unpinning
-- [ ] 
+- [ ] Private encrypted files for customers in "private" folder
 - [ ] Home page & About Page

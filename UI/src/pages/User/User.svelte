@@ -1,9 +1,7 @@
 <script lang="ts">
-  import {
-    derivationPath,
-    ethWallet,
-    getBIP32Path,
-  } from "@/UI/src/stores/user";
+  import { getBIP32Path } from "@/lib/utility/bip32";
+
+  import { derivationPath, ethWallet } from "@/UI/src/stores/user";
   import { Contract, providers, Signer, Wallet, utils } from "ethers";
   import { onMount } from "svelte";
   import LoginForm from "./LoginForm.svelte";
@@ -14,9 +12,7 @@
   - Import / Export vCard
   - Directory
   */
-  onMount(() => {
-
-  });
+  onMount(() => {});
 </script>
 
 <div class="w-full flex items-start justify-center p-4">

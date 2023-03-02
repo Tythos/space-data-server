@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1802+1677704248493",
+    "version": "1.0.1803+1677796914956",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -32,7 +32,8 @@
         "test:server:database": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
         "test:server:filesystem": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",
         "test:parser": "export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/parser.test",
-        "test:ipfs": "export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test"
+        "test:ipfs": "export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test",
+        "test:smartcontract": "nodemon --config nodemon.smartcontract.json"
     },
     "keywords": [],
     "author": "",
@@ -85,6 +86,7 @@
         "express": "^4.18.2",
         "flatbuffers": "22.10.26",
         "go-ipfs": "^0.17.0",
+        "hardhat": "^2.12.7",
         "helmet": "^6.0.0",
         "jest": "^29.3.1",
         "jest-ts-webcompat-resolver": "^1.0.0",
@@ -114,6 +116,7 @@
         "webcrypto-liner": "^1.4.0"
     },
     "dependencies": {
+        "@openzeppelin/contracts": "^4.8.1",
         "apicache": "^1.6.3",
         "asmcrypto.js": "^2.3.2",
         "cron": "^2.1.0",

@@ -5,13 +5,8 @@
   import { entropyToMnemonic } from "bip39";
   import { repeat } from "svelte-awesome/icons";
   import SeedPhrase from "./SeedPhrase.svelte";
-
-  import {
-    ethWallet,
-    hdNode,
-    getBIP32Path,
-    derivationPath,
-  } from "@/UI/src/stores/user";
+  import { getBIP32Path } from "@/lib/utility/bip32";
+  import { ethWallet, hdNode, derivationPath } from "@/UI/src/stores/user";
   import { onMount } from "svelte";
 
   const MODES = {

@@ -1,0 +1,8 @@
+{
+  "watch": ["smartcontract/contracts/*", "smartcontract/test/*.ts"],
+  "ignore": ["node_modules"],
+  "ext": "ts,sol",
+  "exec": "cd smartcontract && npx hardhat test",
+  "legacyWatch": true,
+  "verbose": true
+}

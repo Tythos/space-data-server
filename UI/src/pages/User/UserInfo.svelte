@@ -9,7 +9,7 @@
 
 <div class="flex flex-col w-2/3">
   <ul
-    class="cursor-pointer mb-4 flex list-none flex-wrap border-b-0 pl-0"
+    class="cursor-pointer mb-4 flex list-none border-b-0 pl-0"
     id="tabs-tab3"
     role="tablist"
     data-te-nav-ref>

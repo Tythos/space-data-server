@@ -1,35 +1,6 @@
 import { readable, writable, type Readable, type Writable } from "svelte/store";
 import { Wallet, providers } from "ethers";
-
-export enum Bip32Hardened {
-    NonHardened = "",
-    Hardened = "'"
-}
-
-export interface Bip32PathSegment {
-    value: number;
-    h: Bip32Hardened;
-}
-
-export interface Bip32Path {
-    purpose: Bip32PathSegment,
-    cointype: Bip32PathSegment,
-    account?: Bip32PathSegment,
-    change?: Bip32PathSegment,
-    address_index?: Bip32PathSegment
-}
-
-export const getBIP32Path = (inputPath: Bip32Path): string => {
-    let b = Object.entries(inputPath);
-    let x = (pathSegment) => `${pathSegment.value}${pathSegment.h}`;
-    let accountPath = b
-        .map((pV) => {
-            return x(pV[1]);
-        })
-        .join("/");
-
-    return `m/${accountPath}`;
-};
+import type { Bip32Path, Bip32Hardened } from "@/lib/class/utility/BIP32";
 
 export const ethWallet: Writable<Wallet> = writable(null);
 export const hdNode = writable(null);
