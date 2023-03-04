@@ -130,14 +130,15 @@ app.get("/sql/", (req: any, res: any, next: any) => {
 });
 
 
+try {
+    let key = join(__dirname, "..", config.server.key || "");
+    let cert = join(__dirname, "..", config.server.cert || "");
 
-let key = join(__dirname, "..", config.server.key);
-let cert = join(__dirname, "..", config.server.cert);
-
-if (existsSync(key) && existsSync(cert)) {
-    key = readFileSync(key, "utf8");
-    cert = readFileSync(cert, "utf8");
-    app = https.createServer({ key, cert }, app);
-}
+    if (existsSync(key) && existsSync(cert)) {
+        key = readFileSync(key, "utf8");
+        cert = readFileSync(cert, "utf8");
+        app = https.createServer({ key, cert }, app);
+    }
+} catch (e) { }
 
 export { app };

@@ -1,8 +1,6 @@
 {
     "server": {
-        "port": 3000,
-        "key": "./test/certs/output/localhost.key",
-        "cert": "./test/certs/output/localhost.cert"
+        "port": 8080
     },
     "data": {
         "ingest": ".data",
@@ -27,10 +25,10 @@
             "sqlite": {
                 "client": "better-sqlite3",
                 "connection": {
-                    "filename": "./.database/spacedatastandards.0.0.2+1675110065585.sqlite"
+                    "filename": "./.database/spacedatastandards.0.0.2+1677878235536.sqlite"
                 },
                 "useNullAsDefault": true,
-                "version": "0.0.2+1675110065585"
+                "version": "0.0.2+1677878235536"
             },
             "pg": {
                 "client": "pg",
