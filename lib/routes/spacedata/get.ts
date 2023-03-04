@@ -85,7 +85,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     let tableName = refRootName(currentStandard.$ref);
     let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
     let parentClass: any = standards[pClassName];
-
+    
     if (!parsedQuery.length) {
       parsedQuery = [["where", ["file_id", "=", currentCID]]];
     }

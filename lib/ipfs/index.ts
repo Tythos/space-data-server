@@ -107,7 +107,7 @@ const addDirectory = function (folder: string) {
         output = error.toString();
     }
     console.log(`Pin took: ${performance.now() - start} for folder ${folder}`);
-    return output.match(/added\s.*/g).pop().split(" ")[1];
+    return output.match(/added\s.*/g)?.pop()?.split(" ")[1];
 }
 
 export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 9001, folderPath: string = ""): Promise<any> => {
