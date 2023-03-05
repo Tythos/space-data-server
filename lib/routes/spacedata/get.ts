@@ -85,13 +85,12 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     let tableName = refRootName(currentStandard.$ref);
     let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
     let parentClass: any = standards[pClassName];
-    
+
     if (!parsedQuery.length) {
       parsedQuery = [["where", ["file_id", "=", currentCID]]];
     }
-    let payload = config.data.useFileSystem ?
-      readFB(readFileSync(join(fileReadPath, standard, provider, `${currentCID}.fbs`)), standard, parentClass) :
-      await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
+    let payload = config.data.useDatabase ? await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>)) :
+      readFB(readFileSync(join(fileReadPath, standard, provider, `${currentCID}.fbs`)), standard, parentClass);
     payload = formatResponse(req, res, payload);
     res.set("x-content-identifier", currentCID);
     res.end(payload);

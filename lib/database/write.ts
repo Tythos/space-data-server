@@ -146,7 +146,6 @@ export const write = async (
     PROVIDER: string,
     STANDARD: string,
     created_at: Date,
-    useFileSystem: Boolean = true
 ) => {
     knexConnection = currentKnexConnection;
     await runPragmas(knexConnection);
@@ -155,7 +154,7 @@ export const write = async (
 
     if (currentCID) return;
 
-    if (!useFileSystem) {
+    if (config.data.useDatabase) {
 
         await insertData(
             tableName,
@@ -166,16 +165,16 @@ export const write = async (
             undefined,
             CID);
 
-    } else {
-
-        const writePath = join(
-            config.data.fileSystemPath,
-            STANDARD.toUpperCase(),
-            PROVIDER as string
-        );
-
-        await writeFiles(writePath, CID, inputObject, DIGITAL_SIGNATURE);
     }
+
+    const writePath = join(
+        config.data.fileSystemPath,
+        STANDARD.toUpperCase(),
+        PROVIDER as string
+    );
+
+    await writeFiles(writePath, CID, inputObject, DIGITAL_SIGNATURE);
+
 
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,

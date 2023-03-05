@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1825+1677932713333",
+    "version": "1.0.1919+1677976015658",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -24,7 +24,7 @@
         "start": "npm run build && node node --max-old-space-size=4096 ./build/server.cjs",
         "dev": "rm -rf public/* && npm run dev:clean:database && npm run build && PORT=8080 nodemon",
         "dev:clean:database": "rm -rf .database/*",
-        "dev:database": "cp ./lib/config/default.config.database.json config.json && npm run dev:clean:database && npm run build && PORT=8080 nodemon",
+        "dev:database": "cp ./lib/config/default.config.database.json config.json && npm run dev:clean:database && PORT=8080 nodemon --config nodemon.database.json",
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
         "test": "export IPFS_PATH=$PWD/go-ipfs/ && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",

@@ -147,8 +147,7 @@ async function processData(file: string) {
                     inputSignature,
                     signedEthAddress as string,
                     standard.toUpperCase(),
-                    mtime,
-                    config.data.useFileSystem
+                    mtime
                 );
             } else {
                 return;

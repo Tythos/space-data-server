@@ -35,7 +35,7 @@ export interface Settings {
         "ingest": string,
         "raw": string,
         "fileSystemPath": string,
-        "useFileSystem": Boolean,
+        "useDatabase": Boolean,
         "cache": string,
         "verbose": Boolean
     },

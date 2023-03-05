@@ -64,9 +64,9 @@ export default {
 
         setTimeout(async () => {
             console.log('Starting Pin')
-            let CID = await ipfsController.addDirectory(folderToPin);
+            let CID = await ipfsController.publishDirectory(folderToPin);
             console.log("pins", CID);
-        }, 5000)
+        }, 5000);
 
         cluster.on("exit", (worker: Worker, code, signal) => {
 

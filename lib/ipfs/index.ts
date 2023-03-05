@@ -2,7 +2,7 @@ import { join } from "path";
 import { ChildProcess, exec } from 'node:child_process';
 import { promisify } from "node:util";
 const execP = promisify(exec);
-import { existsSync, mkdirSync, writeFileSync, rmSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync, rmSync, readdirSync } from "fs";
 import { execSync, spawn } from "child_process";
 const rootDir = join(__dirname, "..");
 const ipfsPath = process.env.IPFS_PATH || join(rootDir, "go-ipfs/");
@@ -28,7 +28,7 @@ export interface IPFSController {
     },
     api: Function,
     importKey: Function,
-    addDirectory: Function,
+    publishDirectory: Function,
     isInstanceActive: Function
 }
 
@@ -95,10 +95,11 @@ const importKey = function (key: ArrayBuffer, keyName: string) {
     return output;
 }
 
-const addDirectory = function (folder: string) {
+const publishDirectory = function (folder: string) {
     let output;
     let { env } = this;
     let start = performance.now();
+    if (!readdirSync(folder).length) return "Empty Directory";
     console.log(`Pin started at: ${new Date()} for folder ${folder}`);
     try {
         const options = { stdio: 'pipe' };
@@ -107,7 +108,17 @@ const addDirectory = function (folder: string) {
         output = error.toString();
     }
     console.log(`Pin took: ${performance.now() - start} for folder ${folder}`);
-    return output.match(/added\s.*/g)?.pop()?.split(" ")[1];
+    let folderHash = output.match(/added\s.*/g)?.pop()?.split(" ")[1];
+    console.log(folderHash);
+    setTimeout(() => {
+        try {
+            output = execSync(`${ipfsPath}ipfs name publish --key=k51qzi5uqu5dje4na46s4ti0ncyar3jdffp5h68zffbn6mks5jxr3h8ctjlqbh ${folderHash}`, { env }).toString();
+            console.log(output);
+        } catch (e) {
+            console.log(e)
+        }
+    }, 5000)
+    return folderHash;
 }
 
 export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 9001, folderPath: string = ""): Promise<any> => {
@@ -138,7 +149,7 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
         apiPort,
         api,
         importKey,
-        addDirectory,
+        publishDirectory,
         isInstanceActive
     } as IPFSController;
 

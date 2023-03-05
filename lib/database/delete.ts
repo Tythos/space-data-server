@@ -21,18 +21,18 @@ export const del = async (
 
     let isGone;
 
-    if (config.data.useFileSystem) {
-        const fileDelPath = join(fileReadPath, STANDARD, PROVIDER);
-        const files = await readdir(fileDelPath);
-        for (const file of files) {
-            if (file.startsWith(currentCID)) {
-                await unlink(join(fileDelPath, file));
-            }
+    //if (config.data.useFileSystem) {
+    const fileDelPath = join(fileReadPath, STANDARD, PROVIDER);
+    const files = await readdir(fileDelPath);
+    for (const file of files) {
+        if (file.startsWith(currentCID)) {
+            await unlink(join(fileDelPath, file));
         }
-        isGone = true;
-    } else {
-        isGone = await connection(STANDARD).delete({ "file_id": currentCID });
     }
+    isGone = true;
+    //} else {
+    isGone = await connection(STANDARD).delete({ "file_id": currentCID });
+    //}
 
     if (isGone) {
         isGone = isGone && await connection("FILE_IMPORT_TABLE")

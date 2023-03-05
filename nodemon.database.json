@@ -1,0 +1,7 @@
+{
+  "watch": ["./lib/database"],
+  "ignore": ["packages"],
+  "ext": "ts,mjs,js,json,graphql",
+  "exec": "rm -rf .database/* && npm run build && node --max-old-space-size=4096 --enable-source-maps ./build/server.cjs",
+  "legacyWatch": true
+}
