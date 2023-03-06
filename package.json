@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1919+1677976015658",
+    "version": "1.0.1930+1678114637472",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -27,7 +27,9 @@
         "dev:database": "cp ./lib/config/default.config.database.json config.json && npm run dev:clean:database && PORT=8080 nodemon --config nodemon.database.json",
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
+        "dev:cli": "nodemon --config nodemon.cli.json",
         "test": "export IPFS_PATH=$PWD/go-ipfs/ && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",
+        "test:cli": "jest --watchAll --detectOpenHandles --runInBand ./test/cli.test",
         "test:gencert": "cd test/certs/ && chmod +x generatecerts.sh && ./generatecerts.sh",
         "test:server:database": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
         "test:server:filesystem": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",

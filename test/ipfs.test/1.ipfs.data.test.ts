@@ -1,4 +1,4 @@
-import { IPFSController, startIPFS } from "../../lib/ipfs/index";
+import { IPFSController, IPFSUtilities, startIPFS } from "../../lib/ipfs/index";
 import { keyconverter } from "keyconverter/src/keyconverter";
 import { mnemonicToEntropy } from "bip39";
 
@@ -57,8 +57,8 @@ describe('Test Publishing to IPFS', () => {
         let kC = new keyconverter({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as EcKeyGenParams);
         const entropy = mnemonicToEntropy(`${Array(12).join("abandon ")}about`);
         await kC.import(Buffer.from(entropy).toString('hex'));
-        let binKey = await kC.export("ipfs:protobuf", "private");
-        let hash = ipfsController.importKey(binKey, keyName);
+        let binKey = await kC.export("ipfs:protobuf", "private") as ArrayBuffer;
+        let hash = IPFSUtilities.importKey(binKey, keyName);
         expect(typeof hash).toBe('string');
         const keys = await ipfsController.api("/key/list");
         // check if current key name exists in the list

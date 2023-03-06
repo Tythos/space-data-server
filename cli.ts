@@ -1,12 +1,25 @@
-const { execSync } = require("child_process");
-const { writeFileSync } = require("fs");
-import readline from 'readline';
-import yargs from 'yargs';
+#!/usr/bin/env node
+import { execSync } from "child_process";
+import { writeFileSync } from "fs";
+import { Wallet, utils, providers } from "ethers";
+import { keyconverter, pubKeyToEthAddress } from "keyconverter/src/keyconverter";
+import { mnemonicToEntropy } from "bip39";
+import readline from "readline";
+import yargs from "yargs";
+import { IPFSController, startIPFS, IPFSUtilities } from "./lib/ipfs/index";
 
-const installServiceFile = () => {
-    const serviceFilePath = "/etc/systemd/system/spacedataserver.service";
-    const cc = (c) => c.toString().replace(/\n/g, "");
-    const whichNode: any = cc(execSync(`which node`));
+export const showServiceFileInstallCommands = () => {
+    console.log(`
+sudo cp spacedataserver.service /etc/systemd/system/spacedataserver.service
+sudo systemctl daemon-reload
+sudo systemctl enable spacedataserver.service
+sudo systemctl restart spacedataserver.service
+ `)
+}
+
+export const createServiceFile = (serviceFilePath: string) => {
+    const cc = (c: string) => c.toString().replace(/\n/g, "");
+    const whichNode: any = cc(execSync(`which node`).toString());
     const group: any = (process.getgroups ? process.getgroups() : [])[0];
 
     const serviceFile = `[Unit]
@@ -23,24 +36,24 @@ WorkingDirectory=${process.cwd()}
 
 [Install]
 WantedBy=multi-user.target`;
-    console.log(serviceFile);
+    console.log(serviceFilePath);
+    if (!serviceFilePath) {
+        console.log(serviceFile);
+    } else {
+        writeFileSync(serviceFilePath, serviceFile);
+    }
+};
 
-    writeFileSync(serviceFilePath, serviceFile);
-    execSync(`sudo systemctl daemon-reload`);
-    execSync(`sudo systemctl enable spacedataserver.service`);
-    execSync(`sudo systemctl restart spacedataserver.service`);
-}
-
-async function getPassword(prompt: string): Promise<string> {
+export async function getPrivateKey(prompt: string): Promise<string> {
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
-        terminal: true,
+        terminal: false,
         historySize: 0, // Set the history size to 0 to disable history
     });
 
-    const password = await new Promise<string>((resolve, reject) => {
-        rl.question(prompt, (password) => {
+    const mnemonic = await new Promise<string>((resolve, reject) => {
+        rl.question(prompt + " \n", (password) => {
             rl.close();
             resolve(password);
         });
@@ -52,28 +65,62 @@ async function getPassword(prompt: string): Promise<string> {
         }
     });
 
-    return password;
+    return mnemonic;
 }
 
-async function addPrivateKey() {
-    const password = await getPassword('Enter your password: ');
-    console.log(`Your password is: ${password}`);
-}
+yargs(process.argv.slice(2))
+    .usage("Usage: $0 <command> [options]")
+    .command(
+        "create-service-file",
+        "Install SpaceDataServer service file",
+        (yargs) => {
+            yargs.positional("path", {
+                describe: "Service file path",
+                default: "",
+                type: "string",
+            });
+        },
+        (argv) => {
+            createServiceFile(argv.path as string);
+        }
+    )
+    .command("service-file-install-commands", "Show commands needed to install service file", (yargs) => {
+    },
+        (argv) => {
+            showServiceFileInstallCommands();
+        })
+    .command("add-private-key", "Add a private key", () => { }, async () => {
+        const mnemonic = await getPrivateKey("Enter your mnemonic passphrase\n");
+        let kC = new keyconverter({ kty: "EC", name: "ECDSA", namedCurve: "K-256", hash: "SHA-256" } as EcKeyGenParams);
+        const entropy = mnemonicToEntropy(mnemonic.trim());
+        await kC.import(Buffer.from(entropy).toString('hex'));
+        let binKey = await kC.export("ipfs:protobuf", "private") as ArrayBuffer;
+        let hash = IPFSUtilities.importKey(binKey);
+        const hdNode = utils.HDNode.fromMnemonic(mnemonic.trim());
 
-
-
-const argv: any = yargs(process.argv.slice(2))
-    .usage('Usage: $0 [options] <name>')
-    .demandCommand(1)
-    .option('u', {
-        alias: 'uppercase',
-        describe: 'Convert name to uppercase',
-        type: 'boolean',
+        const ethWallet = new Wallet(
+            hdNode.derivePath(`m/44'/60'/0'/0/0`).privateKey
+        );
+        console.log(`Your ETH address is: ${ethWallet.address}\n`);
+        console.log(`Your IPNS Hash: ${hash}`);
     })
+    .option("name", {
+        describe: "Your name",
+        type: "string",
+    })
+    .option("u", {
+        alias: "uppercase",
+        describe: "Convert name to uppercase",
+        type: "boolean",
+    })
+    .demandCommand(1)
     .help()
     .argv;
 
-const name = argv._[0];
-const greeting = `Hello, ${argv.uppercase ? name.toUpperCase() : name}!`;
-console.log(greeting);
 
+
+// Install service file
+// Show current Ethereum address, ipns address, ENS domain (if applicable)
+// Import Ethereum Key to ipfs
+// Export Ethereum Key from ipfs
+// Show trusted addresses (call contract)

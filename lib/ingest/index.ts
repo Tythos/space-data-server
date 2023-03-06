@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, statSync, unwatchFile, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, rmSync, statSync, unwatchFile, writeFileSync } from 'node:fs';
 import { writeFile, access } from "node:fs/promises"
 import chokidar from "chokidar";
 import { config } from "@/lib/config/config";
@@ -153,6 +153,8 @@ async function processData(file: string) {
                 return;
             }
         }
+        rmSync(signatureFile);
+        rmSync(signedFile);
     }
     if (queue.length) {
         await processData(queue.pop() as string);

@@ -6,6 +6,7 @@ import { existsSync, mkdirSync, writeFileSync, rmSync, readdirSync } from "fs";
 import { execSync, spawn } from "child_process";
 const rootDir = join(__dirname, "..");
 const ipfsPath = process.env.IPFS_PATH || join(rootDir, "go-ipfs/");
+const env = { IPFS_PATH: ipfsPath };
 
 /* TODO
 - https://docs.ipfs.tech/how-to/command-line-quick-start/
@@ -27,9 +28,32 @@ export interface IPFSController {
         IPFS_PATH: string
     },
     api: Function,
-    importKey: Function,
     publishDirectory: Function,
     isInstanceActive: Function
+}
+
+export class IPFSUtilities {
+    static importKey = function (key: ArrayBuffer) {
+        const keyName: string = "SpaceDataServer_Key";
+        const keyPath = `${rootDir}/.keys`;
+        if (!existsSync(keyPath)) {
+            mkdirSync(keyPath);
+        }
+        let { env } = this;
+        let fileName = `${keyPath}/${keyName}.proto`;
+        writeFileSync(fileName, Buffer.from(key as ArrayBuffer));
+        let output: any;
+        try {
+            const options = { stdio: 'pipe' };
+            output = execSync(`${ipfsPath}ipfs key rm ${keyName}`, { env }).toString();
+            output = execSync(`${ipfsPath}ipfs key import ${keyName} ${fileName} --allow-any-key-type`, { env }).toString();
+        } catch (error: any) {
+            output = error.toString();
+        }
+
+        rmSync(fileName);
+        return output;
+    };
 }
 
 export interface IPFSControllerCollection {
@@ -75,29 +99,10 @@ const api = async function (path: string, queryString: object, args: object = {}
     return returnContent;
 }
 
-const importKey = function (key: ArrayBuffer, keyName: string) {
-    const keyPath = `${rootDir}/.keys`;
-    if (!existsSync(keyPath)) {
-        mkdirSync(keyPath);
-    }
-    let { env } = this;
-    let fileName = `${keyPath}/${keyName}.proto`;
-    writeFileSync(fileName, Buffer.from(key as ArrayBuffer));
-    let output: any;
-    try {
-        const options = { stdio: 'pipe' };
-        output = execSync(`${ipfsPath}ipfs key import ${keyName} ${fileName} --allow-any-key-type`, { env }).toString();
-    } catch (error: any) {
-        output = error.toString();
-    }
 
-    rmSync(fileName);
-    return output;
-}
 
 const publishDirectory = function (folder: string) {
     let output;
-    let { env } = this;
     let start = performance.now();
     if (!readdirSync(folder).length) return "Empty Directory";
     console.log(`Pin started at: ${new Date()} for folder ${folder}`);
@@ -129,7 +134,6 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
         mkdirSync(IPFS_PATH);
     }
 
-    const env = { IPFS_PATH };
     const execPath = `${ipfsPath}ipfs`;
 
     try {
@@ -148,7 +152,6 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
         gatewayPort,
         apiPort,
         api,
-        importKey,
         publishDirectory,
         isInstanceActive
     } as IPFSController;
