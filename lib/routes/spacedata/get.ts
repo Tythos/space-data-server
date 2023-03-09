@@ -30,7 +30,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
 
   } else {
 
-    standard = standard.toUpperCase();
+    standard = standard?.toUpperCase();
     let { query } = req.query;
     let parsedQuery: Array<any> = [];
 
@@ -44,14 +44,14 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       res.end();
     }
 
-    let currentCID: string = cid.toLowerCase();
+    let currentCID: string = cid?.toLowerCase();
     let currentDigitalSignature: string = "";
     if (!currentCID) {
       let { CID, DIGITAL_SIGNATURE } = await connection("FILE_IMPORT_TABLE")
         .orderBy("created_at", "desc").first().catch((e: any) => {
           res.end({ error: e });
         });
-      currentCID = CID.toLowerCase();
+      currentCID = CID?.toLowerCase();
       currentDigitalSignature = DIGITAL_SIGNATURE;
     } else {
       let record = await connection("FILE_IMPORT_TABLE").where({ CID: currentCID }).first().catch((e: any) => {
