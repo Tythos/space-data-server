@@ -153,7 +153,7 @@ export const write = async (
     let { RECORDS } = inputObject;
 
     PROVIDER = PROVIDER.toLowerCase();
-    CID = CID.toLowerCase();
+
     if (currentCID) return;
 
     if (config.data.useDatabase) {

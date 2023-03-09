@@ -18,7 +18,10 @@ const fileReadPath = cFP && cFP[0] === "/" ?
   cFP : resolve(process.cwd(), cFP);
 export const get: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
   let { standard, provider, cid } = req.params;
+
   standard = standard.toUpperCase();
+  provider = provider.toLowerCase();
+
   if (!provider) {
     res.status(500);
     res.end("ERROR: No Provider Selected.")
@@ -44,14 +47,14 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       res.end();
     }
 
-    let currentCID: string = cid?.toLowerCase();
+    let currentCID: string = cid;
     let currentDigitalSignature: string = "";
     if (!currentCID) {
       let { CID, DIGITAL_SIGNATURE } = await connection("FILE_IMPORT_TABLE")
         .orderBy("created_at", "desc").first().catch((e: any) => {
           res.end({ error: e });
         });
-      currentCID = CID?.toLowerCase();
+      currentCID = CID;
       currentDigitalSignature = DIGITAL_SIGNATURE;
     } else {
       let record = await connection("FILE_IMPORT_TABLE").where({ CID: currentCID }).first().catch((e: any) => {
