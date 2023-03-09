@@ -33,7 +33,7 @@ ENTITY_ID(optionalEncoding?:any):string|Uint8Array|null {
   return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
 }
 
-USER_DEFINED_EPOCH_TIMESTAMP():number {
+EPOCH():number {
   const offset = this.bb!.__offset(this.bb_pos, 6);
   return offset ? this.bb!.readFloat64(this.bb_pos + offset) : 0.0;
 }
@@ -81,8 +81,8 @@ static addEntityId(builder:flatbuffers.Builder, ENTITY_IDOffset:flatbuffers.Offs
   builder.addFieldOffset(0, ENTITY_IDOffset, 0);
 }
 
-static addUserDefinedEpochTimestamp(builder:flatbuffers.Builder, USER_DEFINED_EPOCH_TIMESTAMP:number) {
-  builder.addFieldFloat64(1, USER_DEFINED_EPOCH_TIMESTAMP, 0.0);
+static addEpoch(builder:flatbuffers.Builder, EPOCH:number) {
+  builder.addFieldFloat64(1, EPOCH, 0.0);
 }
 
 static addMeanMotion(builder:flatbuffers.Builder, MEAN_MOTION:number) {
@@ -126,10 +126,10 @@ static finishSizePrefixedMPEBuffer(builder:flatbuffers.Builder, offset:flatbuffe
   builder.finish(offset, '$MPE', true);
 }
 
-static createMPE(builder:flatbuffers.Builder, ENTITY_IDOffset:flatbuffers.Offset, USER_DEFINED_EPOCH_TIMESTAMP:number, MEAN_MOTION:number, ECCENTRICITY:number, INCLINATION:number, RA_OF_ASC_NODE:number, ARG_OF_PERICENTER:number, MEAN_ANOMALY:number, BSTAR:number):flatbuffers.Offset {
+static createMPE(builder:flatbuffers.Builder, ENTITY_IDOffset:flatbuffers.Offset, EPOCH:number, MEAN_MOTION:number, ECCENTRICITY:number, INCLINATION:number, RA_OF_ASC_NODE:number, ARG_OF_PERICENTER:number, MEAN_ANOMALY:number, BSTAR:number):flatbuffers.Offset {
   MPE.startMPE(builder);
   MPE.addEntityId(builder, ENTITY_IDOffset);
-  MPE.addUserDefinedEpochTimestamp(builder, USER_DEFINED_EPOCH_TIMESTAMP);
+  MPE.addEpoch(builder, EPOCH);
   MPE.addMeanMotion(builder, MEAN_MOTION);
   MPE.addEccentricity(builder, ECCENTRICITY);
   MPE.addInclination(builder, INCLINATION);
@@ -143,7 +143,7 @@ static createMPE(builder:flatbuffers.Builder, ENTITY_IDOffset:flatbuffers.Offset
 unpack(): MPET {
   return new MPET(
     this.ENTITY_ID(),
-    this.USER_DEFINED_EPOCH_TIMESTAMP(),
+    this.EPOCH(),
     this.MEAN_MOTION(),
     this.ECCENTRICITY(),
     this.INCLINATION(),
@@ -157,7 +157,7 @@ unpack(): MPET {
 
 unpackTo(_o: MPET): void {
   _o.ENTITY_ID = this.ENTITY_ID();
-  _o.USER_DEFINED_EPOCH_TIMESTAMP = this.USER_DEFINED_EPOCH_TIMESTAMP();
+  _o.EPOCH = this.EPOCH();
   _o.MEAN_MOTION = this.MEAN_MOTION();
   _o.ECCENTRICITY = this.ECCENTRICITY();
   _o.INCLINATION = this.INCLINATION();
@@ -171,7 +171,7 @@ unpackTo(_o: MPET): void {
 export class MPET implements flatbuffers.IGeneratedObject {
 constructor(
   public ENTITY_ID: string|Uint8Array|null = null,
-  public USER_DEFINED_EPOCH_TIMESTAMP: number = 0.0,
+  public EPOCH: number = 0.0,
   public MEAN_MOTION: number = 0.0,
   public ECCENTRICITY: number = 0.0,
   public INCLINATION: number = 0.0,
@@ -187,7 +187,7 @@ pack(builder:flatbuffers.Builder): flatbuffers.Offset {
 
   return MPE.createMPE(builder,
     ENTITY_ID,
-    this.USER_DEFINED_EPOCH_TIMESTAMP,
+    this.EPOCH,
     this.MEAN_MOTION,
     this.ECCENTRICITY,
     this.INCLINATION,

@@ -152,6 +152,8 @@ export const write = async (
     let currentCID = await knexConnection("FILE_IMPORT_TABLE").where({ CID }).first();
     let { RECORDS } = inputObject;
 
+    PROVIDER = PROVIDER.toLowerCase();
+
     if (currentCID) return;
 
     if (config.data.useDatabase) {

@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "1.0.1933+1678116683661",
+    "version": "1.0.1934+1678388230841",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -131,5 +131,5 @@
         "standard-ecies": "^2.0.0",
         "swagger-ui-dist": "^4.15.5"
     },
-    "standardsVersion": "0.0.2+1677878235536"
+    "standardsVersion": "0.0.2+1678388175685"
 }

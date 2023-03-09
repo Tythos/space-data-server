@@ -5,3 +5,4 @@ export * as OPM from "@/lib/class/standards/OPM/main";
 export * as OEM from "@/lib/class/standards/OEM/main";
 export * as MPE from "@/lib/class/standards/MPE/main";
 export * as DPM from "@/lib/class/standards/DPM/main";
+export * as CSM from "@/lib/class/standards/CSM/main";
