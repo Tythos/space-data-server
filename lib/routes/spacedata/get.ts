@@ -50,7 +50,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     let currentCID: string = cid;
     let currentDigitalSignature: string = "";
     if (!currentCID) {
-      let { CID, DIGITAL_SIGNATURE } = await connection("FILE_IMPORT_TABLE")
+      let { CID, DIGITAL_SIGNATURE } = await connection("FILE_IMPORT_TABLE").where({ PROVIDER: provider, STANDARD: standard })
         .orderBy("created_at", "desc").first().catch((e: any) => {
           res.end({ error: e });
         });
