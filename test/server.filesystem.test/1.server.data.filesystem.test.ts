@@ -108,6 +108,8 @@ describe("POST /endpoint Write To FileSystem", () => {
             if (!postedCID) {
                 throw Error("Too Many Attempts");
             }
+            const postedFile = (await request(app).get(`/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}/${CID}`));
+            console.log(`/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}/${CID}`);
             expect(standard).toEqual(postedCID.STANDARD);
             expect(ethWallet.address.toLowerCase()).toEqual(postedCID.PROVIDER);
             expect(CID).toEqual(postedCID.CID);
