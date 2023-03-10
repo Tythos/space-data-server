@@ -8,7 +8,7 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 import { formatResponse } from "./responseFormat";
 import { config } from "@/lib/config/config";
 import { join, resolve } from "path";
-import { readFileSync } from "fs";
+import { createReadStream, readFileSync } from "fs";
 import { refRootName } from "@/lib/database/generateTables";
 import { readFB, writeFB } from '@/lib/utility/flatbufferConversion';
 
@@ -87,17 +87,30 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     let currentStandard = standardsJSON[standard];
     let tableName = refRootName(currentStandard.$ref);
     let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
-    let parentClass: any = standards[pClassName];
 
     if (!parsedQuery.length) {
       parsedQuery = [["where", ["file_id", "=", currentCID]]];
     }
-    let payload = config.data.useDatabase ? await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>)) :
-      readFB(readFileSync(join(fileReadPath, standard, provider, `${currentCID}.fbs`)), standard, parentClass);
-    payload = formatResponse(req, res, payload);
+    let payload;
     res.set("x-content-identifier", currentCID);
-    res.end(payload);
 
-
+    if (config.data.useDatabase) {
+      payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>))
+      payload = formatResponse(req, res, payload);
+      res.send(payload);
+    } else {
+      if (req.accepts("application/octet-stream")) {
+        res.setHeader('Content-Type', 'application/octet-stream');
+        let fpipe = createReadStream(join(fileReadPath, standard, provider, `${currentCID}.fbs`));
+        fpipe.pipe(res);
+        fpipe.on('error', err => {
+          console.log(err);
+          next(err);
+        });
+      } else {
+        payload = formatResponse(req, res, payload);
+        res.send(payload);
+      }
+    }
   }
 };

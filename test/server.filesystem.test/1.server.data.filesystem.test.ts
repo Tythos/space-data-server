@@ -15,6 +15,7 @@ import type { AuthHeader } from "@/lib/class/authheader.json.interface";
 import ipfsHash from "pure-ipfs-only-hash";
 import { init, deinit } from "@/lib/ingest/index";
 import { generateDatabase } from "@/lib/database/generateTables";
+import { readFB } from "@/lib/utility/flatbufferConversion";
 
 //@ts-ignore
 var databaseConfig = config.database.config[config.database.config.primary];
@@ -65,6 +66,7 @@ describe("POST /endpoint Write To FileSystem", () => {
 
     it("should accept Flatbuffer files and save them to the database", async () => {
         for (let standard in standards) {
+
             const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
 
             const CID = await ipfsHash.of(flatbufferBinary);
@@ -108,8 +110,13 @@ describe("POST /endpoint Write To FileSystem", () => {
             if (!postedCID) {
                 throw Error("Too Many Attempts");
             }
-            const postedFile = (await request(app).get(`/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}/${CID}`));
-            console.log(`/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}/${CID}`);
+            const postedFile = await request(app).get(
+                `/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}`)
+                .set("accept", "application/octet-stream");
+
+            let jTest = (buff: ArrayBuffer) => JSON.stringify(readFB(buff, standard, standards[standard]));
+
+            expect(jTest(postedFile.body)).toEqual(jTest(flatbufferBinary));
             expect(standard).toEqual(postedCID.STANDARD);
             expect(ethWallet.address.toLowerCase()).toEqual(postedCID.PROVIDER);
             expect(CID).toEqual(postedCID.CID);
