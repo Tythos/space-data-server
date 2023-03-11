@@ -96,7 +96,34 @@ describe("POST /endpoint Write To FileSystem", () => {
                     .set("authorization", authHeader)
                     .send(flatbufferBinary);
                 expect(fbResponse.status).toBe(200);
-                continue;
+
+                let postedCID;
+                let timerCount = 0;
+                while (!postedCID && timerCount < 10) {
+                    console.clear();
+                    console.log(`${Date.now()} - Trying CID Service for Standard: ${standard}...`);
+                    postedCID = (await request(app)
+                        .get(`/cid/${ethWallet.address}/${standard}`)).body[0];
+                    if (!postedCID) {
+                        await new Promise(r => setTimeout(r, 1000));
+                    }
+                    timerCount++;
+                }
+                if (!postedCID) {
+                    throw Error("Too Many Attempts");
+                }
+                const postedFile = await request(app).get(
+                    `/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}`)
+                    .set("accept", "application/octet-stream");
+
+                let jTest = (buff: ArrayBuffer) => JSON.stringify(readFB(buff, standard, standards[standard]));
+
+                expect(jTest(postedFile.body)).toEqual(jTest(flatbufferBinary));
+                expect(standard).toEqual(postedCID.STANDARD);
+                expect(ethWallet.address.toLowerCase()).toEqual(postedCID.PROVIDER);
+                expect(CID).toEqual(postedCID.CID);
+
+
 
             }
             await new Promise(r => setTimeout(r, 1000)); //!IMPORTANT
@@ -106,10 +133,10 @@ describe("POST /endpoint Write To FileSystem", () => {
     it("Deletes a CID", async () => {
         const provider = ethWallet.address.toLowerCase();
         for (let standard in standards) {
-
             for (let fCID in outputStandardFiles[standard]) {
 
-                const flatbufferBinary: Buffer = outputStandardFiles[standard][fCID]; const CID = await ipfsHash.of(flatbufferBinary);
+                const flatbufferBinary: Buffer = outputStandardFiles[standard][fCID];
+                const CID = await ipfsHash.of(flatbufferBinary);
 
                 const authMessage: AuthHeader = {
                     CID,
@@ -126,12 +153,15 @@ describe("POST /endpoint Write To FileSystem", () => {
                 const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
                 expect(fbResponse?.body?.CID).toBe(CID);
                 expect(fbResponse.status).toBe(200);
+                
+                await new Promise(r => setTimeout(r, 500)); //!IMPORTANT
 
                 const shouldBeGone = (await request(app).get(requestPath));
-                expect(shouldBeGone?.status).toEqual(404);
+
+                expect(shouldBeGone.status).toBe(404);
             }
         }
-    }, 5000)
+    })
 });
 
 /*

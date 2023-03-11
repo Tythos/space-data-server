@@ -1,5 +1,5 @@
 import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
-import { promises } from "fs";
+import { promises, writeFileSync } from "fs";
 const { writeFile } = promises;
 import zlib from "node:zlib";
 const { brotliCompressSync, gzipSync } = zlib;
@@ -9,16 +9,17 @@ import { faker } from '@faker-js/faker';
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { JSONSchema4 } from "json-schema";
 import { execSync } from "child_process";
-import { writeFB } from "@/lib/utility/flatbufferConversion";
+import { readFB, writeFB } from "@/lib/utility/flatbufferConversion";
 import message from "bitcoinjs-message";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
 import { ethWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto.wallets";
+import { join } from "path";
 
 const fDT: any = faker.datatype;
 const standardsJSON: any = _standardsJSON;
 
-export const generateData = async (total: number = 10, numFiles: number = 5, dataPath: string = `test/output/data`, standardsToGenerate: Array<string> = Object.keys(standards)): Promise<Array<any>[][]> => {
+export const generateData = async (total: number = 10, numFiles: number = 5, dataPath: string = `test/output/data`, standardsToGenerate: Array<string> = Object.keys(standards)) => {
     if (!dataPath) return [];
     execSync(`rm -rf ${dataPath}/*.* && mkdir -p ${dataPath}`);
 
@@ -88,81 +89,24 @@ export const generateData = async (total: number = 10, numFiles: number = 5, dat
         return newObject;
     }
 
-    let outputPaths: any = [
-        [`${dataPath}/address.eth`, ethWallet.address],
-        [`${dataPath}/address.btc`, btcAddress!]
-    ];
-
     for (let standard in standards) {
-        for (let inputFile = 0; inputFile < numFiles; inputFile++) {
-            if (!~standardsToGenerate.indexOf(standard)) continue;
-            let currentStandard = standardsJSON[standard];
-            let tableName = refRootName(currentStandard.$ref);
-            let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
-            let parentClass: any = standards[pClassName];
-            let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
-            let input = new parentClass[cClassName];
+        let currentStandard = standardsJSON[standard];
+        let tableName = refRootName(currentStandard.$ref);
+        let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
+        let parentClass: any = standards[pClassName];
+        let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
+        let input = new parentClass[cClassName];
 
-            for (let i = 0; i < total; i++) {
-                let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
-                input.RECORDS.push(newObject);
-            }
+        if (!~standardsToGenerate.indexOf(standard)) continue;
 
-            let resultBuffer: Buffer = writeFB(input);
-            let resultJSON: string = JSON.stringify(input);
-
-            let resultBufferIPFSCID: string = await ipfsHash.of(resultBuffer);
-            let resultJSONIPFSCID: string = await ipfsHash.of(resultJSON);
-
-            let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
-            //let signatureJSONETH: string = await ethWallet.signMessage(resultJSONIPFSCID);
-            let signatureBufferBTC: string = message.sign(resultBufferIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
-            //let signatureJSONBTC: string = message.sign(resultJSONIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
-
-            let outputPath = `${dataPath}/${resultBufferIPFSCID}`;
-
-            //Use the two most supported compression protocols for testing
-            let gzipData = {
-                buffer: gzipSync(resultBuffer),
-                json: gzipSync(resultJSON),
-            };
-
-            let brotliData = {
-                buffer: brotliCompressSync(resultBuffer),
-                json: brotliCompressSync(resultJSON)
-            };
-
-            //Size Report
-            await outputPaths.push([`${outputPath}.report.txt`, `
-            ${standard} buffer gzip size: ${gzipData.buffer.length / 1000} kB
-            ${standard} json gzip size: ${gzipData.json.length / 1000} kB
-            ${standard} buffer brotli size: ${brotliData.buffer.length / 1000} kB
-            ${standard} json brotli size: ${brotliData.json.length / 1000} kB
-            `]);
-
-            outputPaths = outputPaths.concat([
-                //Flatbuffer
-                [`${outputPath}.${standard}.fbs`, resultBuffer],
-                [`${outputPath}.${standard}.fbs.gz`, gzipData.buffer],
-                [`${outputPath}.${standard}.fbs.br`, brotliData.buffer],
-                [`${outputPath}.${standard}.fbs.ethsig`, signatureBufferETH],
-                [`${outputPath}.${standard}.fbs.btcsig`, signatureBufferBTC],
-                //JSON
-                /* [`${outputPath}.input.json`, resultJSON],
-                 [`${outputPath}.input.json.gz`, gzipData.json],
-                 [`${outputPath}.input.json.br`, brotliData.json],
-                 [`${outputPath}.input.json.ethsig`, signatureJSONETH],
-                 [`${outputPath}.input.json.btcsig`, signatureJSONBTC],
-                 [`${outputPath}.input.json.ipfs.cid.txt`, resultJSONIPFSCID]*/
-            ]);
+        for (let i = 0; i < total; i++) {
+            let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
+            input.RECORDS.push(newObject);
         }
-    }
 
-    //Write files to disk
-    for (let oP = 0; oP < outputPaths.length; oP++) {
-        let wpath = outputPaths[oP][0];
-        let wcontent = outputPaths[oP][1];
-        await writeFile(wpath, wcontent);
+        let resultBuffer: Buffer = writeFB(input);
+        let CID: string = await ipfsHash.of(resultBuffer);
+
+        writeFileSync(join(dataPath, `${CID}.${standard.toLowerCase()}.fbs`), resultBuffer);
     };
-    return outputPaths;
 }
