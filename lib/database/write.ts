@@ -9,9 +9,22 @@ import { writeFile } from "node:fs/promises"
 import { join } from "path";
 import { writeFB } from '../utility/flatbufferConversion';
 import { config } from "@/lib/config/config";
+import { del } from "./delete";
 
 let knexConnection: any;
 let pageSize = 200;
+
+async function getCIDsOlderThan(days, STANDARD) {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+
+    const rows = await knexConnection('FILE_IMPORT_TABLE')
+        .select('CID')
+        .where('created_at', '<', cutoffDate.toISOString())
+        .where("STANDARD", STANDARD);
+
+    return rows.map(row => row.CID);
+}
 
 const writeFiles = async (writePath: string, CID: string, input: any, DIGITAL_SIGNATURE: string) => {
     if (!input || !input.pack) {
@@ -176,8 +189,10 @@ export const write = async (
     );
 
     await writeFiles(writePath, CID, inputObject, DIGITAL_SIGNATURE);
-
-
+    /*
+        const cids = await getCIDsOlderThan(0, STANDARD); // Get CIDs of files older than 7 days
+        console.log(cids); // Print the array of CIDs
+    */
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,

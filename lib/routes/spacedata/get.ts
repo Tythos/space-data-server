@@ -8,9 +8,10 @@ import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure
 import { formatResponse } from "./responseFormat";
 import { config } from "@/lib/config/config";
 import { join, resolve } from "path";
-import { createReadStream, readFileSync } from "fs";
+import { createReadStream, existsSync, readFileSync } from "fs";
 import { refRootName } from "@/lib/database/generateTables";
 import { readFB, writeFB } from '@/lib/utility/flatbufferConversion';
+import { resetIndex } from "apicache";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 const cFP = config?.data?.fileSystemPath;
@@ -101,12 +102,18 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     } else {
       if (req.accepts("application/octet-stream")) {
         res.setHeader('Content-Type', 'application/octet-stream');
-        let fpipe = createReadStream(join(fileReadPath, standard, provider, `${currentCID}.fbs`));
-        fpipe.pipe(res);
-        fpipe.on('error', err => {
-          console.log(err);
-          next(err);
-        });
+        let fileToStream = join(fileReadPath, standard, provider, `${currentCID}.fbs`);
+        if (existsSync(fileToStream)) {
+          let fpipe = createReadStream(join(fileReadPath, standard, provider, `${currentCID}.fbs`));
+          fpipe.pipe(res);
+          fpipe.on('error', err => {
+            console.log(err);
+            next(err);
+          });
+        } else {
+          res.status(404);
+          res.end();
+        }
       } else {
         payload = formatResponse(req, res, payload);
         res.send(payload);

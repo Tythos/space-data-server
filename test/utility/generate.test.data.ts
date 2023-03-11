@@ -114,11 +114,11 @@ export const generateData = async (total: number = 10, dataPath: string = `test/
         let resultJSONIPFSCID: string = await ipfsHash.of(resultJSON);
 
         let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
-        let signatureJSONETH: string = await ethWallet.signMessage(resultJSONIPFSCID);
+        //let signatureJSONETH: string = await ethWallet.signMessage(resultJSONIPFSCID);
         let signatureBufferBTC: string = message.sign(resultBufferIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
-        let signatureJSONBTC: string = message.sign(resultJSONIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
+        //let signatureJSONBTC: string = message.sign(resultJSONIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
 
-        let outputPath = `${dataPath}/${standard}`;
+        let outputPath = `${dataPath}/${resultBufferIPFSCID}`;
 
         //Use the two most supported compression protocols for testing
         let gzipData = {
@@ -141,19 +141,18 @@ export const generateData = async (total: number = 10, dataPath: string = `test/
 
         outputPaths = outputPaths.concat([
             //Flatbuffer
-            [`${outputPath}.input.fbs`, resultBuffer],
-            [`${outputPath}.input.fbs.gz`, gzipData.buffer],
-            [`${outputPath}.input.fbs.br`, brotliData.buffer],
-            [`${outputPath}.input.fbs.ethsig`, signatureBufferETH],
-            [`${outputPath}.input.fbs.btcsig`, signatureBufferBTC],
-            [`${outputPath}.input.fbs.ipfs.cid.txt`, resultBufferIPFSCID],
+            [`${outputPath}.${standard}.fbs`, resultBuffer],
+            [`${outputPath}.${standard}.fbs.gz`, gzipData.buffer],
+            [`${outputPath}.${standard}.fbs.br`, brotliData.buffer],
+            [`${outputPath}.${standard}.fbs.ethsig`, signatureBufferETH],
+            [`${outputPath}.${standard}.fbs.btcsig`, signatureBufferBTC],
             //JSON
-            [`${outputPath}.input.json`, resultJSON],
-            [`${outputPath}.input.json.gz`, gzipData.json],
-            [`${outputPath}.input.json.br`, brotliData.json],
-            [`${outputPath}.input.json.ethsig`, signatureJSONETH],
-            [`${outputPath}.input.json.btcsig`, signatureJSONBTC],
-            [`${outputPath}.input.json.ipfs.cid.txt`, resultJSONIPFSCID]
+            /* [`${outputPath}.input.json`, resultJSON],
+             [`${outputPath}.input.json.gz`, gzipData.json],
+             [`${outputPath}.input.json.br`, brotliData.json],
+             [`${outputPath}.input.json.ethsig`, signatureJSONETH],
+             [`${outputPath}.input.json.btcsig`, signatureJSONBTC],
+             [`${outputPath}.input.json.ipfs.cid.txt`, resultJSONIPFSCID]*/
         ]);
     }
 
