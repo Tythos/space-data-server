@@ -7,6 +7,10 @@ import { existsSync, mkdirSync } from "node:fs";
 import { writeFile, mkdir } from "node:fs/promises";
 import { config } from "@/lib/config/config"
 import type { AuthHeader } from "@/lib/class/authheader.json.interface";
+import { connection } from "@/lib/database/connection";
+import write from "@/lib/database/write";
+import * as standards from "@/lib/standards/standards";
+import { readFB } from "@/lib/utility/flatbufferConversion";
 
 const errors = {
     sig: "Signature invalid or key missing."
@@ -15,19 +19,6 @@ const errors = {
 
 if (!existsSync(config.data.ingest)) {
     mkdirSync(config.data.ingest);
-}
-
-const writeToDisk = async (vM: any, standard: string, extension: string, signature: string) => {
-    const filePath = config.data.ingest;
-    const fileName = await ipfsHash.of(vM.payload);
-
-    if (!existsSync(filePath)) {
-        await mkdir(filePath, { recursive: true });
-    }
-
-    let completePath = `${filePath}/${fileName}.${standard}.${extension}`;
-    await writeFile(completePath, vM.payload);
-    await writeFile(completePath + ".sig", signature);
 }
 
 // Middleware function that accepts FlatBuffer file
@@ -47,11 +38,11 @@ export const post: express.RequestHandler = async (req, res, next) => {
         let CID: string = "";
         let signature: string = "";
         let isValidated: boolean = false;
-
+        let address: string = "";
         if (authHeader) {
             const { CID: inputCID, signature: inputSignature }: AuthHeader = JSON.parse(Buffer.from(authHeader, "base64").toString());
             CID = inputCID;
-            const address = ethers.utils.verifyMessage(CID, inputSignature).toLowerCase();
+            address = ethers.utils.verifyMessage(CID, inputSignature).toLowerCase();
             if (!config.trustedAddresses[address]) {
                 res.status(401);
                 res.json({ "error": errors.sig });
@@ -63,16 +54,24 @@ export const post: express.RequestHandler = async (req, res, next) => {
             res.status(401);
             res.json({ "error": errors.sig });
         }
-        if (isValidated) {
-            await writeToDisk({ payload: req.body }, standard, "fbs", signature);
+        if (isValidated && !(await connection("FILE_IMPORT_TABLE").where({ CID }).first())) {
+            await write(
+                connection,
+                standard,
+                readFB(req.body, standard, standards[standard]),
+                standards[standard],
+                CID,
+                signature,
+                address as string,
+                standard.toUpperCase(),
+                new Date()
+            );
             res.json({ CID });
             res.status(200);
-
         }
     } catch (e) {
         res.status(401);
         res.json({ "error": errors.sig });
-
     }
     next();
 };

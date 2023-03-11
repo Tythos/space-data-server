@@ -1,3 +1,5 @@
+jest.useFakeTimers();
+
 import request from "supertest";
 import { generateData } from "../utility/generate.test.data";
 const dataPath: string = `test/output/data/`;
@@ -89,7 +91,6 @@ describe("POST /endpoint Write To FileSystem", () => {
                     nonce: performance.now(),
                 };
                 const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
-
                 const fbResponse = await request(app)
                     .post(`/spacedata/${standard}`)
                     .set("Content-Type", "application/octet-stream")
@@ -97,38 +98,15 @@ describe("POST /endpoint Write To FileSystem", () => {
                     .send(flatbufferBinary);
                 expect(fbResponse.status).toBe(200);
 
-                let postedCID;
-                let timerCount = 0;
-                while (!postedCID && timerCount < 10) {
-                    console.clear();
-                    console.log(`${Date.now()} - Trying CID Service for Standard: ${standard}...`);
-                    postedCID = (await request(app)
-                        .get(`/cid/${ethWallet.address}/${standard}`)).body[0];
-                    if (!postedCID) {
-                        await new Promise(r => setTimeout(r, 1000));
-                    }
-                    timerCount++;
-                }
-                if (!postedCID) {
-                    throw Error("Too Many Attempts");
-                }
                 const postedFile = await request(app).get(
                     `/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}`)
                     .set("accept", "application/octet-stream");
 
                 let jTest = (buff: ArrayBuffer) => JSON.stringify(readFB(buff, standard, standards[standard]));
-
                 expect(jTest(postedFile.body)).toEqual(jTest(flatbufferBinary));
-                expect(standard).toEqual(postedCID.STANDARD);
-                expect(ethWallet.address.toLowerCase()).toEqual(postedCID.PROVIDER);
-                expect(CID).toEqual(postedCID.CID);
-
-
-
             }
-            await new Promise(r => setTimeout(r, 1000)); //!IMPORTANT
         }
-    }, 50000);
+    });
 
     it("Deletes a CID", async () => {
         const provider = ethWallet.address.toLowerCase();
@@ -153,50 +131,27 @@ describe("POST /endpoint Write To FileSystem", () => {
                 const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
                 expect(fbResponse?.body?.CID).toBe(CID);
                 expect(fbResponse.status).toBe(200);
-                
-                await new Promise(r => setTimeout(r, 500)); //!IMPORTANT
 
                 const shouldBeGone = (await request(app).get(requestPath));
 
                 expect(shouldBeGone.status).toBe(404);
             }
         }
-    })
-});
-
-/*
-describe("POST /endpoint Read From File System", () => {
-    rmSync(config.data.ingest, { recursive: true, force: true });
-    const provider = ethWallet.address.toLowerCase();
-    it("should accept Flatbuffer files and save them to the filesystem", async () => {
-        for (let standard in standards) {
-            const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
-            const CID = await ipfsHash.of(flatbufferBinary);
-            const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
-            let file = (await request(app).get(requestPath));
-        }
-
-
-    }, 30000);
-});
-
-describe("DELETE /endpoint", () => {
-   
+    }, 50000)
 });
 
 describe("POST /echo", () => {
     it("Echoes input", async () => {
         for (let standard in standards) {
-            const flatbufferBinary: Buffer = readFileSync(join(dataPath, outputStandardFiles[standard].fbs));
-            const fbResponse = await request(app)
-                .post(`/echo/${standard}`)
-                .set("Content-Type", "application/octet-stream")
-                .send(flatbufferBinary);
-            expect(fbResponse.status).toBe(200);
+            for (let fCID in outputStandardFiles[standard]) {
+
+                const flatbufferBinary: Buffer = outputStandardFiles[standard][fCID];
+                const fbResponse = await request(app)
+                    .post(`/echo/${standard}`)
+                    .set("Content-Type", "application/octet-stream")
+                    .send(flatbufferBinary);
+                expect(fbResponse.status).toBe(200);
+            }
         }
     })
 });
-afterAll(async () => {
-    await deinit();
-    //rmSync(config.data.ingest, { recursive: true, force: true });
-});*/
