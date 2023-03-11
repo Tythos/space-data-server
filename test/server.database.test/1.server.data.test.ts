@@ -41,7 +41,7 @@ beforeAll(async () => {
         await generateDatabase(standardsArray, databaseConfig.connection.filename, `${config.database.path}/standards.sql`, connection, databaseConfig.version);
     }
     await init(config.data.ingest);
-    const outputPaths = await generateData(1, dataPath);
+    const outputPaths = await generateData(1, 1, dataPath);
     outputPaths.forEach((p: any) => {
         let _file = p[0].split("/").pop();
         let standard = p[0].split("/").pop().substring(0, 3);

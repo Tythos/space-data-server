@@ -18,7 +18,7 @@ describe('Test Data Entry', () => {
 
     test('Enter Data For Each Data Type', async () => {
 
-        const outputPaths = await generateData(total, dataPath);
+        const outputPaths = await generateData(total, 1, dataPath);
         //Expect all files to be present
         expect(outputPaths.map((oP: any) => { return oP[0].replace(dataPath + "/", "") }).sort()
         ).toEqual(readdirSync(`${dataPath}/`).filter(f => f !== ".gitignore").sort());

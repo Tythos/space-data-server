@@ -18,7 +18,7 @@ import { ethWallet, btcWallet, btcAddress } from "@/test/utility/generate.crypto
 const fDT: any = faker.datatype;
 const standardsJSON: any = _standardsJSON;
 
-export const generateData = async (total: number = 10, dataPath: string = `test/output/data`, standardsToGenerate: Array<string> = Object.keys(standards)): Promise<Array<any>[][]> => {
+export const generateData = async (total: number = 10, numFiles: number = 5, dataPath: string = `test/output/data`, standardsToGenerate: Array<string> = Object.keys(standards)): Promise<Array<any>[][]> => {
     if (!dataPath) return [];
     execSync(`rm -rf ${dataPath}/*.* && mkdir -p ${dataPath}`);
 
@@ -94,66 +94,68 @@ export const generateData = async (total: number = 10, dataPath: string = `test/
     ];
 
     for (let standard in standards) {
-        if (!~standardsToGenerate.indexOf(standard)) continue;
-        let currentStandard = standardsJSON[standard];
-        let tableName = refRootName(currentStandard.$ref);
-        let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
-        let parentClass: any = standards[pClassName];
-        let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
-        let input = new parentClass[cClassName];
+        for (let inputFile = 0; inputFile < numFiles; inputFile++) {
+            if (!~standardsToGenerate.indexOf(standard)) continue;
+            let currentStandard = standardsJSON[standard];
+            let tableName = refRootName(currentStandard.$ref);
+            let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
+            let parentClass: any = standards[pClassName];
+            let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
+            let input = new parentClass[cClassName];
 
-        for (let i = 0; i < total; i++) {
-            let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
-            input.RECORDS.push(newObject);
-        }
+            for (let i = 0; i < total; i++) {
+                let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
+                input.RECORDS.push(newObject);
+            }
 
-        let resultBuffer: Buffer = writeFB(input);
-        let resultJSON: string = JSON.stringify(input);
+            let resultBuffer: Buffer = writeFB(input);
+            let resultJSON: string = JSON.stringify(input);
 
-        let resultBufferIPFSCID: string = await ipfsHash.of(resultBuffer);
-        let resultJSONIPFSCID: string = await ipfsHash.of(resultJSON);
+            let resultBufferIPFSCID: string = await ipfsHash.of(resultBuffer);
+            let resultJSONIPFSCID: string = await ipfsHash.of(resultJSON);
 
-        let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
-        //let signatureJSONETH: string = await ethWallet.signMessage(resultJSONIPFSCID);
-        let signatureBufferBTC: string = message.sign(resultBufferIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
-        //let signatureJSONBTC: string = message.sign(resultJSONIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
+            let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
+            //let signatureJSONETH: string = await ethWallet.signMessage(resultJSONIPFSCID);
+            let signatureBufferBTC: string = message.sign(resultBufferIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
+            //let signatureJSONBTC: string = message.sign(resultJSONIPFSCID, btcWallet.privateKey, btcWallet.compressed).toString("base64");
 
-        let outputPath = `${dataPath}/${resultBufferIPFSCID}`;
+            let outputPath = `${dataPath}/${resultBufferIPFSCID}`;
 
-        //Use the two most supported compression protocols for testing
-        let gzipData = {
-            buffer: gzipSync(resultBuffer),
-            json: gzipSync(resultJSON),
-        };
+            //Use the two most supported compression protocols for testing
+            let gzipData = {
+                buffer: gzipSync(resultBuffer),
+                json: gzipSync(resultJSON),
+            };
 
-        let brotliData = {
-            buffer: brotliCompressSync(resultBuffer),
-            json: brotliCompressSync(resultJSON)
-        };
+            let brotliData = {
+                buffer: brotliCompressSync(resultBuffer),
+                json: brotliCompressSync(resultJSON)
+            };
 
-        //Size Report
-        await outputPaths.push([`${outputPath}.report.txt`, `
+            //Size Report
+            await outputPaths.push([`${outputPath}.report.txt`, `
             ${standard} buffer gzip size: ${gzipData.buffer.length / 1000} kB
             ${standard} json gzip size: ${gzipData.json.length / 1000} kB
             ${standard} buffer brotli size: ${brotliData.buffer.length / 1000} kB
             ${standard} json brotli size: ${brotliData.json.length / 1000} kB
             `]);
 
-        outputPaths = outputPaths.concat([
-            //Flatbuffer
-            [`${outputPath}.${standard}.fbs`, resultBuffer],
-            [`${outputPath}.${standard}.fbs.gz`, gzipData.buffer],
-            [`${outputPath}.${standard}.fbs.br`, brotliData.buffer],
-            [`${outputPath}.${standard}.fbs.ethsig`, signatureBufferETH],
-            [`${outputPath}.${standard}.fbs.btcsig`, signatureBufferBTC],
-            //JSON
-            /* [`${outputPath}.input.json`, resultJSON],
-             [`${outputPath}.input.json.gz`, gzipData.json],
-             [`${outputPath}.input.json.br`, brotliData.json],
-             [`${outputPath}.input.json.ethsig`, signatureJSONETH],
-             [`${outputPath}.input.json.btcsig`, signatureJSONBTC],
-             [`${outputPath}.input.json.ipfs.cid.txt`, resultJSONIPFSCID]*/
-        ]);
+            outputPaths = outputPaths.concat([
+                //Flatbuffer
+                [`${outputPath}.${standard}.fbs`, resultBuffer],
+                [`${outputPath}.${standard}.fbs.gz`, gzipData.buffer],
+                [`${outputPath}.${standard}.fbs.br`, brotliData.buffer],
+                [`${outputPath}.${standard}.fbs.ethsig`, signatureBufferETH],
+                [`${outputPath}.${standard}.fbs.btcsig`, signatureBufferBTC],
+                //JSON
+                /* [`${outputPath}.input.json`, resultJSON],
+                 [`${outputPath}.input.json.gz`, gzipData.json],
+                 [`${outputPath}.input.json.br`, brotliData.json],
+                 [`${outputPath}.input.json.ethsig`, signatureJSONETH],
+                 [`${outputPath}.input.json.btcsig`, signatureJSONBTC],
+                 [`${outputPath}.input.json.ipfs.cid.txt`, resultJSONIPFSCID]*/
+            ]);
+        }
     }
 
     //Write files to disk
