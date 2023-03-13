@@ -10,23 +10,28 @@ const fileReadPath = cFP && cFP[0] === "/" ?
 export const del = async (
     DCID: string = "no_id",
 ) => {
+    try {
+        let { CID: currentCID, PROVIDER, STANDARD } = (await connection("FILE_IMPORT_TABLE")
+            .where("CID", "=", DCID)
+            .first()) || { currentCID: "NOCID" };
 
-    let { CID: currentCID, PROVIDER, STANDARD } = (await connection("FILE_IMPORT_TABLE")
-        .where("CID", "=", DCID)
-        .first()) || { currentCID: "NOCID" };
 
-    let isGone = true;
-
-    const fileDelPath = join(fileReadPath, STANDARD, PROVIDER);
-    const files = await readdir(fileDelPath);
-    for (const file of files) {
-        if (file.startsWith(currentCID)) {
-            await unlink(join(fileDelPath, file));
+        const fileDelPath = join(fileReadPath, STANDARD, PROVIDER);
+        const files = await readdir(fileDelPath);
+        for (const file of files) {
+            if (file.startsWith(currentCID)) {
+                await unlink(join(fileDelPath, file));
+            }
         }
+
+        await connection(STANDARD).where("file_id", currentCID).del();
+
+        await connection("FILE_IMPORT_TABLE")
+            .where("CID", currentCID)
+            .del();
+    } catch (e) {
+        console.log(e)
+        return false;
     }
-    isGone = await connection(STANDARD).where("file_id", currentCID).del();
-    await connection("FILE_IMPORT_TABLE")
-        .where("CID", currentCID)
-        .del();
     return true;
 }

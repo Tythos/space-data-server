@@ -139,7 +139,6 @@ describe("POST /endpoint Write To FileSystem", () => {
                 expect(fbResponse.status).toBe(200);
 
                 const shouldBeGone = (await request(app).get(requestPath));
-                console.log(shouldBeGone.status, CID);
                 expect(shouldBeGone.status).toBe(404);
             }
         }

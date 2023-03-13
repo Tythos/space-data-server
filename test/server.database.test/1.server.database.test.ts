@@ -113,7 +113,9 @@ describe("POST /endpoint Write To FileSystem", () => {
             }
         }
     });
-
+    function wait(limit: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, limit));
+    }
     it("Deletes a CID", async () => {
         const provider = ethWallet.address.toLowerCase();
         for (let standard in standards) {
@@ -136,6 +138,13 @@ describe("POST /endpoint Write To FileSystem", () => {
 
                 expect(fbResponse?.body?.CID).toBe(CID);
                 expect(fbResponse.status).toBe(200);
+            }
+        }
+        for (let standard in standards) {
+            for (let fCID in outputStandardFiles[standard]) {
+
+                const flatbufferBinary: Buffer = outputStandardFiles[standard][fCID];
+                const CID = await ipfsHash.of(flatbufferBinary);
 
                 const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
                 const shouldBeGone = (await request(app).get(requestPath));
@@ -143,6 +152,7 @@ describe("POST /endpoint Write To FileSystem", () => {
                 expect(shouldBeGone.status).toBe(404);
             }
         }
+
     }, 50000)
 });
 

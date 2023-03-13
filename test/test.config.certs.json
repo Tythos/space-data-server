@@ -6,7 +6,7 @@
   },
   "data": {
     "ingest": ".testdata",
-    "fileSystemPath": "",
+    "fileSystemPath": "public",
     "useFileSystem": false,
     "cache": "5 minutes"
   },
