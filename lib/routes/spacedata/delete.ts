@@ -37,6 +37,7 @@ export const del: express.RequestHandler = async (req: Request, res: Response, n
             res.status(401);
             res.json({ "error": errors.sig });
         }
+
         if (isValidated) {
             let isDeleted = _del(CID);
             res.json({ CID, isDeleted });

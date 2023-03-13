@@ -5,7 +5,7 @@
   "data": {
     "ingest": ".testdata",
     "fileSystemPath": "public",
-    "useFileSystem": true,
+    "useDatabase": false,
     "cache": "5 minutes"
   },
   "trustedAddresses": {

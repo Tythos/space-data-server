@@ -22,7 +22,7 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
             }
         }
     }
-    console.log(tableQuery.toString(), process.pid)
+
     const records: any = await tableQuery;
 
     for (let r = 0; r < records.length; r++) {
@@ -78,7 +78,6 @@ const buildStatement = async (parentClass: any, tableName: string, standardsSche
             }
         }
     }
-
     return parentArray.map((pA: any) => {
         for (let x in pA) {
             if (~booleanProperties.indexOf(x)) {

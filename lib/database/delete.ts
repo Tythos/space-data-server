@@ -15,13 +15,8 @@ export const del = async (
         .where("CID", "=", DCID)
         .first()) || { currentCID: "NOCID" };
 
-    if (!PROVIDER) {
-        return false;
-    }
+    let isGone = true;
 
-    let isGone;
-
-    //if (config.data.useFileSystem) {
     const fileDelPath = join(fileReadPath, STANDARD, PROVIDER);
     const files = await readdir(fileDelPath);
     for (const file of files) {
@@ -29,15 +24,9 @@ export const del = async (
             await unlink(join(fileDelPath, file));
         }
     }
-    isGone = true;
-    //} else {
-    isGone = await connection(STANDARD).delete({ "file_id": currentCID });
-    //}
-
-    if (isGone) {
-        isGone = isGone && await connection("FILE_IMPORT_TABLE")
-            .where("CID", currentCID)
-            .del();
-    }
-    return !!isGone;
+    isGone = await connection(STANDARD).where("file_id", currentCID).del();
+    await connection("FILE_IMPORT_TABLE")
+        .where("CID", currentCID)
+        .del();
+    return true;
 }

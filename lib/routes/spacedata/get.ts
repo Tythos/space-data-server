@@ -5,7 +5,6 @@ import _standardsJSON from "@/lib/standards/schemas.json";
 import read from "@/lib/database/read";
 import { connection } from "@/lib/database/connection";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
-import { formatResponse } from "./responseFormat";
 import { config } from "@/lib/config/config";
 import { join, resolve } from "path";
 import { createReadStream, existsSync, readFileSync } from "fs";
@@ -50,6 +49,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
 
     let currentCID: string = cid;
     let currentDigitalSignature: string = "";
+
     if (!currentCID) {
       let { CID, DIGITAL_SIGNATURE } = await connection("FILE_IMPORT_TABLE").where({ PROVIDER: provider, STANDARD: standard })
         .orderBy("created_at", "desc").first().catch((e: any) => {
@@ -60,21 +60,18 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     } else {
       let record = await connection("FILE_IMPORT_TABLE").where({ CID: currentCID }).first().catch((e: any) => {
         res.json({ error: e });
+        res.status(500);
         res.end();
       });
 
       if (!record) {
-
-        res.json({});
+        res.status(404);
         res.end();
-
+        return;
       } else {
-
         let { DIGITAL_SIGNATURE } = record;
         currentDigitalSignature = DIGITAL_SIGNATURE;
-
       }
-
     }
 
     if (!currentDigitalSignature) {
@@ -94,29 +91,43 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     }
     let payload;
     res.set("x-content-identifier", currentCID);
-
     if (config.data.useDatabase) {
-      payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>))
-      payload = formatResponse(req, res, payload);
-      res.send(payload);
-    } else {
+
+      payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
+
       if (req.accepts("application/octet-stream")) {
+
         res.setHeader('Content-Type', 'application/octet-stream');
-        let fileToStream = join(fileReadPath, standard, provider, `${currentCID}.fbs`);
-        if (existsSync(fileToStream)) {
-          let fpipe = createReadStream(join(fileReadPath, standard, provider, `${currentCID}.fbs`));
+        res.send(writeFB(payload));
+
+      } else {
+
+        res.json(payload);
+
+        res.end();
+
+      }
+
+    } else {
+
+      let fileToStream = join(fileReadPath, standard, provider, `${currentCID}.fbs`);
+
+      if (existsSync(fileToStream)) {
+        if (req.accepts("application/octet-stream")) {
+          res.setHeader('Content-Type', 'application/octet-stream');
+          let fpipe = createReadStream(fileToStream);
           fpipe.pipe(res);
           fpipe.on('error', err => {
             console.log(err);
             next(err);
           });
         } else {
-          res.status(404);
+          res.json(readFB(readFileSync(fileToStream), standard, standards[standard]));
           res.end();
         }
       } else {
-        payload = formatResponse(req, res, payload);
-        res.send(payload);
+        res.status(404);
+        res.end();
       }
     }
   }

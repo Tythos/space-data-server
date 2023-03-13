@@ -54,12 +54,12 @@ export const post: express.RequestHandler = async (req, res, next) => {
             res.status(401);
             res.json({ "error": errors.sig });
         }
-        if (isValidated && !(await connection("FILE_IMPORT_TABLE").where({ CID }).first())) {
+        if (isValidated) {
             await write(
                 connection,
                 standard,
                 readFB(req.body, standard, standards[standard]),
-                standards[standard],
+                standardsJSON[standard],
                 CID,
                 signature,
                 address as string,

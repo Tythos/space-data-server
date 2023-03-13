@@ -134,12 +134,12 @@ describe("POST /endpoint Write To FileSystem", () => {
                     .set("authorization", authHeader)
                     .send();
 
-                const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
                 expect(fbResponse?.body?.CID).toBe(CID);
                 expect(fbResponse.status).toBe(200);
 
+                const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
                 const shouldBeGone = (await request(app).get(requestPath));
-                console.log(shouldBeGone.status, CID);
+
                 expect(shouldBeGone.status).toBe(404);
             }
         }
@@ -150,6 +150,7 @@ describe("POST /echo", () => {
     it("Echoes input", async () => {
         for (let standard in standards) {
             for (let fCID in outputStandardFiles[standard]) {
+
                 const flatbufferBinary: Buffer = outputStandardFiles[standard][fCID];
                 const fbResponse = await request(app)
                     .post(`/echo/${standard}`)
