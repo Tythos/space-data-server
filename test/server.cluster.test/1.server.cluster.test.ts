@@ -19,12 +19,13 @@ import { readFB } from "@/lib/utility/flatbufferConversion";
 import cluster, { Worker } from "cluster";
 import { cpus } from "node:os";
 import { ChildProcess } from "node:child_process";
+import { checkLock, removeLock } from "@/lib/database/checkLock";
 
 //@ts-ignore
 var databaseConfig = config.database.config[config.database.config.primary];
 const sqlfilename = join(dirname(databaseConfig.connection.filename), "standards.sql");
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
-const lockfilePath = join(__dirname, '.writelock');
+const lockFilePath = join(__dirname, '.writelock');
 
 const totalCPUs = cpus().length;
 let bingoProcess: Number = 0;
@@ -108,8 +109,6 @@ if (cluster.isPrimary) {
             let recordsToInsert: Array<any> = [];
             let totalRecords: number = 500;
 
-
-
             for (let i = 0; i < totalRecords; i++) {
                 recordsToInsert.push({
                     CID: process.pid.toString() + " " + i,
@@ -121,38 +120,15 @@ if (cluster.isPrimary) {
                 });
             }
 
-            let hasLock = true;
-
-            while (hasLock) {
-                if (existsSync(lockfilePath)) {
-                    try {
-                        const stat = statSync(lockfilePath);
-                        const now = new Date().getTime();
-                        const timeDiff = now - stat.mtime.getTime();
-
-                        if (timeDiff > 20000) {
-                            unlinkSync(lockfilePath);
-                            hasLock = false;
-                            break;
-                        }
-                    } catch (e) {
-                        hasLock = false;
-                    }
-                } else {
-                    hasLock = false;
-                }
-
-            }
-
-            writeFileSync(lockfilePath, process.pid.toString());
+            await checkLock();
 
             try {
-                let tt = await connection("FILE_IMPORT_TABLE").insert(recordsToInsert);
+                await connection("FILE_IMPORT_TABLE").insert(recordsToInsert);
             } catch (e) {
 
             }
 
-            rmSync(lockfilePath);
+            removeLock();
 
             await new Promise((resolve) => setTimeout(resolve, 3000));
 
@@ -166,6 +142,6 @@ if (cluster.isPrimary) {
     });
 
     afterAll(() => {
-        //rmSync(lockfilePath);
+        //rmSync(lockFilePath);
     })
 }

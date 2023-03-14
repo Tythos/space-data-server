@@ -4,12 +4,16 @@ import toposort from "toposort";
 import getID from "@/lib/utility/getID";
 import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
 import { runPragmas } from "./pragmas";
-import { mkdirSync } from "fs";
+import { existsSync, mkdirSync, rmSync, statSync, unlinkSync } from "fs";
 import { writeFile } from "node:fs/promises"
 import { join } from "path";
 import { writeFB } from '../utility/flatbufferConversion';
 import { config } from "@/lib/config/config";
 import { del } from "./delete";
+import sConfig from "@/lib/database/config/static.config";
+import { checkLock, removeLock } from "@/lib/database/checkLock";
+
+let { lockFilePath } = sConfig;
 
 let knexConnection: any;
 let pageSize = 200;
@@ -169,6 +173,8 @@ export const write = async (
 
     if (currentCID) return;
 
+    await checkLock();
+
     if (config.data.useDatabase) {
 
         await insertData(
@@ -202,7 +208,9 @@ export const write = async (
         created_at: created_at.toISOString()
     }]).catch((e: any) => {
         console.log(e, CID, currentCID);
+        removeLock();
     });
+    removeLock();
 }
 
 export default write;
