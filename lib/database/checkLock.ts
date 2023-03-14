@@ -9,7 +9,7 @@ export const checkLock = async () => {
     while (otherProcessLock) {
         if (existsSync(lockFilePath)) {
             let isCurrentProcess;
-            try {
+            try { //HAAAAAAAACK
                 isCurrentProcess = readFileSync(lockFilePath, "utf8") === process.pid.toString();
             } catch (e) {
                 isCurrentProcess = true;
