@@ -8,7 +8,7 @@ import { config } from "../config/config";
 import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
 import { existsSync } from "fs";
-import standardsJSON from "../standards/schemas.json" assert {type: "json"};
+import standardsJSON from "../standards/schemas.json";
 import { IPFSController, startIPFS } from "../../lib/ipfs/index";
 import { resolve } from "path";
 
