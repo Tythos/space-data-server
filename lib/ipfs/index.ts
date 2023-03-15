@@ -20,6 +20,31 @@ const env = { IPFS_PATH: ipfsPath };
 - Add / remove peers
 */
 
+interface Key {
+    Name: string;
+    Id: string;
+}
+
+interface Data {
+    Keys: Key[];
+}
+
+const keyName: string = "SpaceDataServer_Key";
+
+function getKeyId(data: Data, targetKey: string, fallbackKey: string): string | null {
+    const target = data.Keys.find((key) => key.Name === targetKey);
+    if (target) {
+        return target.Id;
+    }
+
+    const fallback = data.Keys.find((key) => key.Name === fallbackKey);
+    if (fallback) {
+        return fallback.Id;
+    }
+
+    return null;
+}
+
 export interface IPFSController {
     process: ChildProcess,
     gatewayPort: Number,
@@ -34,7 +59,6 @@ export interface IPFSController {
 
 export class IPFSUtilities {
     static importKey = function (key: ArrayBuffer) {
-        const keyName: string = "SpaceDataServer_Key";
         const keyPath = `${rootDir}/.keys`;
         if (!existsSync(keyPath)) {
             mkdirSync(keyPath);
@@ -79,7 +103,7 @@ const isInstanceActive = function () {
     return this.process.exitCode === null;
 }
 
-const api = async function (path: string, queryString: object, args: object = {}) {
+const api = async function (path: string, queryString: object = {}, args: object = {}) {
     args = Object.assign({}, apiArgs, args);
     let returnContent;
 
@@ -101,7 +125,7 @@ const api = async function (path: string, queryString: object, args: object = {}
 
 
 
-const publishDirectory = function (folder: string) {
+const publishDirectory = async function (folder: string) {
     let output;
     let start = performance.now();
     if (!readdirSync(folder).length) return "Empty Directory";
@@ -115,9 +139,15 @@ const publishDirectory = function (folder: string) {
     console.log(`Pin took: ${performance.now() - start} for folder ${folder}`);
     let folderHash = output.match(/added\s.*/g)?.pop()?.split(" ")[1];
     console.log(folderHash);
+    const keys = await this.api("/key/list");
+
+    const keyId = getKeyId(keys, 'SpaceDataServer_Key', 'self');
+
+    console.log(keyId);
+
     setTimeout(() => {
         try {
-            output = execSync(`${ipfsPath}ipfs name publish --key=k51qzi5uqu5dje4na46s4ti0ncyar3jdffp5h68zffbn6mks5jxr3h8ctjlqbh ${folderHash}`, { env }).toString();
+            output = execSync(`${ipfsPath}ipfs name publish --key=${keyId} ${folderHash}`, { env }).toString();
             console.log(output);
         } catch (e) {
             console.log(e)

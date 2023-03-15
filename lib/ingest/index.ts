@@ -135,9 +135,9 @@ async function processData(file: string) {
             if (inputSignature) {
                 signedEthAddress = (await ethers.utils.verifyMessage(CID, inputSignature)).toLowerCase()
             }
-
+  
             if (!signedEthAddress || !config.trustedAddresses[signedEthAddress]) {
-                console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid.`);
+                console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid from address ${signedEthAddress}`);
                 return;
             }
             if (extname(signedFile) === ".fbs") {
