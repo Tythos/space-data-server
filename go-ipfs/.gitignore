@@ -1,4 +1,5 @@
-/**/[0-9]*/
-*.proto
-blocks
-datastore
+*
+!ipfs
+!LICENSE*
+!README.md
+!install.sh
