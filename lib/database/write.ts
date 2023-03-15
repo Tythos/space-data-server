@@ -30,16 +30,16 @@ async function getCIDsOlderThan(days, STANDARD) {
     return rows.map(row => row.CID);
 }
 
-const writeFiles = async (writePath: string, CID: string, input: any, DIGITAL_SIGNATURE: string) => {
+const writeFiles = async (writePath: string, CID: string, input: any, DIGITAL_SIGNATURE: string, STANDARD: string) => {
     if (!input || !input.pack) {
         throw Error("NO INPUT")
     }
-
+    STANDARD = STANDARD.toLowerCase();
     mkdirSync(writePath, { recursive: true });
 
     const fbsPath = join(
         writePath,
-        `${CID}.fbs`);
+        `${CID}.${STANDARD}.fbs`);
 
     const fbsPathSig = `${fbsPath}.sig`;
 
@@ -170,6 +170,7 @@ export const write = async (
     let { RECORDS } = inputObject;
 
     PROVIDER = PROVIDER.toLowerCase();
+    console.log(currentCID);
 
     if (currentCID) return;
 
@@ -194,7 +195,7 @@ export const write = async (
         PROVIDER as string
     );
 
-    await writeFiles(writePath, CID, inputObject, DIGITAL_SIGNATURE);
+    await writeFiles(writePath, CID, inputObject, DIGITAL_SIGNATURE, STANDARD);
     /*
         const cids = await getCIDsOlderThan(0, STANDARD); // Get CIDs of files older than 7 days
         console.log(cids); // Print the array of CIDs

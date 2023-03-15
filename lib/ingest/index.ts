@@ -90,9 +90,11 @@ async function processData(file: string) {
         isProcessing = false;
         return;
     }
+
     if (config.data.verbose) {
         console.log(`${Date.now()} - Ingesting File ${file}`);
     }
+
     let trimmedFile = basename(file);
 
     const [fileName, fstandard, ext] = trimmedFile.split(".");
@@ -106,7 +108,10 @@ async function processData(file: string) {
         let inputFile: any = readFileSync(signedFile);
         let CID = await ipfsHash.of(inputFile);
 
+
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
+
+
 
         if (!currentCID) {
             //@ts-ignore
@@ -135,9 +140,11 @@ async function processData(file: string) {
                 console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid.`);
                 return;
             }
-
             if (extname(signedFile) === ".fbs") {
                 input = readFB(inputFile, tableName, parentClass);
+
+
+
                 await write(
                     connection,
                     standard,
