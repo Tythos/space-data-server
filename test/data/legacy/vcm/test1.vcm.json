@@ -1,11 +1,11 @@
 {
   "type": "SP VECTOR/COVARIANCE MESSAGE - V2.0",
-  "messageTime": "2023 008 (08 JAN) 13:20:27.000",
+  "messageTime": "2023-01-08T13:20:27.000Z",
   "center": "FAKE_CENTER",
   "satelliteNumber": 54029,
   "internationalDesignator": "2022-129D",
   "commonName": "FAKE_SAT",
-  "epochTime": "2023 008 (08 JAN) 12:33:46.848",
+  "epochTime": "2023-01-08T12:33:46.848Z",
   "epochRev": "374",
   "j2kPosVel": {
     "pos": [-22457.45555699, 4457.41555569, 1245.49058294],
@@ -44,7 +44,7 @@
     "y": 0.2104
   },
   "nutationTerms": "5 TERMS",
-  "constLeapSecTime": " 2050 365 (31 DEC) 23:59:59.998",
+  "constLeapSecTime": "2050-12-31T23:59:59.998Z",
   "integratorMode": "BSW",
   "coordSys": "J2001",
   "partials": "MANUAL",

@@ -1,11 +1,11 @@
 export interface VCMData {
     type: string;
-    messageTime: string;
+    messageTime: Date;
     center: string;
     satelliteNumber: number;
     internationalDesignator: string;
     commonName: string;
-    epochTime: string;
+    epochTime: Date;
     epochRev: string;
     j2kPosVel: PosVel;
     eciPosVel: PosVel;
@@ -28,7 +28,7 @@ export interface VCMData {
     ut1Rate: number;
     polarMotion: XY;
     nutationTerms: string;
-    constLeapSecTime: string;
+    constLeapSecTime: Date;
     integratorMode: string;
     coordSys: string;
     partials: string;
@@ -68,6 +68,20 @@ function mlineParser(line: string) {
         .trim()
         .split(/\s+/)
         .map(parseFloat)
+}
+function parseDateString(dateString) {
+    // Trim the input string
+    dateString = dateString.trim();
+
+    // Extract year, day of year, hour, minute, second, and millisecond from the string
+    const [start, year, dayOfYear, dd, mmm, hour, minute, second, millisecond] = dateString.match(/(\d{4})\s(\d{3})\s\((\d{2})\s(\w{3})\)\s(\d{2}):(\d{2}):(\d{2})\.(\d{3})/);
+
+    // Convert the extracted components into a JavaScript Date object
+    const date = new Date(Date.UTC(parseInt(year), 0)); // Start with the first day of the year in UTC
+    date.setUTCDate(date.getUTCDate() + parseInt(dayOfYear) - 1); // Add (dayOfYear - 1) days to the date in UTC
+    date.setUTCHours(parseInt(hour), parseInt(minute), parseInt(second), parseInt(millisecond));
+
+    return date;
 }
 
 const getLast = (line: string) => line.split(":").pop()?.trim() as string;
@@ -118,12 +132,12 @@ export function parseVCM(vcm: string): VCMData {
 
     const vcmData: VCMData = {
         type: lines[0].trim(),
-        messageTime: lines[2].substring(20, 50),
+        messageTime: parseDateString(lines[2].substring(20, 50)),
         center: lines[2].substring(60),
         satelliteNumber: parseInt(lines[3].substring(18, 43)),
         internationalDesignator: getLast(lines[3]),
         commonName: getLast(lines[4]),
-        epochTime: lines[5].substring(18, 48),
+        epochTime: parseDateString(lines[5].substring(18, 48)),
         epochRev: getLast(lines[5]),
         j2kPosVel,
         eciPosVel,
@@ -153,7 +167,7 @@ export function parseVCM(vcm: string): VCMData {
             y: pMotion[1]
         },
         nutationTerms: getLast(lines[19]),
-        constLeapSecTime: lines[20].slice(lines[20].indexOf(":") + 1),
+        constLeapSecTime: parseDateString(lines[20].slice(lines[20].indexOf(":") + 1)),
         integratorMode: lines[21].substring(16, 30).trim(),
         coordSys: lines[21].substring(40, 48).trim(),
         partials: getLast(lines[22]),
