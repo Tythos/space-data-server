@@ -126,7 +126,7 @@ export function parseVCM(vcm: string): VCMData {
         geopotentialModel: lines[12].substring(14, 30).trim(),
         dragModel: lines[12].substring(36, 50).trim(),
         lunarSolar: getLast(lines[12]),
-        solarRadPressure: lines[13].substring(17, 21).trim(),
+        solarRadPressure: lines[13].substring(17, 20).trim(),
         solidEarthTides: lines[13].substring(41, 46).trim(),
         inTrackThrust: getLast(lines[13]),
         ballisticCoeff: parseFloat(lines[14].substring(25, 38)),
@@ -148,7 +148,7 @@ export function parseVCM(vcm: string): VCMData {
             y: pMotion[1]
         },
         nutationTerms: getLast(lines[19]),
-        constLeapSecTime: lines[20].slice(lines[20].indexOf(":")),
+        constLeapSecTime: lines[20].slice(lines[20].indexOf(":") + 1),
         integratorMode: lines[21].substring(16, 30).trim(),
         coordSys: lines[21].substring(40, 48).trim(),
         partials: getLast(lines[22]),
