@@ -95,12 +95,17 @@ export function parseVCM(vcm: string): VCMData {
     const covMatrixWeightedRMS = parseFloat(lines[26].split(":").pop() as string);
 
     const covMatrixValues: number[][] = [];
+    let _intermediateCov: number[] = [];
     for (let i = 27; i < lines.length; i++) {
         const values = lines[i]
             .trim().split(/\s+/)
             .map((value) => parseFloat(value));
-        covMatrixValues.push(values);
+        _intermediateCov = _intermediateCov.concat(values);
     }
+    for (let i = covMatrixSize.x; i > 0; i--) {
+        covMatrixValues.unshift(_intermediateCov.splice(-i))
+    }
+
 
     const covarianceMatrix: CovarianceMatrix = {
         size: covMatrixSize,
