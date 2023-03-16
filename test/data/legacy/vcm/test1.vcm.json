@@ -1,0 +1,141 @@
+{
+    "type": "SP VECTOR/COVARIANCE MESSAGE - V2.0",
+    "messageTime": "2023 008 (08 JAN) 13:20:27.000",
+    "center": "FAKE_CENTER",
+    "satelliteNumber": 54029,
+    "internationalDesignator": "2022-129D",
+    "commonName": "FAKE_SAT",
+    "epochTime": "2023 008 (08 JAN) 12:33:46.848",
+    "epochRev": "374",
+    "j2kPosVel": {
+        "pos": [
+            -12457.77402299,
+            3257.41971769,
+            4295.49058294
+        ],
+        "vel": [
+            -3.741844571831,
+            -3.680893977395,
+            2.628194887151
+        ]
+    },
+    "eciPosVel": {
+        "pos": [
+            -12483.8699165,
+            3193.09292084,
+            4267.93927792
+        ],
+        "vel": [
+            -3.728666543336,
+            -3.700203454371,
+            2.619795763466
+        ]
+    },
+    "efgPosVel": {
+        "pos": [
+            -5306.31039956,
+            -11742.48357192,
+            4267.93927792
+        ],
+        "vel": [
+            2.142468938217,
+            -3.92606040779,
+            2.619795763466
+        ]
+    },
+    "geopotentialModel": "EGM-97 71Z,71T",
+    "dragModel": "JAC71/MSIS91",
+    "lunarSolar": "OFF",
+    "solarRadPressure": "ON",
+    "solidEarthTides": "OFF",
+    "inTrackThrust": "ON",
+    "ballisticCoeff": 0.00174289,
+    "bdot": 0,
+    "solarRadPressureCoeff": 0,
+    "edr": 0.0052,
+    "thrustAccel": 0,
+    "cmOffset": 0,
+    "solarFlux": {
+        "F10": 154,
+        "avgF10": 138,
+        "avgAP": 11
+    },
+    "taiUtc": 8,
+    "ut1Utc": -0.01736,
+    "ut1Rate": 0.385,
+    "polarMotion": {
+        "x": 0.0516,
+        "y": 0.2104
+    },
+    "nutationTerms": "5 TERMS",
+    "constLeapSecTime": ": 2050 365 (31 DEC) 23:59:59.998",
+    "integratorMode": "BSW",
+    "coordSys": "J2001",
+    "partials": "MANUAL",
+    "stepMode": "AUTO",
+    "fixedStep": "ON",
+    "stepSizeSelection": "MANUAL",
+    "initialStepSize": 21,
+    "errorControl": 1e-15,
+    "vectorSigmas": {
+        "pos": [
+            0.0459,
+            0.0997,
+            0.2209
+        ],
+        "vel": [
+            0.0001,
+            0.0001,
+            0.0003
+        ]
+    },
+    "covarianceMatrix": {
+        "size": {
+            "x": 7,
+            "y": 7
+        },
+        "weightedRMS": 8.6326,
+        "values": [
+            [
+                5.1211e-11,
+                -1.6105e-11,
+                2.8317e-11,
+                -1.1136e-10,
+                5.0544e-11
+            ],
+            [
+                4.6648e-10,
+                -5.9311e-12,
+                3.5009e-12,
+                5.1667e-11,
+                1.4008e-11
+            ],
+            [
+                2.9225e-11,
+                -9.9781e-11,
+                -3.5123e-11,
+                -1.9732e-12,
+                1.0775e-9
+            ],
+            [
+                -1.0421e-13,
+                4.2969e-11,
+                -5.6988e-11,
+                -1.303e-11,
+                -8.7487e-10
+            ],
+            [
+                8.4827e-10,
+                -1.9951e-8,
+                6.4782e-8,
+                3.8706e-7,
+                1.304e-7
+            ],
+            [
+                -2.8394e-7,
+                1.0282e-8,
+                0.012698
+            ]
+        ]
+    }
+}
