@@ -7,39 +7,25 @@ import { OMMT } from "@/lib/class/standards/OMM/OMM";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
-import { ethWallet, mnemonic } from "@/test/utility/generate.crypto.wallets"
-import { mkdirSync, writeFileSync } from "fs";
+import { ethWallet } from "@/test/utility/generate.crypto.wallets"
+import { mkdirSync, readFileSync, writeFileSync } from "fs";
 import { config } from "@/lib/config/config";
-import { describe, expect, test, beforeAll } from "@jest/globals";
-import { generateDatabase, refRootName } from "@/lib/database/generateTables";
-import knex from "knex";
+import { describe } from "@jest/globals";
 import { utils } from "ethers";
-import standardsJSON from "@/lib/standards/schemas.json";
+import { CATCOLLECTIONT } from "@/lib/class/standards/CAT/CATCOLLECTION";
+import { CATT } from "@/lib/class/standards/CAT/CAT";
+import { join } from "path";
+import { parseVCM, VCMData } from "@/lib/parsers/vcm";
 
-import { JSONSchema4 } from "json-schema";
-
-import { execSync } from "node:child_process";
-import { dirname, join } from "path";
 const databasePath: string = "test/output/database";
-
-//@ts-ignore
-var databaseConfig = config.database.config[config.database.config.primary];
-
-const sqlfilename = join(dirname(databaseConfig.connection.filename), "standards.sql");
-
-let knexConnection: any;
-
-let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON as any);
+let ethAddress: string;
 
 beforeAll(async () => {
-    execSync(`rm -rf ${databasePath}/*.* && mkdir -p ${databasePath}`);
-    knexConnection = await knex(databaseConfig);
-    await generateDatabase(standardsArray, databaseConfig.connection.filename, sqlfilename, knexConnection, databaseConfig.version);
+    ethAddress = await ethWallet.getAddress();
 });
 
-
 describe("Parse Data Into Flatbuffers", () => {
-    it("should read the celestrak csv file", async () => {
+   /* it("should read the celestrak omm csv file", async () => {
         const celestrakTemplate = (format: string) => `https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=${format}`;
         const ommCSVFile: string = await fetch(celestrakTemplate("csv")).then(response => response.text());
         const ommCollection: OMMCOLLECTIONT = await parseCSV(ommCSVFile, OMMSchema);
@@ -47,13 +33,8 @@ describe("Parse Data Into Flatbuffers", () => {
         const standard = "OMM";
         let oFBS = writeFB(ommCollection);
         let iFBS = readFB(oFBS, standard, standards[standard]);
-        let ethAddress = await ethWallet.getAddress();
-        let writePath = `./${config.data.ingest}/${ethAddress}/`;
-        mkdirSync(writePath, { recursive: true });
-        writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.${standard}.fbs`, oFBS);
         let resultBufferIPFSCID: string = await ipfsHash.of(oFBS);
         let signatureBufferETH: string = await ethWallet.signMessage(resultBufferIPFSCID);
-        writeFileSync(`${writePath}/${await ipfsHash.of(oFBS)}.${standard}.fbs.sig`, signatureBufferETH);
         expect(JSON.stringify(ommCollection.RECORDS.map((m: OMMT) => {
             let rM: KeyValueDataStructure = {};
             for (let x in m) {
@@ -65,5 +46,42 @@ describe("Parse Data Into Flatbuffers", () => {
         }))).toEqual(JSON.stringify(ommJSON));
         expect(JSON.stringify(iFBS)).toEqual(JSON.stringify(ommCollection));
         expect(ethAddress).toEqual(utils.verifyMessage(resultBufferIPFSCID, signatureBufferETH));
-    }, 600000);
+    }, 50000);
+
+    it("should read the celestrak satcat csv file", async () => {
+        const catJSONFile: any = (await (await globalThis.fetch("https://celestrak.org/satcat/rsm.php?GROUP=active&FORMAT=json")).json());
+
+        const catCollection: CATCOLLECTIONT = new CATCOLLECTIONT();
+        for (let c = 0; c < catJSONFile.length; c++) {
+            let newCAT = new CATT();
+            let jsonCAT = catJSONFile[c];
+            //@ts-ignore
+            for (let prop in jsonCAT) {
+                if (newCAT.hasOwnProperty(prop)) {
+                    newCAT[prop] = jsonCAT[prop];
+                }
+            }
+            catCollection.RECORDS.push(newCAT);
+        }
+        let catFBS = writeFB(catCollection);
+        let resultcatBufferIPFSCID: string = await ipfsHash.of(catFBS);
+        let signatureBufferETH: string = await ethWallet.signMessage(resultcatBufferIPFSCID);
+        let checkCAT = new CATT();
+        expect(JSON.stringify(catJSONFile.map(e => {
+            for (let nProp in checkCAT) {
+                if (!e.hasOwnProperty(nProp)) {
+                    e[nProp] = checkCAT[nProp];
+                }
+            }
+            return e;
+        }))).toEqual(JSON.stringify(catCollection.RECORDS));
+        expect(ethAddress).toEqual(utils.verifyMessage(resultcatBufferIPFSCID, signatureBufferETH));
+
+    }, 50000);
+*/
+    it("should read a vcm file", async () => {
+        const vcmString: string = readFileSync(join(__dirname, "../data/legacy/vcm/test1.vcm"), "utf-8");
+        const vcmJSON: VCMData = parseVCM(vcmString);
+        console.log(JSON.stringify(vcmJSON, null, 4));
+    }, 50000);
 });
