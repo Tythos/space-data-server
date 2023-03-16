@@ -17,17 +17,16 @@ export interface VCMData {
     solidEarthTides: string;
     inTrackThrust: string;
     ballisticCoeff: number;
-    bdot: number | string;
-    solarRadPressureCoeff: number | string;
-    edr: number | string;
-    thrustAccel: number | string;
-    cmOffset: number | string;
+    bdot: number;
+    solarRadPressureCoeff: number;
+    edr: number;
+    thrustAccel: number;
+    cmOffset: number;
     solarFlux: SolarFlux;
-    taiUtc: number | string;
-    ut1Utc: number | string;
-    ut1Rate: number | string;
-    polarMotX: number | string;
-    polarMotY: number | string;
+    taiUtc: number;
+    ut1Utc: number;
+    ut1Rate: number;
+    polarMotion: XY;
     nutationTerms: string;
     constLeapSecTime: string;
     integratorMode: string;
@@ -36,8 +35,8 @@ export interface VCMData {
     stepMode: string;
     fixedStep: string;
     stepSizeSelection: string;
-    initialStepSize: string;
-    errorControl: string;
+    initialStepSize: number;
+    errorControl: number;
     vectorSigmas: PosVel;
     covarianceMatrix: CovarianceMatrix;
 }
@@ -48,15 +47,20 @@ interface PosVel {
 }
 
 interface CovarianceMatrix {
-    size: string;
+    size: XY;
     weightedRMS: number;
     values: number[][];
 }
 
 interface SolarFlux {
-    F10: number | string;
-    avgF10: number | string;
-    avgAP: number | string;
+    F10: number;
+    avgF10: number;
+    avgAP: number;
+}
+
+interface XY {
+    x: number;
+    y: number;
 }
 
 function mlineParser(line: string) {
@@ -86,7 +90,8 @@ export function parseVCM(vcm: string): VCMData {
 
     const vectorSigmas = parsePosVel(lines[24], lines[25]);
 
-    const covMatrixSize = lines[26].match(/\((\d+x\s+\d+)\)/)?.toString() as string;
+    const _covMatrixSize: Array<any>[2] = lines[26].substring(36, 45).match(/[0-9]{1,}/g)?.map(n => parseInt(n));
+    const covMatrixSize = { x: _covMatrixSize[0], y: _covMatrixSize[1] };
     const covMatrixWeightedRMS = parseFloat(lines[26].split(":").pop() as string);
 
     const covMatrixValues: number[][] = [];
@@ -102,6 +107,9 @@ export function parseVCM(vcm: string): VCMData {
         weightedRMS: covMatrixWeightedRMS,
         values: covMatrixValues,
     };
+
+    const pMotion = lines[19].substring(23, 40).trim()
+        .split(/\s+/).map(parseFloat);
 
     const vcmData: VCMData = {
         type: lines[0].trim(),
@@ -127,27 +135,28 @@ export function parseVCM(vcm: string): VCMData {
         edr: parseFloat(getLast(lines[15])),
         thrustAccel: parseFloat(lines[16].substring(22, 36)),
         cmOffset: parseFloat(getLast(lines[16])),
-
         solarFlux: {
             F10: parseFloat(lines[17].substring(17, 22)),
             avgF10: parseFloat(lines[17].substring(35, 40)),
             avgAP: parseFloat(getLast(lines[17]))
         },
-        taiUtc: lines[18].substring(12, 14),
-        ut1Utc: lines[18].substring(27, 33),
-        ut1Rate: lines[18].substring(53, 59),
-        polarMotX: lines[19].substring(19, 25),
-        polarMotY: lines[19].substring(29, 35),
-        nutationTerms: lines[19].substring(56, 59),
-        constLeapSecTime: "",
-        integratorMode: lines[20].substring(0, 11).trim(),
-        coordSys: lines[20].substring(30, 35),
-        partials: lines[20].substring(45, 55).trim(),
-        stepMode: lines[21].substring(10, 14),
-        fixedStep: lines[21].substring(28, 31),
-        stepSizeSelection: lines[21].substring(47, 53),
-        initialStepSize: lines[21].substring(60, 69),
-        errorControl: lines[22].substring(47, 57),
+        taiUtc: parseFloat(lines[18].substring(14, 17)),
+        ut1Utc: parseFloat(lines[18].substring(29, 40)),
+        ut1Rate: parseFloat(getLast(lines[18])),
+        polarMotion: {
+            x: pMotion[0],
+            y: pMotion[1]
+        },
+        nutationTerms: getLast(lines[19]),
+        constLeapSecTime: lines[20].slice(lines[20].indexOf(":")),
+        integratorMode: lines[21].substring(16, 30).trim(),
+        coordSys: lines[21].substring(40, 48).trim(),
+        partials: getLast(lines[22]),
+        stepMode: lines[22].substring(10, 17).trim(),
+        fixedStep: lines[22].substring(28, 33).trim(),
+        stepSizeSelection: getLast(lines[22]).trim(),
+        initialStepSize: parseFloat(lines[23].substring(22, 33)),
+        errorControl: parseFloat(getLast(lines[23].substring(47, 57))),
         vectorSigmas,
         covarianceMatrix,
     };
