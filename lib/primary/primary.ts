@@ -7,7 +7,7 @@ import { generateDatabase } from "../database/generateTables";
 import { config } from "../config/config";
 import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
-import { existsSync } from "fs";
+import { existsSync, mkdirSync } from "fs";
 import standardsJSON from "../standards/schemas.json";
 import { IPFSController, startIPFS } from "../../lib/ipfs/index";
 import { resolve } from "path";
@@ -61,11 +61,19 @@ export default {
         }, 5000);
 
         const folderToPin = resolve(__dirname, "..", config.data.fileSystemPath);
-
-        setTimeout(async () => {
-            console.log('Starting Pin')
+        const pinFolder = async () => {
             let CID = await ipfsController.publishDirectory(folderToPin);
-            console.log("pins", CID);
+            console.log("Pinned Folder: ", CID);
+        }
+        setTimeout(async () => {
+            console.log('Starting Pin');
+            if (existsSync(folderToPin)) {
+                pinFolder();
+            } else {
+                console.log(`Folder ${folderToPin} does not exist, creating...`);
+                mkdirSync(folderToPin);
+                pinFolder();
+            }
         }, 5000);
 
         cluster.on("exit", (worker: Worker, code, signal) => {
