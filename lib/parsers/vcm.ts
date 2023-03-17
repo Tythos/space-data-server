@@ -69,6 +69,7 @@ function mlineParser(line: string) {
         .split(/\s+/)
         .map(parseFloat)
 }
+
 function parseDateString(dateString) {
     // Trim the input string
     dateString = dateString.trim();
