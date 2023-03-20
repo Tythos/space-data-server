@@ -6,7 +6,9 @@ const { isPrimary } = cluster;
 
 (async function () {
     await (isPrimary ? PrimaryProcess : WorkerProcess).init();
-    process.on("exit", async () => {
+    const onExit = async () => {
         await (isPrimary ? PrimaryProcess : WorkerProcess).deinit();
-    })
+    };
+
+    process.on("disconnect", onExit);
 })()

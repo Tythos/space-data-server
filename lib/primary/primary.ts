@@ -9,12 +9,7 @@ import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
 import { existsSync, mkdirSync } from "fs";
 import standardsJSON from "../standards/schemas.json";
-import { IPFSController, startIPFS } from "../../lib/ipfs/index";
-import { resolve } from "path";
 
-let ipfsController: IPFSController;
-const gatewayPort = 5002;
-const apiPort = 9002;
 
 //TODO Move to Config
 
@@ -25,6 +20,20 @@ const totalCPUs = cpus().length;
 
 let bingoProcess: Number = 0;
 
+const restartWorkers = () => {
+    // Disconnect all workers
+    for (const id in cluster.workers) {
+
+        const worker = cluster.workers[id];
+        if (worker) {
+            worker.disconnect();
+        }
+    }
+    bingoProcess = 0;
+    // Start new worker processes
+    forkWorkers();
+};
+
 const forkWorkers = (worker?: Worker) => {
     while (Object.keys(
         cluster.workers as unknown as NodeJS.Dict<Worker>
@@ -34,6 +43,13 @@ const forkWorkers = (worker?: Worker) => {
             needBingo = true;
         }
         let cWorker: ChildProcess | any = cluster.fork({ "BINGO": needBingo });
+
+        cWorker.on('message', (msg) => {
+            if (msg === 'restartWorkers') {
+                console.log('Received restart request from worker');
+                restartWorkers();
+            }
+        });
         bingoProcess = needBingo ? cWorker.process.pid : bingoProcess;
     }
 }
@@ -50,40 +66,9 @@ export default {
         // Fork workers.
         forkWorkers();
 
-        // Start IPFS
-        ipfsController = await startIPFS(gatewayPort, apiPort);
 
-        setTimeout(async () => {
-            const keys = await ipfsController.api("/key/list");
-            if (!keys?.Keys.length) {
-                throw Error("IPFS Service Not Started.")
-            }
-        }, 5000);
-
-        const folderToPin = resolve(__dirname, "..", config.data.fileSystemPath);
-        const pinFolder = async () => {
-            let CID = await ipfsController.publishDirectory(folderToPin);
-            console.log("Pinned Folder: ", CID);
-        }
-        setTimeout(async () => {
-            console.log('Starting Pin');
-            if (existsSync(folderToPin)) {
-                pinFolder();
-            } else {
-                console.log(`Folder ${folderToPin} does not exist, creating...`);
-                mkdirSync(folderToPin);
-                pinFolder();
-            }
-        }, 5000);
-
-        cluster.on("exit", (worker: Worker, code, signal) => {
-
-            console.log(`worker ${worker.process.pid} died`);
-            console.log("Let's fork another worker!");
-            forkWorkers(worker);
-        });
     },
     deinit: function () {
-        ipfsController.process.kill("SIGKILL");
+
     }
 } as InitableProcess

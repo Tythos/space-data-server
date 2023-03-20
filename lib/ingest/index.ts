@@ -174,7 +174,6 @@ export const getQueue = () => {
 }
 
 export const deinit = async () => {
-    unwatchFile(watchPath);
 }
 
 
