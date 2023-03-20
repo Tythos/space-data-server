@@ -248,7 +248,7 @@
     <!-- Database Settings
     <div class="mb-6">
       <h2 class="mb-2 text-lg font-bold">Database</h2> 
-      <!-- Add database settings inputs here -->
+    
     </div>-->
 
     <button
