@@ -57,10 +57,6 @@ export default {
                     pinFolder();
                 }
             }, 5000);
-
-            setTimeout(() => {
-                process.send?.("restartWorkers");
-            }, 10000);
         } else {
             app.listen(port, () => {
                 console.log(`⚡️[child process ${pid} server]: Server is running at https://localhost:${port}`);
