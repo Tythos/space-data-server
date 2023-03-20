@@ -1,11 +1,12 @@
 # Use an official Ubuntu runtime as a parent image
 FROM ubuntu:latest
 FROM node:18
+
 # Set the working directory to /spacedataserver
-WORKDIR /spacedataserver
+WORKDIR /opt/software/space-data-server
 
 # Copy the current directory contents into the container at /spacedataserver
-COPY . /spacedataserver
+COPY . /opt/software/space-data-server
 
 # Define environment variable
 ENV NODE_ENV=production
@@ -15,4 +16,4 @@ ENV PORT=8080
 EXPOSE $PORT
 
 # Run app.js when the container launches
-CMD ["node", "build/server.cjs"]
+CMD ["npm", "start"]

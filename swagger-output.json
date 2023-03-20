@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "23.3.3-0.1.1-1.0.2005+1679087664066",
+        "version": "23.3.3-0.1.1-1.0.2005+1679338735939",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version 0.0.2+1678388175685"
     },
@@ -301,6 +301,20 @@
                         }
                     }
                 }
+            }
+        },
+        "/admin/settings": {
+            "get": {
+                "description": "",
+                "parameters": [],
+                "responses": {}
+            }
+        },
+        "/admin/cwd": {
+            "get": {
+                "description": "",
+                "parameters": [],
+                "responses": {}
             }
         },
         "/idl/{standard}": {

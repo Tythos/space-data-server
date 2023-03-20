@@ -13,7 +13,8 @@
   import type { AuthHeader } from "@/lib/class/authheader.json.interface";
   import { Buffer } from "buffer";
   import { ethWallet } from "@/UI/src/stores/user";
-
+  import { _host, devMode, devProvider } from "@/UI/src/stores/dev";
+  
   const swaggerDoc: any = rawSwaggerDoc;
 
   async function copyText(responseBody) {
@@ -46,13 +47,6 @@
   let curlTemplate;
   let activeURL;
   let activeExecuted;
-
-  const devMode = window.location.host === "localhost:5173";
-  const devProvider = devMode
-    ? "0x9858effd232b4033e47d90003d41ec34ecaeda94"
-    : null;
-
-  const _host = devMode ? "localhost:8080" : window.location.host;
 
   $: {
     activeHeaders.accept = active?.id

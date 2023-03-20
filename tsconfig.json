@@ -26,5 +26,5 @@
     "scripts",
     "test"
   ],
-  "exclude": ["node_modules", "go-ipfs", "dist", "distbin"]
+  "exclude": ["node_modules", "go-ipfs", "dist", "distbin", "UI"]
 }
