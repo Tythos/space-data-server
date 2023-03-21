@@ -1,52 +1,54 @@
 {
-  "server": {
-    "port": 8080,
-    "key": "",
-    "cert": ""
-  },
-  "data": {
-    "ingest": ".data",
-    "fileSystemPath": "public",
-    "useFileSystem": true,
-    "cache": "5 minutes",
-    "verbose": false
-  },
-  "trustedAddresses": {
-    "0x9858effd232b4033e47d90003d41ec34ecaeda94": {
-      "trust": 4,
-      "comment": "Test Key, Do Not Use In Production"
+    "server": {
+        "port": 8080,
+        "key": "",
+        "cert": ""
     },
-    "0x36f1b484a3c6da00e1ed52aa06c67bc87ca205a8": {
-      "trust": 4,
-      "comment": "Test Key, Do Not Use In Production"
-    }
-  },
-  "database": {
-    "path": ".database",
-    "limits": {
-      "totalRecords": 500
+    "data": {
+        "ingest": ".data",
+        "fileSystemPath": "public",
+        "useDatabase": false,
+        "cache": "5 minutes",
+        "verbose": false
     },
-    "config": {
-      "primary": "sqlite",
-      "sqlite": {
-        "client": "better-sqlite3",
-        "connection": {
-          "filename": "./.database/spacedatastandards.0.0.2+1677878235536.sqlite"
+    "trustedAddresses": [
+        {
+            "address": "0x9858effd232b4033e47d90003d41ec34ecaeda94",
+            "trust": 4,
+            "comment": "Test Key, Do Not Use In Production"
         },
-        "useNullAsDefault": true,
-        "version": "0.0.2+1677878235536"
-      },
-      "pg": {
-        "client": "pg",
-        "connection": "postgresql://test@localhost/standards",
-        "pool": {
-          "min": 2,
-          "max": 10
-        },
-        "migrations": {
-          "tableName": "knex_migrations"
+        {
+            "address": "0x36f1b484a3c6da00e1ed52aa06c67bc87ca205a8",
+            "trust": 4,
+            "comment": "Test Key, Do Not Use In Production"
         }
-      }
+    ],
+    "database": {
+        "path": ".database",
+        "limits": {
+            "totalRecords": 500
+        },
+        "config": {
+            "primary": "sqlite",
+            "sqlite": {
+                "client": "better-sqlite3",
+                "connection": {
+                    "filename": "./.database/spacedatastandards.23.3.3-0.1.1+1679084152269.sqlite"
+                },
+                "useNullAsDefault": true,
+                "version": "23.3.3-0.1.1+1679084152269"
+            },
+            "pg": {
+                "client": "pg",
+                "connection": "postgresql://test@localhost/standards",
+                "pool": {
+                    "min": 2,
+                    "max": 10
+                },
+                "migrations": {
+                    "tableName": "knex_migrations"
+                }
+            }
+        }
     }
-  }
 }

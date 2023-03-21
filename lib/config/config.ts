@@ -5,7 +5,7 @@ import { join } from "path";
 
 let _config: any;
 
-const configPath: any = join(__dirname, "../config.json");
+const configPath: any = join(process.cwd(), "config.json");
 
 if (!existsSync(configPath)) {
     writeFileSync(configPath, JSON.stringify(defaultConfig, null, 4));

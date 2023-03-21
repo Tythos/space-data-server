@@ -170,7 +170,6 @@ export const write = async (
     let { RECORDS } = inputObject;
 
     PROVIDER = PROVIDER.toLowerCase();
-    console.log(currentCID);
 
     if (currentCID) return;
 

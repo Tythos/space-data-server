@@ -63,7 +63,7 @@ beforeAll(async () => {
 
 });
 
-describe("POST /endpoint Write To FileSystem", () => {
+describe("POST /endpoint Write To Database", () => {
     rmSync(config.data.ingest, { recursive: true, force: true });
 
     it("should accept Flatbuffer files and save them to the database", async () => {

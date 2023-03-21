@@ -7,7 +7,7 @@ import { connection } from "@/lib/database/connection";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { config } from "@/lib/config/config";
 import { join, resolve } from "path";
-import { createReadStream, existsSync, readFileSync } from "fs";
+import { createReadStream, existsSync, readFileSync, writeFileSync } from "fs";
 import { refRootName } from "@/lib/database/generateTables";
 import { readFB, writeFB } from '@/lib/utility/flatbufferConversion';
 import { resetIndex } from "apicache";
@@ -23,4 +23,15 @@ export const getSettings: express.RequestHandler = async (req: Request, res: Res
 
 export const cwd: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
     res.json({ cwd: process.cwd() });
+}
+
+export const saveSettings: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
+
+    console.log(JSON.stringify(req.body, null, 4));
+    //writeFileSync("./config.json", JSON.stringify(req.body, null, 4));
+    setTimeout(() => {
+        process.send?.("restartWorkers");
+    }, 5000);
+
+
 }

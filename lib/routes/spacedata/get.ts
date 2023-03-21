@@ -96,8 +96,9 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     }
     let payload;
     res.set("x-content-identifier", currentCID);
+    console.log(config.data)
     if (config.data.useDatabase) {
-
+      console.log(standard);
       payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
 
       if (payload.RECORDS.length === 0) {

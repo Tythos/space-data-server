@@ -5,6 +5,7 @@ import { del as _del } from "@/lib/database/delete";
 import * as ethers from "ethers";
 import type { AuthHeader } from "@/lib/class/authheader.json.interface";
 import { config } from "@/lib/config/config";
+import type { trustedAddress } from "@/lib/class/settings.interface"
 
 const errors = {
     sig: "Signature invalid or key missing."
@@ -26,7 +27,7 @@ export const del: express.RequestHandler = async (req: Request, res: Response, n
                 .verifyMessage(CID, inputSignature)
                 .toLowerCase();
 
-            if (!config.trustedAddresses[address]) {
+            if (!config.trustedAddresses.find((obj: trustedAddress) => obj.address === address)) {
                 res.status(401);
                 res.json({ "error": errors.sig });
             } else {

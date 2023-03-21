@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "23.3.3-0.1.1-1.2.0001+1679353354729",
+    "version": "23.3.3-0.1.1-1.2.0001+1679420115131",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -35,7 +35,7 @@
         "test:cli": "jest --watchAll --detectOpenHandles --runInBand ./test/cli.test",
         "test:gencert": "cd test/certs/ && chmod +x generatecerts.sh && ./generatecerts.sh",
         "test:server:cluster": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.cluster.test",
-        "test:server:database": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
+        "test:server:database": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.database.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
         "test:server:filesystem": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",
         "test:parser": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && jest --watchAll --detectOpenHandles --runInBand ./test/parser.test",
         "test:ipfs": "export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test",

@@ -4,7 +4,7 @@
   import { _host, devMode, devProvider } from "@/UI/src/stores/dev";
   import { settings, cwd } from "@/UI/src/stores/admin";
   import { Icon } from "svelte-awesome";
-  import { angleLeft, angleRight } from "svelte-awesome/icons";
+  import { angleLeft, angleRight, externalLink } from "svelte-awesome/icons";
   const getJSON = async (url: string) => await (await fetch(url)).json();
   onMount(async () => {
     $cwd =
@@ -26,8 +26,8 @@
     console.log($settings);
   };
 
-  let activeTrustedAddressIndex = 0;
-  let activeTrustedAddress;
+  let activeTrustedAddressIndex: number = 0;
+  let activeTrustedAddress: string;
   $: {
     if (
       $settings.trustedAddresses &&
@@ -44,28 +44,31 @@
     activeTrustedAddressIndex = Math.max(
       Math.min(
         activeTrustedAddressIndex,
-        Object.keys($settings.trustedAddresses).length - 1
+        $settings.trustedAddresses.length - 1
       ),
       0
     );
   };
 
-  function addTrustedAddress(address) {
-    // Generate a unique key for the new trusted address
+  function addTrustedAddress() {
     settings.update((current) => {
-      current.trustedAddresses[address] = {
+      current.trustedAddresses.push({
+        address: "",
         DN: "",
         CN: "",
         comment: "",
-        trust: 0,
-      };
+        trust: 1,
+      });
       return current;
     });
+    activeTrustedAddressIndex =
+      Object.keys($settings.trustedAddresses).length - 1;
   }
 
-  function removeTrustedAddress(key) {
+  function removeTrustedAddress() {
     settings.update((current) => {
-      delete current.trustedAddresses[key];
+      delete current.trustedAddresses[activeTrustedAddress];
+      console.log(current.trustedAddresses, activeTrustedAddress);
       return current;
     });
   }
@@ -190,13 +193,18 @@
             <div class="border m-2 rounded-md w-1/2">
               <div
                 class="px-6 py-4 text-center justify-center flex flex-col gap-2">
+                <input
+                  id="dn_input"
+                  type="text"
+                  bind:value={$settings.trustedAddresses[activeTrustedAddress]}
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <span
                   class="text-xs"
                   on:click={(e) =>
                     window.open(
                       `https://etherscan.io/address/${activeTrustedAddress}`
-                    )}>{activeTrustedAddress}</span>
+                    )}>ETHERSCAN<Icon data={externalLink} /></span>
               </div>
               <div class="px-6 py-4 flex flex-col gap-1">
                 <label for="dn_input">DN</label>
@@ -235,7 +243,7 @@
               </div>
               <div class="px-6 py-6 flex flex-col gap-1">
                 <button
-                  on:click={() => removeTrustedAddress(activeTrustedAddress)}
+                  on:click={() => removeTrustedAddress()}
                   class="bg-red-500 text-white px-3 py-1 rounded-md focus:outline-none w-1/3"
                   >Remove</button>
               </div>

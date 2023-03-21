@@ -1,13 +1,10 @@
 
-interface trustedAddress {
+export interface trustedAddress {
+    address: string,
     DN: string,
     CN: string,
     comment: string,
     trust: number
-}
-
-interface trustedAddressMap {
-    [key: string]: trustedAddress;
 }
 
 interface cronJob {
@@ -29,7 +26,7 @@ export interface Settings {
         "verbose": Boolean
     },
     "cronjobs": Array<cronJob>,
-    "trustedAddresses": trustedAddressMap,
+    "trustedAddresses": Array<trustedAddress>,
     "database": {
         "path": string,
         "limits": {

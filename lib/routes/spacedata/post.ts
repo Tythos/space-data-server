@@ -1,7 +1,6 @@
 import * as express from "express";
 import standardsJSON from "@/lib/standards/schemas.json";
-//@ts-ignore
-import ipfsHash from "pure-ipfs-only-hash";
+import type { trustedAddress } from "@/lib/class/settings.interface"
 import * as ethers from "ethers";
 import { existsSync, mkdirSync } from "node:fs";
 import { writeFile, mkdir } from "node:fs/promises";
@@ -43,7 +42,7 @@ export const post: express.RequestHandler = async (req, res, next) => {
             const { CID: inputCID, signature: inputSignature }: AuthHeader = JSON.parse(Buffer.from(authHeader, "base64").toString());
             CID = inputCID;
             address = ethers.utils.verifyMessage(CID, inputSignature).toLowerCase();
-            if (!config.trustedAddresses[address]) {
+            if (!config.trustedAddresses.find((obj: trustedAddress) => obj.address === address)) {
                 res.status(401);
                 res.json({ "error": errors.sig });
             } else {
