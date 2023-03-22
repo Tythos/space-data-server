@@ -8,8 +8,10 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 ## TODO
 - [x] Install script with service 
 - [ ] Limit / delete based on time || number of files
+- [ ] Nonce calc with setting
+- [ ] Admin login detection & panel access
 - [ ] Web admin tools
-- [ ] Trusted account naming
+- [x] Trusted account naming
 - [ ] Data matrix
 - [ ] Encryption
 - [ ] IPFS pinning / unpinning
