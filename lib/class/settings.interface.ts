@@ -1,5 +1,5 @@
 
-export interface trustedAddress {
+export interface TrustedAddress {
     address: string,
     DN: string,
     CN: string,
@@ -26,7 +26,7 @@ export interface Settings {
         "verbose": Boolean
     },
     "cronjobs": Array<cronJob>,
-    "trustedAddresses": Array<trustedAddress>,
+    "trustedAddresses": Array<TrustedAddress>,
     "database": {
         "path": string,
         "limits": {

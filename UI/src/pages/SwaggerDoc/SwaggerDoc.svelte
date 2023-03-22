@@ -230,14 +230,14 @@ ${Object.entries(activeHeaders)
       signature: await $ethWallet.signMessage(CID),
       nonce: performance.now(),
     };
-    requestParams[`${route.id}-Authorization`] = `${Buffer.from(
+    requestParams[`${route.id}-authorization`] = `${Buffer.from(
       JSON.stringify(authHeader)
     ).toString("base64")}`;
   };
 
   const bufferSign = (e, route, param, CID?) => {
     if (!$ethWallet) {
-      requestParams[`${route.id}-Authorization`] = "NOT LOGGED IN";
+      requestParams[`${route.id}-authorization`] = "NOT LOGGED IN";
     } else {
       let file = e.target.files[0];
       requestParams[`${route.id}-${param.name}`] = file;

@@ -1,5 +1,3 @@
-jest.useFakeTimers();
-
 import request from "supertest";
 import { generateData } from "../utility/generate.test.data";
 const dataPath: string = `test/output/data/`;
@@ -12,7 +10,7 @@ import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
 import standardsJSON from "@/lib/standards/schemas.json";
 import { JSONSchema4 } from "json-schema";
-import type { AuthHeader } from "@/lib/class/authheader.json.interface";
+import type { AuthCIDHeader } from "@/lib/class/authheader.json.interface";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
 import { init, deinit } from "@/lib/ingest/index";
@@ -81,20 +79,23 @@ describe("POST /endpoint Write To Database", () => {
                     .set("authorization", `{}`)
                     .send(flatbufferBinary);
 
-                expect(jsonResponseError.status).toBe(401);
+                expect(jsonResponseError.status).toBe(400);
 
-                expect(jsonResponseError.body.error).toMatch(`Signature invalid or key missing.`);
+                expect(jsonResponseError.body.error).toMatch('Missing required headers: authorization and/or x-auth-signature');
 
-                const authMessage: AuthHeader = {
+                const authMessage: AuthCIDHeader = {
                     CID,
-                    signature: await ethWallet.signMessage(CID),
                     nonce: performance.now(),
                 };
+
                 const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
+                const authSignature = await ethWallet.signMessage(authHeader);
+
                 const fbResponse = await request(app)
                     .post(`/spacedata/${standard}`)
                     .set("Content-Type", "application/octet-stream")
                     .set("authorization", authHeader)
+                    .set("x-auth-signature", authSignature)
                     .send(flatbufferBinary);
                 expect(fbResponse.status).toBe(200);
 
@@ -124,16 +125,17 @@ describe("POST /endpoint Write To Database", () => {
                 const flatbufferBinary: Buffer = outputStandardFiles[standard][fCID];
                 const CID = await ipfsHash.of(flatbufferBinary);
 
-                const authMessage: AuthHeader = {
+                const authMessage: AuthCIDHeader = {
                     CID,
-                    signature: await ethWallet.signMessage(CID),
                     nonce: performance.now(),
                 };
 
                 const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
+                const authSignature = await ethWallet.signMessage(authHeader);
                 const fbResponse = await request(app)
                     .delete(`/spacedata/${standard}`)
                     .set("authorization", authHeader)
+                    .set("x-auth-signature", authSignature)
                     .send();
 
                 expect(fbResponse?.body?.CID).toBe(CID);

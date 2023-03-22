@@ -6,7 +6,7 @@ import compression from "compression-next";
 import { config } from "@/lib/config/config";
 import bodyParser from "body-parser";
 import { standards as standardsRoute } from "../routes/standards";
-
+import { validateHeaders } from "@/lib/auth/index";
 import { providers, cid } from "@/lib/routes/spacedata/providers";
 import { sql } from "@/lib/routes/standards/sql";
 import { schema } from "@/lib/routes/standards/schema";
@@ -19,7 +19,7 @@ import https from "https";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { Http2SecureServer } from "http2";
-import { cwd, getSettings } from "../routes/admin";
+import { cwd, getSettings, saveSettings } from "../routes/admin";
 
 const rawUI = Buffer.from(ui, "base64").toString();
 
@@ -51,6 +51,8 @@ app.use(helmet.contentSecurityPolicy({
 }));*/
 
 app.enable('x-powered-by');
+
+app.use(validateHeaders);
 
 app.use("/app", express.static("UI/dist"));
 app.use(bodyParser.json({
@@ -130,9 +132,8 @@ app.get("/sql/", (req: any, res: any, next: any) => {
     sql(req, res, next);
 });
 
-app.get("/admin/settings", (req: any, res: any, next: any) => {
-    getSettings(req, res, next);
-});
+app.get("/admin/settings", getSettings);
+app.post("/admin/settings", saveSettings);
 app.get("/admin/cwd", (req: any, res: any, next: any) => {
     cwd(req, res, next);
 });

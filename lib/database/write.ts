@@ -4,16 +4,14 @@ import toposort from "toposort";
 import getID from "@/lib/utility/getID";
 import { fTCheck, refRootName, resolver } from "@/lib/database/generateTables";
 import { runPragmas } from "./pragmas";
-import { existsSync, mkdirSync, rmSync, statSync, unlinkSync } from "fs";
+import { mkdirSync, readFileSync, rmSync, statSync, unlinkSync } from "fs";
 import { writeFile } from "node:fs/promises"
 import { join } from "path";
-import { writeFB } from '../utility/flatbufferConversion';
+import { writeFB, getFileName } from '../utility/flatbufferConversion';
 import { config } from "@/lib/config/config";
 import { del } from "./delete";
 import sConfig from "@/lib/database/config/static.config";
 import { checkLock, removeLock } from "@/lib/database/checkLock";
-
-let { lockFilePath } = sConfig;
 
 let knexConnection: any;
 let pageSize = 200;
@@ -39,10 +37,9 @@ const writeFiles = async (writePath: string, CID: string, input: any, DIGITAL_SI
 
     const fbsPath = join(
         writePath,
-        `${CID}.${STANDARD}.fbs`);
+        getFileName(STANDARD, CID));
 
     const fbsPathSig = `${fbsPath}.sig`;
-
     await writeFile(fbsPath, writeFB(input));
     await writeFile(fbsPathSig, DIGITAL_SIGNATURE);
 }
@@ -189,6 +186,7 @@ export const write = async (
     }
 
     const writePath = join(
+        process.cwd(),
         config.data.fileSystemPath,
         STANDARD.toUpperCase(),
         PROVIDER as string

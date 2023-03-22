@@ -10,7 +10,6 @@ import { connection } from "@/lib/database/connection";
 import { config } from "@/lib/config/config"
 import standardsJSON from "@/lib/standards/schemas.json";
 import { JSONSchema4 } from "json-schema";
-import type { AuthHeader } from "@/lib/class/authheader.json.interface";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash";
 import { init, deinit } from "@/lib/ingest/index";

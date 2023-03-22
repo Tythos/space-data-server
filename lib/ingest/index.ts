@@ -17,6 +17,8 @@ import { refRootName } from '../database/generateTables';
 import { readFB, writeFB } from '../utility/flatbufferConversion';
 import { readFile, rename } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
+import { getTrustedAddress } from "@/lib/auth/index"
+
 
 let queue: Array<string> = [];
 let isProcessing: Boolean = false;
@@ -135,8 +137,8 @@ async function processData(file: string) {
             if (inputSignature) {
                 signedEthAddress = (await ethers.utils.verifyMessage(CID, inputSignature)).toLowerCase()
             }
-  
-            if (!signedEthAddress || !config.trustedAddresses[signedEthAddress]) {
+
+            if (!signedEthAddress || !getTrustedAddress(signedEthAddress)) {
                 console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid from address ${signedEthAddress}`);
                 return;
             }

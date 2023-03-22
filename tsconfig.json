@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "typeRoots": ["./lib/class", "node_modules/@types"],
     "noImplicitThis": false,
     "noImplicitAny": false,
     "target": "esnext",
@@ -20,11 +21,11 @@
     "allowSyntheticDefaultImports": true
   },
   "include": [
+    "lib/**/*",
     "node_modules/keyconverter/build/types/src/keyconverter.d.ts",
-    "lib",
     "packages",
     "scripts",
     "test"
   ],
-  "exclude": ["node_modules", "go-ipfs", "dist", "distbin", "UI"]
+  "exclude": ["node_modules/**/*"]
 }

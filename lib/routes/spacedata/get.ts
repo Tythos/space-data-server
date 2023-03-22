@@ -9,7 +9,7 @@ import { config } from "@/lib/config/config";
 import { join, resolve } from "path";
 import { createReadStream, existsSync, readFileSync } from "fs";
 import { refRootName } from "@/lib/database/generateTables";
-import { readFB, writeFB } from '@/lib/utility/flatbufferConversion';
+import { getFileName, readFB, writeFB } from '@/lib/utility/flatbufferConversion';
 import { resetIndex } from "apicache";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
@@ -42,7 +42,6 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
         parsedQuery = JSON.parse(query as string) as Array<any>;
       }
     } catch (e) {
-      console.log(e);
       res.status(500);
       res.end();
     }
@@ -88,17 +87,14 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
 
     res.set("x-digital-signature", currentDigitalSignature);
 
-    let currentStandard = standardsJSON[standard];
-    let tableName = refRootName(currentStandard.$ref);
-
     if (!parsedQuery.length) {
       parsedQuery = [["where", ["file_id", "=", currentCID]]];
     }
     let payload;
+
     res.set("x-content-identifier", currentCID);
-    console.log(config.data)
+
     if (config.data.useDatabase) {
-      console.log(standard);
       payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
 
       if (payload.RECORDS.length === 0) {
@@ -115,15 +111,13 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       } else {
 
         res.json(payload);
-
         res.end();
 
       }
 
     } else {
 
-      let fileToStream = join(fileReadPath, standard, provider, `${currentCID}.fbs`);
-
+      let fileToStream = join(fileReadPath, standard, provider, getFileName(standard, currentCID));
       if (existsSync(fileToStream)) {
         if (req.accepts("application/octet-stream")) {
           res.setHeader('Content-Type', 'application/octet-stream');

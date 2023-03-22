@@ -5,6 +5,7 @@
   import { settings, cwd } from "@/UI/src/stores/admin";
   import { Icon } from "svelte-awesome";
   import { angleLeft, angleRight, externalLink } from "svelte-awesome/icons";
+  import { ethWallet } from "../../stores/user";
   const getJSON = async (url: string) => await (await fetch(url)).json();
   onMount(async () => {
     $cwd =
@@ -22,17 +23,25 @@
     activeSection.update((current) => (current === section ? null : section));
   }
 
-  const updateSettings = () => {
-    console.log($settings);
+  const updateSettings = async () => {
+    const body = JSON.stringify($settings);
+    let result = await fetch(
+      window.location.protocol + "//" + _host + "/admin/settings",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: await $ethWallet.signMessage(body),
+        },
+        body,
+      }
+    );
   };
 
   let activeTrustedAddressIndex: number = 0;
   let activeTrustedAddress: string;
   $: {
-    if (
-      $settings.trustedAddresses &&
-      Object.keys($settings.trustedAddresses)?.length
-    ) {
+    if ($settings.trustedAddresses && $settings.trustedAddresses.length) {
       activeTrustedAddress = Object.keys($settings.trustedAddresses)[
         activeTrustedAddressIndex
       ];
@@ -167,7 +176,7 @@
           Add Trusted Address
         </button>
       </div>
-      {#if $settings?.trustedAddresses && Object.keys($settings?.trustedAddresses)?.length}
+      {#if $settings?.trustedAddresses}
         <div class="mt-2 space-y-4">
           <div class="flex gap-2 items-center text-[1rem]">
             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -188,67 +197,74 @@
               <Icon data={angleRight} />
             </div>
           </div>
-          <div
-            class="flex flex-col h-84 overflow-y-auto border rounded-md items-center">
-            <div class="border m-2 rounded-md w-1/2">
-              <div
-                class="px-6 py-4 text-center justify-center flex flex-col gap-2">
-                <input
-                  id="dn_input"
-                  type="text"
-                  bind:value={$settings.trustedAddresses[activeTrustedAddress]}
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <span
-                  class="text-xs"
-                  on:click={(e) =>
-                    window.open(
-                      `https://etherscan.io/address/${activeTrustedAddress}`
-                    )}>ETHERSCAN<Icon data={externalLink} /></span>
-              </div>
-              <div class="px-6 py-4 flex flex-col gap-1">
-                <label for="dn_input">DN</label>
-                <input
-                  id="dn_input"
-                  type="text"
-                  bind:value={$settings.trustedAddresses[activeTrustedAddress]
-                    .DN}
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
-              </div>
-              <div class="px-6 py-4 flex flex-col gap-1">
-                <label for="dn_input">CN</label>
-                <input
-                  type="text"
-                  bind:value={$settings.trustedAddresses[activeTrustedAddress]
-                    .CN}
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
-              </div>
-              <div class="px-6 py-4 flex flex-col gap-1">
-                <label for="dn_input">COMMENT</label>
-                <input
-                  type="text"
-                  bind:value={$settings.trustedAddresses[activeTrustedAddress]
-                    .comment}
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
-              </div>
-              <div class="px-6 py-4 flex flex-col gap-1">
-                <label for="dn_input">TRUST (0-255)</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="255"
-                  bind:value={$settings.trustedAddresses[activeTrustedAddress]
-                    .trust}
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
-              </div>
-              <div class="px-6 py-6 flex flex-col gap-1">
-                <button
-                  on:click={() => removeTrustedAddress()}
-                  class="bg-red-500 text-white px-3 py-1 rounded-md focus:outline-none w-1/3"
-                  >Remove</button>
+          {#if $settings.trustedAddresses[activeTrustedAddress]}
+            <div
+              class="flex flex-col h-84 overflow-y-auto border rounded-md items-center">
+              <div class="border m-2 rounded-md w-1/2">
+                <div
+                  class="px-6 py-4 text-center justify-center flex flex-col gap-2">
+                  <input
+                    id="dn_input"
+                    type="text"
+                    bind:value={$settings.trustedAddresses[activeTrustedAddress]
+                      .address}
+                    required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
+                  <!-- svelte-ignore a11y-click-events-have-key-events -->
+                  <div
+                    class="flex gap-2 cursor-pointer"
+                    on:click={(e) =>
+                      window.open(
+                        `https://etherscan.io/address/${$settings.trustedAddresses[activeTrustedAddress].address}`
+                      )}>
+                    <span class="text-xs">ETHERSCAN</span><Icon
+                      data={externalLink} />
+                  </div>
+                </div>
+                <div class="px-6 py-4 flex flex-col gap-1">
+                  <label for="dn_input">DN</label>
+                  <input
+                    id="dn_input"
+                    type="text"
+                    bind:value={$settings.trustedAddresses[activeTrustedAddress]
+                      .DN}
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
+                </div>
+                <div class="px-6 py-4 flex flex-col gap-1">
+                  <label for="dn_input">CN</label>
+                  <input
+                    type="text"
+                    bind:value={$settings.trustedAddresses[activeTrustedAddress]
+                      .CN}
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
+                </div>
+                <div class="px-6 py-4 flex flex-col gap-1">
+                  <label for="dn_input">COMMENT</label>
+                  <input
+                    type="text"
+                    bind:value={$settings.trustedAddresses[activeTrustedAddress]
+                      .comment}
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
+                </div>
+                <div class="px-6 py-4 flex flex-col gap-1">
+                  <label for="dn_input">TRUST (0-255)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="255"
+                    bind:value={$settings.trustedAddresses[activeTrustedAddress]
+                      .trust}
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
+                </div>
+                <div class="px-6 py-6 flex flex-col gap-1">
+                  <button
+                    on:click={() => removeTrustedAddress()}
+                    class="bg-red-500 text-white px-3 py-1 rounded-md focus:outline-none w-1/3"
+                    >Remove</button>
+                </div>
               </div>
             </div>
-          </div>
+          {/if}
         </div>
       {/if}
     </div>

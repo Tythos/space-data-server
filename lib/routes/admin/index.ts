@@ -1,16 +1,11 @@
 import { Request, Response } from "express";
 import * as express from "express";
-import * as standards from "@/lib/standards/standards";
 import _standardsJSON from "@/lib/standards/schemas.json";
-import read from "@/lib/database/read";
-import { connection } from "@/lib/database/connection";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { config } from "@/lib/config/config";
 import { join, resolve } from "path";
-import { createReadStream, existsSync, readFileSync, writeFileSync } from "fs";
-import { refRootName } from "@/lib/database/generateTables";
-import { readFB, writeFB } from '@/lib/utility/flatbufferConversion';
-import { resetIndex } from "apicache";
+import * as ethers from "ethers";
+import { writeFileSync } from "node:fs";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 const cFP = config?.data?.fileSystemPath;
@@ -27,11 +22,14 @@ export const cwd: express.RequestHandler = async (req: Request, res: Response, n
 
 export const saveSettings: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
 
-    console.log(JSON.stringify(req.body, null, 4));
-    //writeFileSync("./config.json", JSON.stringify(req.body, null, 4));
-    setTimeout(() => {
-        process.send?.("restartWorkers");
-    }, 5000);
+    const account = ethers.utils.verifyMessage(JSON.stringify(req.body), req.headers["authorization"] as any);
+    if (account.toLowerCase() === "0x9858effd232b4033e47d90003d41ec34ecaeda94") {
+        writeFileSync(join(process.cwd(), "config.json"), JSON.stringify(req.body, null, 4));
+        setTimeout(() => {
+            process.send?.("restartWorkers");
+        }, 5000);
+    }
 
 
 }
+

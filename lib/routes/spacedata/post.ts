@@ -1,27 +1,23 @@
-import * as express from "express";
+import express, { RequestHandler, Request, Response, NextFunction } from 'express';
 import standardsJSON from "@/lib/standards/schemas.json";
-import type { trustedAddress } from "@/lib/class/settings.interface"
-import * as ethers from "ethers";
 import { existsSync, mkdirSync } from "node:fs";
-import { writeFile, mkdir } from "node:fs/promises";
 import { config } from "@/lib/config/config"
-import type { AuthHeader } from "@/lib/class/authheader.json.interface";
 import { connection } from "@/lib/database/connection";
 import write from "@/lib/database/write";
 import * as standards from "@/lib/standards/standards";
 import { readFB } from "@/lib/utility/flatbufferConversion";
+import { AuthCIDHeader } from '@/lib/class/authheader.json.interface';
 
 const errors = {
     sig: "Signature invalid or key missing."
 };
-
 
 if (!existsSync(config.data.ingest)) {
     mkdirSync(config.data.ingest);
 }
 
 // Middleware function that accepts FlatBuffer file
-export const post: express.RequestHandler = async (req, res, next) => {
+export const post: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     const standard = req.params.standard.toUpperCase();
     if (!standardsJSON.hasOwnProperty(standard)) {
         res.status(500);
@@ -32,45 +28,34 @@ export const post: express.RequestHandler = async (req, res, next) => {
         res.status(500);
         res.json({ error: `Unknown payload format.` });
     }
-    try {
-        const authHeader: string | undefined = req.headers["authorization"];
-        let CID: string = "";
-        let signature: string = "";
-        let isValidated: boolean = false;
-        let address: string = "";
-        if (authHeader) {
-            const { CID: inputCID, signature: inputSignature }: AuthHeader = JSON.parse(Buffer.from(authHeader, "base64").toString());
-            CID = inputCID;
-            address = ethers.utils.verifyMessage(CID, inputSignature).toLowerCase();
-            if (!config.trustedAddresses.find((obj: trustedAddress) => obj.address === address)) {
-                res.status(401);
-                res.json({ "error": errors.sig });
-            } else {
-                isValidated = true;
-                signature = inputSignature;
+    if (req.authHeader) {
+        try {
+            let { CID, trustedAddress } = (req.authHeader as AuthCIDHeader);
+
+            if (req.authHeader) {
+                await write(
+                    connection,
+                    standard,
+                    readFB(req.body, standard, standards[standard]),
+                    standardsJSON[standard],
+                    CID,
+                    req.headers['x-auth-signature'] as string,
+                    trustedAddress?.address as string,
+                    standard.toUpperCase(),
+                    new Date()
+                );
+                res.json({ CID });
+                res.status(200);
             }
-        } else {
-            res.status(401);
-            res.json({ "error": errors.sig });
+        } catch (e) {
+            res.status(400);
+            res.json({ "error": e?.toString() });
         }
-        if (isValidated) {
-            await write(
-                connection,
-                standard,
-                readFB(req.body, standard, standards[standard]),
-                standardsJSON[standard],
-                CID,
-                signature,
-                address as string,
-                standard.toUpperCase(),
-                new Date()
-            );
-            res.json({ CID });
-            res.status(200);
-        }
-    } catch (e) {
-        res.status(401);
-        res.json({ "error": errors.sig });
+    } else {
+        res.status(400);
+        res.json({
+            "error": 'Missing required headers: authorization and/or x-auth-signature'
+        });
     }
     next();
 };

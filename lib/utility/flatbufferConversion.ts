@@ -20,3 +20,5 @@ export const readFB = (fbs: any, tableName: any, parentClass: KeyValueDataStruct
         new flatbuffers.ByteBuffer(fbs)).unpackTo(input);
     return input;
 }
+
+export const getFileName = (standard: string, CID: string) => `${CID}.${standard.toLowerCase()}.fbs`;
