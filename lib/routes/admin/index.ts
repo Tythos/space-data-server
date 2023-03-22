@@ -23,7 +23,7 @@ export const cwd: express.RequestHandler = async (req: Request, res: Response, n
 export const saveSettings: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
 
     const account = ethers.utils.verifyMessage(JSON.stringify(req.body), req.headers["authorization"] as any);
-    if (account.toLowerCase() === "0x9858effd232b4033e47d90003d41ec34ecaeda94") {
+    if (req.authHeader?.trustedAddress?.trust === 255) {
         writeFileSync(join(process.cwd(), "config.json"), JSON.stringify(req.body, null, 4));
         setTimeout(() => {
             process.send?.("restartWorkers");

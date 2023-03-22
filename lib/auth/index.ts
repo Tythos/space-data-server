@@ -19,13 +19,12 @@ export const validateHeaders = (req: Request, res: Response, next: NextFunction)
         try {
             const decodedData = Buffer.from(authHeader, 'base64').toString();
             authHeaderObj = JSON.parse(decodedData);
-            //console.log(authHeaderObj.nonce);
+            console.log(authHeaderObj.nonce);
         } catch (error) {
             return res.status(400).json({
                 error: 'Invalid authorization header. Expected a base64 stringified JSON',
             });
         }
-
 
         try {
             const recoveredAddress = ethers.utils.verifyMessage(authHeader, signatureHeader as any);
