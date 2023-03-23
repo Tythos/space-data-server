@@ -6,9 +6,10 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 [More information here](https://app.gitbook.com/o/Xod6MiZmdLiHApjIyioA/s/HPyJlS0CKXWqCdd5kz6y/space-data-server).
 
 ## TODO
-- [x] Install script with service 
+
+- [x] Install script with service
 - [ ] Limit / delete based on time || number of files
-- [ ] Nonce calc with setting
+- [x] Nonce calc with setting
 - [ ] Admin login detection & panel access
 - [ ] Web admin tools
 - [x] Trusted account naming

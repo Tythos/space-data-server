@@ -1,10 +1,13 @@
 
 export interface TrustedAddress {
     address: string,
-    DN: string,
-    CN: string,
-    comment: string,
-    trust: number
+    trust: number,
+    publicKey?: string,
+    publicKeyBuffer?: Buffer,
+    DN?: string,
+    CN?: string,
+    comment?: string,
+    isAdmin?: boolean
 }
 
 interface cronJob {

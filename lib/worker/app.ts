@@ -19,7 +19,7 @@ import https from "https";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { Http2SecureServer } from "http2";
-import { cwd, getSettings, saveSettings } from "../routes/admin";
+import { adminCheck, cwd, getSettings, saveSettings } from "../routes/admin";
 
 const rawUI = Buffer.from(ui, "base64").toString();
 
@@ -133,6 +133,8 @@ app.get("/sql/", (req: any, res: any, next: any) => {
 });
 
 app.get("/admin/settings", getSettings);
+app.get("/admincheck", adminCheck);
+
 app.post("/admin/settings", saveSettings);
 app.get("/admin/cwd", (req: any, res: any, next: any) => {
     cwd(req, res, next);

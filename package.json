@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "23.3.3-0.1.1-1.6.0001+1679578673151",
+    "version": "23.3.3-0.1.1-1.6.0001+1679580559514",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -31,12 +31,12 @@
         "dev:standards": "nodemon --config nodemon.generator.json",
         "dev:parsers": "nodemon --config nodemon.parser.json",
         "dev:cli": "nodemon --config nodemon.cli.json",
-        "test": "export IPFS_PATH=$PWD/go-ipfs/ && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/core.test",
         "test:cli": "jest --watchAll --detectOpenHandles --runInBand ./test/cli.test",
         "test:gencert": "cd test/certs/ && chmod +x generatecerts.sh && ./generatecerts.sh",
         "test:server:cluster": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.cluster.test",
         "test:server:database": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.database.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
         "test:server:filesystem": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",
+        "test:admin": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.admin.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/admin.test",
         "test:parser": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && jest --watchAll --detectOpenHandles --runInBand ./test/parser.test",
         "test:ipfs": "export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test",
         "test:smartcontract": "nodemon --config nodemon.smartcontract.json"
@@ -123,6 +123,7 @@
     },
     "dependencies": {
         "@openzeppelin/contracts": "^4.8.1",
+        "@toruslabs/eccrypto": "^2.1.0",
         "apicache": "^1.6.3",
         "asmcrypto.js": "^2.3.2",
         "cron": "^2.1.0",

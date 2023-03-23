@@ -28,10 +28,12 @@ export const post: RequestHandler = async (req: Request, res: Response, next: Ne
         res.status(500);
         res.json({ error: `Unknown payload format.` });
     }
+    //@ts-ignore
     if (req.authHeader) {
         try {
+            //@ts-ignore
             let { CID, trustedAddress } = (req.authHeader as AuthCIDHeader);
-
+            //@ts-ignore
             if (req.authHeader) {
                 await write(
                     connection,

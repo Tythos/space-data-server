@@ -11,14 +11,22 @@
   },
   "trustedAddresses": [
     {
+      "address": "0x80b45ee18DEe9F4dE29FA52B348D50F10AD2AeA1",
+      "trust": 255,
+      "comment": "Test Key, Do Not Use In Production",
+      "isAdmin": true
+    },
+    {
       "address": "0x9858effd232b4033e47d90003d41ec34ecaeda94",
       "trust": 4,
-      "comment": "Test Key, Do Not Use In Production"
+      "comment": "Test Key, Do Not Use In Production",
+      "isAdmin": false
     },
     {
       "address": "0x36f1b484a3c6da00e1ed52aa06c67bc87ca205a8",
       "trust": 4,
-      "comment": "Test Key, Do Not Use In Production"
+      "comment": "Test Key, Do Not Use In Production",
+      "isAdmin": false
     }
   ],
   "database": {

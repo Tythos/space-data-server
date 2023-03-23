@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import { AuthCIDHeader, AuthSettingsHeader } from '../class/authheader.json.interface';
 import { config } from '../config/config';
 import { TrustedAddress } from '../class/settings.interface';
@@ -39,12 +39,16 @@ export const validateHeaders = (req: Request, res: Response, next: NextFunction)
 
             try {
                 const recoveredAddress = ethers.utils.verifyMessage(authHeader, signatureHeader as any);
+                const msgHash = utils.hashMessage(authHeader);
+                const msgHashBytes = utils.arrayify(msgHash);
                 const trustedAddress = getTrustedAddress(recoveredAddress);
                 if (!trustedAddress) {
                     return res.status(401).json({
                         error: 'Invalid x-auth-signature. Signature does not match the provided Ethereum address',
                     });
                 } else {
+                    trustedAddress.publicKey = utils.recoverPublicKey(msgHashBytes, signatureHeader as any);
+                    trustedAddress.publicKeyBuffer = Buffer.from(trustedAddress.publicKey.slice(2,), "hex");
                     authHeaderObj.trustedAddress = trustedAddress;
                     req.authHeader = { ...authHeaderObj };
                 }
