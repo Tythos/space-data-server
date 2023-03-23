@@ -4,6 +4,7 @@
     "key": "./test/certs/output/localhost.key",
     "cert": "./test/certs/output/localhost.cert"
   },
+  "nonceTimeout": 30000,
   "data": {
     "ingest": ".testdata",
     "fileSystemPath": "public",

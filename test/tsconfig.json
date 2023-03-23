@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./lib/class", "node_modules/@types"],
+    "typeRoots": ["../lib/class", "../node_modules/@types"],
     "noImplicitThis": false,
     "noImplicitAny": false,
     "target": "esnext",
@@ -8,7 +8,7 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["../*"]
     },
     "lib": ["ES2021.String"],
     "resolveJsonModule": true,
@@ -19,26 +19,5 @@
     "skipLibCheck": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true
-  },
-  "include": [
-    "lib/**/*",
-    "node_modules/keyconverter/build/types/src/keyconverter.d.ts",
-    "scripts",
-    "test"
-  ],
-  "exclude": [
-    "node_modules/**/*",
-    ".testdata",
-    ".testdatabase",
-    "plugins",
-    "service-files",
-    "scripts",
-    "plugins",
-    "packages",
-    "smartcontract",
-    "test/**/*",
-    "UI/**/*",
-    ".keys",
-    "**/**/*"
-  ]
+  }
 }

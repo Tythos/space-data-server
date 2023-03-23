@@ -18,6 +18,7 @@ export interface Settings {
         "key": string,
         "cert": string
     },
+    "nonceTimeout": number,
     "data": {
         "ingest": string,
         "fileSystemPath": string,

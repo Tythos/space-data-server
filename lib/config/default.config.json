@@ -4,6 +4,7 @@
         "key": "",
         "cert": ""
     },
+    "nonceTimeout": 30000,
     "data": {
         "ingest": ".data",
         "fileSystemPath": "public",
