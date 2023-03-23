@@ -26,7 +26,6 @@ export const getSettings: RequestHandler = async (req: Request, res: Response, n
         let encryptedMessage = await eccrypto.encrypt(publicKeyBuffer, Buffer.from(sConfig));
 
         res.json({
-            payload: config,
             message: JSON.stringify(encryptedMessage)
         });
 

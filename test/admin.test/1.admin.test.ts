@@ -58,8 +58,7 @@ describe('Test Admin Paths', () => {
                 }
             }));
 
-        console.log(JSON.parse(decryptedSettings.toString()));
-        expect(JSON.stringify(settings.payload)).toEqual(JSON.stringify(config));
+        expect(decryptedSettings.toString()).toEqual(JSON.stringify(config));
 
     });
 
