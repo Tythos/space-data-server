@@ -3,8 +3,14 @@ import About from '@/UI/src/pages/About/About.svelte';
 import SwaggerDoc from '@/UI/src/pages/SwaggerDoc/SwaggerDoc.svelte';
 import User from '@/UI/src/pages/User/User.svelte';
 import Admin from '@/UI/src/pages/Admin/Admin.svelte';
-
+import { isAdmin } from '../stores/admin';
 import { wrap } from 'svelte-spa-router/wrap'
+import { get } from 'svelte/store';
+
+
+const condition_isAdmin = () => {
+    return get(isAdmin)
+};
 
 export const routes = {
     '/': {
@@ -39,7 +45,8 @@ export const routes = {
         name: "Admin",
         navBar: true,
         ...wrap({
-            component: Admin
+            component: Admin,
+            conditions: [condition_isAdmin]
         })
     }
 };

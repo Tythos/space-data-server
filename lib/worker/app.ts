@@ -133,7 +133,7 @@ app.get("/sql/", (req: any, res: any, next: any) => {
 });
 
 app.get("/admin/settings", getSettings);
-app.get("/admincheck", adminCheck);
+app.get("/admin/check", adminCheck);
 
 app.post("/admin/settings", saveSettings);
 app.get("/admin/cwd", (req: any, res: any, next: any) => {

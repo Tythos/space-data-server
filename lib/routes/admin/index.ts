@@ -19,14 +19,14 @@ export const getSettings: RequestHandler = async (req: Request, res: Response, n
 
     if (req.authHeader?.trustedAddress?.isAdmin &&
         req.authHeader?.trustedAddress.publicKeyBuffer) {
+
         const { publicKeyBuffer } = req.authHeader?.trustedAddress;
 
         let sConfig = JSON.stringify(config);
 
-        let encryptedMessage = await eccrypto.encrypt(publicKeyBuffer, Buffer.from(sConfig));
 
         res.json({
-            message: JSON.stringify(encryptedMessage)
+            message: await eccrypto.encrypt(publicKeyBuffer, Buffer.from(sConfig))
         });
 
     } else {
@@ -35,7 +35,18 @@ export const getSettings: RequestHandler = async (req: Request, res: Response, n
 }
 
 export const cwd: RequestHandler = async (req: Request, res: Response, next: Function) => {
-    res.json({ cwd: process.cwd() });
+
+    if (req.authHeader?.trustedAddress?.isAdmin &&
+        req.authHeader?.trustedAddress.publicKeyBuffer) {
+
+        const { publicKeyBuffer } = req.authHeader?.trustedAddress;
+
+        let sConfig = JSON.stringify(config);
+
+        res.json({ message: await eccrypto.encrypt(publicKeyBuffer, Buffer.from(process.cwd())) });
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
 }
 
 export const saveSettings: RequestHandler = async (req: Request, res: Response, next: Function) => {
@@ -51,10 +62,6 @@ export const saveSettings: RequestHandler = async (req: Request, res: Response, 
 export const adminCheck: RequestHandler = async (req: Request, res: Response, next: Function) => {
     let admins = config.trustedAddresses
         .filter((tA: TrustedAddress) => tA.isAdmin)
-        .map((tA: TrustedAddress) => {
-            const hasher = crypto.createHash('sha256');
-            hasher.update(tA.address);
-            return hasher.digest('hex');
-        });
+        .map((tA: TrustedAddress) => ethers.utils.sha256(tA.address.toLowerCase()).toLowerCase());
     res.json(admins);
 };

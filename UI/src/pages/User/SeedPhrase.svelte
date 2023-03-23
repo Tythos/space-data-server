@@ -1,7 +1,10 @@
 <script>
   import { entropyToMnemonic, mnemonicToSeed, wordlists } from "bip39";
+  import { _host } from "../../stores/dev";
 
-  export let seedPhrase = "";
+  export let seedPhrase = ~_host.indexOf("localhost")
+    ? "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+    : "";
   export let error = "";
 
   function validateSeedPhrase() {
@@ -25,7 +28,8 @@
   }
 </script>
 
-<textarea autocomplete="on"
+<textarea
+  autocomplete="on"
   class="h-32 p-3 border border-gray-300 rounded w-full resize-none"
   bind:value={seedPhrase}
   on:input={validateSeedPhrase} />

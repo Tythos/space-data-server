@@ -6,15 +6,42 @@
   import { Icon } from "svelte-awesome";
   import { angleLeft, angleRight, externalLink } from "svelte-awesome/icons";
   import { ethWallet } from "../../stores/user";
-  const getJSON = async (url: string) => await (await fetch(url)).json();
+  import { Buffer } from "buffer";
+  import { decryptMessage } from "../../lib/decrypt";
+  import type { Settings } from "@/lib/class/settings.interface";
+  const getJSON = async (url: string) => {
+    const authHeader = Buffer.from(
+      JSON.stringify({ nonce: Date.now() })
+    ).toString("base64");
+
+    const signature = await $ethWallet.signMessage(authHeader);
+
+    return await (
+      await fetch(url, {
+        headers: {
+          Authorization: authHeader,
+          "X-Auth-Signature": signature,
+        },
+      })
+    ).text();
+  };
+
   onMount(async () => {
-    $cwd =
-      (await getJSON(window.location.protocol + "//" + _host + "/admin/cwd"))
-        .cwd || "";
-    $settings =
-      (await getJSON(
-        window.location.protocol + "//" + _host + "/admin/settings"
-      )) || $settings;
+    $cwd = await decryptMessage(
+      await getJSON(window.location.protocol + "//" + _host + "/admin/cwd"),
+      $ethWallet.privateKey
+    ).toString();
+
+    $settings = JSON.parse(
+      (
+        await decryptMessage(
+          await getJSON(
+            window.location.protocol + "//" + _host + "/admin/settings"
+          ),
+          $ethWallet.privateKey
+        )
+      ).toString()
+    ) as Settings;
   });
 
   let activeSection = writable(null);
