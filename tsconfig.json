@@ -2,7 +2,6 @@
   "compilerOptions": {
     "typeRoots": [
       "./lib/class",
-      "./lib/class/index.d.ts",
       "node_modules/@types"
     ],
     "noImplicitThis": false,
