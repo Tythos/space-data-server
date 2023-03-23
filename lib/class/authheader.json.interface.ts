@@ -2,7 +2,7 @@ import { Settings, TrustedAddress } from "./settings.interface";
 
 interface AuthHeader {
     trustedAddress?: TrustedAddress,
-    nonce: Number,
+    nonce: number,
 }
 
 export interface AuthCIDHeader extends AuthHeader {

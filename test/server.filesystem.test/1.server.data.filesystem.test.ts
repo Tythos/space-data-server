@@ -85,7 +85,7 @@ describe("POST /endpoint Write To File System", () => {
 
                 const authMessage: AuthCIDHeader = {
                     CID,
-                    nonce: performance.now(),
+                    nonce: Date.now()
                 };
 
                 const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");

@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./lib/class", "node_modules/@types"],
+    "typeRoots": [
+      "./lib/class",
+      "./lib/class/index.d.ts",
+      "node_modules/@types"
+    ],
     "noImplicitThis": false,
     "noImplicitAny": false,
     "target": "esnext",
@@ -23,8 +27,7 @@
   "include": [
     "lib/**/*",
     "node_modules/keyconverter/build/types/src/keyconverter.d.ts",
-    "scripts",
-    "test"
+    "scripts"
   ],
   "exclude": [
     "node_modules/**/*",
@@ -38,7 +41,6 @@
     "smartcontract",
     "test/**/*",
     "UI/**/*",
-    ".keys",
-    "**/**/*"
+    ".keys"
   ]
 }

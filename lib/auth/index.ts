@@ -12,6 +12,8 @@ export const validateHeaders = (req: Request, res: Response, next: NextFunction)
     const authHeader = req.headers.authorization;
     const signatureHeader = req.headers['x-auth-signature'];
 
+    req.authHeader = undefined;
+
     if (authHeader && signatureHeader) {
 
         let authHeaderObj: AuthCIDHeader | AuthSettingsHeader;
@@ -19,29 +21,39 @@ export const validateHeaders = (req: Request, res: Response, next: NextFunction)
         try {
             const decodedData = Buffer.from(authHeader, 'base64').toString();
             authHeaderObj = JSON.parse(decodedData);
-            console.log(authHeaderObj.nonce);
         } catch (error) {
             return res.status(400).json({
                 error: 'Invalid authorization header. Expected a base64 stringified JSON',
             });
         }
 
-        try {
-            const recoveredAddress = ethers.utils.verifyMessage(authHeader, signatureHeader as any);
-            const trustedAddress = getTrustedAddress(recoveredAddress);
-            if (!trustedAddress) {
-                return res.status(401).json({
-                    error: 'Invalid x-auth-signature. Signature does not match the provided Ethereum address',
-                });
-            } else {
-                authHeaderObj.trustedAddress = trustedAddress;
-                req.authHeader = { ...authHeaderObj };
-            }
-        } catch (error) {
-            console.log(error)
-            return res.status(400).json({
-                error: 'Error verifying the x-auth-signature',
+        //Nonce Check
+        const nonceDelta = Date.now() - authHeaderObj.nonce;
+        if (nonceDelta > config.nonceTimeout) {
+
+            return res.status(401).json({
+                error: 'Invalid nonce value',
             });
+
+        } else {
+
+            try {
+                const recoveredAddress = ethers.utils.verifyMessage(authHeader, signatureHeader as any);
+                const trustedAddress = getTrustedAddress(recoveredAddress);
+                if (!trustedAddress) {
+                    return res.status(401).json({
+                        error: 'Invalid x-auth-signature. Signature does not match the provided Ethereum address',
+                    });
+                } else {
+                    authHeaderObj.trustedAddress = trustedAddress;
+                    req.authHeader = { ...authHeaderObj };
+                }
+            } catch (error) {
+                console.log(error)
+                return res.status(400).json({
+                    error: 'Error verifying the x-auth-signature',
+                });
+            }
         }
     }
     next();

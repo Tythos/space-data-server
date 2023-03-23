@@ -73,6 +73,8 @@ describe("POST /endpoint Write To Database", () => {
 
                 const CID = await ipfsHash.of(flatbufferBinary);
 
+                //Missing Auth Headers
+
                 const jsonResponseError = await request(app)
                     .post(`/spacedata/${standard}`)
                     .set("Content-Type", "application/octet-stream")
@@ -83,9 +85,11 @@ describe("POST /endpoint Write To Database", () => {
 
                 expect(jsonResponseError.body.error).toMatch('Missing required headers: authorization and/or x-auth-signature');
 
+
+                //Bad Nonce
                 const authMessage: AuthCIDHeader = {
                     CID,
-                    nonce: performance.now(),
+                    nonce: new Date("2000-01-01").getTime()
                 };
 
                 const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
@@ -97,7 +101,24 @@ describe("POST /endpoint Write To Database", () => {
                     .set("authorization", authHeader)
                     .set("x-auth-signature", authSignature)
                     .send(flatbufferBinary);
-                expect(fbResponse.status).toBe(200);
+                expect(fbResponse.status).toBe(401);
+
+                //Good Nonce
+                const authMessage2: AuthCIDHeader = {
+                    CID,
+                    nonce: Date.now()
+                };
+                const authHeader2 = Buffer.from(JSON.stringify(authMessage2)).toString("base64");
+                const authSignature2 = await ethWallet.signMessage(authHeader2);
+
+                const fbResponse2 = await request(app)
+                    .post(`/spacedata/${standard}`)
+                    .set("Content-Type", "application/octet-stream")
+                    .set("authorization", authHeader2)
+                    .set("x-auth-signature", authSignature2)
+                    .send(flatbufferBinary);
+                expect(fbResponse2.status).toBe(200);
+
 
                 const postedFile = await request(app).get(
                     `/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}`)
@@ -127,7 +148,7 @@ describe("POST /endpoint Write To Database", () => {
 
                 const authMessage: AuthCIDHeader = {
                     CID,
-                    nonce: performance.now(),
+                    nonce: Date.now()
                 };
 
                 const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
