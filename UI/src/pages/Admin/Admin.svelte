@@ -27,9 +27,11 @@
   };
 
   onMount(async () => {
-    $cwd = await decryptMessage(
-      await getJSON(window.location.protocol + "//" + _host + "/admin/cwd"),
-      $ethWallet.privateKey
+    $cwd = (
+      await decryptMessage(
+        await getJSON(window.location.protocol + "//" + _host + "/admin/cwd"),
+        $ethWallet.privateKey
+      )
     ).toString();
 
     $settings = JSON.parse(
@@ -52,6 +54,7 @@
 
   const updateSettings = async () => {
     const body = JSON.stringify($settings);
+    console.log(body)
     let result = await fetch(
       window.location.protocol + "//" + _host + "/admin/settings",
       {
@@ -94,6 +97,7 @@
         CN: "",
         comment: "",
         trust: 1,
+        isAdmin: false,
       });
       return current;
     });
@@ -233,6 +237,7 @@
                   <input
                     id="dn_input"
                     type="text"
+                    pattern="^0x[a-fA-F0-9]{'{'}40{'}'}"
                     bind:value={$settings.trustedAddresses[activeTrustedAddress]
                       .address}
                     required
@@ -274,7 +279,7 @@
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
                 </div>
                 <div class="px-6 py-4 flex flex-col gap-1">
-                  <label for="dn_input">TRUST (0-255)</label>
+                  <label for="dn_input">TRUST (1-255)</label>
                   <input
                     type="number"
                     min="1"
@@ -282,6 +287,15 @@
                     bind:value={$settings.trustedAddresses[activeTrustedAddress]
                       .trust}
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
+                </div>
+                <div class="px-6 py-4 flex gap-3">
+                  <label for="isAdmin_input">SERVER ADMIN</label>
+                  <input
+                    type="checkbox"
+                    bind:checked={$settings.trustedAddresses[
+                      activeTrustedAddress
+                    ].isAdmin}
+                    class=" px-3 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
                 </div>
                 <div class="px-6 py-6 flex flex-col gap-1">
                   <button

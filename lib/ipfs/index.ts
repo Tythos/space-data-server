@@ -2,11 +2,13 @@ import { join } from "path";
 import { ChildProcess, exec } from 'node:child_process';
 import { promisify } from "node:util";
 const execP = promisify(exec);
-import { existsSync, mkdirSync, writeFileSync, rmSync, readdirSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync, rmSync, readdirSync, readFileSync } from "fs";
 import { execSync, spawn } from "child_process";
-const rootDir = join(__dirname, "..");
+const rootDir = process.cwd();
 const ipfsPath = process.env.IPFS_PATH || join(rootDir, "go-ipfs/");
+const keyPath = `${rootDir}/.keys`;
 const env = { IPFS_PATH: ipfsPath };
+import { FormatOptions, keyconverter } from "keyconverter/src/keyconverter";
 
 /* TODO
 - https://docs.ipfs.tech/how-to/command-line-quick-start/
@@ -58,26 +60,62 @@ export interface IPFSController {
 }
 
 export class IPFSUtilities {
-    static importKey = function (key: ArrayBuffer) {
-        const keyPath = `${rootDir}/.keys`;
+    static importKey = function (key: ArrayBuffer, inputKeyName: string = keyName) {
         if (!existsSync(keyPath)) {
             mkdirSync(keyPath);
         }
         let { env } = this;
-        let fileName = `${keyPath}/${keyName}.proto`;
+        let fileName = `${keyPath}/${inputKeyName}.proto`;
         writeFileSync(fileName, Buffer.from(key as ArrayBuffer));
         let output: any;
         try {
             const options = { stdio: 'pipe' };
-            output = execSync(`${ipfsPath}ipfs key rm ${keyName}`, { env }).toString();
-            output = execSync(`${ipfsPath}ipfs key import ${keyName} ${fileName} --allow-any-key-type`, { env }).toString();
+            output = execSync(`${ipfsPath}ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
         } catch (error: any) {
             output = error.toString();
+            console.log("ERROR", output);
         }
 
         rmSync(fileName);
         return output;
     };
+
+    static exportKey = function (inputKeyName: string = keyName, fileName?: string) {
+
+        if (!existsSync(keyPath)) {
+            mkdirSync(keyPath);
+        }
+
+        const keyFile = `${keyPath}/${fileName || inputKeyName}`;
+
+        let output: any;
+
+        try {
+            const options = { stdio: 'pipe' };
+            output = execSync(`${ipfsPath}ipfs key export ${inputKeyName} -o=${keyFile}`, { env }).toString();
+        } catch (error: any) {
+            output = error.toString();
+            console.log("ERROR", output)
+        }
+
+        return output;
+    };
+
+    static readKey = async function (inputKeyName: string = keyName, format: FormatOptions) {
+        const fileName = `${performance.now()}.proto`;
+        IPFSUtilities.exportKey(inputKeyName, fileName);
+        const fileNamePath = join(keyPath, fileName);
+        let keyProtoBuf = readFileSync(fileNamePath);
+        let kC2 = new keyconverter({
+            kty: "EC",
+            name: "ECDSA",
+            namedCurve: "K-256",
+            hash: "SHA-256"
+        } as EcKeyGenParams);
+        rmSync(fileNamePath);
+        await kC2.import(keyProtoBuf, "ipfs:protobuf");
+        return await kC2.export(format, "private");
+    }
 }
 
 export interface IPFSControllerCollection {
@@ -103,11 +141,11 @@ const isInstanceActive = function () {
     return this.process.exitCode === null;
 }
 
-const api = async function (path: string, queryString: object = {}, args: object = {}) {
-    args = Object.assign({}, apiArgs, args);
+const api = async function (path: string, args: object = {}) {
+    const uargs = Object.assign({}, apiArgs, args);
     let returnContent;
 
-    let apiCall = await fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}` + (queryString ? "?" + new URLSearchParams(queryString as any) : ""), args);
+    let apiCall = await fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}`, uargs as any);
     let { ok, statusText } = apiCall;
     if (ok) {
         let returnObj = await apiCall.text();
@@ -122,8 +160,6 @@ const api = async function (path: string, queryString: object = {}, args: object
     }
     return returnContent;
 }
-
-
 
 const publishDirectory = async function (folder: string) {
     let output;
@@ -142,8 +178,6 @@ const publishDirectory = async function (folder: string) {
     const keys = await this.api("/key/list");
 
     const keyId = getKeyId(keys, 'SpaceDataServer_Key', 'self');
-
-    console.log(keyId);
 
     setTimeout(() => {
         try {
@@ -169,6 +203,7 @@ export const startIPFS = async (gatewayPort: Number = 5001, apiPort: Number = 90
     try {
         await execP(`${execPath} init`, { env });
     } catch (e) {
+
     }
 
     const cmds = [`${execPath} config Addresses.Gateway /ip4/0.0.0.0/tcp/${gatewayPort}`,

@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "23.3.3-0.1.1-1.7.0001+1679612934891",
+    "version": "23.3.3-0.1.1-1.7.0001+1679667028016",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -38,7 +38,7 @@
         "test:server:filesystem": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",
         "test:admin": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.admin.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/admin.test",
         "test:parser": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && jest --watchAll --detectOpenHandles --runInBand ./test/parser.test",
-        "test:ipfs": "export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test",
+        "test:ipfs": "killall ipfs & export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test",
         "test:smartcontract": "nodemon --config nodemon.smartcontract.json"
     },
     "keywords": [],
@@ -130,7 +130,7 @@
         "elliptic": "^6.5.4",
         "jest-environment-jsdom": "^29.4.3",
         "key-encoder": "^2.0.3",
-        "keyconverter": "^1.0.7",
+        "keyconverter": "^1.1.0",
         "standard-ecies": "^2.0.0",
         "swagger-ui-dist": "^4.15.5"
     },
