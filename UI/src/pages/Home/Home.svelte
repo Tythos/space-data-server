@@ -10,11 +10,12 @@
     <ul>
       <li>
         The core services accept files and validate digital signatures based on
-        Ethereum.
+        <a class="text-blue-300" href="https://ethereum.org/"> Ethereum.</a>
       </li>
       <li>
-        The files are also made available through <a class="text-blue-300" href="https://ipfs.tech/"
-          >The Interplanetary File System (IPFS)</a>
+        The files are also made available through <a
+          class="text-blue-300"
+          href="https://ipfs.tech/">The Interplanetary File System (IPFS)</a>
       </li>
     </ul>
   </div>
