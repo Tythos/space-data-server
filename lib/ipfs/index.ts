@@ -2,11 +2,14 @@ import { join } from "path";
 import { ChildProcess, exec } from 'node:child_process';
 import { promisify } from "node:util";
 const execP = promisify(exec);
-import { existsSync, mkdirSync, writeFileSync, rmSync, readdirSync, readFileSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync, rmSync, readdirSync, readFileSync, chmodSync } from "fs";
 import { execSync, spawn } from "child_process";
 const rootDir = process.cwd();
 const ipfsPath = process.env.IPFS_PATH || join(rootDir, "go-ipfs/");
 const keyPath = `${rootDir}/.keys`;
+
+mkdirSync(keyPath, { recursive: true });
+
 const env = { IPFS_PATH: ipfsPath };
 import { FormatOptions, keyconverter } from "keyconverter/src/keyconverter";
 
