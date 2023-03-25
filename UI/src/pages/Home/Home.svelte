@@ -13,7 +13,7 @@
         Ethereum.
       </li>
       <li>
-        The files are also made available through <a href="https://ipfs.tech/"
+        The files are also made available through <a class="text-blue-300" href="https://ipfs.tech/"
           >The Interplanetary File System (IPFS)</a>
       </li>
     </ul>
