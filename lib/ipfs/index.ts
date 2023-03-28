@@ -8,11 +8,14 @@ import { FormatOptions, keyconverter } from "keyconverter/src/keyconverter";
 import * as bip39 from "bip39";
 
 const rootDir = process.cwd();
-const ipfsPath = process.env.IPFS_PATH || join(rootDir, "go-ipfs/");
+const ipfsPath = process.env.IPFS_PATH || join(rootDir, "go-ipfs");
 const keyPath = `${rootDir}/.keys`;
 
 mkdirSync(keyPath, { recursive: true });
 
+
+const env = { IPFS_PATH: ipfsPath };
+console.log(ipfsPath)
 const kCArgs = {
     kty: "EC",
     name: "ECDSA",
@@ -77,13 +80,13 @@ export class IPFSUtilities {
         let output: any;
 
         try {
-            output = execSync(`${ipfsPath}ipfs key rm ${inputKeyName}`, { env }).toString();
+            output = execSync(`${ipfsPath}/ipfs key rm ${inputKeyName}`, { env }).toString();
         } catch (e) {
 
         }
 
         try {
-            output = execSync(`${ipfsPath}ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
+            output = execSync(`${ipfsPath}/ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
         } catch (error: any) {
             output = error.toString();
             console.log("ERROR", output);
@@ -105,7 +108,7 @@ export class IPFSUtilities {
         let output: any;
 
         try {
-            output = execSync(`${ipfsPath}ipfs key export ${inputKeyName} -o=${keyFile}`).toString();
+            output = execSync(`${ipfsPath}/ipfs key export ${inputKeyName} -o=${keyFile}`, { env }).toString();
         } catch (error: any) {
             output = error.toString();
             console.log("ERROR", output)
@@ -159,7 +162,7 @@ const api = async function (path: string, args: object = {}) {
     const uargs = Object.assign({}, apiArgs, args);
     let returnContent;
 
-    let apiCall = await fetch(`http://0.0.0.0:${this.apiPort}/api/v0${path}`, uargs as any);
+    let apiCall = await fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}`, uargs as any);
     let { ok, statusText } = apiCall;
     if (ok) {
         let returnObj = await apiCall.text();
@@ -187,7 +190,7 @@ const publishDirectory = async function (folder: string) {
 
     try {
         const options = { stdio: 'pipe' };
-        output = execSync(`cd ${folder} && ${ipfsPath}ipfs add -w -r *`).toString();
+        output = execSync(`cd ${folder} && ${ipfsPath}/ipfs add -w -r *`).toString();
     } catch (error: any) {
         output = error.toString();
     }
@@ -204,7 +207,7 @@ const publishDirectory = async function (folder: string) {
 
     setTimeout(() => {
         try {
-            output = execSync(`${ipfsPath}ipfs name publish --key=${keyId} ${folderHash}`).toString();
+            output = execSync(`${ipfsPath}/ipfs name publish --key=${keyId} ${folderHash}`, { env }).toString();
             console.log(output);
         } catch (e) {
             console.log(e)
@@ -221,7 +224,7 @@ export const startIPFS = async (gatewayPort: Number = 5002, apiPort: Number = 50
         mkdirSync(IPFS_PATH);
     }
 
-    const execPath = `${ipfsPath}ipfs`;
+    const execPath = `${ipfsPath}/ipfs`;
 
     try {
         await execP(`${execPath} init`);
@@ -233,11 +236,11 @@ export const startIPFS = async (gatewayPort: Number = 5002, apiPort: Number = 50
     `${execPath} config Addresses.API /ip4/127.0.0.1/tcp/${apiPort}`];
 
     for (let cmd in cmds) {
-        await execP(cmds[cmd]);
+        await execP(cmds[cmd], { env });
     }
 
     let iPSC = ipfsControllerCollection[gPS] = {
-        process: spawn(execPath, ["daemon"]),
+        process: spawn(execPath, ["daemon"], { env }),
         gatewayPort,
         apiPort,
         api,
@@ -245,31 +248,25 @@ export const startIPFS = async (gatewayPort: Number = 5002, apiPort: Number = 50
         isInstanceActive
     } as IPFSController;
 
-    setTimeout(async () => {
-        //Create Default SpaceDataServer_Key if none exist
-        await iPSC.api(`/key/rm?arg=${keyName}`);
-        const keys = await iPSC.api("/key/list");
-        let key = getKeyId(keys, "SpaceDataServer_Key", "self");
-        let pKLen = 128;
-        if (key.Name === "self") {
+    //Create Default SpaceDataServer_Key if none exist
+    const keys = await iPSC.api("/key/list");
+    let key = getKeyId(keys, "SpaceDataServer_Key", "self");
+    let pKLen = 128;
+    if (key.Name === "self") {
 
-            let kC = new keyconverter(kCArgs, pKLen);
-            let mm = bip39.generateMnemonic(pKLen);
+        let kC = new keyconverter(kCArgs, pKLen);
+        let mm = bip39.generateMnemonic(pKLen);
 
-            console.log(mm);
+        console.log(mm);
 
-            await kC.import(mm, "bip39");
+        await kC.import(mm, "bip39");
 
-            console.log(await kC.export("bip39", "private"));
+        console.log(await kC.export("bip39", "private"));
 
-            IPFSUtilities.importKey(
-                await kC.export("ipfs:protobuf", "private") as ArrayBuffer,
-                keyName);
-        }
-        console.log(await IPFSUtilities.readKey(keyName, "bip39", pKLen));
-    }, 1000)
-
-
+        IPFSUtilities.importKey(
+            await kC.export("ipfs:protobuf", "private") as ArrayBuffer,
+            keyName);
+    }
 
     return iPSC;
 }
