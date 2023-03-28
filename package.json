@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "23.3.3-0.1.1-1.8.0001+1680025060491",
+    "version": "23.3.3-0.1.1-1.9.0001+1680025143141",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -17,7 +17,7 @@
         "build": "npm run build:standards && npm run build:celestrak:parsers && cp -R ./node_modules/better-sqlite3/build/Release/* build/ && npm run build:esbuild && node ./scripts/updateVersion.mjs",
         "build:cli": "esbuild cli.ts --bundle --platform=node --outfile=./build/cli.cjs",
         "build:ui": "cd UI && npm run build",
-        "build:esbuild": "esbuild index.ts --sourcemap --external:pg-native --external:better_sqlite3 --bundle --platform=node --external:fsevents --outfile=./build/server.cjs",
+        "build:esbuild": "esbuild index.ts --external:pg-native --external:better_sqlite3 --bundle --platform=node --external:fsevents --outfile=./build/server.cjs",
         "build:celestrak:parsers": "npm run build:celestrak:parser:omm && npm run build:celestrak:parser:cat",
         "build:celestrak:parser:omm": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.omm.ts --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.omm.cjs",
         "build:celestrak:parser:cat": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.cat.ts --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.cat.cjs",
