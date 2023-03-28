@@ -11,7 +11,6 @@ import { providers, cid } from "@/lib/routes/spacedata/providers";
 import { sql } from "@/lib/routes/standards/sql";
 import { schema } from "@/lib/routes/standards/schema";
 import { idl } from "@/lib/routes/standards/idl";
-import apicache from "apicache";
 import swaggerFile from "@/swagger-output.json";
 import { ui } from "@/lib/ui/index";
 import { echo } from "@/lib/routes/spacedata/echo";
@@ -22,8 +21,6 @@ import { Http2SecureServer } from "http2";
 import { adminCheck, cwd, getSettings, saveSettings } from "../routes/admin";
 
 const rawUI = Buffer.from(ui, "base64").toString();
-
-let cache = apicache.middleware;
 
 let app: Express | https.Server = express();
 

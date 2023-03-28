@@ -2,14 +2,14 @@ import { InitableProcess } from "../class/process.interface";
 import cluster, { Worker } from "cluster";
 import { cpus } from "os";
 import { pid } from "process";
-import { ChildProcess } from 'node:child_process';
+import { ChildProcess } from "node:child_process";
 import { generateDatabase } from "../database/generateTables";
 import { config } from "../config/config";
 import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
 import { existsSync, mkdirSync } from "fs";
 import standardsJSON from "../standards/schemas.json";
-
+import type { IPC } from "../class/ipc.interface";
 
 //TODO Move to Config
 
@@ -44,10 +44,12 @@ const forkWorkers = (worker?: Worker) => {
         }
         let cWorker: ChildProcess | any = cluster.fork({ "BINGO": needBingo });
 
-        cWorker.on('message', (msg) => {
-            if (msg === 'restartWorkers') {
-                console.log('Received restart request from worker');
+        cWorker.on("message", (msg: IPC) => {
+            if (msg.command === "restartWorkers") {
+                console.log("Received restart request from worker");
                 restartWorkers();
+            } else if (msg.command === "encrypt") {
+
             }
         });
         bingoProcess = needBingo ? cWorker.process.pid : bingoProcess;

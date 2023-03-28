@@ -12,11 +12,8 @@ import cluster, { Worker } from "cluster";
 
 const port: String | undefined = process.env.PORT || config.server.port.toString() || "3000";
 
-
 const gatewayPort = 5002;
 const apiPort = 9002;
-
-
 
 export default {
     ipfsController: undefined as IPFSController | undefined,

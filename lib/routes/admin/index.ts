@@ -9,6 +9,7 @@ import { TrustedAddress } from "@/lib/class/settings.interface";
 import crypto from 'crypto';
 import { AuthCIDHeader, encryptedMessage } from "@/lib/class/authheader.json.interface";
 import eccrypto, { encrypt } from "@toruslabs/eccrypto";
+import { IPC } from "@/lib/class/ipc.interface";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 const cFP = config?.data?.fileSystemPath;
@@ -54,7 +55,7 @@ export const saveSettings: RequestHandler = async (req: Request, res: Response, 
     if (req.authHeader?.trustedAddress?.isAdmin) {
         writeFileSync(join(process.cwd(), "config.json"), JSON.stringify(req.body, null, 4));
         setTimeout(() => {
-            process.send?.("restartWorkers");
+            process.send?.({ command: "restartWorkers" } as IPC);
         }, 5000);
     }
 }

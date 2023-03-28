@@ -41,8 +41,7 @@ describe('Test Publishing to IPFS', () => {
         expect(Array.isArray(keys.Keys)).toBeTruthy();
     });
 
-    test("should add a new key", async () => {
-
+    test("should add a new key (Note: API cannot generate secp256k1 keys)", async () => {
         const key = await ipfsController.api(`/key/gen?arg=${keyName}`);
         expect(key).toBeDefined();
         expect(key).toHaveProperty("Name", keyName);
