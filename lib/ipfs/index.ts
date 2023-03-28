@@ -250,7 +250,7 @@ export const startIPFS = async (gatewayPort: Number = 5002, apiPort: Number = 50
         await iPSC.api(`/key/rm?arg=${keyName}`);
         const keys = await iPSC.api("/key/list");
         let key = getKeyId(keys, "SpaceDataServer_Key", "self");
-        let pKLen = 256;
+        let pKLen = 128;
         if (key.Name === "self") {
 
             let kC = new keyconverter(kCArgs, pKLen);
