@@ -18,7 +18,7 @@ import https from "https";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { Http2SecureServer } from "http2";
-import { adminCheck, cwd, getSettings, saveSettings } from "../routes/admin";
+import { adminCheck, cwd, getSettings, saveSettings, getServerPublicKey } from "../routes/admin";
 
 const rawUI = Buffer.from(ui, "base64").toString();
 
@@ -136,6 +136,9 @@ app.post("/admin/settings", saveSettings);
 app.get("/admin/cwd", (req: any, res: any, next: any) => {
     cwd(req, res, next);
 });
+
+app.get("/publicKey", getServerPublicKey);
+
 try {
     let key = join(__dirname, "..", config.server.key || "");
     let cert = join(__dirname, "..", config.server.cert || "");

@@ -7,9 +7,10 @@ import { generateDatabase } from "../database/generateTables";
 import { config } from "../config/config";
 import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync } from "fs";
 import standardsJSON from "../standards/schemas.json";
-import type { IPC } from "../class/ipc.interface";
+import { COMMANDS, IPC } from "../class/ipc.interface";
+import { HDNodeWallet } from "ethers";
 
 //TODO Move to Config
 
@@ -18,7 +19,8 @@ const databaseConfig = (config.database.config as any)[config.database.config.pr
 let standardsArray: Array<JSONSchema4> = Object.values(standardsJSON) as unknown as Array<JSONSchema4>;
 const totalCPUs = cpus().length;
 
-let bingoProcess: Number = 0;
+let bingoWorker: Worker | undefined;
+let ethWallet;
 
 const restartWorkers = () => {
     // Disconnect all workers
@@ -29,7 +31,7 @@ const restartWorkers = () => {
             worker.disconnect();
         }
     }
-    bingoProcess = 0;
+    bingoWorker = undefined;
     // Start new worker processes
     forkWorkers();
 };
@@ -38,21 +40,31 @@ const forkWorkers = (worker?: Worker) => {
     while (Object.keys(
         cluster.workers as unknown as NodeJS.Dict<Worker>
     ).length < totalCPUs) {
+
         let needBingo = false;
-        if (!bingoProcess || worker?.process.pid === bingoProcess) {
+
+        if (bingoWorker === undefined || worker?.process.pid === bingoWorker?.process.pid) {
             needBingo = true;
         }
+
         let cWorker: ChildProcess | any = cluster.fork({ "BINGO": needBingo });
+        bingoWorker = needBingo ? cWorker : bingoWorker;
 
         cWorker.on("message", (msg: IPC) => {
-            if (msg.command === "restartWorkers") {
+            if (msg.command === COMMANDS["WORKERS:RESTART"]) {
                 console.log("Received restart request from worker");
                 restartWorkers();
-            } else if (msg.command === "encrypt") {
-
+            } else if (msg.command === COMMANDS["IPFS:PRIVATEKEY:RESPONSE"]) {
+                ethWallet = HDNodeWallet.fromPhrase(msg.payload);
+            } else if (msg.command === COMMANDS["IPFS:PUBLICKEY:REQUEST"]) {
+                cWorker.send({
+                    id: msg.id,
+                    command: COMMANDS["IPFS:PUBLICKEY:RESPONSE"],
+                    payload: ethWallet?.publicKey
+                });
             }
         });
-        bingoProcess = needBingo ? cWorker.process.pid : bingoProcess;
+
     }
 }
 

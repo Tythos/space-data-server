@@ -6,10 +6,9 @@ import { join, resolve } from "path";
 import * as ethers from "ethers";
 import { writeFileSync } from "node:fs";
 import { TrustedAddress } from "@/lib/class/settings.interface";
-import crypto from 'crypto';
-import { AuthCIDHeader, encryptedMessage } from "@/lib/class/authheader.json.interface";
-import eccrypto, { encrypt } from "@toruslabs/eccrypto";
-import { IPC } from "@/lib/class/ipc.interface";
+import { encrypt } from "@toruslabs/eccrypto";
+import { COMMANDS, IPC } from "@/lib/class/ipc.interface";
+import { ipcRequest } from "@/lib/utility/ipc";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
 const cFP = config?.data?.fileSystemPath;
@@ -27,7 +26,7 @@ export const getSettings: RequestHandler = async (req: Request, res: Response, n
 
 
         res.json({
-            message: await eccrypto.encrypt(publicKeyBuffer, Buffer.from(sConfig))
+            message: await encrypt(publicKeyBuffer, Buffer.from(sConfig))
         });
 
     } else {
@@ -42,7 +41,7 @@ export const cwd: RequestHandler = async (req: Request, res: Response, next: Fun
 
         const { publicKeyBuffer } = req.authHeader?.trustedAddress;
 
-        res.json({ message: await eccrypto.encrypt(publicKeyBuffer, Buffer.from(process.cwd())) });
+        res.json({ message: await encrypt(publicKeyBuffer, Buffer.from(process.cwd())) });
     } else {
         res.status(401).json({ error: 'Unauthorized' });
     }
@@ -53,7 +52,7 @@ export const saveSettings: RequestHandler = async (req: Request, res: Response, 
     if (req.authHeader?.trustedAddress?.isAdmin) {
         writeFileSync(join(process.cwd(), "config.json"), JSON.stringify(req.body, null, 4));
         setTimeout(() => {
-            process.send?.({ command: "restartWorkers" } as IPC);
+            process.send?.({ command: COMMANDS["WORKERS:RESTART"] } as IPC);
         }, 5000);
     }
 }
@@ -64,3 +63,8 @@ export const adminCheck: RequestHandler = async (req: Request, res: Response, ne
         .map((tA: TrustedAddress) => ethers.sha256(tA.address.toLowerCase()).toLowerCase());
     res.json(admins);
 };
+
+export const getServerPublicKey: RequestHandler = async (req: Request, res: Response, next: Function) => {
+    let publicKey = await ipcRequest({ command: COMMANDS["IPFS:PUBLICKEY:REQUEST"] } as IPC);
+    res.json({ publicKey });
+}

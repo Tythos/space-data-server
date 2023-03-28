@@ -15,7 +15,7 @@ mkdirSync(keyPath, { recursive: true });
 
 
 const env = { IPFS_PATH: ipfsPath };
-console.log(ipfsPath)
+
 const kCArgs = {
     kty: "EC",
     name: "ECDSA",
@@ -44,7 +44,8 @@ interface Data {
     Keys: Key[];
 }
 
-const keyName: string = "SpaceDataServer_Key";
+export const keyName: string = "SpaceDataServer_Key";
+export const pKeyLength: number = 128;
 
 function getKeyId(data: Data, targetKey: string, fallbackKey: string): Key {
     const target = data.Keys.find((key) => key.Name === targetKey);
@@ -117,7 +118,7 @@ export class IPFSUtilities {
         return output;
     };
 
-    static readKey = async function (inputKeyName: string = keyName, format: FormatOptions, keyLength: number = 128): Promise<any> {
+    static readKey = async function (inputKeyName: string = keyName, format: FormatOptions, keyLength: number = pKeyLength): Promise<any> {
         const fileName = `${performance.now()}.proto`;
         IPFSUtilities.exportKey(inputKeyName, fileName);
         const fileNamePath = join(keyPath, fileName);
@@ -253,10 +254,10 @@ export const startIPFS = async (gatewayPort: Number = 5002, apiPort: Number = 50
     //Create Default SpaceDataServer_Key if none exist
     const keys = await iPSC.api("/key/list");
     let key = getKeyId(keys, "SpaceDataServer_Key", "self");
-    let pKLen = 128;
+
     if (key.Name === "self") {
-        let kC = new keyconverter(kCArgs, pKLen);
-        let mm = bip39.generateMnemonic(pKLen);
+        let kC = new keyconverter(kCArgs, pKeyLength);
+        let mm = bip39.generateMnemonic(pKeyLength);
         await kC.import(mm, "bip39");
         IPFSUtilities.importKey(
             await kC.export("ipfs:protobuf", "private") as ArrayBuffer,
