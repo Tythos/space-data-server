@@ -1,10 +1,9 @@
 import { readable, writable, type Readable, type Writable } from "svelte/store";
-import { Wallet, providers } from "ethers";
+import { CloudflareProvider, HDNodeWallet } from "ethers";
 import type { Bip32Path, Bip32Hardened } from "@/lib/class/utility/BIP32";
 
-export const ethWallet: Writable<Wallet> = writable(null);
-export const hdNode = writable(null);
-export const provider: Readable<any> = readable(new providers.CloudflareProvider("homestead"));
+export const ethWallet: Writable<HDNodeWallet> = writable(null);
+export const provider: Readable<any> = readable(new CloudflareProvider("homestead"));
 export const derivationPath = writable({
     purpose: { value: 44, h: "'" as Bip32Hardened },
     cointype: { value: 60, h: "'" as Bip32Hardened },

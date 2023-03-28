@@ -135,7 +135,7 @@ async function processData(file: string) {
             let input, signedEthAddress;
 
             if (inputSignature) {
-                signedEthAddress = (await ethers.utils.verifyMessage(CID, inputSignature)).toLowerCase()
+                signedEthAddress = (await ethers.verifyMessage(CID, inputSignature)).toLowerCase()
             }
 
             if (!signedEthAddress || !getTrustedAddress(signedEthAddress)) {

@@ -248,27 +248,22 @@ export const startIPFS = async (gatewayPort: Number = 5002, apiPort: Number = 50
         isInstanceActive
     } as IPFSController;
 
+    await new Promise((resolve, reject) => { setTimeout(resolve, 1000) });
+
     //Create Default SpaceDataServer_Key if none exist
     const keys = await iPSC.api("/key/list");
     let key = getKeyId(keys, "SpaceDataServer_Key", "self");
     let pKLen = 128;
     if (key.Name === "self") {
-
         let kC = new keyconverter(kCArgs, pKLen);
         let mm = bip39.generateMnemonic(pKLen);
-
-        console.log(mm);
-
         await kC.import(mm, "bip39");
-
-        console.log(await kC.export("bip39", "private"));
-
         IPFSUtilities.importKey(
             await kC.export("ipfs:protobuf", "private") as ArrayBuffer,
             keyName);
     }
 
+
+
     return iPSC;
 }
-
-export const cleanUpFolder = () => { }

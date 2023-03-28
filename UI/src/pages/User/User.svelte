@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { getBIP32Path } from "@/lib/utility/bip32";
-
-  import { derivationPath, ethWallet } from "@/UI/src/stores/user";
-  import { Contract, providers, Signer, Wallet, utils } from "ethers";
+  import { ethWallet } from "@/UI/src/stores/user";
   import { onMount } from "svelte";
   import LoginForm from "./LoginForm.svelte";
   import UserInfo from "./UserInfo.svelte";

@@ -82,6 +82,7 @@ describe("Parse Data Into Flatbuffers", () => {
     it("should read a vcm file", async () => {
         const vcmString: string = readFileSync(join(__dirname, "../data/legacy/vcm/test1.vcm"), "utf-8");
         const vcmJSON: VCMData = parseVCM(vcmString);
-        console.log(JSON.stringify(vcmJSON, null, 4));
+        console.log(ethWallet.address)
+        //console.log(JSON.stringify(vcmJSON, null, 4));
     }, 50000);
 });

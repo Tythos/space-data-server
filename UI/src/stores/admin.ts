@@ -3,18 +3,22 @@ import { writable, get } from "svelte/store";
 import type { Writable } from "svelte/store";
 import { _host } from "@/UI/src/stores/dev";
 import { ethWallet } from "./user";
-import { utils } from "ethers";
+import { sha256 } from "ethers";
 
 export const isAdmin: Writable<boolean> = writable();
 
 ethWallet.subscribe(async (wallet) => {
+    console.log(wallet)
     let adminCheck = await (await fetch(
         window.location.protocol + "//" + _host + "/admin/check")
     ).json();
+
+    console.log(adminCheck, sha256(wallet.address.toLowerCase()).toLowerCase());
+
     if (adminCheck && wallet?.address) {
         isAdmin
             .set(!!~adminCheck.indexOf(
-                utils.sha256(wallet.address.toLowerCase()).toLowerCase())
+                sha256(wallet.address.toLowerCase()).toLowerCase())
             );
     }
 });

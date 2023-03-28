@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "23.3.3-0.1.1-1.10.0001+1680032167382",
+    "version": "23.3.3-0.1.1-1.11.0001+1680036887159",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -37,7 +37,7 @@
         "test:server:database": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.database.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.database.test",
         "test:server:filesystem": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.filesystem.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/server.filesystem.test",
         "test:admin": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.admin.json config.json && npm run build:standards && jest --watchAll --detectOpenHandles --runInBand ./test/admin.test",
-        "test:parser": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.json config.json && jest --watchAll --detectOpenHandles --runInBand ./test/parser.test",
+        "test:parser": "export IPFS_PATH=$PWD/go-ipfs/ && cp ./test/test.config.filesystem.json config.json && jest --watchAll --detectOpenHandles --runInBand ./test/parser.test",
         "test:ipfs": "killall ipfs & export IPFS_PATH=$PWD/go-ipfs/ && jest --watchAll --detectOpenHandles --runInBand ./test/ipfs.test",
         "test:smartcontract": "nodemon --config nodemon.smartcontract.json"
     },
@@ -87,7 +87,7 @@
         "ecpair": "^2.1.0",
         "esbuild": "^0.17.7",
         "esbuild-node-tsc": "^2.0.4",
-        "ethers": "^5.7.2",
+        "ethers": "^6.2.3",
         "ethers-ens": "^0.2.1",
         "express": "^4.18.2",
         "flatbuffers": "22.10.26",
@@ -126,6 +126,7 @@
         "@toruslabs/eccrypto": "^2.1.0",
         "cron": "^2.1.0",
         "elliptic": "^6.5.4",
+        "ethers-cli": "^4.0.0",
         "jest-environment-jsdom": "^29.4.3",
         "keyconverter": "^1.4.0"
     }

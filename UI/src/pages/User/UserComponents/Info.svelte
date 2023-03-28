@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ethWallet, provider } from "@/UI/src/stores/user";
-  import { ethers, utils } from "ethers";
+  import { formatEther } from "ethers";
   import { onDestroy, onMount } from "svelte";
   import QRCode from "qrcode";
   import cc from "copy-to-clipboard";
@@ -16,7 +16,7 @@
       QRCode.toDataURL(etherscanLink).then((qsrc) => {
         qrCodeImage = qsrc;
       });
-      balance = utils.formatEther(
+      balance = formatEther(
         await $provider.getBalance($ethWallet.address)
       );
       $provider

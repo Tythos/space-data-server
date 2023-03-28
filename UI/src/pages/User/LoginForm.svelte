@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { Wallet, utils, providers } from "ethers";
+  import { HDNodeWallet } from "ethers";
   import { Icon } from "svelte-awesome";
   import argon2 from "argon2-browser/dist/argon2-bundled.min";
   import { entropyToMnemonic } from "bip39";
   import { repeat } from "svelte-awesome/icons";
   import SeedPhrase from "./SeedPhrase.svelte";
-  import { getBIP32Path } from "@/lib/utility/bip32";
-  import { ethWallet, hdNode, derivationPath } from "@/UI/src/stores/user";
+  import { ethWallet } from "@/UI/src/stores/user";
   import { onMount } from "svelte";
 
   const MODES = {
@@ -20,30 +19,6 @@
 
   onMount(() => {});
 
-  /*
-  const connectWallet = async () => {
-    error = "";
-    try {
-      const windowEthereum = window["ethereum"] || window["web3"];
-      const externalEthAddress = await windowEthereum.request({
-        method: "eth_requestAccounts",
-      });
-      var provider = new providers.Web3Provider(windowEthereum);
-
-      if (externalEthAddress.length) {
-        $ethWallet = {
-          address: externalEthAddress[0],
-          signMessage: async (message) => {
-            const signer = provider.getSigner();
-            return signer.signMessage(message);
-          },
-        };
-      }
-    } catch (e) {
-      error = e;
-    }
-  };
-*/
   const login = async (e) => {
     e.preventDefault();
     if (!seedPhrase) {
@@ -56,11 +31,7 @@
       seedPhrase = entropyToMnemonic(hashHex);
     }
     try {
-      $hdNode = utils.HDNode.fromMnemonic(seedPhrase);
-
-      $ethWallet = new Wallet(
-        $hdNode.derivePath(getBIP32Path($derivationPath)).privateKey
-      );
+      $ethWallet = HDNodeWallet.fromPhrase(seedPhrase);
     } catch (e) {
       error = e;
     }

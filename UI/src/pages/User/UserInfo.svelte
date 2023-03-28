@@ -1,8 +1,4 @@
 <script lang="ts">
-  import { ethWallet, provider } from "@/UI/src/stores/user";
-  import { ethers, utils } from "ethers";
-  import { onDestroy, onMount } from "svelte";
-  import QRCode from "qrcode";
   import Info from "./UserComponents/Info.svelte";
   let activeTab = 0;
 </script>

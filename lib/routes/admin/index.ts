@@ -42,8 +42,6 @@ export const cwd: RequestHandler = async (req: Request, res: Response, next: Fun
 
         const { publicKeyBuffer } = req.authHeader?.trustedAddress;
 
-        let sConfig = JSON.stringify(config);
-
         res.json({ message: await eccrypto.encrypt(publicKeyBuffer, Buffer.from(process.cwd())) });
     } else {
         res.status(401).json({ error: 'Unauthorized' });
@@ -63,6 +61,6 @@ export const saveSettings: RequestHandler = async (req: Request, res: Response, 
 export const adminCheck: RequestHandler = async (req: Request, res: Response, next: Function) => {
     let admins = config.trustedAddresses
         .filter((tA: TrustedAddress) => tA.isAdmin)
-        .map((tA: TrustedAddress) => ethers.utils.sha256(tA.address.toLowerCase()).toLowerCase());
+        .map((tA: TrustedAddress) => ethers.sha256(tA.address.toLowerCase()).toLowerCase());
     res.json(admins);
 };

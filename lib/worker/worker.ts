@@ -8,7 +8,6 @@ import dotenv from "dotenv";
 import { IPFSController, startIPFS } from "../../lib/ipfs/index";
 import { resolve } from "path";
 import { existsSync, mkdirSync } from "fs";
-import cluster, { Worker } from "cluster";
 
 const port: String | undefined = process.env.PORT || config.server.port.toString() || "3000";
 
