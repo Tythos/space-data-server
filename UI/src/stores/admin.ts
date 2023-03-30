@@ -3,17 +3,28 @@ import { writable, get } from "svelte/store";
 import type { Writable } from "svelte/store";
 import { _host } from "@/UI/src/stores/dev";
 import { ethWallet } from "./user";
-import { sha256 } from "ethers";
+import { sha256, verifyMessage } from "ethers";
+import type { PublicKeyVerification } from "@/lib/class/publickey.interface";
 
+
+const getJSONPath = (path) => window.location.protocol + "//" + _host + path;
 export const isAdmin: Writable<boolean> = writable();
+export const serverPK: Writable<string> = writable("");
+
+(async function () {
+    let _serverPK: PublicKeyVerification = (await (await fetch(getJSONPath("/publickey"))).json());
+
+
+    if (_serverPK.publicKey === verifyMessage(_serverPK.nonce, _serverPK.nonceSignature)) {
+        serverPK.set(_serverPK.publicKey);
+        console.log(_serverPK.publicKey);
+    }
+})();
 
 ethWallet.subscribe(async (wallet) => {
-    console.log(wallet)
     let adminCheck = await (await fetch(
-        window.location.protocol + "//" + _host + "/admin/check")
-    ).json();
-
-    console.log(adminCheck, sha256(wallet.address.toLowerCase()).toLowerCase());
+        getJSONPath("/admin/check")
+    )).json();
 
     if (adminCheck && wallet?.address) {
         isAdmin
