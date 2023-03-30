@@ -161,22 +161,29 @@ const isInstanceActive = function () {
 
 const api = async function (path: string, args: object = {}) {
     const uargs = Object.assign({}, apiArgs, args);
-    let returnContent;
-
-    let apiCall = await fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}`, uargs as any);
-    let { ok, statusText } = apiCall;
-    if (ok) {
-        let returnObj = await apiCall.text();
-        returnContent = returnObj;
+    let returnContent: any = null;
+    let error;
+    let tries = 0;
+    while (tries < 5 && !returnContent) {
         try {
-            returnContent = JSON.parse(returnObj);
-        } catch (e) {
+            let apiCall = await fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}`, uargs as any);
+            let { ok, statusText } = apiCall;
+            if (ok) {
+                let returnObj = await apiCall.text();
+                returnContent = returnObj;
+                try {
+                    returnContent = JSON.parse(returnObj);
+                } catch (e) {
 
+                }
+            } else {
+                error = { error: "not ok", statusText }
+            }
+        } catch (e) {
+            error = { error: "not ok", statusText: e.toString() }
         }
-    } else {
-        return { error: "not ok", statusText }
     }
-    return returnContent;
+    return returnContent || error;
 }
 
 const publishDirectory = async function (folder: string) {

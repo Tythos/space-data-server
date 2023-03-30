@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "23.3.3-0.1.1-1.13.0001+1680185142488",
+        "version": "23.3.3-0.1.1-1.13.0002+1680198009942",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version undefined"
     },
@@ -319,7 +319,17 @@
             "post": {
                 "description": "",
                 "parameters": [],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             }
         },
         "/admin/check": {

@@ -1,5 +1,4 @@
 import { Request, Response, RequestHandler } from "express";
-import _standardsJSON from "@/lib/standards/schemas.json";
 import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { config } from "@/lib/config/config";
 import { join, resolve } from "path";
@@ -9,25 +8,16 @@ import { TrustedAddress } from "@/lib/class/settings.interface";
 import { encrypt } from "@toruslabs/eccrypto";
 import { COMMANDS, IPC } from "@/lib/class/ipc.interface";
 import { ipcRequest } from "@/lib/utility/ipc";
-
-const standardsJSON: KeyValueDataStructure = _standardsJSON;
-const cFP = config?.data?.fileSystemPath;
-const fileReadPath = cFP && cFP[0] === "/" ?
-    cFP : resolve(process.cwd(), cFP);
+import { decryptMessage, encryptMessage } from "@/lib/utility/encryption";
 
 export const getSettings: RequestHandler = async (req: Request, res: Response, next: Function) => {
 
-    if (req.authHeader?.trustedAddress?.isAdmin &&
-        req.authHeader?.trustedAddress.publicKeyBuffer) {
+    if ((req as any).authHeader?.trustedAddress?.isAdmin &&
+        (req as any).authHeader?.trustedAddress.publicKeyBuffer) {
 
-        const { publicKeyBuffer } = req.authHeader?.trustedAddress;
+        const { publicKeyBuffer } = (req as any).authHeader?.trustedAddress;
 
-        let sConfig = JSON.stringify(config);
-
-
-        res.json({
-            message: await encrypt(publicKeyBuffer, Buffer.from(sConfig))
-        });
+        res.json(await encryptMessage(publicKeyBuffer, JSON.stringify(config)));
 
     } else {
         res.status(401).json({ error: 'Unauthorized' });
@@ -36,12 +26,11 @@ export const getSettings: RequestHandler = async (req: Request, res: Response, n
 
 export const cwd: RequestHandler = async (req: Request, res: Response, next: Function) => {
 
-    if (req.authHeader?.trustedAddress?.isAdmin &&
-        req.authHeader?.trustedAddress.publicKeyBuffer) {
+    if ((req as any).authHeader?.trustedAddress?.isAdmin &&
+        (req as any).authHeader?.trustedAddress.publicKeyBuffer) {
 
-        const { publicKeyBuffer } = req.authHeader?.trustedAddress;
-
-        res.json({ message: await encrypt(publicKeyBuffer, Buffer.from(process.cwd())) });
+        const { publicKeyBuffer, publicKey } = (req as any).authHeader?.trustedAddress;
+        res.send(await encryptMessage(publicKeyBuffer, process.cwd()));
     } else {
         res.status(401).json({ error: 'Unauthorized' });
     }
@@ -49,11 +38,28 @@ export const cwd: RequestHandler = async (req: Request, res: Response, next: Fun
 
 export const saveSettings: RequestHandler = async (req: Request, res: Response, next: Function) => {
 
-    if (req.authHeader?.trustedAddress?.isAdmin) {
-        writeFileSync(join(process.cwd(), "config.json"), JSON.stringify(req.body, null, 4));
-        setTimeout(() => {
-            process.send?.({ command: COMMANDS["WORKERS:RESTART"] } as IPC);
-        }, 5000);
+
+    if ((req as any).authHeader?.trustedAddress?.isAdmin) {
+        try {
+            const settings = await ipcRequest({
+                command: COMMANDS["ETH:DECRYPT"],
+                payload: req.body,
+            } as IPC) as string;
+
+            writeFileSync(join(process.cwd(), "config.json"), JSON.stringify(JSON.parse(settings), null, 4));
+            res.status(200);
+            res.end();
+            setTimeout(() => {
+                process.send?.({ command: COMMANDS["WORKERS:RESTART"] } as IPC);
+            }, 1000);
+
+        } catch (e) {
+            res.status(500);
+            res.end({ error: "Save Failed" });
+        }
+    } else {
+        res.status(401);
+        res.end({ error: "UnAuthorized" });
     }
 }
 

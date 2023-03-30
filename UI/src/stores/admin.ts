@@ -5,19 +5,29 @@ import { _host } from "@/UI/src/stores/dev";
 import { ethWallet } from "./user";
 import { sha256, verifyMessage } from "ethers";
 import type { PublicKeyVerification } from "@/lib/class/publickey.interface";
+import { Buffer } from "buffer";
 
+export const getAuthHeaders = async (): Promise<HeadersInit> => {
+    const authHeader = Buffer.from(
+        JSON.stringify({ nonce: Date.now() })
+    ).toString("base64");
+    const signature = await get(ethWallet).signMessage(authHeader);
+    return {
+        Authorization: authHeader,
+        "X-Auth-Signature": signature,
+    };
+}
 
 const getJSONPath = (path) => window.location.protocol + "//" + _host + path;
 export const isAdmin: Writable<boolean> = writable();
-export const serverPK: Writable<string> = writable("");
+export const serverPK: Writable<PublicKeyVerification> = writable({ publicKey: "", nonce: "", nonceSignature: "" });
 
 (async function () {
     let _serverPK: PublicKeyVerification = (await (await fetch(getJSONPath("/publickey"))).json());
-
-
-    if (_serverPK.publicKey === verifyMessage(_serverPK.nonce, _serverPK.nonceSignature)) {
-        serverPK.set(_serverPK.publicKey);
-        console.log(_serverPK.publicKey);
+    if (_serverPK.ethAddress === verifyMessage(_serverPK.nonce, _serverPK.nonceSignature)) {
+        console.log(_serverPK.publicKey.slice(2,))
+        _serverPK.publicKeyBuffer = Buffer.from(_serverPK.publicKey.slice(2,), "hex");
+        serverPK.set(_serverPK);
     }
 })();
 

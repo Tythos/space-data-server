@@ -1,27 +1,28 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { writable } from "svelte/store";
-  import { _host, devMode, devProvider } from "@/UI/src/stores/dev";
-  import { settings, cwd } from "@/UI/src/stores/admin";
+  import { _host } from "@/UI/src/stores/dev";
+  import {
+    settings,
+    cwd,
+    serverPK,
+    getAuthHeaders,
+  } from "@/UI/src/stores/admin";
   import { Icon } from "svelte-awesome";
-  import { angleLeft, angleRight, externalLink } from "svelte-awesome/icons";
+  import {
+    angleLeft,
+    angleRight,
+    externalLink,
+    save,
+  } from "svelte-awesome/icons";
   import { ethWallet } from "../../stores/user";
-  import { Buffer } from "buffer";
-  import { decryptMessage } from "../../lib/decrypt";
+  import { encryptMessage, decryptMessage } from "@/lib/utility/encryption";
   import type { Settings } from "@/lib/class/settings.interface";
+
   const getJSON = async (url: string) => {
-    const authHeader = Buffer.from(
-      JSON.stringify({ nonce: Date.now() })
-    ).toString("base64");
-
-    const signature = await $ethWallet.signMessage(authHeader);
-
     return await (
       await fetch(url, {
-        headers: {
-          Authorization: authHeader,
-          "X-Auth-Signature": signature,
-        },
+        headers: await getAuthHeaders(),
       })
     ).text();
   };
@@ -29,18 +30,18 @@
   onMount(async () => {
     $cwd = (
       await decryptMessage(
-        await getJSON(window.location.protocol + "//" + _host + "/admin/cwd"),
-        $ethWallet.privateKey
+        $ethWallet.privateKey,
+        await getJSON(window.location.protocol + "//" + _host + "/admin/cwd")
       )
     ).toString();
 
     $settings = JSON.parse(
       (
         await decryptMessage(
+          $ethWallet.privateKey,
           await getJSON(
             window.location.protocol + "//" + _host + "/admin/settings"
-          ),
-          $ethWallet.privateKey
+          )
         )
       ).toString()
     ) as Settings;
@@ -52,20 +53,24 @@
     activeSection.update((current) => (current === section ? null : section));
   }
 
+  let saveStatus;
+
   const updateSettings = async () => {
-    const body = JSON.stringify($settings);
-    console.log(body)
-    let result = await fetch(
+    const body = JSON.stringify(
+      await encryptMessage($serverPK.publicKeyBuffer, JSON.stringify($settings))
+    );
+    saveStatus = await fetch(
       window.location.protocol + "//" + _host + "/admin/settings",
       {
         method: "POST",
         headers: {
+          ...(await getAuthHeaders()),
           "Content-Type": "application/json",
-          authorization: await $ethWallet.signMessage(body),
         },
         body,
       }
     );
+    setTimeout(() => (saveStatus = null), 2000);
   };
 
   let activeTrustedAddressIndex: number = 0;
@@ -315,12 +320,20 @@
       <h2 class="mb-2 text-lg font-bold">Database</h2> 
     
     </div>-->
-
-    <button
-      type="submit"
-      class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
-      Update Settings
-    </button>
+    <div class="flex gap-2 items-center justify-start text-sm">
+      <button
+        type="submit"
+        class="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
+        Update Settings
+      </button>
+      {#if saveStatus}
+        <div
+          class:text-blue-800={saveStatus.status === 200}
+          class:text-red-800={saveStatus.status !== 200}>
+          {saveStatus.status === 200 ? "SUCCESS" : "ERROR"}
+        </div>
+      {/if}
+    </div>
   </form>
 </div>
 

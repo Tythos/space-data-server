@@ -13,9 +13,8 @@ import { COMMANDS, IPC } from "../class/ipc.interface";
 import { HDNodeWallet, verifyMessage } from "ethers";
 import { PublicKeyVerification } from "../class/publickey.interface";
 import { keyconverter } from "keyconverter/src/keyconverter";
-import type { FormatOptions } from "keyconverter/src/keyconverter";
-import { adminCheck } from "../routes/admin";
-
+import { decryptMessage } from "../utility/encryption"
+import { PrivateKey } from "sshpk";
 const kCArgs = {
     kty: "EC",
     name: "ECDSA",
@@ -83,7 +82,7 @@ const forkWorkers = (worker?: Worker) => {
                     publicKeyCache.ipfsPID = (await adminKC.ipfsPeerID()).toString();
                     publicKeyCache.ipnsCID = await adminKC.ipnsCID() as string;
                 }
-
+                publicKeyCache.publicKey = ethWallet.publicKey;
                 publicKeyCache.nonce = msg.payload;
                 publicKeyCache.nonceSignature = (ethWallet as HDNodeWallet)?.signMessageSync(msg.payload);
 
@@ -92,6 +91,12 @@ const forkWorkers = (worker?: Worker) => {
                     command: COMMANDS["ETH:SIGN:RESPONSE"],
                     payload: publicKeyCache
                 });
+            } else if (msg.command === COMMANDS["ETH:DECRYPT"] && ethWallet) {
+                cWorker.send({
+                    id: msg.id,
+                    command: COMMANDS["ETH:DECRYPT:RESPONSE"],
+                    payload: await decryptMessage(ethWallet.privateKey, msg.payload)
+                })
             }
         });
 

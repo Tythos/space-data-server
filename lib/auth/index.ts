@@ -40,7 +40,7 @@ export const validateHeaders = (req: Request, res: Response, next: NextFunction)
             try {
                 const recoveredAddress = verifyMessage(authHeader, signatureHeader as any);
                 const msgHash = hashMessage(authHeader);
-                const trustedAddress = getTrustedAddress(recoveredAddress);
+                const trustedAddress = { ...getTrustedAddress(recoveredAddress) };
                 if (!trustedAddress) {
                     return res.status(401).json({
                         error: 'Invalid x-auth-signature. Signature does not match the provided Ethereum address',
