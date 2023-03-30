@@ -50,19 +50,18 @@ export default {
 
             const folderToPin = resolve(__dirname, "..", config.data.fileSystemPath);
             const pinFolder = async () => {
-                let CID = await this.ipfsController.publishDirectory(folderToPin);
-                console.log("Pinned Folder: ", CID);
-            }
-            setTimeout(async () => {
                 console.log('Starting Pin');
                 if (existsSync(folderToPin)) {
-                    pinFolder();
                 } else {
                     console.log(`Folder ${folderToPin} does not exist, creating...`);
                     mkdirSync(folderToPin);
-                    pinFolder();
                 }
-            }, 5000);
+                let CID = await this.ipfsController.publishDirectory(folderToPin);
+                console.log("Pinned Folder: ", CID);
+            }
+
+            setInterval(pinFolder, 1000 * 60 * 60 * 3);
+
         } else {
             app.listen(port, () => {
                 console.log(`⚡️[child process ${pid} server]: Server is running at https://localhost:${port}`);

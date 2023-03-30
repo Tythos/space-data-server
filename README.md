@@ -8,13 +8,9 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 ## TODO
 
 - [x] Install script with service
-- [ ] Limit / delete based on time || number of files
-- [x] Nonce calc with setting
-- [x] Admin login detection & panel access
-- [ ] Add Button to make other account admin
-- [ ] Web admin tools
-- [x] Trusted account naming
+- [ ] Update server key from Ethereum key
+- [ ] Limit / delete based on time || number of files\
+- [ ] IPFS pinning / unpinning config
 - [ ] Data matrix
-- [x] Encryption
-- [ ] IPFS pinning / unpinning
 - [ ] Home page & About Page
+- [ ] Data parser service
