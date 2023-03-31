@@ -11,6 +11,7 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [ ] Update server key from Ethereum key
 - [ ] Limit / delete based on time || number of files\
 - [ ] IPFS pinning / unpinning config
+- [ ] Data UI
 - [ ] Data matrix
 - [ ] Home page & About Page
 - [ ] Data parser service

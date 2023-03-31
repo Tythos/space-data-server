@@ -10,11 +10,11 @@ import { JSONSchema4 } from "json-schema";
 import { existsSync } from "fs";
 import standardsJSON from "../standards/schemas.json";
 import { COMMANDS, IPC } from "../class/ipc.interface";
-import { HDNodeWallet, verifyMessage } from "ethers";
+import { HDNodeWallet } from "ethers";
 import { PublicKeyVerification } from "../class/publickey.interface";
 import { keyconverter } from "keyconverter/src/keyconverter";
 import { decryptMessage } from "../utility/encryption"
-import { PrivateKey } from "sshpk";
+
 const kCArgs = {
     kty: "EC",
     name: "ECDSA",

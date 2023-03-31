@@ -21,7 +21,7 @@
   const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col min-h-screen">
   <nav
     class="sticky top-0 z-10 w-full font-sans navbar navbar-expand-lg shadow-md py-2 bg-white flex items-center justify-between">
     <div class="px-6 w-full flex items-center justify-between">
@@ -43,10 +43,7 @@
     </div>
     <div class="mr-6 h-full flex items-center"><LoginButton /></div>
   </nav>
-  <div>
+  <div class="flex-grow">
     <Router {routes} />
   </div>
 </div>
-
-<style>
-</style>

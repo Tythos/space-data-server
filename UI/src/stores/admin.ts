@@ -6,7 +6,12 @@ import { ethWallet } from "./user";
 import { sha256, verifyMessage } from "ethers";
 import type { PublicKeyVerification } from "@/lib/class/publickey.interface";
 import { Buffer } from "buffer";
-
+export const kCArgs = {
+    kty: "EC",
+    name: "ECDSA",
+    namedCurve: "K-256",
+    hash: "SHA-256"
+} as EcKeyGenParams;
 export const getAuthHeaders = async (): Promise<HeadersInit> => {
     const authHeader = Buffer.from(
         JSON.stringify({ nonce: Date.now() })

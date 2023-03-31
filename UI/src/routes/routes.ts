@@ -28,7 +28,7 @@ export const routes = {
         })
     },
     '/about': {
-        name: "About",
+        name: "Server",
         navBar: true,
         ...wrap({
             component: About
