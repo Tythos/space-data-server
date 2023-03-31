@@ -30,7 +30,6 @@ export const serverPK: Writable<PublicKeyVerification> = writable({ publicKey: "
 (async function () {
     let _serverPK: PublicKeyVerification = (await (await fetch(getJSONPath("/publickey"))).json());
     if (_serverPK.ethAddress === verifyMessage(_serverPK.nonce, _serverPK.nonceSignature)) {
-        console.log(_serverPK.publicKey.slice(2,))
         _serverPK.publicKeyBuffer = Buffer.from(_serverPK.publicKey.slice(2,), "hex");
         serverPK.set(_serverPK);
     }

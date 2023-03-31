@@ -17,7 +17,6 @@
       text-xs
       leading-tight
       uppercase
-      rounded
       shadow-md
       hover:bg-gray-700 hover:shadow-lg
       focus:bg-gray-700 focus:shadow-lg 

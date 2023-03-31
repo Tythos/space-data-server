@@ -9,12 +9,7 @@
     getAuthHeaders,
   } from "@/UI/src/stores/admin";
   import { Icon } from "svelte-awesome";
-  import {
-    angleLeft,
-    angleRight,
-    externalLink,
-    save,
-  } from "svelte-awesome/icons";
+  import { angleLeft, angleRight, externalLink } from "svelte-awesome/icons";
   import { ethWallet } from "../../stores/user";
   import { encryptMessage, decryptMessage } from "@/lib/utility/encryption";
   import type { Settings } from "@/lib/class/settings.interface";
@@ -75,6 +70,7 @@
 
   let activeTrustedAddressIndex: number = 0;
   let activeTrustedAddress: string;
+
   $: {
     if ($settings.trustedAddresses && $settings.trustedAddresses.length) {
       activeTrustedAddress = Object.keys($settings.trustedAddresses)[
@@ -327,11 +323,7 @@
         Update Settings
       </button>
       {#if saveStatus}
-        <div
-          class:text-blue-800={saveStatus.status === 200}
-          class:text-red-800={saveStatus.status !== 200}>
-          {saveStatus.status === 200 ? "SUCCESS" : "ERROR"}
-        </div>
+        <div>{saveStatus.status === 200 ? "SUCCESS" : "ERROR"}</div>
       {/if}
     </div>
   </form>

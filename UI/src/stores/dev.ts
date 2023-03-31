@@ -4,3 +4,5 @@ export const devProvider = devMode
     : null;
 
 export const _host = devMode ? "localhost:8080" : window.location.host;
+
+export const devKey = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";

@@ -142,6 +142,7 @@ async function processData(file: string) {
                 console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid from address ${signedEthAddress}`);
                 return;
             }
+            
             if (extname(signedFile) === ".fbs") {
                 input = readFB(inputFile, tableName, parentClass);
 

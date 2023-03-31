@@ -48,7 +48,7 @@ export const validateHeaders = (req: Request, res: Response, next: NextFunction)
                 } else {
                     trustedAddress.publicKey = SigningKey.recoverPublicKey(msgHash, signatureHeader as any);
                     trustedAddress.publicKeyBuffer = Buffer.from(trustedAddress.publicKey.slice(2,), "hex");
-                    authHeaderObj.trustedAddress = trustedAddress;
+                    authHeaderObj.trustedAddress = trustedAddress as any;
                     req.authHeader = { ...authHeaderObj };
                 }
             } catch (error) {

@@ -16,7 +16,7 @@
   }
 </script>
 
-<div class="h-full flex flex-col">
+<div class="h-full flex flex-col justify-center items-center">
   <div class="flex-grow flex items-center justify-center">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="bg-white overflow-hidden shadow rounded-lg">
