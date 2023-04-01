@@ -80,7 +80,11 @@ export const getServerPublicKey: RequestHandler = async (req: Request, res: Resp
 }
 
 export const saveServerKey: RequestHandler = async (req: Request, res: Response, next: Function) => {
-    console.log(req.body);
     res.statusCode = 200;
+    let response = await ipcRequest({
+        command: COMMANDS["IPFS:CHANGEKEY"],
+        payload: req.body,
+    } as IPC);
+    console.log(response);
     res.end("TEST");
 }

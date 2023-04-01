@@ -97,6 +97,15 @@ const forkWorkers = (worker?: Worker) => {
                     command: COMMANDS["ETH:DECRYPT:RESPONSE"],
                     payload: await decryptMessage(ethWallet.privateKey, msg.payload)
                 })
+            } else if (msg.command === COMMANDS["IPFS:CHANGEKEY"] && ethWallet) {
+                let newMnemonic = await decryptMessage(ethWallet.privateKey, msg.payload);
+                console.log(newMnemonic);
+
+                cWorker.send({
+                    id: msg.id,
+                    command: COMMANDS["IPFS:CHANGEKEY:RESPONSE"],
+                    payload: true
+                })
             }
         });
 
