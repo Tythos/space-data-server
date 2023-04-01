@@ -7,6 +7,7 @@
   } from "@/UI/src/stores/admin";
 
   let displayPK = { publicKey: "", ethAddress: "", ipnsCID: "", ipfsPID: "" };
+  
   $: {
     if ($serverPK.publicKey) {
       for (let x in displayPK) {
@@ -14,6 +15,7 @@
       }
     }
   }
+  
 </script>
 
 <div class="h-full flex flex-col justify-center items-center">

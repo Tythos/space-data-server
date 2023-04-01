@@ -41,36 +41,41 @@
   };
 </script>
 
-<form class="md:w-1/2 sm:w-1/2 lg:w-1/2 xs:w-2/3" on:submit={login}>
-  <div class="h-36">
-    {#if mode === MODES.PASSWORD}
-      <!-- Email input -->
-      <div class="mb-6">
-        <input
-          bind:value={username}
-          required
-          type="email"
-          autocomplete="username"
-          class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300  transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-          placeholder="Email address" />
-      </div>
+<form
+  id="walletForm"
+  class="md:w-1/2 sm:w-1/2 lg:w-1/2 xs:w-2/3"
+  on:submit={login}>
+  <div class="h-36 flex justify-center align-center">
+    <div class="w-full flex flex-col justify-center align-center">
+      {#if mode === MODES.PASSWORD}
+        <!-- Email input -->
+        <div class="mb-6">
+          <input
+            bind:value={username}
+            required
+            type="email"
+            autocomplete="username"
+            class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300  transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+            placeholder="Email address" />
+        </div>
 
-      <!-- Password input -->
-      <div class="mb-2">
-        <input
-          required
-          minlength="24"
-          bind:value={password}
-          type="password"
-          autocomplete="current-password"
-          class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300  transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-          placeholder="Password" />
-      </div>
-    {:else if mode === MODES.MNEMONIC}
-      <div class="p-1">
-        <SeedPhrase bind:seedPhrase bind:error />
-      </div>
-    {/if}
+        <!-- Password input -->
+        <div class="mb-2">
+          <input
+            required
+            minlength="24"
+            bind:value={password}
+            type="password"
+            autocomplete="current-password"
+            class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300  transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+            placeholder="Password" />
+        </div>
+      {:else if mode === MODES.MNEMONIC}
+        <div class="p-1">
+          <SeedPhrase bind:seedPhrase bind:error />
+        </div>
+      {/if}
+    </div>
   </div>
   <div class="flex justify-between items-center mb-2 text-sm lg:text-xs">
     <div class="form-group form-check flex items-center justify-center gap-1" />
@@ -89,5 +94,5 @@
     </div>
   </div>
 
-  <LoginButton />
+  <LoginButton form={"walletForm"} />
 </form>

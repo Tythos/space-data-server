@@ -1,10 +1,19 @@
 <script>
-  import { entropyToMnemonic, mnemonicToSeed, wordlists } from "bip39";
+  import {
+    entropyToMnemonic,
+    mnemonicToSeed,
+    wordlists,
+    generateMnemonic,
+  } from "bip39";
+
   import { _host, devKey } from "../../stores/dev";
 
   export let seedPhrase = ~_host.indexOf("localhost") ? devKey : "";
   export let error = "";
-
+  const generateRandom = (e) => {
+    e.preventDefault();
+    seedPhrase = generateMnemonic();
+  };
   function validateSeedPhrase() {
     error = "";
     const words = seedPhrase.split(/\s{1,}/g).filter(Boolean);
@@ -27,13 +36,19 @@
   }
 </script>
 
-<textarea
-  autocomplete="on"
-  class="h-32 p-3 border border-gray-300 rounded w-full resize-none"
-  bind:value={seedPhrase}
-  on:input={validateSeedPhrase} />
+<div class="flex gap-2">
+  <textarea
+    autocomplete="on"
+    class="h-28 p-3 border border-gray-300 rounded w-full resize-none"
+    bind:value={seedPhrase}
+    on:input={validateSeedPhrase} />
+  <button
+    on:click={generateRandom}
+    class="text-xs p-1 font-bold bg-orange-500 text-white"
+    >GENERATE RANDOM</button>
+</div>
 {#if error}
   <p class="absolute text-red-500 text-left float-left w-84 text-xs">
-    {error.toString().split("(")[0]}
+    {error?.toString()?.split("(")[0]}
   </p>
 {/if}
