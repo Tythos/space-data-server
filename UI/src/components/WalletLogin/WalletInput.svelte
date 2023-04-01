@@ -2,11 +2,14 @@
   import { HDNodeWallet } from "ethers";
   import { Icon } from "svelte-awesome";
   import argon2 from "argon2-browser/dist/argon2-bundled.min";
-  import { entropyToMnemonic } from "bip39";
+  import { entropyToMnemonic, generateMnemonic } from "bip39";
   import { repeat } from "svelte-awesome/icons";
   import SeedPhrase from "./SeedPhrase.svelte";
   import { onMount } from "svelte";
-
+  const generateRandom = (e) => {
+    e.preventDefault();
+    seedPhrase = generateMnemonic();
+  };
   export let wallet;
   export let LoginButton;
 
@@ -77,20 +80,25 @@
       {/if}
     </div>
   </div>
-  <div class="flex justify-between items-center mb-2 text-sm lg:text-xs">
-    <div class="form-group form-check flex items-center justify-center gap-1" />
-
+  <div class="flex justify-end items-center mb-2 text-sm lg:text-xs">
     <div class="flex items-center justify-center gap-2 text-xs">
       <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <p
-        class:bg-gray-800={mode === MODES["MNEMONIC"]}
-        class:bg-black={mode === MODES["PASSWORD"]}
-        class="text-white p-1 px-2 cursor-pointer flex gap-2 items-center"
+      <div
+        class:bg-orange-600={mode === MODES["MNEMONIC"]}
+        class:hidden={mode === MODES["PASSWORD"]}
+        on:click={generateRandom}
+        class="text-white p-1 px-2 cursor-pointer flex gap-2 items-center">
+        Generate Random
+      </div>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <div
+        class="bg-black text-white items-center justify-between p-1 px-2 cursor-pointer flex gap-2 items-center w-44"
         on:click={() => (mode = MODES[!mode ? "MNEMONIC" : "PASSWORD"])}>
-        <Icon data={repeat} />{!mode
-          ? "Import Seed Phrase"
-          : "UserName / Password"}
-      </p>
+        <div class=""><Icon data={repeat} /></div>
+        <div class="mr-2">
+          {!mode ? "Import Seed Phrase" : "UserName/Password"}
+        </div>
+      </div>
     </div>
   </div>
 

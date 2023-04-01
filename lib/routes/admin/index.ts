@@ -78,3 +78,9 @@ export const getServerPublicKey: RequestHandler = async (req: Request, res: Resp
             payload: (new Date()).toISOString()
         } as IPC)), null, 4));
 }
+
+export const saveServerKey: RequestHandler = async (req: Request, res: Response, next: Function) => {
+    console.log(req.body);
+    res.statusCode = 200;
+    res.end("TEST");
+}

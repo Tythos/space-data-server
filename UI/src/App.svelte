@@ -34,7 +34,7 @@
                 push(route);
               }}
               class:border-b-2={$location === route}
-              class="p-2 cursor-pointer">
+              class="p-2 cursor-pointer text-sm">
               {value.name}
             </li>
           {/if}

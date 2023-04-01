@@ -10,7 +10,12 @@
     serverEthWallet,
   } from "@/UI/src/stores/admin";
   import { Icon } from "svelte-awesome";
-  import { angleLeft, angleRight, externalLink } from "svelte-awesome/icons";
+  import {
+    angleLeft,
+    angleRight,
+    externalLink,
+    copy,
+  } from "svelte-awesome/icons";
   import { ethWallet } from "../../stores/user";
   import { encryptMessage, decryptMessage } from "@/lib/utility/encryption";
   import type { Settings } from "@/lib/class/settings.interface";
@@ -18,6 +23,7 @@
   import LoginButton from "./AdminWalletLoginButton.svelte";
   import type { HDNodeWallet } from "ethers";
   import { pubKeyToIPFSCID } from "keyconverter/src/keyconverter";
+  import copyToClipboard from "copy-to-clipboard";
 
   const getJSON = async (url: string) => {
     return await (
@@ -124,14 +130,38 @@
   serverEthWallet.subscribe(async (sWallet: HDNodeWallet) => {
     if (sWallet?.address) {
       verifyChange = true;
-      console.log(sWallet.publicKey)
+      console.log(sWallet.publicKey);
       newCID = await pubKeyToIPFSCID(sWallet.publicKey.replace(/^0x/, ""));
     }
   });
+
+  const sendServerKey = async () => {
+    console.log($serverEthWallet.mnemonic.phrase);
+    const body = JSON.stringify(
+      await encryptMessage(
+        $serverPK.publicKeyBuffer,
+        $serverEthWallet.mnemonic.phrase
+      )
+    );
+    saveStatus = await fetch(
+      window.location.protocol + "//" + _host + "/saveServerKey",
+      {
+        method: "POST",
+        headers: {
+          ...(await getAuthHeaders()),
+          "Content-Type": "application/json",
+        },
+        body,
+      }
+    );
+  };
 </script>
 
 <div class="p-6 bg-white rounded-lg shadow select-none">
-  <form on:submit|preventDefault={updateSettings} class="w-full">
+  <form
+    on:submit|preventDefault={updateSettings}
+    id="settingsForm"
+    class="w-full">
     <div class="mb-4 text-sm">
       <div class="flex flex-col gap-2 items-center">
         <div class="flex gap-2 items-center justify-between w-full">
@@ -141,18 +171,85 @@
           </h2>
         </div>
         {#if verifyChange}
-          <div>
-            <div>CONFIRM:</div>
-            CHANGE SERVER FROM:
-            <div>
-              ETH: {$serverPK.ethAddress}
-              CID: {$serverPK.ipnsCID}
+          <div
+            class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-400 w-2/3">
+            <div
+              class="mt-4 w-1/2 bg-orange-500 text-white font-bold py-2 px-4 rounded">
+              Change From
             </div>
-            <div>TO</div>
-            <div>
-              ETH: {$serverEthWallet.address}
-              CID: {newCID}
+
+            <div class="mt-2 table w-full">
+              <div class="table-row bg-gray-200">
+                <div class="table-cell font-medium mr-2 font-bold">ETH:</div>
+                <div class="table-cell">
+                  <div class="flex justify-between items-center break-all">
+                    <a
+                      href={"https://etherscan.io/address/" +
+                        $serverPK.ethAddress}
+                      class="text-blue-600 hover:underline selectable"
+                      >{$serverPK.ethAddress}</a>
+                    <button
+                      on:click={() => copyToClipboard($serverPK.ethAddress)}
+                      class="ml-2">
+                      <Icon data={copy} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="table-row bg-gray-300">
+                <div class="table-cell font-medium mr-2 font-bold">CID:</div>
+                <div class="table-cell">
+                  <div class="flex justify-between items-center break-all">
+                    <span class="selectable">{$serverPK.ipnsCID}</span>
+                    <button
+                      on:click={() => copyToClipboard($serverPK.ipnsCID)}
+                      class="ml-2">
+                      <Icon data={copy} />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
+            <div
+              class="mt-4 w-1/2 bg-orange-500 text-white font-bold py-2 px-4 rounded">
+              To
+            </div>
+            <div class="mt-2 table w-full">
+              <div class="table-row bg-gray-200">
+                <div class="table-cell font-medium mr-2 font-bold">ETH:</div>
+                <div class="table-cell">
+                  <div class="flex justify-between items-center break-all">
+                    <a
+                      href={"https://etherscan.io/address/" +
+                        $serverEthWallet.address}
+                      class="text-blue-600 hover:underline selectable"
+                      >{$serverEthWallet.address}</a>
+                    <button
+                      on:click={() => copyToClipboard($serverEthWallet.address)}
+                      class="ml-2">
+                      <Icon data={copy} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="table-row bg-gray-300">
+                <div class="table-cell font-medium mr-2 font-bold">CID:</div>
+                <div class="table-cell">
+                  <div class="flex justify-between items-center break-all">
+                    <span class="selectable">{newCID}</span>
+                    <button
+                      on:click={() => copyToClipboard(newCID)}
+                      class="ml-2">
+                      <Icon data={copy} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              on:click={sendServerKey}
+              class="mt-4 bg-blue-500 hover:bg-blue-700 text-white text-xl font-bold py-2 px-4"
+              >Confirm</button>
           </div>
         {:else}
           <WalletInput bind:wallet={$serverEthWallet} {LoginButton} />
@@ -281,6 +378,7 @@
       <div class="flex gap-2 items-center justify-between text-sm">
         <div class="flex gap-2 justify-center items-center">
           <button
+            form="settingsForm"
             type="submit"
             class="px-4 py-2 text-white bg-blue-500 hover:bg-blue-600">
             Update Settings
@@ -298,4 +396,19 @@
   @tailwind base;
   @tailwind components;
   @tailwind utilities;
+  .table {
+    display: table;
+    width: 100%;
+  }
+
+  .table-row {
+    display: table-row;
+  }
+
+  .table-cell {
+    overflow-wrap: break-word;
+    display: table-cell;
+    padding: 0.5rem;
+    vertical-align: middle;
+  }
 </style>
