@@ -7,7 +7,6 @@ import { sha256, verifyMessage } from "ethers";
 import type { PublicKeyVerification } from "@/lib/class/publickey.interface";
 import { Buffer } from "buffer";
 import type { HDNodeWallet } from "ethers";
-import type { Bip32Path, Bip32Hardened } from "@/lib/class/utility/BIP32";
 
 export const serverEthWallet: Writable<HDNodeWallet> = writable(null);
 

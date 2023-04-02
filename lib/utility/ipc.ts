@@ -1,6 +1,6 @@
 import { IPC } from "../class/ipc.interface";
 
-export async function ipcRequest(message: IPC) {
+export async function ipcRequest(message: IPC): Promise<IPC | string> {
     return new Promise((resolve, reject) => {
         if (!(process as any).connected) {
             reject(new Error('The IPC channel is closed.'));

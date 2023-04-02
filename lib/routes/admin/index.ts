@@ -17,7 +17,11 @@ export const getSettings: RequestHandler = async (req: Request, res: Response, n
 
         const { publicKeyBuffer } = (req as any).authHeader?.trustedAddress;
 
-        res.json(await encryptMessage(publicKeyBuffer, JSON.stringify(config)));
+        res.json(
+            await ipcRequest({
+                command: COMMANDS["ETH:ENCRYPT"],
+                payload: { publicKey: publicKeyBuffer, payload: JSON.stringify(config) },
+            } as IPC));
 
     } else {
         res.status(401).json({ error: 'Unauthorized' });
@@ -30,7 +34,11 @@ export const cwd: RequestHandler = async (req: Request, res: Response, next: Fun
         (req as any).authHeader?.trustedAddress.publicKeyBuffer) {
 
         const { publicKeyBuffer, publicKey } = (req as any).authHeader?.trustedAddress;
-        res.send(await encryptMessage(publicKeyBuffer, process.cwd()));
+        res.send(
+            await ipcRequest({
+                command: COMMANDS["ETH:ENCRYPT"],
+                payload: { publicKey: publicKeyBuffer, payload: process.cwd() },
+            } as IPC));
     } else {
         res.status(401).json({ error: 'Unauthorized' });
     }
@@ -80,11 +88,13 @@ export const getServerPublicKey: RequestHandler = async (req: Request, res: Resp
 }
 
 export const saveServerKey: RequestHandler = async (req: Request, res: Response, next: Function) => {
-    res.statusCode = 200;
+
     let response = await ipcRequest({
         command: COMMANDS["IPFS:CHANGEKEY"],
         payload: req.body,
     } as IPC);
-    console.log(response);
-    res.end("TEST");
+    res.statusCode = (response as IPC)?.error as any ? 500 : 200;
+    res.header("Content-Type", 'application/json');
+    res.send(JSON.stringify(response, null, 4));
+
 }

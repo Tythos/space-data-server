@@ -1,17 +1,24 @@
 import { Ecies, decrypt, encrypt } from "@toruslabs/eccrypto";
 import { Buffer } from "buffer";
+import { HDNodeWallet, sha256, verifyMessage } from "ethers";
 
 interface IEncryptedMessage {
     message: string;
+    hash: string;
+    signature: string;
 }
 
-export const decryptMessage = async (privateKey: string | Buffer, input: string | IEncryptedMessage): Promise<string> => {
+export const decryptMessage = async (privateKey: string | Buffer, input: string | IEncryptedMessage, validAddresses: Array<string> = []): Promise<string> => {
 
     if (!Buffer.isBuffer(privateKey)) {
         privateKey = Buffer.from(privateKey.slice(2,), "hex");
     }
     let eInput: IEncryptedMessage = typeof input === "string" ? JSON.parse(input) : input;
     let sinput = Buffer.from(eInput.message, "base64").toString();
+    let vAddress = verifyMessage(eInput.hash, eInput.signature);
+    if (!~validAddresses.map(a => a.toLowerCase()).indexOf(vAddress.toLowerCase())) {
+        throw Error("Invalid Signer");
+    }
     let _input = JSON.parse(sinput, (key, value) => {
         if (
             typeof value === "object" &&
@@ -30,7 +37,7 @@ export const decryptMessage = async (privateKey: string | Buffer, input: string 
     )).toString();
 };
 
-export const encryptMessage = async (publicKey: string | Buffer, input: string): Promise<IEncryptedMessage> => {
+export const encryptMessage = async (publicKey: string | Buffer, input: string, ethWallet: HDNodeWallet): Promise<IEncryptedMessage> => {
 
     if (typeof publicKey === "string") {
         publicKey = Buffer.from(publicKey.slice(2,), "hex");
@@ -40,5 +47,7 @@ export const encryptMessage = async (publicKey: string | Buffer, input: string):
         JSON.stringify(
             await encrypt(publicKey, Buffer.from(input))))
         .toString("base64");
-    return { message } as IEncryptedMessage;
+    let hash = sha256(Buffer.from(message));
+    let signature = ethWallet.signMessageSync(hash);
+    return { message, hash, signature } as IEncryptedMessage;
 }

@@ -13,7 +13,7 @@ import { COMMANDS, IPC } from "../class/ipc.interface";
 import { HDNodeWallet } from "ethers";
 import { PublicKeyVerification } from "../class/publickey.interface";
 import { keyconverter } from "keyconverter/src/keyconverter";
-import { decryptMessage } from "../utility/encryption"
+import { decryptMessage, encryptMessage } from "../utility/encryption"
 
 const kCArgs = {
     kty: "EC",
@@ -34,6 +34,19 @@ const totalCPUs = cpus().length;
 let bingoWorker: Worker | undefined;
 let ethWallet;
 const publicKeyCache: PublicKeyVerification = { publicKey: "", nonce: "", nonceSignature: "", ethAddress: "", ipnsCID: "", ipfsPID: "" };
+
+const resetPKC = async (msg: IPC, nonce: any = performance.now().toString()) => {
+    if (!publicKeyCache.ethAddress) {
+        publicKeyCache.ethAddress = ethWallet.address;
+        publicKeyCache.ipfsPID = (await adminKC.ipfsPeerID()).toString();
+        publicKeyCache.ipnsCID = await adminKC.ipnsCID() as string;
+    }
+    publicKeyCache.publicKey = ethWallet.publicKey;
+    publicKeyCache.nonce = nonce || msg.payload;
+    publicKeyCache.nonceSignature = (ethWallet as HDNodeWallet)?.signMessageSync(publicKeyCache.nonce);
+}
+
+const trustedAddresses = config.trustedAddresses.map(tA => tA.address);
 
 const restartWorkers = () => {
     // Disconnect all workers
@@ -77,15 +90,7 @@ const forkWorkers = (worker?: Worker) => {
                     payload: ethWallet?.publicKey
                 });
             } else if (msg.command === COMMANDS["ETH:SIGN"] && ethWallet) {
-                if (!publicKeyCache.ethAddress) {
-                    publicKeyCache.ethAddress = ethWallet.address;
-                    publicKeyCache.ipfsPID = (await adminKC.ipfsPeerID()).toString();
-                    publicKeyCache.ipnsCID = await adminKC.ipnsCID() as string;
-                }
-                publicKeyCache.publicKey = ethWallet.publicKey;
-                publicKeyCache.nonce = msg.payload;
-                publicKeyCache.nonceSignature = (ethWallet as HDNodeWallet)?.signMessageSync(msg.payload);
-
+                await resetPKC(msg, msg.payload);
                 cWorker.send({
                     id: msg.id,
                     command: COMMANDS["ETH:SIGN:RESPONSE"],
@@ -95,16 +100,34 @@ const forkWorkers = (worker?: Worker) => {
                 cWorker.send({
                     id: msg.id,
                     command: COMMANDS["ETH:DECRYPT:RESPONSE"],
-                    payload: await decryptMessage(ethWallet.privateKey, msg.payload)
-                })
+                    payload: await decryptMessage(ethWallet.privateKey, msg.payload, trustedAddresses)
+                });
+            } else if (msg.command === COMMANDS["ETH:ENCRYPT"] && ethWallet) {
+                let { publicKey, payload } = msg.payload;
+                if (publicKey.type === "Buffer") {
+                    publicKey = Buffer.from(publicKey.data);
+                }
+                cWorker.send({
+                    id: msg.id,
+                    command: COMMANDS["ETH:ENCRYPT:RESPONSE"],
+                    payload: await encryptMessage(publicKey, payload, ethWallet)
+                });
             } else if (msg.command === COMMANDS["IPFS:CHANGEKEY"] && ethWallet) {
-                let newMnemonic = await decryptMessage(ethWallet.privateKey, msg.payload);
+                let newMnemonic = await decryptMessage(ethWallet.privateKey, msg.payload, trustedAddresses).catch(e => {
+                    cWorker.send({
+                        id: msg.id,
+                        command: COMMANDS["IPFS:CHANGEKEY:RESPONSE"],
+                        payload: { error: e }
+                    })
+                });
+
                 console.log(newMnemonic);
 
+                await resetPKC(msg);
                 cWorker.send({
                     id: msg.id,
                     command: COMMANDS["IPFS:CHANGEKEY:RESPONSE"],
-                    payload: true
+                    payload: publicKeyCache
                 })
             }
         });

@@ -17,7 +17,9 @@ export enum COMMANDS {
 }
 
 export interface IPC {
-    command: COMMANDS;
+    command?: COMMANDS;
     id?: number;
     payload?: any;
+    error?: string;
+    [key: string]: any;
 }

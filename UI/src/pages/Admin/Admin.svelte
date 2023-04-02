@@ -37,17 +37,18 @@
     $cwd = (
       await decryptMessage(
         $ethWallet.privateKey,
-        await getJSON(window.location.protocol + "//" + _host + "/admin/cwd")
+        await getJSON(window.location.protocol + "//" + _host + "/admin/cwd"),
+        [$serverPK.ethAddress]
       )
     ).toString();
-
     $settings = JSON.parse(
       (
         await decryptMessage(
           $ethWallet.privateKey,
           await getJSON(
             window.location.protocol + "//" + _host + "/admin/settings"
-          )
+          ),
+          [$serverPK.ethAddress]
         )
       ).toString()
     ) as Settings;
@@ -57,7 +58,11 @@
 
   const updateSettings = async () => {
     const body = JSON.stringify(
-      await encryptMessage($serverPK.publicKeyBuffer, JSON.stringify($settings))
+      await encryptMessage(
+        $serverPK.publicKeyBuffer,
+        JSON.stringify($settings),
+        $ethWallet
+      )
     );
     saveStatus = await fetch(
       window.location.protocol + "//" + _host + "/admin/settings",
@@ -140,7 +145,8 @@
     const body = JSON.stringify(
       await encryptMessage(
         $serverPK.publicKeyBuffer,
-        $serverEthWallet.mnemonic.phrase
+        $serverEthWallet.mnemonic.phrase,
+        $ethWallet
       )
     );
     saveStatus = await fetch(
@@ -174,7 +180,7 @@
           <div
             class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-400 w-2/3">
             <div
-              class="mt-4 w-1/2 bg-orange-500 text-white font-bold py-2 px-4 rounded">
+              class="mt-4 w-full bg-orange-500 text-white font-bold py-2 px-4">
               Change From
             </div>
 
@@ -211,7 +217,7 @@
               </div>
             </div>
             <div
-              class="mt-4 w-1/2 bg-orange-500 text-white font-bold py-2 px-4 rounded">
+              class="mt-4 w-full bg-orange-500 text-white font-bold py-2 px-4">
               To
             </div>
             <div class="mt-2 table w-full">
@@ -247,6 +253,7 @@
               </div>
             </div>
             <button
+              form="N/A"
               on:click={sendServerKey}
               class="mt-4 bg-blue-500 hover:bg-blue-700 text-white text-xl font-bold py-2 px-4"
               >Confirm</button>
