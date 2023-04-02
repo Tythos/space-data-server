@@ -17,7 +17,6 @@ export const decryptMessage = async (privateKey: string | Buffer, input: string 
     let { message, hash, signature } = eInput;
     let sinput = Buffer.from(message, "base64").toString();
     let vAddress = verifyMessage(hash, signature);
-    console.log(sha256(Buffer.from(message)), hash)
     if (sha256(Buffer.from(message)) !== hash) {
         throw Error("Invalid Hash");
     }

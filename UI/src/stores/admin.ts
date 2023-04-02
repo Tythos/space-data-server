@@ -31,13 +31,15 @@ const getJSONPath = (path) => window.location.protocol + "//" + _host + path;
 export const isAdmin: Writable<boolean> = writable();
 export const serverPK: Writable<PublicKeyVerification> = writable({ publicKey: "", nonce: "", nonceSignature: "" });
 
-(async function () {
+export async function getServerPK() {
     let _serverPK: PublicKeyVerification = (await (await fetch(getJSONPath("/publickey"))).json());
     if (_serverPK.ethAddress === verifyMessage(_serverPK.nonce, _serverPK.nonceSignature)) {
         _serverPK.publicKeyBuffer = Buffer.from(_serverPK.publicKey.slice(2,), "hex");
         serverPK.set(_serverPK);
     }
-})();
+}
+
+getServerPK();
 
 ethWallet.subscribe(async (wallet) => {
     let adminCheck = await (await fetch(

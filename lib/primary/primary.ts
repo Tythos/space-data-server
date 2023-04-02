@@ -13,7 +13,8 @@ import { COMMANDS, IPC } from "../class/ipc.interface";
 import { HDNodeWallet } from "ethers";
 import { PublicKeyVerification } from "../class/publickey.interface";
 import { keyconverter } from "keyconverter/src/keyconverter";
-import { decryptMessage, encryptMessage } from "../utility/encryption"
+import { decryptMessage, encryptMessage } from "../utility/encryption";
+import { IPFSUtilities } from "../ipfs";
 
 const kCArgs = {
     kty: "EC",
@@ -36,11 +37,9 @@ let ethWallet;
 const publicKeyCache: PublicKeyVerification = { publicKey: "", nonce: "", nonceSignature: "", ethAddress: "", ipnsCID: "", ipfsPID: "" };
 
 const resetPKC = async (msg: IPC, nonce: any = performance.now().toString()) => {
-    if (!publicKeyCache.ethAddress) {
-        publicKeyCache.ethAddress = ethWallet.address;
-        publicKeyCache.ipfsPID = (await adminKC.ipfsPeerID()).toString();
-        publicKeyCache.ipnsCID = await adminKC.ipnsCID() as string;
-    }
+    publicKeyCache.ethAddress = ethWallet.address;
+    publicKeyCache.ipfsPID = (await adminKC.ipfsPeerID()).toString();
+    publicKeyCache.ipnsCID = await adminKC.ipnsCID() as string;
     publicKeyCache.publicKey = ethWallet.publicKey;
     publicKeyCache.nonce = nonce || msg.payload;
     publicKeyCache.nonceSignature = (ethWallet as HDNodeWallet)?.signMessageSync(publicKeyCache.nonce);
@@ -82,7 +81,7 @@ const forkWorkers = (worker?: Worker) => {
                 restartWorkers();
             } else if (msg.command === COMMANDS["IPFS:PRIVATEKEY:RESPONSE"]) {
                 ethWallet = HDNodeWallet.fromPhrase(msg.payload);
-                adminKC.import(msg.payload, "bip39");
+                await adminKC.import(msg.payload, "bip39");
             } else if (msg.command === COMMANDS["IPFS:PUBLICKEY:REQUEST"]) {
                 cWorker.send({
                     id: msg.id,
@@ -119,16 +118,18 @@ const forkWorkers = (worker?: Worker) => {
                         command: COMMANDS["IPFS:CHANGEKEY:RESPONSE"],
                         payload: { error: e }
                     })
-                });
-
-                console.log(newMnemonic);
-
-                await resetPKC(msg);
+                }) as string;
+                ethWallet = HDNodeWallet.fromPhrase(newMnemonic);
+                const adminKCReset: keyconverter = new keyconverter(kCArgs);
+                await adminKCReset.import(newMnemonic, "bip39");
+                IPFSUtilities.importKey(await adminKCReset.export("ipfs:protobuf", "private") as ArrayBuffer);
+                await resetPKC(msg, performance.now().toString());
                 cWorker.send({
                     id: msg.id,
                     command: COMMANDS["IPFS:CHANGEKEY:RESPONSE"],
                     payload: publicKeyCache
-                })
+                });
+                setTimeout(restartWorkers, 1000);
             }
         });
 

@@ -8,6 +8,7 @@
     serverPK,
     getAuthHeaders,
     serverEthWallet,
+    getServerPK,
   } from "@/UI/src/stores/admin";
   import { Icon } from "svelte-awesome";
   import {
@@ -34,6 +35,9 @@
   };
 
   onMount(async () => {
+    if (!$serverPK?.ethAddress) {
+      await getServerPK();
+    }
     $cwd = (
       await decryptMessage(
         $ethWallet.privateKey,
@@ -75,7 +79,7 @@
         body,
       }
     );
-    setTimeout(() => (saveStatus = null), 2000);
+    setTimeout(() => (saveStatus = null), 5000);
   };
 
   let activeTrustedAddressIndex: number = 0;
@@ -140,6 +144,7 @@
   });
 
   let serverKeySaveStatus: Response;
+
   const sendServerKey = async () => {
     const body = JSON.stringify(
       await encryptMessage(
@@ -161,12 +166,16 @@
     ).catch((e) => {
       serverKeySaveStatus = { status: 500 } as Response;
     })) as Response;
-    setTimeout(() => {
-      serverKeySaveStatus = null;
+    if (serverKeySaveStatus?.status === 200) {
+      await getServerPK();
+    }
+    setTimeout(async () => {
       if (serverKeySaveStatus?.status === 200) {
         verifyChange = false;
       }
-    }, 1000);
+      serverKeySaveStatus = null;
+      await getServerPK();
+    }, 3000);
   };
 </script>
 
@@ -179,7 +188,7 @@
       <div class="flex flex-col gap-2 items-center">
         <div class="flex gap-2 items-center justify-between w-full">
           <h2 class="mb-2 text-lg font-bold w-full">
-            Server Key
+            Server Key {verifyChange}
             <div class="text-xs">{$serverPK.ethAddress}</div>
           </h2>
         </div>
@@ -319,7 +328,7 @@
                   <div
                     class="px-6 py-4 text-center justify-center flex flex-col gap-2">
                     <input
-                      id="dn_input"
+                      id="address_input"
                       type="text"
                       pattern="^0x[a-fA-F0-9]{'{'}40{'}'}"
                       bind:value={$settings.trustedAddresses[

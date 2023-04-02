@@ -80,18 +80,10 @@ export class IPFSUtilities {
         writeFileSync(fileName, Buffer.from(key as ArrayBuffer));
         let output: any;
 
-        try {
-            output = execSync(`${ipfsPath}/ipfs key rm ${inputKeyName}`, { env }).toString();
-        } catch (e) {
+        output = execSync(`${ipfsPath}/ipfs key rm ${inputKeyName}`, { env }).toString();
 
-        }
 
-        try {
-            output = execSync(`${ipfsPath}/ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
-        } catch (error: any) {
-            output = error.toString();
-            console.log("ERROR", output);
-        }
+        output = execSync(`${ipfsPath}/ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
 
         rmSync(fileName);
 
@@ -180,7 +172,7 @@ const api = async function (path: string, args: object = {}) {
                 error = { error: "not ok", statusText }
             }
         } catch (e) {
-            error = { error: "not ok", statusText: e.toString() }
+            error = { error: "not ok", statusText: (e as any).toString() }
         }
     }
     return returnContent || error;

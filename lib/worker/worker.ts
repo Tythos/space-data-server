@@ -8,7 +8,6 @@ import dotenv from "dotenv";
 import { IPFSController, IPFSUtilities, startIPFS, keyName } from "../../lib/ipfs/index";
 import { resolve } from "path";
 import { existsSync, mkdirSync } from "fs";
-import { HDNodeWallet } from "ethers";
 import { COMMANDS, IPC } from "../class/ipc.interface";
 import { ipcRequest } from "../utility/ipc";
 
@@ -16,7 +15,6 @@ const port: String | undefined = process.env.PORT || config.server.port.toString
 
 const gatewayPort = 5002;
 const apiPort = 9002;
-let ethWallet: HDNodeWallet;
 
 export default {
     ipfsController: undefined as IPFSController | undefined,

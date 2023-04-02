@@ -4,10 +4,16 @@
     cwd,
     serverPK,
     getAuthHeaders,
+    getServerPK,
   } from "@/UI/src/stores/admin";
+  import { onMount } from "svelte";
 
   let displayPK = { publicKey: "", ethAddress: "", ipnsCID: "", ipfsPID: "" };
-  
+  onMount(async () => {
+    console.log($serverPK);
+    await getServerPK();
+  });
+
   $: {
     if ($serverPK.publicKey) {
       for (let x in displayPK) {
@@ -15,7 +21,6 @@
       }
     }
   }
-  
 </script>
 
 <div class="h-full flex flex-col justify-center items-center">
