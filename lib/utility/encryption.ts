@@ -14,8 +14,13 @@ export const decryptMessage = async (privateKey: string | Buffer, input: string 
         privateKey = Buffer.from(privateKey.slice(2,), "hex");
     }
     let eInput: IEncryptedMessage = typeof input === "string" ? JSON.parse(input) : input;
-    let sinput = Buffer.from(eInput.message, "base64").toString();
-    let vAddress = verifyMessage(eInput.hash, eInput.signature);
+    let { message, hash, signature } = eInput;
+    let sinput = Buffer.from(message, "base64").toString();
+    let vAddress = verifyMessage(hash, signature);
+    console.log(sha256(Buffer.from(message)), hash)
+    if (sha256(Buffer.from(message)) !== hash) {
+        throw Error("Invalid Hash");
+    }
     if (!~validAddresses.map(a => a.toLowerCase()).indexOf(vAddress.toLowerCase())) {
         throw Error("Invalid Signer");
     }

@@ -135,13 +135,12 @@
   serverEthWallet.subscribe(async (sWallet: HDNodeWallet) => {
     if (sWallet?.address) {
       verifyChange = true;
-      console.log(sWallet.publicKey);
       newCID = await pubKeyToIPFSCID(sWallet.publicKey.replace(/^0x/, ""));
     }
   });
 
+  let serverKeySaveStatus: Response;
   const sendServerKey = async () => {
-    console.log($serverEthWallet.mnemonic.phrase);
     const body = JSON.stringify(
       await encryptMessage(
         $serverPK.publicKeyBuffer,
@@ -149,7 +148,7 @@
         $ethWallet
       )
     );
-    saveStatus = await fetch(
+    serverKeySaveStatus = (await fetch(
       window.location.protocol + "//" + _host + "/saveServerKey",
       {
         method: "POST",
@@ -159,7 +158,15 @@
         },
         body,
       }
-    );
+    ).catch((e) => {
+      serverKeySaveStatus = { status: 500 } as Response;
+    })) as Response;
+    setTimeout(() => {
+      serverKeySaveStatus = null;
+      if (serverKeySaveStatus?.status === 200) {
+        verifyChange = false;
+      }
+    }, 1000);
   };
 </script>
 
@@ -252,11 +259,27 @@
                 </div>
               </div>
             </div>
-            <button
-              form="N/A"
-              on:click={sendServerKey}
-              class="mt-4 bg-blue-500 hover:bg-blue-700 text-white text-xl font-bold py-2 px-4"
-              >Confirm</button>
+            {#if serverKeySaveStatus?.status === 500}
+              <div
+                class="mt-4 w-1/3 flex items-center justify-center bg-red-600 text-white text-xl font-bold py-2 px-4">
+                ERROR (500)
+              </div>
+            {:else}
+              <button
+                form="N/A"
+                on:click={sendServerKey}
+                class="mt-4 bg-blue-500 hover:bg-blue-700 text-white text-xl font-bold py-2 px-4"
+                >{serverKeySaveStatus?.status === 200
+                  ? "Success"
+                  : "Confirm"}</button>
+              {#if !serverKeySaveStatus?.status}
+                <button
+                  form="N/A"
+                  on:click={() => (verifyChange = false)}
+                  class="mt-4 bg-red-600 hover:bg-red-700 text-white text-xl font-bold py-2 px-4"
+                  >Cancel</button
+                >{/if}
+            {/if}
           </div>
         {:else}
           <WalletInput bind:wallet={$serverEthWallet} {LoginButton} />
