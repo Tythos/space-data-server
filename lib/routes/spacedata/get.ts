@@ -19,8 +19,8 @@ const fileReadPath = cFP && cFP[0] === "/" ?
 export const get: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
   let { standard, provider, cid } = req.params;
 
-  standard = standard.toUpperCase();
-  provider = provider.toLowerCase();
+  standard = standard?.toUpperCase();
+  provider = provider?.toLowerCase();
 
   if (!provider) {
     res.status(500);
@@ -33,7 +33,6 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
 
   } else {
 
-    standard = standard?.toUpperCase();
     let { query } = req.query;
     let parsedQuery: Array<any> = [];
 
@@ -63,7 +62,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       currentCID = CID;
       currentDigitalSignature = DIGITAL_SIGNATURE;
     } else {
-      
+
       let record = await connection("FILE_IMPORT_TABLE").where({ CID: currentCID }).first().catch((e: any) => {
         res.json({ error: e });
         res.status(500);
@@ -104,23 +103,28 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
         return;
       }
 
-      if (req.accepts("application/octet-stream")) {
-
-        res.setHeader('Content-Type', 'application/octet-stream');
-        res.send(writeFB(payload));
-
-      } else {
+      if (req.accepts("application/json")) {
 
         res.json(payload);
         res.end();
+
+      } else {
+
+        res.setHeader('Content-Type', 'application/octet-stream');
+        res.send(writeFB(payload));
 
       }
 
     } else {
 
       let fileToStream = join(fileReadPath, standard, provider, getFileName(standard, currentCID));
+
       if (existsSync(fileToStream)) {
-        if (req.accepts("application/octet-stream")) {
+
+        if (req.accepts("application/json")) {
+          res.json(readFB(readFileSync(fileToStream), standard, standards[standard]));
+          res.end();
+        } else {
           res.setHeader('Content-Type', 'application/octet-stream');
           let fpipe = createReadStream(fileToStream);
           fpipe.pipe(res);
@@ -128,10 +132,8 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
             console.log(err);
             next(err);
           });
-        } else {
-          res.json(readFB(readFileSync(fileToStream), standard, standards[standard]));
-          res.end();
         }
+
       } else {
         res.status(404);
         res.end();

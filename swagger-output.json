@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "23.3.3-0.1.1-1.15.0001+1680487123413",
+        "version": "23.3.3-0.1.1-1.16.0001+1680557441025",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version undefined"
     },
@@ -135,6 +135,30 @@
                         "schema": {
                             "type": "string",
                             "$ref": "#/definitions/STANDARDS"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/localspacedata/{standard}/{cid?}": {
+            "get": {
+                "description": "Returns data by standard, using the default server provider, and optionally the Content Identifier (CID).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cid?",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -368,7 +392,7 @@
                 }
             }
         },
-        "/saveServerKey": {
+        "/admin/saveServerKey": {
             "post": {
                 "description": "",
                 "parameters": [],

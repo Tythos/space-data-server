@@ -12,3 +12,4 @@ node_modules
 config.json
 public
 getdata.sh
+publicKey.json

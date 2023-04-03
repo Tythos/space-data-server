@@ -7,7 +7,7 @@ import { join } from "path";
 import dotenv from "dotenv";
 import { IPFSController, IPFSUtilities, startIPFS, keyName } from "../../lib/ipfs/index";
 import { resolve } from "path";
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { COMMANDS, IPC } from "../class/ipc.interface";
 import { ipcRequest } from "../utility/ipc";
 
@@ -40,13 +40,20 @@ export default {
                 throw Error("IPFS Service Not Started.");
             }
 
-            ipcRequest({
+            (process as any).publicKey = await ipcRequest({
                 command: COMMANDS["IPFS:PRIVATEKEY:RESPONSE"],
                 id: performance.now(),
                 payload: await IPFSUtilities.readKey(keyName, "bip39")
-            });
+            }) as any;
+
+            writeFileSync("./publicKey.json", JSON.stringify(await ipcRequest({
+                command: COMMANDS["IPFS:PRIVATEKEY:RESPONSE"],
+                id: performance.now(),
+                payload: await IPFSUtilities.readKey(keyName, "bip39")
+            }), null, 4));
 
             const folderToPin = resolve(__dirname, "..", config.data.fileSystemPath);
+
             const pinFolder = async () => {
                 console.log('Starting Pin');
                 if (existsSync(folderToPin)) {
@@ -58,12 +65,25 @@ export default {
                 console.log("Pinned Folder: ", CID);
             }
 
+            pinFolder();
             setInterval(pinFolder, 1000 * 60 * 60 * 3);
 
         } else {
+
             app.listen(port, () => {
                 console.log(`⚡️[child process ${pid} server]: Server is running at https://localhost:${port}`);
             });
+
+            setTimeout(async () => {
+                while (!(process as any).publicKey?.ethAddress) {
+                    (process as any).publicKey = (await ipcRequest(
+                        {
+                            command: COMMANDS["ETH:SIGN"],
+                            payload: (new Date()).toISOString()
+                        }) as any);
+                }
+            }, 10000);
+
         }
 
     },

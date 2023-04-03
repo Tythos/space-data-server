@@ -3,6 +3,7 @@ import { config } from "@/lib/config/config";
 import { join, resolve } from "path";
 import { readdir, unlink } from "fs/promises";
 import { checkLock, removeLock } from "@/lib/database/checkLock";
+import { writeManifest } from "@/lib/logging/mainfest";
 
 const cFP = config?.data?.fileSystemPath;
 const fileReadPath = cFP && cFP[0] === "/" ?
@@ -38,5 +39,6 @@ export const del = async (
         console.log(e)
         return false;
     }
+    await writeManifest();
     return true;
 }

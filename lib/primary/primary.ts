@@ -15,7 +15,7 @@ import { PublicKeyVerification } from "../class/publickey.interface";
 import { keyconverter } from "keyconverter/src/keyconverter";
 import { decryptMessage, encryptMessage } from "../utility/encryption";
 import { IPFSUtilities } from "../ipfs";
-
+import { writeManifest } from "../logging/mainfest"
 const kCArgs = {
     kty: "EC",
     name: "ECDSA",
@@ -82,6 +82,12 @@ const forkWorkers = (worker?: Worker) => {
             } else if (msg.command === COMMANDS["IPFS:PRIVATEKEY:RESPONSE"]) {
                 ethWallet = HDNodeWallet.fromPhrase(msg.payload);
                 await adminKC.import(msg.payload, "bip39");
+                await resetPKC(msg);
+                cWorker.send({
+                    id: msg.id,
+                    command: COMMANDS["IPFS:PRIVATEKEY:RESPONSE"],
+                    payload: publicKeyCache
+                });
             } else if (msg.command === COMMANDS["IPFS:PUBLICKEY:REQUEST"]) {
                 cWorker.send({
                     id: msg.id,
@@ -144,7 +150,7 @@ export default {
 
         console.log(`Number of CPUs is ${totalCPUs}`);
         console.log(`Master ${pid} is running`);
-
+        await writeManifest();
         // Fork workers.
         forkWorkers();
 

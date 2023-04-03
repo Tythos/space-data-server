@@ -19,7 +19,6 @@ import { readFile, rename } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
 import { getTrustedAddress } from "@/lib/auth/index"
 
-
 let queue: Array<string> = [];
 let isProcessing: Boolean = false;
 let CronJobs: Array<CronJob> = [];

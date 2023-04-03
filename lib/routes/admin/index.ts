@@ -1,14 +1,11 @@
 import { Request, Response, RequestHandler } from "express";
-import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
 import { config } from "@/lib/config/config";
-import { join, resolve } from "path";
+import { join } from "path";
 import * as ethers from "ethers";
 import { writeFileSync } from "node:fs";
 import { TrustedAddress } from "@/lib/class/settings.interface";
-import { encrypt } from "@toruslabs/eccrypto";
 import { COMMANDS, IPC } from "@/lib/class/ipc.interface";
 import { ipcRequest } from "@/lib/utility/ipc";
-import { decryptMessage, encryptMessage } from "@/lib/utility/encryption";
 
 export const getSettings: RequestHandler = async (req: Request, res: Response, next: Function) => {
 
@@ -45,8 +42,6 @@ export const cwd: RequestHandler = async (req: Request, res: Response, next: Fun
 }
 
 export const saveSettings: RequestHandler = async (req: Request, res: Response, next: Function) => {
-
-
     if ((req as any).authHeader?.trustedAddress?.isAdmin) {
         try {
             const settings = await ipcRequest({

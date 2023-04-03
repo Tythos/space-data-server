@@ -19,10 +19,14 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { Http2SecureServer } from "http2";
 import { adminCheck, cwd, getSettings, saveSettings, getServerPublicKey, saveServerKey } from "../routes/admin";
+import { ipcRequest } from "../utility/ipc";
+import { COMMANDS, IPC } from "../class/ipc.interface";
 
 const rawUI = Buffer.from(ui, "base64").toString();
 
 let app: Express | https.Server = express();
+
+let publicKeyCache: any = {};
 
 app.use(compression({
     level: 6, minlevel: 6, threshold: 512, filter: (req, res) => {
@@ -97,6 +101,30 @@ app.get("/idl/:standard", (req: any, res: any, next: any) => {
     res.set("Content-Type", "application/json");
     idl(req, res, next)
 });
+
+app.get("/localspacedata/:standard/:cid?", (req: any, res: any, next: any) => {
+    /*
+    #swagger.description = `Returns data by standard, using the default server provider,
+and optionally the Content Identifier (CID).  
+The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected. 
+If no CID is specified, the most recent CID is used.  
+The CID is always returned in the header "x-content-identifier".`;
+    */
+
+    try {
+        if (!publicKeyCache?.ethAddress) {
+            publicKeyCache = JSON.parse(readFileSync("./publicKey.json", "utf8"));
+        }
+
+        req.params.provider = (process as any).publicKey?.ethAddress;
+        get(req, res, next);
+    } catch (e) {
+        console.log(e)
+        res.status = 500;
+        res.end();
+    }
+});
+
 app.get("/spacedata/:provider/:standard/:cid?", (req: any, res: any, next: any) => {
     /*
     #swagger.description = `Returns data by standard, provider,
@@ -139,7 +167,7 @@ app.get("/admin/cwd", (req: any, res: any, next: any) => {
 
 app.get("/publicKey", getServerPublicKey);
 
-app.post("/saveServerKey", saveServerKey);
+app.post("/admin/saveServerKey", saveServerKey);
 
 try {
     let key = join(__dirname, "..", config.server.key || "");

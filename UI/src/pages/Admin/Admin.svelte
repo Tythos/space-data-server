@@ -154,7 +154,7 @@
       )
     );
     serverKeySaveStatus = (await fetch(
-      window.location.protocol + "//" + _host + "/saveServerKey",
+      window.location.protocol + "//" + _host + "/admin/saveServerKey",
       {
         method: "POST",
         headers: {
@@ -188,7 +188,7 @@
       <div class="flex flex-col gap-2 items-center">
         <div class="flex gap-2 items-center justify-between w-full">
           <h2 class="mb-2 text-lg font-bold w-full">
-            Server Key {verifyChange}
+            Server Key
             <div class="text-xs">{$serverPK.ethAddress}</div>
           </h2>
         </div>
@@ -275,7 +275,7 @@
               <button
                 form="N/A"
                 on:click={sendServerKey}
-                class="mt-4 bg-blue-500 hover:bg-blue-700 text-white text-xl font-bold py-2 px-4"
+                class="mt-4 bg-blue-500 text-white text-xl font-bold py-2 px-4"
                 >{serverKeySaveStatus?.status === 200
                   ? "Success"
                   : "Confirm"}</button>

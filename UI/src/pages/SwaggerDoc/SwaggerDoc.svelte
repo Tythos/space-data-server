@@ -6,15 +6,16 @@
   import JSONTree from "svelte-json-tree";
   import { resolver } from "@/lib/utility/resolver";
   import Icon from "svelte-awesome";
-  import { copy, download } from "svelte-awesome/icons";
+  import { copy } from "svelte-awesome/icons";
   import downloadjs from "downloadjs";
   import ipfsHash from "pure-ipfs-only-hash";
   import cc from "copy-to-clipboard";
   import type { AuthHeader } from "@/lib/class/authheader.json.interface";
   import { Buffer } from "buffer";
   import { ethWallet } from "@/UI/src/stores/user";
-  import { _host, devMode, devProvider } from "@/UI/src/stores/dev";
-  
+  import { _host, devMode } from "@/UI/src/stores/dev";
+  import { isAdmin } from "@/UI/src/stores/admin";
+
   const swaggerDoc: any = rawSwaggerDoc;
 
   async function copyText(responseBody) {
@@ -322,23 +323,24 @@ ${Object.entries(activeHeaders)
               data-bs-parent="#model-box">
               <!--ts-ignore-->
               {#each routes as route, r}
-                <div
-                  class="accordion border border-gray-400 border rounded-lg"
-                  id="main_category_{route.id}">
-                  <div class="accordion-item border rounded-lg">
-                    <h2
-                      style="border:0px;"
-                      class="accordion-header mb-0"
-                      id="heading_category_{route.id}">
-                      <button
-                        style="border:0px;
+                {#if !~route.route.indexOf("admin") || $isAdmin}
+                  <div
+                    class="accordion border border-gray-400 border rounded-lg"
+                    id="main_category_{route.id}">
+                    <div class="accordion-item border rounded-lg">
+                      <h2
+                        style="border:0px;"
+                        class="accordion-header mb-0"
+                        id="heading_category_{route.id}">
+                        <button
+                          style="border:0px;
                          border-bottom:1px #aaa solid;
                          border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;"
-                        class:blue={route.method?.toUpperCase() === "GET"}
-                        class:green={route.method?.toUpperCase() === "POST"}
-                        class:orange={route.method?.toUpperCase() === "PUT"}
-                        class:red={route.method?.toUpperCase() === "DELETE"}
-                        class="fixRound accordion-button
+                          class:blue={route.method?.toUpperCase() === "GET"}
+                          class:green={route.method?.toUpperCase() === "POST"}
+                          class:orange={route.method?.toUpperCase() === "PUT"}
+                          class:red={route.method?.toUpperCase() === "DELETE"}
+                          class="fixRound accordion-button
                       relative
                       collapsed
                       flex
@@ -351,274 +353,42 @@ ${Object.entries(activeHeaders)
                       rounded-none
                       transition
                       focus:outline-none"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#category_{route.id}"
-                        aria-expanded="false"
-                        aria-controls="category_{route.id}">
-                        <div
-                          class="flex items-center gap-4 text-gray-800 sm:text-xs text-sm">
+                          type="button"
+                          data-bs-toggle="collapse"
+                          data-bs-target="#category_{route.id}"
+                          aria-expanded="false"
+                          aria-controls="category_{route.id}">
                           <div
-                            class:bg-blue-400={route.method?.toUpperCase() ===
-                              "GET"}
-                            class:bg-green-400={route.method?.toUpperCase() ===
-                              "POST"}
-                            class:bg-purple-400={route.method?.toUpperCase() ===
-                              "PUT"}
-                            class:bg-red-400={route.method?.toUpperCase() ===
-                              "DELETE"}
-                            class="w-32 flex item--center justify-center p-1 pl-6 pr-6 text-white rounded font-bold">
-                            {route.method?.toUpperCase()}
-                          </div>
-                          <div class="font-bold text-sm break-all pr-2">
-                            {route.route}
-                          </div>
-                        </div>
-                      </button>
-                    </h2>
-                    <div
-                      id="category_{route.id}"
-                      class={devCSS}
-                      aria-labelledby="heading_category_{route.id}"
-                      data-bs-parent="#main_category_{route.id}">
-                      <div class="accordion-body flex flex-col gap-2">
-                        <div class="flex flex-col">
-                          <div class="overflow-x-hidden flex sm:-mx-6 lg:-mx-8">
+                            class="flex items-center gap-4 text-gray-800 sm:text-xs text-sm">
                             <div
-                              class="inline-block min-w-full sm:px-6 lg:px-8">
+                              class:bg-blue-400={route.method?.toUpperCase() ===
+                                "GET"}
+                              class:bg-green-400={route.method?.toUpperCase() ===
+                                "POST"}
+                              class:bg-purple-400={route.method?.toUpperCase() ===
+                                "PUT"}
+                              class:bg-red-400={route.method?.toUpperCase() ===
+                                "DELETE"}
+                              class="w-32 flex item--center justify-center p-1 pl-6 pr-6 text-white rounded font-bold">
+                              {route.method?.toUpperCase()}
+                            </div>
+                            <div class="font-bold text-sm break-all pr-2">
+                              {route.route}
+                            </div>
+                          </div>
+                        </button>
+                      </h2>
+                      <div
+                        id="category_{route.id}"
+                        class={devCSS}
+                        aria-labelledby="heading_category_{route.id}"
+                        data-bs-parent="#main_category_{route.id}">
+                        <div class="accordion-body flex flex-col gap-2">
+                          <div class="flex flex-col">
+                            <div
+                              class="overflow-x-hidden flex sm:-mx-6 lg:-mx-8">
                               <div
-                                class:bg-blue-100={route.method?.toUpperCase() ===
-                                  "GET"}
-                                class:bg-green-100={route.method?.toUpperCase() ===
-                                  "POST"}
-                                class:bg-purple-100={route.method?.toUpperCase() ===
-                                  "PUT"}
-                                class:bg-red-100={route.method?.toUpperCase() ===
-                                  "DELETE"}
-                                class="text-black flex text-left text-xs flex px-4 py-6">
-                                {@html route.description || "No Description"}
-                              </div>
-                              <div
-                                class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-2 px-4">
-                                <div>Parameters</div>
-                                <button
-                                  class="p-2 border-2 rounded w-24"
-                                  on:click={() => {
-                                    activeExecuted = false;
-                                    active = route;
-                                    activeHeaders.accept = route.pro;
-                                  }}>Try It Out</button>
-                              </div>
-                              <form
-                                on:submit={execute}
-                                class:bg-blue-100={route.method?.toUpperCase() ===
-                                  "GET"}
-                                class:bg-green-100={route.method?.toUpperCase() ===
-                                  "POST"}
-                                class:bg-purple-100={route.method?.toUpperCase() ===
-                                  "PUT"}
-                                class:bg-red-100={route.method?.toUpperCase() ===
-                                  "DELETE"}
-                                class="overflow-hidden flex flex-col items-start justify-center p-8">
-                                <div class="text-left">
-                                  <!--<JSONTree value={swaggerDoc.definitions.CDM} />-->
-                                </div>
-                                <div class="w-full">
-                                  {#if !route.parameters.length}
-                                    <h2
-                                      class="flex h-12 items-center justify-center">
-                                      No Parameters
-                                    </h2>
-                                  {:else}
-                                    <table class="min-w-full">
-                                      <thead
-                                        class="border-b border-black text-left">
-                                        <tr>
-                                          <th
-                                            scope="col"
-                                            class="text-sm font-medium text-gray-900 py-4 text-left">
-                                            Name
-                                          </th>
-                                          <th
-                                            scope="col"
-                                            class="text-sm font-medium text-gray-900 py-4 text-left">
-                                            Description
-                                          </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody class="text-left">
-                                        {#each route.parameters as param, p}
-                                          <tr class="border-b">
-                                            <td
-                                              class=" py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                                              ><div>
-                                                <div>
-                                                  <span
-                                                    class="font-bold text-[1.1rem]">
-                                                    {param.name}
-                                                  </span>
-                                                  {#if param.required}
-                                                    <sup
-                                                      class="text-[.55rem] relative -top-2 text-red-500"
-                                                      >Required</sup>
-                                                  {/if}
-                                                </div>
-                                                <div class="font-semibold">
-                                                  {resolver(
-                                                    param.schema,
-                                                    swaggerDoc
-                                                  ).type}
-                                                </div>
-                                                <div class="italic">
-                                                  ({param.in})
-                                                </div>
-                                              </div>
-                                            </td>
-                                            <td
-                                              class="flex flex-col gap-2 text-sm text-gray-900 font-light py-4 whitespace-nowrap">
-                                              <div>
-                                                {@html param.description || ""}
-                                              </div>
-                                              {#if resolver(param?.schema ? param.schema : param, swaggerDoc).enum}
-                                                <select
-                                                  required={param.required}
-                                                  disabled={active?.id !==
-                                                    route.id}
-                                                  class="border-black border rounded p-2"
-                                                  bind:value={requestParams[
-                                                    `${route.id}-${param.name}`
-                                                  ]}>
-                                                  {#each resolver(param.schema, swaggerDoc).enum.filter( (s) => (param.required ? s.toString().length : true) ) as en, e}
-                                                    <option>{en}</option>
-                                                  {/each}
-                                                </select>
-                                              {:else if param.schema.format === "date"}
-                                                <input
-                                                  required={param.required}
-                                                  disabled={active?.id !==
-                                                    route.id}
-                                                  bind:value={requestParams[
-                                                    `${route.id}-${param.name}`
-                                                  ]}
-                                                  style={active?.id !== route.id
-                                                    ? "cursor:not-allowed"
-                                                    : ""}
-                                                  type="datetime-local"
-                                                  class="w-full border-2 border-gray-400 rounded p-1" />
-                                              {:else if param.schema.type === "number"}
-                                                <input
-                                                  required={param.required}
-                                                  disabled={active?.id !==
-                                                    route.id}
-                                                  bind:value={requestParams[
-                                                    `${route.id}-${param.name}`
-                                                  ]}
-                                                  style={active?.id !== route.id
-                                                    ? "cursor:not-allowed"
-                                                    : ""}
-                                                  type="number"
-                                                  class="w-full border-2 border-gray-400 rounded p-1" />
-                                              {:else if param.schema.type === "buffer"}
-                                                <input
-                                                  type="file"
-                                                  on:change={(e) =>
-                                                    bufferSign(e, route, param)}
-                                                  required={param.required}
-                                                  disabled={active?.id !==
-                                                    route.id} />
-                                              {:else}
-                                                <input
-                                                  required={param.required}
-                                                  disabled={active?.id !==
-                                                    route.id}
-                                                  bind:value={requestParams[
-                                                    `${route.id}-${param.name}`
-                                                  ]}
-                                                  on:keyup={(e) => {
-                                                    if (
-                                                      route.method.toUpperCase() ===
-                                                      "DELETE"
-                                                    ) {
-                                                      setAuthHeader(
-                                                        e.target["value"],
-                                                        route
-                                                      );
-                                                    }
-                                                  }}
-                                                  style={active?.id !== route.id
-                                                    ? "cursor:not-allowed"
-                                                    : ""}
-                                                  type="text"
-                                                  class="w-full border-2 border-gray-400 rounded p-1" />
-                                              {/if}
-
-                                              {#if active?.id && param?.content}
-                                                <select
-                                                  bind:value={activeHeaders[
-                                                    "Content-Type"
-                                                  ]}
-                                                  class="border-black border rounded p-1 w-1/2 text-xs">
-                                                  {#each Object.entries(param.content) as [key, value], p}
-                                                    <option value={key}
-                                                      >{key}</option>
-                                                  {/each}
-                                                </select>
-                                              {/if}
-                                            </td>
-                                          </tr>
-                                        {/each}
-                                      </tbody>
-                                    </table>
-                                  {/if}
-                                </div>
-                                {#if active?.id === route.id}
-                                  <div class="flex gap-2 mt-5 w-full">
-                                    <button
-                                      disabled={requestOut}
-                                      type="submit"
-                                      class="{activeExecuted
-                                        ? 'w-1/2'
-                                        : 'w-full'} flex items-center justify-center bg-blue-500 text-white font-bold rounded p-1"
-                                      >{requestOut
-                                        ? "Executing..."
-                                        : "Execute"}</button>
-                                    {#if requestError}
-                                      <p
-                                        class="text-sm text-red-500 text-center">
-                                        {requestError}
-                                      </p>
-                                    {/if}
-                                    {#if activeExecuted}
-                                      <button
-                                        on:click={() => {
-                                          resetActive();
-                                          requestParams = {};
-                                        }}
-                                        class="flex items-center justify-center w-1/2 text-black font-bold rounded border border-black p-1"
-                                        >Clear</button>
-                                    {/if}
-                                  </div>
-                                {/if}
-                              </form>
-                              <div
-                                class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-3 px-4">
-                                <div>Responses</div>
-                                <div
-                                  class="flex gap-2 items-center justify-center text-xs">
-                                  <div>Response Content Type</div>
-                                  <select
-                                    bind:value={currentResponseContentType[
-                                      route.id
-                                    ]}
-                                    class="border-black border rounded p-2">
-                                    {#each responseContentTypes[route.id] as popt, p}
-                                      <option value={popt.id}
-                                        >{popt.name}</option>
-                                    {/each}
-                                  </select>
-                                </div>
-                              </div>
-                              {#if active?.id === route.id && activeExecuted}
+                                class="inline-block min-w-full sm:px-6 lg:px-8">
                                 <div
                                   class:bg-blue-100={route.method?.toUpperCase() ===
                                     "GET"}
@@ -628,114 +398,356 @@ ${Object.entries(activeHeaders)
                                     "PUT"}
                                   class:bg-red-100={route.method?.toUpperCase() ===
                                     "DELETE"}
-                                  class="flex flex-col gap-2 items-start text-xs font-bold p-4 w-full">
-                                  <div class="flex justify-between">
-                                    <div>Curl</div>
-                                    <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                    <span
-                                      on:click={(e) => copyText(curlTemplate)}
-                                      class="cursor-pointer text-gray-500 ml-2"
-                                      ><Icon data={copy} /></span>
+                                  class="text-black flex text-left text-xs flex px-4 py-6">
+                                  {@html route.description || "No Description"}
+                                </div>
+                                <div
+                                  class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-2 px-4">
+                                  <div>Parameters</div>
+                                  <button
+                                    class="p-2 border-2 rounded w-24"
+                                    on:click={() => {
+                                      activeExecuted = false;
+                                      active = route;
+                                      activeHeaders.accept = route.pro;
+                                    }}>Try It Out</button>
+                                </div>
+                                <form
+                                  on:submit={execute}
+                                  class:bg-blue-100={route.method?.toUpperCase() ===
+                                    "GET"}
+                                  class:bg-green-100={route.method?.toUpperCase() ===
+                                    "POST"}
+                                  class:bg-purple-100={route.method?.toUpperCase() ===
+                                    "PUT"}
+                                  class:bg-red-100={route.method?.toUpperCase() ===
+                                    "DELETE"}
+                                  class="overflow-hidden flex flex-col items-start justify-center p-8">
+                                  <div class="text-left">
+                                    <!--<JSONTree value={swaggerDoc.definitions.CDM} />-->
                                   </div>
-                                  <code
-                                    class="w-full p-2 bg-gray-800 rounded text-white text-left">
-                                    {curlTemplate}
-                                  </code>
-                                  <div class="flex justify-between">
-                                    <div>Request URL</div>
-                                    <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                    <span
-                                      on:click={(e) => copyText(activeURL)}
-                                      class="cursor-pointer text-gray-500 ml-2"
-                                      ><Icon data={copy} /></span>
-                                  </div>
-                                  <code
-                                    class="w-full p-2 bg-gray-800 rounded text-white text-left">
-                                    {activeURL}
-                                  </code>
-
-                                  <div class="text-md mt-3">
-                                    Server Response
-                                  </div>
-                                  <div class="flex overflow-x-auto w-full">
-                                    <table class="w-full">
-                                      <thead
-                                        class="border-b border-black text-left">
-                                        <tr>
-                                          <th
-                                            scope="col"
-                                            class="text-sm font-medium text-gray-900 py-4 text-left w-20"
-                                            >Code</th>
-                                          <th
-                                            scope="col"
-                                            class="text-sm font-medium text-gray-900 py-4 text-left"
-                                            >Details</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody class="text-left">
-                                        <tr>
-                                          <td class="m-0 w-6 flex pt-2"
-                                            >{responses[route.id]
-                                              ?.responseCode}</td>
-                                          <td>
-                                            <div
-                                              class="flex flex-col gap-2 p-2 w-full">
-                                              <div>
-                                                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                                Response Body
-                                                <span
-                                                  on:click={(e) =>
-                                                    copyText(
-                                                      responses[route.id]
-                                                        ?.responseBody
-                                                    )}
-                                                  class="cursor-pointer text-gray-500 ml-2"
-                                                  ><Icon data={copy} /></span>
-                                              </div>
-                                              <div
-                                                class="overflow-x-auto relative max-h-[100px]">
-                                                <code
-                                                  id="{route.id}-body"
-                                                  class="h-full whitespace-pre p-2 bg-gray-800 rounded text-white text-left overflow-y-scroll">
-                                                  {responses[
-                                                    route.id
-                                                  ]?.responseBody?.slice(
-                                                    0,
-                                                    1000
-                                                  )}{responses[route.id]
-                                                    ?.responseBody?.length >
-                                                  1000
-                                                    ? "..."
-                                                    : ""}
-                                                </code>
-                                              </div>
-                                              <div>Response Headers</div>
-                                              <div class="overflow-x-auto">
-                                                {#if responses[route.id]?.responseHeaders}
-                                                  <code
-                                                    class="p-2 bg-gray-800 rounded text-white text-left">
-                                                    {#each Object.entries(responses[route.id]?.responseHeaders) as [header, value], h}
-                                                      {header}: {value}<br />
+                                  <div class="w-full">
+                                    {#if !route.parameters.length}
+                                      <h2
+                                        class="flex h-12 items-center justify-center">
+                                        No Parameters
+                                      </h2>
+                                    {:else}
+                                      <table class="min-w-full">
+                                        <thead
+                                          class="border-b border-black text-left">
+                                          <tr>
+                                            <th
+                                              scope="col"
+                                              class="text-sm font-medium text-gray-900 py-4 text-left">
+                                              Name
+                                            </th>
+                                            <th
+                                              scope="col"
+                                              class="text-sm font-medium text-gray-900 py-4 text-left">
+                                              Description
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                        <tbody class="text-left">
+                                          {#each route.parameters as param, p}
+                                            <tr class="border-b">
+                                              <td
+                                                class=" py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                                                ><div>
+                                                  <div>
+                                                    <span
+                                                      class="font-bold text-[1.1rem]">
+                                                      {param.name}
+                                                    </span>
+                                                    {#if param.required}
+                                                      <sup
+                                                        class="text-[.55rem] relative -top-2 text-red-500"
+                                                        >Required</sup>
+                                                    {/if}
+                                                  </div>
+                                                  <div class="font-semibold">
+                                                    {resolver(
+                                                      param.schema,
+                                                      swaggerDoc
+                                                    ).type}
+                                                  </div>
+                                                  <div class="italic">
+                                                    ({param.in})
+                                                  </div>
+                                                </div>
+                                              </td>
+                                              <td
+                                                class="flex flex-col gap-2 text-sm text-gray-900 font-light py-4 whitespace-nowrap">
+                                                <div>
+                                                  {@html param.description ||
+                                                    ""}
+                                                </div>
+                                                {#if resolver(param?.schema ? param.schema : param, swaggerDoc).enum}
+                                                  <select
+                                                    required={param.required}
+                                                    disabled={active?.id !==
+                                                      route.id}
+                                                    class="border-black border rounded p-2"
+                                                    bind:value={requestParams[
+                                                      `${route.id}-${param.name}`
+                                                    ]}>
+                                                    {#each resolver(param.schema, swaggerDoc).enum.filter( (s) => (param.required ? s.toString().length : true) ) as en, e}
+                                                      <option>{en}</option>
                                                     {/each}
-                                                  </code>
+                                                  </select>
+                                                {:else if param.schema.format === "date"}
+                                                  <input
+                                                    required={param.required}
+                                                    disabled={active?.id !==
+                                                      route.id}
+                                                    bind:value={requestParams[
+                                                      `${route.id}-${param.name}`
+                                                    ]}
+                                                    style={active?.id !==
+                                                    route.id
+                                                      ? "cursor:not-allowed"
+                                                      : ""}
+                                                    type="datetime-local"
+                                                    class="w-full border-2 border-gray-400 rounded p-1" />
+                                                {:else if param.schema.type === "number"}
+                                                  <input
+                                                    required={param.required}
+                                                    disabled={active?.id !==
+                                                      route.id}
+                                                    bind:value={requestParams[
+                                                      `${route.id}-${param.name}`
+                                                    ]}
+                                                    style={active?.id !==
+                                                    route.id
+                                                      ? "cursor:not-allowed"
+                                                      : ""}
+                                                    type="number"
+                                                    class="w-full border-2 border-gray-400 rounded p-1" />
+                                                {:else if param.schema.type === "buffer"}
+                                                  <input
+                                                    type="file"
+                                                    on:change={(e) =>
+                                                      bufferSign(
+                                                        e,
+                                                        route,
+                                                        param
+                                                      )}
+                                                    required={param.required}
+                                                    disabled={active?.id !==
+                                                      route.id} />
+                                                {:else}
+                                                  <input
+                                                    required={param.required}
+                                                    disabled={active?.id !==
+                                                      route.id}
+                                                    bind:value={requestParams[
+                                                      `${route.id}-${param.name}`
+                                                    ]}
+                                                    on:keyup={(e) => {
+                                                      if (
+                                                        route.method.toUpperCase() ===
+                                                        "DELETE"
+                                                      ) {
+                                                        setAuthHeader(
+                                                          e.target["value"],
+                                                          route
+                                                        );
+                                                      }
+                                                    }}
+                                                    style={active?.id !==
+                                                    route.id
+                                                      ? "cursor:not-allowed"
+                                                      : ""}
+                                                    type="text"
+                                                    class="w-full border-2 border-gray-400 rounded p-1" />
                                                 {/if}
-                                              </div>
-                                            </div>
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
+
+                                                {#if active?.id && param?.content}
+                                                  <select
+                                                    bind:value={activeHeaders[
+                                                      "Content-Type"
+                                                    ]}
+                                                    class="border-black border rounded p-1 w-1/2 text-xs">
+                                                    {#each Object.entries(param.content) as [key, value], p}
+                                                      <option value={key}
+                                                        >{key}</option>
+                                                    {/each}
+                                                  </select>
+                                                {/if}
+                                              </td>
+                                            </tr>
+                                          {/each}
+                                        </tbody>
+                                      </table>
+                                    {/if}
+                                  </div>
+                                  {#if active?.id === route.id}
+                                    <div class="flex gap-2 mt-5 w-full">
+                                      <button
+                                        disabled={requestOut}
+                                        type="submit"
+                                        class="{activeExecuted
+                                          ? 'w-1/2'
+                                          : 'w-full'} flex items-center justify-center bg-blue-500 text-white font-bold rounded p-1"
+                                        >{requestOut
+                                          ? "Executing..."
+                                          : "Execute"}</button>
+                                      {#if requestError}
+                                        <p
+                                          class="text-sm text-red-500 text-center">
+                                          {requestError}
+                                        </p>
+                                      {/if}
+                                      {#if activeExecuted}
+                                        <button
+                                          on:click={() => {
+                                            resetActive();
+                                            requestParams = {};
+                                          }}
+                                          class="flex items-center justify-center w-1/2 text-black font-bold rounded border border-black p-1"
+                                          >Clear</button>
+                                      {/if}
+                                    </div>
+                                  {/if}
+                                </form>
+                                <div
+                                  class="z-10 text-black flex items-center justify-between text-left text-sm font-bold shadow-md border-b border-gray-300 flex p-3 px-4">
+                                  <div>Responses</div>
+                                  <div
+                                    class="flex gap-2 items-center justify-center text-xs">
+                                    <div>Response Content Type</div>
+                                    <select
+                                      bind:value={currentResponseContentType[
+                                        route.id
+                                      ]}
+                                      class="border-black border rounded p-2">
+                                      {#each responseContentTypes[route.id] as popt, p}
+                                        <option value={popt.id}
+                                          >{popt.name}</option>
+                                      {/each}
+                                    </select>
                                   </div>
                                 </div>
-                              {/if}
+                                {#if active?.id === route.id && activeExecuted}
+                                  <div
+                                    class:bg-blue-100={route.method?.toUpperCase() ===
+                                      "GET"}
+                                    class:bg-green-100={route.method?.toUpperCase() ===
+                                      "POST"}
+                                    class:bg-purple-100={route.method?.toUpperCase() ===
+                                      "PUT"}
+                                    class:bg-red-100={route.method?.toUpperCase() ===
+                                      "DELETE"}
+                                    class="flex flex-col gap-2 items-start text-xs font-bold p-4 w-full">
+                                    <div class="flex justify-between">
+                                      <div>Curl</div>
+                                      <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                      <span
+                                        on:click={(e) => copyText(curlTemplate)}
+                                        class="cursor-pointer text-gray-500 ml-2"
+                                        ><Icon data={copy} /></span>
+                                    </div>
+                                    <code
+                                      class="w-full p-2 bg-gray-800 rounded text-white text-left">
+                                      {curlTemplate}
+                                    </code>
+                                    <div class="flex justify-between">
+                                      <div>Request URL</div>
+                                      <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                      <span
+                                        on:click={(e) => copyText(activeURL)}
+                                        class="cursor-pointer text-gray-500 ml-2"
+                                        ><Icon data={copy} /></span>
+                                    </div>
+                                    <code
+                                      class="w-full p-2 bg-gray-800 rounded text-white text-left">
+                                      {activeURL}
+                                    </code>
+
+                                    <div class="text-md mt-3">
+                                      Server Response
+                                    </div>
+                                    <div class="flex overflow-x-auto w-full">
+                                      <table class="w-full">
+                                        <thead
+                                          class="border-b border-black text-left">
+                                          <tr>
+                                            <th
+                                              scope="col"
+                                              class="text-sm font-medium text-gray-900 py-4 text-left w-20"
+                                              >Code</th>
+                                            <th
+                                              scope="col"
+                                              class="text-sm font-medium text-gray-900 py-4 text-left"
+                                              >Details</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody class="text-left">
+                                          <tr>
+                                            <td class="m-0 w-6 flex pt-2"
+                                              >{responses[route.id]
+                                                ?.responseCode}</td>
+                                            <td>
+                                              <div
+                                                class="flex flex-col gap-2 p-2 w-full">
+                                                <div>
+                                                  <!-- svelte-ignore a11y-click-events-have-key-events -->
+                                                  Response Body
+                                                  <span
+                                                    on:click={(e) =>
+                                                      copyText(
+                                                        responses[route.id]
+                                                          ?.responseBody
+                                                      )}
+                                                    class="cursor-pointer text-gray-500 ml-2"
+                                                    ><Icon data={copy} /></span>
+                                                </div>
+                                                <div
+                                                  class="overflow-x-auto relative max-h-[100px]">
+                                                  <code
+                                                    id="{route.id}-body"
+                                                    class="h-full whitespace-pre p-2 bg-gray-800 rounded text-white text-left overflow-y-scroll">
+                                                    {responses[
+                                                      route.id
+                                                    ]?.responseBody?.slice(
+                                                      0,
+                                                      1000
+                                                    )}{responses[route.id]
+                                                      ?.responseBody?.length >
+                                                    1000
+                                                      ? "..."
+                                                      : ""}
+                                                  </code>
+                                                </div>
+                                                <div>Response Headers</div>
+                                                <div class="overflow-x-auto">
+                                                  {#if responses[route.id]?.responseHeaders}
+                                                    <code
+                                                      class="p-2 bg-gray-800 rounded text-white text-left">
+                                                      {#each Object.entries(responses[route.id]?.responseHeaders) as [header, value], h}
+                                                        {header}: {value}<br />
+                                                      {/each}
+                                                    </code>
+                                                  {/if}
+                                                </div>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                {/if}
+                              </div>
                             </div>
                           </div>
+                          <!--End Body-->
                         </div>
-                        <!--End Body-->
                       </div>
                     </div>
                   </div>
-                </div>
+                {/if}
               {/each}
             </div>
           </div>

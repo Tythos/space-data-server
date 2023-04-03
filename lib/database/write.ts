@@ -11,6 +11,7 @@ import { writeFB, getFileName } from '../utility/flatbufferConversion';
 import { config } from "@/lib/config/config";
 import { del } from "./delete";
 import { checkLock, removeLock } from "@/lib/database/checkLock";
+import { writeManifest } from "../logging/mainfest";
 
 let knexConnection: any;
 let pageSize = 200;
@@ -228,6 +229,7 @@ export const write = async (
         removeLock();
     });
     removeLock();
+    await writeManifest();
 }
 
 export default write;
