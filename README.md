@@ -12,7 +12,8 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [x] Limit / delete based on time || number of files
 - [ ] Change 'localspacedata' to another name and fix API docs
 - [ ] Add querystring formatting options
-- [ ] Get IPFS folder hash published to IPFS
+- [ ] Get IPFS folder hash published to IPFS and add it to server data
+- [ ] Change server data to just read the 'publicKey.json' file in root, maybe rename it
 - [ ] Host manifest.json in local API
 - [ ] Add code examples
 - [ ] Change to use default path for Ethereum wallet for compatibility
