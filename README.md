@@ -8,8 +8,15 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 ## TODO
 
 - [x] Install script with service
-- [ ] Update server key from Ethereum key
-- [ ] Limit / delete based on time || number of files\
+- [x] Update server key from Ethereum key
+- [x] Limit / delete based on time || number of files
+- [ ] Change 'localspacedata' to another name and fix API docs
+- [ ] Add querystring formatting options
+- [ ] Add code examples
+- [ ] Change to use default path for Ethereum wallet for compatibility
+- [ ] Add a "add default server key" to the Admin Settings UI if the server key isn't trusted yet
+- [ ] Add an "export settings" button
+- [ ] Add export options for the user
 - [ ] IPFS pinning / unpinning config
 - [ ] Data UI
 - [ ] Data matrix
