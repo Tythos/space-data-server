@@ -63,13 +63,14 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
       currentCID = CID;
       currentDigitalSignature = DIGITAL_SIGNATURE;
     } else {
+      
       let record = await connection("FILE_IMPORT_TABLE").where({ CID: currentCID }).first().catch((e: any) => {
         res.json({ error: e });
         res.status(500);
         res.end();
       });
 
-      if (!record) {
+      if (!record?.CID) {
         res.status(404);
         res.end();
         return;
@@ -80,9 +81,9 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     }
 
     if (!currentDigitalSignature) {
-
+      res.status(404);
+      res.end();
       return;
-
     }
 
     res.set("x-digital-signature", currentDigitalSignature);

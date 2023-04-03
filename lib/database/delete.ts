@@ -32,7 +32,7 @@ export const del = async (
         await connection("FILE_IMPORT_TABLE")
             .where("CID", currentCID)
             .del();
-            
+
         removeLock();
     } catch (e) {
         console.log(e)

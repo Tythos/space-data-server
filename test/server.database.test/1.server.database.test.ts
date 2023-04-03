@@ -47,7 +47,7 @@ beforeAll(async () => {
 
     await init(config.data.ingest);
 
-    await generateData(3, 2, dataPath);
+    await generateData(3, 5, dataPath);
 
     const fileNames = readdirSync(dataPath);
     for (let fileName of fileNames) {
@@ -135,9 +135,7 @@ describe("POST /endpoint Write To Database", () => {
             }
         }
     });
-    function wait(limit: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, limit));
-    }
+
     it("Deletes a CID", async () => {
         const provider = ethWallet.address.toLowerCase();
         for (let standard in standards) {
@@ -171,12 +169,14 @@ describe("POST /endpoint Write To Database", () => {
 
                 const requestPath = `/spacedata/${provider}/${standard.toUpperCase()}/${CID}`;
                 const shouldBeGone = (await request(app).get(requestPath));
-
+                if (standard === "CSM" && shouldBeGone.status === 200) {
+                    console.log(shouldBeGone.status, CID, standard)
+                }
                 expect(shouldBeGone.status).toBe(404);
             }
         }
 
-    }, 50000)
+    }, 100000)
 });
 
 describe("POST /echo", () => {

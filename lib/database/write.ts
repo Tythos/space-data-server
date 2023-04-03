@@ -10,23 +10,39 @@ import { join } from "path";
 import { writeFB, getFileName } from '../utility/flatbufferConversion';
 import { config } from "@/lib/config/config";
 import { del } from "./delete";
-import sConfig from "@/lib/database/config/static.config";
 import { checkLock, removeLock } from "@/lib/database/checkLock";
 
 let knexConnection: any;
 let pageSize = 200;
 
-async function getCIDsOlderThan(days, STANDARD) {
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - days);
+async function getCIDsToDelete(STANDARD) {
+    const limit = config.data.limit?.[STANDARD] || config.data.defaultLimit;
 
-    const rows = await knexConnection('FILE_IMPORT_TABLE')
+    const count = await knexConnection('FILE_IMPORT_TABLE')
+        .count('CID as count')
+        .where('STANDARD', STANDARD)
+        .first();
+
+    const excess = count.count - limit;
+    if (excess <= 0) {
+        return []; // No need to delete any CIDs
+    }
+
+    const cids = await knexConnection('FILE_IMPORT_TABLE')
         .select('CID')
-        .where('created_at', '<', cutoffDate.toISOString())
-        .where("STANDARD", STANDARD);
+        .where('STANDARD', STANDARD)
+        .orderBy('created_at')
+        .limit(excess)
+        .pluck('CID');
 
-    return rows.map(row => row.CID);
+    await knexConnection('FILE_IMPORT_TABLE')
+        .where('STANDARD', STANDARD)
+        .whereIn('CID', cids)
+        .delete();
+
+    return cids;
 }
+
 
 const writeFiles = async (writePath: string, CID: string, input: any, DIGITAL_SIGNATURE: string, STANDARD: string) => {
     if (!input || !input.pack) {
@@ -192,11 +208,14 @@ export const write = async (
         PROVIDER as string
     );
 
+    let toDelete = await getCIDsToDelete(STANDARD);
+
+    for (let d in toDelete) {
+        await del(d);
+    }
+
     await writeFiles(writePath, CID, inputObject, DIGITAL_SIGNATURE, STANDARD);
-    /*
-        const cids = await getCIDsOlderThan(0, STANDARD); // Get CIDs of files older than 7 days
-        console.log(cids); // Print the array of CIDs
-    */
+
     await knexConnection("FILE_IMPORT_TABLE").insert([{
         CID,
         DIGITAL_SIGNATURE,

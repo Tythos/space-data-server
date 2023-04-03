@@ -9,7 +9,12 @@
     "ingest": ".testdata",
     "fileSystemPath": "public",
     "useDatabase": true,
-    "cache": "5 minutes"
+    "cache": "5 minutes",
+    "verbose": false,
+    "defaultLimit": 100,
+    "limit": {
+      "CAT": 2
+    }
   },
   "trustedAddresses": [
     {

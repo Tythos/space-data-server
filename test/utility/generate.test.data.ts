@@ -88,25 +88,26 @@ export const generateData = async (total: number = 10, numFiles: number = 5, dat
 
         return newObject;
     }
+    for (let i = 0; i < numFiles; i++) {
+        for (let standard in standards) {
+            let currentStandard = standardsJSON[standard];
+            let tableName = refRootName(currentStandard.$ref);
+            let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
+            let parentClass: any = standards[pClassName];
+            let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
+            let input = new parentClass[cClassName];
 
-    for (let standard in standards) {
-        let currentStandard = standardsJSON[standard];
-        let tableName = refRootName(currentStandard.$ref);
-        let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
-        let parentClass: any = standards[pClassName];
-        let cClassName: keyof typeof parentClass = `${tableName}COLLECTIONT`;
-        let input = new parentClass[cClassName];
+            if (!~standardsToGenerate.indexOf(standard)) continue;
 
-        if (!~standardsToGenerate.indexOf(standard)) continue;
+            for (let i = 0; i < total; i++) {
+                let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
+                input.RECORDS.push(newObject);
+            }
 
-        for (let i = 0; i < total; i++) {
-            let newObject = buildObject(currentStandard.definitions[tableName].properties, parentClass, tableName, currentStandard);
-            input.RECORDS.push(newObject);
-        }
+            let resultBuffer: Buffer = writeFB(input);
+            let CID: string = await ipfsHash.of(resultBuffer);
 
-        let resultBuffer: Buffer = writeFB(input);
-        let CID: string = await ipfsHash.of(resultBuffer);
-
-        writeFileSync(join(dataPath, `${CID}.${standard.toLowerCase()}.fbs`), resultBuffer);
-    };
+            writeFileSync(join(dataPath, `${CID}.${standard.toLowerCase()}.fbs`), resultBuffer);
+        };
+    }
 }

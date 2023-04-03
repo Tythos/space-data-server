@@ -195,8 +195,7 @@
         {#if verifyChange}
           <div
             class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-400 w-2/3">
-            <div
-              class="mt-4 w-full bg-orange-500 text-white font-bold py-2 px-4">
+            <div class="mt-4 w-full bg-gray-500 text-white font-bold py-2 px-4">
               Change From
             </div>
 
@@ -232,8 +231,7 @@
                 </div>
               </div>
             </div>
-            <div
-              class="mt-4 w-full bg-orange-500 text-white font-bold py-2 px-4">
+            <div class="mt-4 w-full bg-gray-500 text-white font-bold py-2 px-4">
               To
             </div>
             <div class="mt-2 table w-full">
@@ -302,12 +300,12 @@
         </div>
         {#if $settings?.trustedAddresses}
           <div class="mt-2 space-y-4">
-            <div class="flex gap-2 items-center text-[1rem]">
+            <div class="flex gap-2 items-center text-[1.5rem]">
               <!-- svelte-ignore a11y-click-events-have-key-events -->
               <div
                 class="flex items-center cursor-pointer"
                 on:click={(e) => changeTrustedAddress(-1)}>
-                <Icon data={angleLeft} />
+                <Icon scale={1.5} data={angleLeft} />
               </div>
               <div>
                 {activeTrustedAddressIndex + 1} of {Object.keys(
@@ -318,7 +316,7 @@
               <div
                 class="flex items-center cursor-pointer"
                 on:click={(e) => changeTrustedAddress(1)}>
-                <Icon data={angleRight} />
+                <Icon scale={1.5} data={angleRight} />
               </div>
             </div>
             {#if $settings.trustedAddresses[activeTrustedAddress]}

@@ -1,3 +1,4 @@
+import { KeyValueDataStructure } from "./utility/KeyValueDataStructure";
 
 export interface TrustedAddress {
     address: string,
@@ -8,6 +9,10 @@ export interface TrustedAddress {
     CN?: string,
     comment?: string,
     isAdmin?: boolean
+}
+
+interface StandardLimit {
+    [key: string]: any;
 }
 
 interface cronJob {
@@ -27,7 +32,9 @@ export interface Settings {
         "fileSystemPath": string,
         "useDatabase": Boolean,
         "cache": string,
-        "verbose": Boolean
+        "verbose": Boolean,
+        "defaultLimit": number,
+        "limit": StandardLimit,
     },
     "cronjobs": Array<cronJob>,
     "trustedAddresses": Array<TrustedAddress>,
