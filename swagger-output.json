@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "23.3.3-0.1.1-1.17.0001+1680612992143",
+        "version": "23.3.3-0.1.1-1.18.0001+1680639047530",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version undefined"
     },
@@ -22,6 +22,20 @@
         "/swagger-json": {
             "get": {
                 "description": "Returns the OpenAPI 3.0 JSON API file.",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/manifest": {
+            "get": {
+                "description": "Returns the Local Provider Manifest.",
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -178,10 +192,18 @@
                 "responses": {}
             }
         },
-        "/spacedatanetwork/{provider}/{standard}/{cid?}": {
+        "/${spaceDataNetworkPath}/{provider}/{standard}/{cid?}": {
             "get": {
                 "description": "Returns data by standard, provider, and optionally the Content Identifier (CID).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
                 "parameters": [
+                    {
+                        "name": "spaceDataNetworkPath",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     {
                         "name": "provider",
                         "in": "path",
@@ -195,63 +217,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "$ref": "#/definitions/STANDARDS"
-                        }
-                    },
-                    {
-                        "name": "cid?",
-                        "in": "path",
-                        "required": false,
-                        "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "format",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "JSON",
-                                "FBS"
-                            ]
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "JSON Schema of standards.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                }
-                            },
-                            "application/octet-stream": {
-                                "schema": {
-                                    "type": "Buffer"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/spacedata/{cid?}": {
-            "delete": {
-                "description": "Deletes a file by CID",
-                "parameters": [
-                    {
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
-                        },
-                        "description": "Auth Token"
                     },
                     {
                         "name": "cid?",
@@ -265,43 +232,51 @@
                 "responses": {}
             }
         },
-        "/spacedata/{standard}": {
+        "/${spaceDataNetworkPath}/{standard?}": {
+            "delete": {
+                "description": "Deletes a file by CID",
+                "parameters": [
+                    {
+                        "name": "spaceDataNetworkPath",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "standard?",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/${spaceDataNetworkPath}/{standard}": {
             "post": {
                 "description": "",
                 "parameters": [
                     {
-                        "name": "standard",
-                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
+                        "name": "spaceDataNetworkPath",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "$ref": "#/definitions/STANDARDS"
+                            "type": "string"
                         }
                     },
                     {
-                        "name": "Authorization",
-                        "in": "header",
+                        "name": "standard",
+                        "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
-                        },
-                        "description": "Auth Token"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "in": "body",
-                    "content": {
-                        "application/octet-stream": {
-                            "schema": {
-                                "type": "string",
-                                "format": "binary"
-                            }
+                            "type": "string"
                         }
                     }
-                },
+                ],
                 "responses": {}
             }
         },
@@ -456,6 +431,107 @@
                 }
             }
         },
+        "/spacedatanetwork/{provider}/{standard}/{cid?}": {
+            "get": {
+                "description": "Returns data by standard, provider, and optionally the Content Identifier (CID).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+                    },
+                    {
+                        "name": "cid?",
+                        "in": "path",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "JSON",
+                                "FBS"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON Schema of standards.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            },
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "Buffer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/spacedata/{standard}": {
+            "post": {
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "description": "Three Letter Identifier for <a href='SpaceDataStandards.org'>SpaceDataStandards.org</a> standard.",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
+                        },
+                        "description": "Auth Token"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "in": "body",
+                    "content": {
+                        "application/octet-stream": {
+                            "schema": {
+                                "type": "string",
+                                "format": "binary"
+                            }
+                        }
+                    }
+                },
+                "responses": {}
+            }
+        },
         "/echo/{standard}": {
             "post": {
                 "description": "Accepts a flatbuffer as a POST body, returns a JSON representation.  For debugging.",
@@ -483,6 +559,32 @@
                         }
                     }
                 },
+                "responses": {}
+            }
+        },
+        "/spacedata/{cid?}": {
+            "delete": {
+                "description": "Deletes a file by CID",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^Bearer\\s[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.?[A-Za-z0-9-_.+/=]*$"
+                        },
+                        "description": "Auth Token"
+                    },
+                    {
+                        "name": "cid?",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {}
             }
         }

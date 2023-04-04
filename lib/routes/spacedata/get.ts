@@ -11,11 +11,10 @@ import { createReadStream, existsSync, readFileSync } from "fs";
 import { refRootName } from "@/lib/database/generateTables";
 import { getFileName, readFB, writeFB } from '@/lib/utility/flatbufferConversion';
 import { resetIndex } from "apicache";
+import { fileReadPath } from "@/lib/config/config";
 
 const standardsJSON: KeyValueDataStructure = _standardsJSON;
-const cFP = config?.data?.fileSystemPath;
-const fileReadPath = cFP && cFP[0] === "/" ?
-  cFP : resolve(process.cwd(), cFP);
+
 export const get: express.RequestHandler = async (req: Request, res: Response, next: Function) => {
   let { standard, provider, cid } = req.params;
 
@@ -95,7 +94,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
     res.set("x-content-identifier", currentCID);
 
     const useJSON = (req.query?.format as string)?.toUpperCase() !== "FBS" && req.accepts("application/json");
-    
+
     if (config.data.useDatabase) {
       payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
 
@@ -119,7 +118,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
 
     } else {
 
-      let fileToStream = join(fileReadPath, standard, provider, getFileName(standard, currentCID));
+      let fileToStream = join(fileReadPath, standard, getFileName(standard, currentCID));
 
       if (existsSync(fileToStream)) {
 

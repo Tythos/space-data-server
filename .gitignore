@@ -13,3 +13,4 @@ config.json
 public
 getdata.sh
 serverinfo.json
+config.json.bak

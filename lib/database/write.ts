@@ -11,7 +11,7 @@ import { writeFB, getFileName } from '../utility/flatbufferConversion';
 import { config } from "@/lib/config/config";
 import { del } from "./delete";
 import { checkLock, removeLock } from "@/lib/database/checkLock";
-import { writeManifest } from "../logging/mainfest";
+import { writeManifest } from "../logging/manifest";
 
 let knexConnection: any;
 let pageSize = 200;
@@ -205,8 +205,7 @@ export const write = async (
     const writePath = join(
         process.cwd(),
         config.data.fileSystemPath,
-        STANDARD.toUpperCase(),
-        PROVIDER as string
+        STANDARD.toUpperCase()
     );
 
     let toDelete = await getCIDsToDelete(STANDARD);

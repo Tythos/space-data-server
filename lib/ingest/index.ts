@@ -1,5 +1,4 @@
-import { existsSync, mkdirSync, rmSync, statSync, unwatchFile, writeFileSync } from 'node:fs';
-import { writeFile, access } from "node:fs/promises"
+import { existsSync, mkdirSync, rmSync, statSync } from 'node:fs';
 import chokidar from "chokidar";
 import { config } from "@/lib/config/config";
 import { promises as fs, readFileSync } from 'fs';
@@ -7,15 +6,14 @@ import standardsJSON from "@/lib/standards/schemas.json";
 import * as standards from "@/lib/standards/standards";
 import write from "@/lib/database/write";
 import { connection } from "@/lib/database/connection";
-import { join } from "path";
 import * as ethers from "ethers";
 import { CronJob } from "cron";
 //@ts-ignore
 import ipfsHash from "pure-ipfs-only-hash"
 import { extname, basename } from 'node:path';
 import { refRootName } from '../database/generateTables';
-import { readFB, writeFB } from '../utility/flatbufferConversion';
-import { readFile, rename } from 'node:fs/promises';
+import { readFB } from '../utility/flatbufferConversion';
+import { readFile } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
 import { getTrustedAddress } from "@/lib/auth/index"
 
@@ -141,7 +139,7 @@ async function processData(file: string) {
                 console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid from address ${signedEthAddress}`);
                 return;
             }
-            
+
             if (extname(signedFile) === ".fbs") {
                 input = readFB(inputFile, tableName, parentClass);
 

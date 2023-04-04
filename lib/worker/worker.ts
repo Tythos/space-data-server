@@ -11,11 +11,21 @@ import { existsSync, mkdirSync } from "fs";
 import { COMMANDS } from "../class/ipc.interface";
 import { ipcRequest } from "../utility/ipc";
 import { writeServerInfo } from "../logging/serverinfo";
-
+import { pinFolderInit } from "@/lib/ipfs/pinfolder"
 const port: String | undefined = process.env.PORT || config.server.port.toString() || "3000";
 
 const gatewayPort = 5002;
 const apiPort = 9002;
+
+import * as standards from "@/lib/standards/standards";
+import _standardsJSON from "@/lib/standards/schemas.json";
+import { KeyValueDataStructure } from "@/lib/class/utility/KeyValueDataStructure";
+import { refRootName } from "@/lib/database/generateTables";
+import { readFB } from "@/lib/utility/flatbufferConversion";
+import { FSWatcher } from "chokidar";
+
+const standardsJSON: KeyValueDataStructure = _standardsJSON;
+let folderPinWatch: FSWatcher;
 
 export default {
     ipfsController: undefined as IPFSController | undefined,
@@ -47,23 +57,24 @@ export default {
                 payload: await IPFSUtilities.readKey(keyName, "bip39")
             }) as any;
 
-            const folderToPin = resolve(__dirname, "..", config.data.fileSystemPath);
 
-            const pinFolder = async () => {
-                console.log('Starting Pin');
-                if (existsSync(folderToPin)) {
-                } else {
-                    console.log(`Folder ${folderToPin} does not exist, creating...`);
-                    mkdirSync(folderToPin);
-                }
-                let CID = await this.ipfsController.publishDirectory(folderToPin);
-                console.log("Pinned Folder: ", CID);
-                await writeServerInfo({ ipfsCID: CID });
+            folderPinWatch = await pinFolderInit(this.ipfsController) as FSWatcher;
+            /*
+            const testResolve = await this.ipfsController.api("/name/resolve?arg=kzwfwjn5ji4pupg0z6ywwdvjbe82554qaryjv9jxeencc77tqkdy9mfsxhb0qi6");
+            const testList = await this.ipfsController.api(`/ls?arg=${testResolve.Path.split("/").pop()}`);
+            let manifestLink = testList.Objects[0].Links.filter(m => m.Name === "manifest.json");
+            if (manifestLink.length) {
+                console.log(manifestLink[0].Hash)
+                const manifest = await this.ipfsController.api(`/cat?arg=${manifestLink[0].Hash}`, null, "application/json");
+                console.log(JSON.stringify(manifest, null, 4));
+                const file = await this.ipfsController.api(`/cat?arg=Qma2sqx852AT8WioCTczpaAAkzViYEkgtc9pScN6LrftpZ`);
+                let currentStandard = standardsJSON["MPE"];
+                let tableName = refRootName(currentStandard.$ref);
+                let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
+                let parentClass: any = standards[pClassName];
+                //console.log(file, JSON.stringify(readFB(file, tableName, parentClass), null, 4));
             }
-            await writeServerInfo();
-            pinFolder();
-            setInterval(pinFolder, 1000 * 60 * 60 * 3);
-
+            //console.log(JSON.stringify(testList, null, 4));*/
         } else {
 
             app.listen(port, () => {
@@ -87,5 +98,6 @@ export default {
         if (process.env.BINGO && this.ipfsController?.process) {
             this.ipfsController.process.kill("SIGKILL");
         }
+        folderPinWatch.unwatch(folderPinWatch.getWatched());
     }
 } as InitableProcess;

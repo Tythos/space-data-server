@@ -1,13 +1,9 @@
 import { connection } from "@/lib/database/connection";
-import { config } from "@/lib/config/config";
-import { join, resolve } from "path";
+import { fileReadPath } from "@/lib/config/config";
+import { join } from "path";
 import { readdir, unlink } from "fs/promises";
 import { checkLock, removeLock } from "@/lib/database/checkLock";
-import { writeManifest } from "@/lib/logging/mainfest";
-
-const cFP = config?.data?.fileSystemPath;
-const fileReadPath = cFP && cFP[0] === "/" ?
-    cFP : resolve(process.cwd(), cFP);
+import { writeManifest } from "@/lib/logging/manifest";
 
 export const del = async (
     DCID: string = "no_id",
@@ -18,7 +14,7 @@ export const del = async (
             .first()) || { currentCID: "NOCID" };
 
         if (!STANDARD || !PROVIDER) return;
-        const fileDelPath = join(fileReadPath, STANDARD, PROVIDER);
+        const fileDelPath = join(fileReadPath, STANDARD);
         const files = await readdir(fileDelPath);
         for (const file of files) {
             if (file.startsWith(currentCID)) {

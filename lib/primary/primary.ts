@@ -15,7 +15,7 @@ import { PublicKeyVerification } from "../class/publickey.interface";
 import { keyconverter } from "keyconverter/src/keyconverter";
 import { decryptMessage, encryptMessage } from "../utility/encryption";
 import { IPFSUtilities } from "../ipfs";
-import { writeManifest } from "../logging/mainfest"
+import { writeManifest } from "../logging/manifest"
 const kCArgs = {
     kty: "EC",
     name: "ECDSA",

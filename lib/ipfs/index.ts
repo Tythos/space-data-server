@@ -151,7 +151,7 @@ const isInstanceActive = function () {
     return this.process.exitCode === null;
 }
 
-const api = async function (path: string, args: object = {}) {
+const api = async function (path: string, args: object = {}, contentTypeOverride?: string) {
     const uargs = Object.assign({}, apiArgs, args);
     let returnContent: any = null;
     let error;
@@ -159,14 +159,13 @@ const api = async function (path: string, args: object = {}) {
     while (tries < 5 && !returnContent) {
         try {
             let apiCall = await fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}`, uargs as any);
-            let { ok, statusText } = apiCall;
+            let { ok, statusText, headers } = apiCall;
+            let contentType = contentTypeOverride || headers.get("content-type");
             if (ok) {
-                let returnObj = await apiCall.text();
-                returnContent = returnObj;
-                try {
-                    returnContent = JSON.parse(returnObj);
-                } catch (e) {
-
+                if (contentType === "application/json") {
+                    returnContent = await apiCall.json();
+                } else if (contentType === "text/plain") {
+                    returnContent = Buffer.from(await apiCall.arrayBuffer());
                 }
             } else {
                 error = { error: "not ok", statusText }
@@ -174,6 +173,7 @@ const api = async function (path: string, args: object = {}) {
         } catch (e) {
             error = { error: "not ok", statusText: (e as any).toString() }
         }
+        tries++;
     }
     return returnContent || error;
 }

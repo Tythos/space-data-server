@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import type { Settings } from "@/lib/class/settings.interface";
 import defaultConfig from "./default.config.json";
-import { join } from "path";
+import { join, resolve } from "path";
 
 let _config: any;
 
@@ -26,4 +26,9 @@ const exportObj = {
 
 const config = exportObj.tconfig as Settings;
 
-export { config };
+const cFP = config?.data?.fileSystemPath;
+
+const fileReadPath = cFP && cFP[0] === "/" ?
+    cFP : resolve(process.cwd(), cFP);
+
+export { config, fileReadPath };

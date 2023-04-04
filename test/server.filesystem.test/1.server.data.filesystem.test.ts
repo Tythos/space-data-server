@@ -74,7 +74,7 @@ describe("POST /endpoint Write To File System", () => {
                 const CID = await ipfsHash.of(flatbufferBinary);
 
                 const jsonResponseError = await request(app)
-                    .post(`/spacedata/${standard}`)
+                    .post(`/spacedatanetwork/${standard}`)
                     .set("Content-Type", "application/octet-stream")
                     .set("authorization", `{}`)
                     .send(flatbufferBinary);
@@ -92,7 +92,7 @@ describe("POST /endpoint Write To File System", () => {
                 const authSignature = await ethWallet.signMessage(authHeader);
 
                 const fbResponse = await request(app)
-                    .post(`/spacedata/${standard}`)
+                    .post(`/spacedatanetwork/${standard}`)
                     .set("Content-Type", "application/octet-stream")
                     .set("authorization", authHeader)
                     .set("x-auth-signature", authSignature)
@@ -100,24 +100,61 @@ describe("POST /endpoint Write To File System", () => {
                 expect(fbResponse.status).toBe(200);
 
                 const postedFile = await request(app).get(
-                    `/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}`)
+                    `/spacedatanetwork/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}`)
                     .set("accept", "application/octet-stream");
 
                 let jTest = (buff: ArrayBuffer) => JSON.stringify(readFB(buff, standard, standards[standard]));
                 expect(jTest(postedFile.body)).toEqual(jTest(flatbufferBinary));
 
                 const postedFileJSON = (await request(app).get(
-                    `/spacedata/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}`)
+                    `/spacedatanetwork/${ethWallet.address.toLowerCase()}/${standard.toUpperCase()}`)
                     .set("accept", "application/json")).body;
 
                 expect(JSON.stringify(postedFileJSON)).toEqual(jTest(flatbufferBinary));
             }
         }
     });
-    function wait(limit: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, limit));
-    }
+    it("Deletes a CID", async () => {
+        const provider = ethWallet.address.toLowerCase();
+        for (let standard in standards) {
+            for (let fCID in outputStandardFiles[standard]) {
 
+                const flatbufferBinary: Buffer = outputStandardFiles[standard][fCID];
+                const CID = await ipfsHash.of(flatbufferBinary);
+
+                const authMessage: AuthCIDHeader = {
+                    CID,
+                    nonce: Date.now()
+                };
+
+                const authHeader = Buffer.from(JSON.stringify(authMessage)).toString("base64");
+                const authSignature = await ethWallet.signMessage(authHeader);
+                const fbResponse = await request(app)
+                    .delete(`/spacedatanetwork/${standard}`)
+                    .set("authorization", authHeader)
+                    .set("x-auth-signature", authSignature)
+                    .send();
+
+                expect(fbResponse?.body?.CID).toBe(CID);
+                expect(fbResponse.status).toBe(200);
+            }
+        }
+        for (let standard in standards) {
+            for (let fCID in outputStandardFiles[standard]) {
+
+                const flatbufferBinary: Buffer = outputStandardFiles[standard][fCID];
+                const CID = await ipfsHash.of(flatbufferBinary);
+
+                const requestPath = `/spacedatanetwork/${provider}/${standard.toUpperCase()}/${CID}`;
+                const shouldBeGone = (await request(app).get(requestPath));
+                if (standard === "CSM" && shouldBeGone.status === 200) {
+                    console.log(shouldBeGone.status, CID, standard)
+                }
+                expect(shouldBeGone.status).toBe(404);
+            }
+        }
+
+    }, 100000)
 });
 
 describe("POST /echo", () => {

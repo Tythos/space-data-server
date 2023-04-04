@@ -19,8 +19,7 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { Http2SecureServer } from "http2";
 import { adminCheck, cwd, getSettings, saveSettings, getServerPublicKey, saveServerKey } from "../routes/admin";
-import { ipcRequest } from "../utility/ipc";
-import { COMMANDS, IPC } from "../class/ipc.interface";
+import { fileReadPath } from "@/lib/config/config";
 
 const rawUI = Buffer.from(ui, "base64").toString();
 
@@ -28,28 +27,13 @@ let app: Express | https.Server = express();
 
 let publicKeyCache: any = {};
 
+export let spaceDataNetworkPath = "spacedatanetwork";
+
 app.use(compression({
     level: 6, minlevel: 6, threshold: 512, filter: (req, res) => {
         return true;
     }
 }));
-
-/*
-app.use(helmet());
-
-app.use(helmet.contentSecurityPolicy({
-    directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", "data:"],
-        connectSrc: ["'self'"],
-        fontSrc: ["'self'"],
-        objectSrc: ["'self'"],
-        mediaSrc: ["'self'"],
-        frameSrc: ["'self'"],
-    }
-}));*/
 
 app.enable('x-powered-by');
 
@@ -73,6 +57,13 @@ app.get("/swagger-json", (req: Request, res: Response) => {
     //#swagger.description = "Returns the OpenAPI 3.0 JSON API file."
     res.json(swaggerFile);
 });
+
+app.get("/manifest", (req: Request, res: Response) => {
+    //#swagger.description = "Returns the Local Provider Manifest."
+    res.setHeader("content-type", "application/json");
+    res.sendFile(join(fileReadPath, "manifest.json"));
+});
+
 app.get("/providers/:provider?", (req: any, res: any, next: any) => {
     providers(req, res, next);
 });
@@ -125,7 +116,7 @@ The CID is always returned in the header "x-content-identifier".`;
     }
 });
 
-app.get("/spacedatanetwork/:provider/:standard/:cid?", (req: any, res: any, next: any) => {
+app.get(`/${spaceDataNetworkPath}/:provider/:standard/:cid?`, (req: any, res: any, next: any) => {
     /*
     #swagger.description = `Returns data by standard, provider,
 and optionally the Content Identifier (CID).  
@@ -136,7 +127,7 @@ The CID is always returned in the header "x-content-identifier".`;
     get(req, res, next);
 });
 
-app.delete("/spacedata/:cid?", (req: any, res: any, next: any) => {
+app.delete(`/${spaceDataNetworkPath}/:standard?`, (req: any, res: any, next: any) => {
     /*
     #swagger.description = `Deletes a file by CID`;
     */
@@ -147,7 +138,7 @@ app.post("/echo/:standard", (req: any, res: any, next: any) => {
     // #swagger.ignore = true
     echo(req, res, next);
 });
-app.post("/spacedata/:standard", (req: any, res: any, next: any) => {
+app.post(`/${spaceDataNetworkPath}/:standard`, (req: any, res: any, next: any) => {
     post(req, res, next);
 });
 app.get("/standards/:standard?", (req: any, res: any, next: any) => {

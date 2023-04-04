@@ -20,6 +20,8 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [ ] Add a "add default server key" to the Admin Settings UI if the server key isn't trusted yet
 - [ ] Add an "export settings" button
 - [ ] Add export options for the user
+- [ ] IPFS network address node addition to config
+- [ ] API goes and gets file from IPFS network address
 - [ ] IPFS pinning / unpinning config
 - [ ] Data UI
 - [ ] Data matrix
