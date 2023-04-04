@@ -17,7 +17,7 @@ import { readFile } from 'node:fs/promises';
 import { execSync } from 'node:child_process';
 import { getTrustedAddress } from "@/lib/auth/index"
 
-let queue: Array<string> = [];
+let queue: Array<any> = [];
 let isProcessing: Boolean = false;
 let CronJobs: Array<CronJob> = [];
 async function readDirectoryRecursively(dir: string): Promise<string[]> {
@@ -36,15 +36,22 @@ async function readDirectoryRecursively(dir: string): Promise<string[]> {
 
     return filePaths;
 }
+
 let watchPath: string;
+
+const getFileData = (filename) => {
+    let trimmedFile = basename(filename);
+    const [fstandard, ext] = trimmedFile.split(".").slice(-2);
+    const standard = fstandard.toUpperCase();
+    let signedFile = filename.replace(".sig", "");
+    let signatureFile = extname(trimmedFile) === ".sig" ? filename : `${filename}.sig`;
+    return { signedFile, signatureFile, ext, standard };
+}
 
 export const init = async (folder: string) => {
     if (!existsSync(folder)) {
         mkdirSync(folder);
     }
-    queue = await readDirectoryRecursively(folder);
-
-    await processData(queue.pop() as string);
 
     watchPath = folder;
 
@@ -54,11 +61,15 @@ export const init = async (folder: string) => {
             pollInterval: 2000
         }
     }).on("all", async (event, filename) => {
-        if (event === "add" && filename && !~queue.indexOf(filename)) {
-            if (!isProcessing) {
-                processData(filename);
-            } else {
-                queue.push(filename);
+        if (event === "add" && extname(filename) === ".fbs") {
+            let _file = getFileData(filename);
+            let { signedFile, signatureFile, ext, standard } = _file;
+            if (existsSync(signedFile) && existsSync(signatureFile) && ~["fbs"].indexOf(ext) && !isProcessing && standardsJSON[standard]) {
+                if (!isProcessing) {
+                    processData(signedFile, signatureFile, standard);
+                }
+            } else if (signedFile) {
+                queue.push(_file);
             }
         }
     });
@@ -83,42 +94,24 @@ export const init = async (folder: string) => {
     }
 }
 
-async function processData(file: string) {
+async function processData(signedFile: string, signatureFile: string, standard: string) {
+
     isProcessing = true;
-    if (!file) {
-        isProcessing = false;
-        return;
-    }
+    const currentStandard = standardsJSON[standard];
 
-    if (config.data.verbose) {
-        console.log(`${Date.now()} - Ingesting File ${file}`);
-    }
+    try {
 
-    let trimmedFile = basename(file);
+        if (config.data.verbose) {
+            console.log(`${Date.now()} - Ingesting File ${signedFile}`);
+        }
 
-    const [fileName, fstandard, ext] = trimmedFile.split(".");
-
-    const standard = fstandard.toUpperCase();
-    let signedFile = file.replace(".sig", "");
-    let signatureFile = extname(trimmedFile) === ".sig" ? file : `${file}.sig`;
-
-    if (existsSync(signedFile) && ~["fbs"].indexOf(ext)) {
         let mtime: Date = statSync(signedFile).mtime;
         let inputFile: any = readFileSync(signedFile);
         let CID = await ipfsHash.of(inputFile);
 
-
         let currentCID = await connection("FILE_IMPORT_TABLE").where({ CID }).first();
 
-
-
         if (!currentCID) {
-            //@ts-ignore
-            let currentStandard = standardsJSON[standard];
-            if (!currentStandard) {
-                return;
-            }
-
             let tableName = refRootName(currentStandard.$ref);
             let pClassName: keyof typeof standards = `${tableName}` as unknown as any;
             let parentClass: any = standards[pClassName];
@@ -137,36 +130,40 @@ async function processData(file: string) {
 
             if (!signedEthAddress || !getTrustedAddress(signedEthAddress)) {
                 console.warn(`${new Date().toISOString()} signature for ${signedFile} is invalid from address ${signedEthAddress}`);
-                return;
             }
 
-            if (extname(signedFile) === ".fbs") {
-                input = readFB(inputFile, tableName, parentClass);
+            input = readFB(inputFile, tableName, parentClass);
 
+            await write(
+                connection,
+                standard,
+                input,
+                currentStandard,
+                CID,
+                inputSignature,
+                signedEthAddress as string,
+                standard.toUpperCase(),
+                mtime
+            ).catch(e => {
+                throw Error(e);
+            });
 
-
-                await write(
-                    connection,
-                    standard,
-                    input,
-                    currentStandard,
-                    CID,
-                    inputSignature,
-                    signedEthAddress as string,
-                    standard.toUpperCase(),
-                    mtime
-                );
-            } else {
-                return;
-            }
+            console.log("remove", signatureFile, signedFile);
         }
+
         rmSync(signatureFile);
         rmSync(signedFile);
+    } catch (e) {
+        throw Error(e?.toString());
     }
-    if (queue.length) {
-        await processData(queue.pop() as string);
-    }
+
     isProcessing = false;
+
+    if (queue.length) {
+        const nextFileData = queue.pop();
+        await processData(nextFileData.signedFile, nextFileData.signatureFile, nextFileData.standard);
+    }
+
 }
 
 export const getQueue = () => {

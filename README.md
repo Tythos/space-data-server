@@ -24,6 +24,7 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [ ] API goes and gets file from IPFS network address
 - [ ] IPFS pinning / unpinning config
 - [ ] Data UI
+- [ ] Document ingest api {filename}.STD.fbs
 - [ ] Data matrix
 - [ ] Home page & About Page
 - [ ] Data parser service

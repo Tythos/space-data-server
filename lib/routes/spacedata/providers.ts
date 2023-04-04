@@ -25,7 +25,7 @@ export const cid: express.RequestHandler = async (req: Request, res: Response, n
     .whereRaw("LOWER(PROVIDER) = LOWER(?)", [provider])
     .andWhereRaw("LOWER(STANDARD) = LOWER(?)", [standard])
     .orderBy("created_at", "desc")
-    .limit(config.database.limits.totalRecords);
+    .limit(config?.database?.limits?.totalRecords);
 
   if (start && stop) {
     let StartDate = new Date(start.toString()).toISOString();
