@@ -10,10 +10,10 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [x] Install script with service
 - [x] Update server key from Ethereum key
 - [x] Limit / delete based on time || number of files
-- [ ] Change 'localspacedata' to another name and fix API docs
-- [ ] Add querystring formatting options
-- [ ] Get IPFS folder hash published to IPFS and add it to server data
-- [ ] Change server data to just read the 'publicKey.json' file in root, maybe rename it
+- [x] Change 'localspacedata' to another name and fix API docs
+- [x] Add querystring formatting options
+- [x] Get IPFS folder hash published to IPFS and add it to server data
+- [x] Change server data to just read the 'serverinfo.json' file in root, maybe rename it
 - [ ] Host manifest.json in local API
 - [ ] Add code examples
 - [ ] Change to use default path for Ethereum wallet for compatibility

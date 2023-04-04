@@ -7,9 +7,10 @@ import { join } from "path";
 import dotenv from "dotenv";
 import { IPFSController, IPFSUtilities, startIPFS, keyName } from "../../lib/ipfs/index";
 import { resolve } from "path";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { COMMANDS, IPC } from "../class/ipc.interface";
+import { existsSync, mkdirSync } from "fs";
+import { COMMANDS } from "../class/ipc.interface";
 import { ipcRequest } from "../utility/ipc";
+import { writeServerInfo } from "../logging/serverinfo";
 
 const port: String | undefined = process.env.PORT || config.server.port.toString() || "3000";
 
@@ -46,12 +47,6 @@ export default {
                 payload: await IPFSUtilities.readKey(keyName, "bip39")
             }) as any;
 
-            writeFileSync("./publicKey.json", JSON.stringify(await ipcRequest({
-                command: COMMANDS["IPFS:PRIVATEKEY:RESPONSE"],
-                id: performance.now(),
-                payload: await IPFSUtilities.readKey(keyName, "bip39")
-            }), null, 4));
-
             const folderToPin = resolve(__dirname, "..", config.data.fileSystemPath);
 
             const pinFolder = async () => {
@@ -63,8 +58,9 @@ export default {
                 }
                 let CID = await this.ipfsController.publishDirectory(folderToPin);
                 console.log("Pinned Folder: ", CID);
+                await writeServerInfo({ ipfsCID: CID });
             }
-
+            await writeServerInfo();
             pinFolder();
             setInterval(pinFolder, 1000 * 60 * 60 * 3);
 

@@ -142,7 +142,44 @@ const doc = {
                 }
             }
         },
-        "/spacedata/{provider}/{standard}/{cid?}": {
+        "/data/{standard}/{cid?}": {
+            "get": {
+                "description": "Returns data by standard, using the default server provider, and optionally the Content Identifier (CID).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
+                "parameters": [
+                    {
+                        "name": "standard",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
+                        }
+                    },
+                    {
+                        "name": "cid?",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "JSON",
+                                "FBS"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/spacedatanetwork/{provider}/{standard}/{cid?}": {
             "get": {
                 "description": "Returns data by standard, provider, and optionally the Content Identifier (CID).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
                 "parameters": [
@@ -170,6 +207,18 @@ const doc = {
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "JSON",
+                                "FBS"
+                            ]
                         }
                     }
                 ],

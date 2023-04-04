@@ -75,11 +75,7 @@ export const adminCheck: RequestHandler = async (req: Request, res: Response, ne
 
 export const getServerPublicKey: RequestHandler = async (req: Request, res: Response, next: Function) => {
     res.header("Content-Type", 'application/json');
-    res.send(JSON.stringify((await ipcRequest(
-        {
-            command: COMMANDS["ETH:SIGN"],
-            payload: (new Date()).toISOString()
-        } as IPC)), null, 4));
+    res.sendFile(join(__dirname, "../serverinfo.json"));
 }
 
 export const saveServerKey: RequestHandler = async (req: Request, res: Response, next: Function) => {

@@ -8,7 +8,13 @@
   } from "@/UI/src/stores/admin";
   import { onMount } from "svelte";
 
-  let displayPK = { publicKey: "", ethAddress: "", ipnsCID: "", ipfsPID: "" };
+  let displayPK = {
+    publicKey: "",
+    ethAddress: "",
+    ipnsCID: "",
+    ipfsPID: "",
+    ipfsCID: "",
+  };
   onMount(async () => {
     console.log($serverPK);
     await getServerPK();

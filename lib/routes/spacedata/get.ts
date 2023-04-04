@@ -94,6 +94,8 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
 
     res.set("x-content-identifier", currentCID);
 
+    const useJSON = (req.query?.format as string)?.toUpperCase() !== "FBS" && req.accepts("application/json");
+    
     if (config.data.useDatabase) {
       payload = await read(connection, standard, standardsJSON[standard], (parsedQuery as Array<any>));
 
@@ -103,7 +105,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
         return;
       }
 
-      if (req.accepts("application/json")) {
+      if (useJSON) {
 
         res.json(payload);
         res.end();
@@ -121,7 +123,7 @@ export const get: express.RequestHandler = async (req: Request, res: Response, n
 
       if (existsSync(fileToStream)) {
 
-        if (req.accepts("application/json")) {
+        if (useJSON) {
           res.json(readFB(readFileSync(fileToStream), standard, standards[standard]));
           res.end();
         } else {

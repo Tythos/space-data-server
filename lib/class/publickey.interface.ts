@@ -1,9 +1,13 @@
-export interface PublicKeyVerification {
+export interface ipfsIDs {
+    ipnsCID?: string,
+    ipfsCID?: string,
+    ipfsPID?: string,
+}
+
+export interface PublicKeyVerification extends ipfsIDs {
     publicKey: string,
     nonce: string,
     nonceSignature: string,
     publicKeyBuffer?: Buffer,
-    ipnsCID?: string,
-    ipfsPID?: string,
     ethAddress?: string,
 }
