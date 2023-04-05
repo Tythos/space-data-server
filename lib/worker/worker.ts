@@ -5,7 +5,7 @@ import { config } from "@/lib/config/config";
 import { init as ingestInit } from "@/lib/ingest/index";
 import { join } from "path";
 import dotenv from "dotenv";
-import { IPFSController, IPFSUtilities, startIPFS, keyName } from "../../lib/ipfs/index";
+import { IPFSController, IPFSUtilities, startIPFS, keyName, defaultAPIPort, defaultGatewayPort } from "../../lib/ipfs/index";
 import { resolve } from "path";
 import { existsSync, mkdirSync } from "fs";
 import { COMMANDS } from "../class/ipc.interface";
@@ -13,9 +13,6 @@ import { ipcRequest } from "../utility/ipc";
 import { writeServerInfo } from "../logging/serverinfo";
 import { pinFolderInit } from "@/lib/ipfs/pinfolder"
 const port: String | undefined = process.env.PORT || config.server.port.toString() || "3000";
-
-const gatewayPort = 5002;
-const apiPort = 9002;
 
 import * as standards from "@/lib/standards/standards";
 import _standardsJSON from "@/lib/standards/schemas.json";
@@ -42,7 +39,7 @@ export default {
             }
 
             // Start IPFS
-            this.ipfsController = await startIPFS(gatewayPort, apiPort);
+            this.ipfsController = await startIPFS();
             await new Promise((resolve, reject) => { setTimeout(resolve, 5000) });
 
             const keys = await this.ipfsController.api("/key/list");
@@ -59,6 +56,8 @@ export default {
 
 
             folderPinWatch = await pinFolderInit(this.ipfsController) as FSWatcher;
+
+            await writeServerInfo();
             /*
                         const testResolve = await this.ipfsController.api("/name/resolve?arg=kzwfwjn5ji4pupg0z6ywwdvjbe82554qaryjv9jxeencc77tqkdy9mfsxhb0qi6");
                         const testList = await this.ipfsController.api(`/ls?arg=${testResolve.Path.split("/").pop()}`);
@@ -103,6 +102,6 @@ export default {
         if (process.env.BINGO && this.ipfsController?.process) {
             this.ipfsController.process.kill("SIGKILL");
         }
-        folderPinWatch.unwatch(folderPinWatch.getWatched());
+        //folderPinWatch.unwatch(folderPinWatch.getWatched());
     }
 } as InitableProcess;

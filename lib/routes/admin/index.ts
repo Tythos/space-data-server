@@ -6,7 +6,8 @@ import { writeFileSync } from "node:fs";
 import { TrustedAddress } from "@/lib/class/settings.interface";
 import { COMMANDS, IPC } from "@/lib/class/ipc.interface";
 import { ipcRequest } from "@/lib/utility/ipc";
-
+import { writeServerInfo } from "@/lib/logging/serverinfo";
+import { existsSync } from "fs";
 export const getSettings: RequestHandler = async (req: Request, res: Response, next: Function) => {
 
     if ((req as any).authHeader?.trustedAddress?.isAdmin &&
@@ -75,7 +76,11 @@ export const adminCheck: RequestHandler = async (req: Request, res: Response, ne
 
 export const getServerPublicKey: RequestHandler = async (req: Request, res: Response, next: Function) => {
     res.header("Content-Type", 'application/json');
-    res.sendFile(join(__dirname, "../serverinfo.json"));
+    if (existsSync(join(__dirname, "../serverinfo.json"))) {
+        res.sendFile(join(__dirname, "../serverinfo.json"));
+    } else {
+        res.json({});
+    }
 }
 
 export const saveServerKey: RequestHandler = async (req: Request, res: Response, next: Function) => {
@@ -84,6 +89,7 @@ export const saveServerKey: RequestHandler = async (req: Request, res: Response,
         command: COMMANDS["IPFS:CHANGEKEY"],
         payload: req.body,
     } as IPC);
+    await writeServerInfo();
     res.statusCode = (response as IPC)?.error as any ? 500 : 200;
     res.header("Content-Type", 'application/json');
     res.send(JSON.stringify(response, null, 4));

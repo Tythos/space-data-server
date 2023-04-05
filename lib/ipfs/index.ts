@@ -46,13 +46,14 @@ interface Data {
 
 export const keyName: string = "SpaceDataServer_Key";
 export const pKeyLength: number = 128;
+export const defaultGatewayPort = 5002;
+export const defaultAPIPort = 9002;
 
 function getKeyId(data: Data, targetKey: string, fallbackKey: string): Key {
-    const target = data.Keys.find((key) => key.Name === targetKey);
+    const target = data?.Keys?.find((key) => key.Name === targetKey);
     if (target) {
         return target;
     } else {
-
         const fallback = data.Keys.find((key) => key.Name === fallbackKey) as Key;
         return fallback;
     }
@@ -66,29 +67,28 @@ export interface IPFSController {
         IPFS_PATH: string
     },
     api: Function,
+    importKey: Function,
     publishDirectory: Function,
     isInstanceActive: Function
 }
 
+const importKey = async function (key: ArrayBuffer, inputKeyName: string = keyName, apiPort?: string) {
+
+    let fileName = `${keyPath}/${Date.now()}.proto`;
+    writeFileSync(fileName, Buffer.from(key as ArrayBuffer));
+    let output: any;
+
+    const response = await api(`/key/rm?arg=${inputKeyName}`, undefined, undefined, defaultAPIPort);
+    console.log(response, env);
+
+    output = execSync(`${ipfsPath}/ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
+    rmSync(fileName);
+
+    return output;
+};
+
 export class IPFSUtilities {
-    static importKey = function (key: ArrayBuffer, inputKeyName: string = keyName) {
-        if (!existsSync(keyPath)) {
-            mkdirSync(keyPath);
-        }
-        let { env } = this;
-        let fileName = `${keyPath}/${Date.now()}.proto`;
-        writeFileSync(fileName, Buffer.from(key as ArrayBuffer));
-        let output: any;
-
-        output = execSync(`${ipfsPath}/ipfs key rm ${inputKeyName}`, { env }).toString();
-
-
-        output = execSync(`${ipfsPath}/ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
-
-        rmSync(fileName);
-
-        return output;
-    };
+    static importKey = importKey
 
     static exportKey = function (inputKeyName: string = keyName, fileName?: string) {
 
@@ -151,14 +151,15 @@ const isInstanceActive = function () {
     return this.process.exitCode === null;
 }
 
-const api = async function (path: string, args: object = {}, contentTypeOverride?: string) {
+const api = async function (path: string, args: object = {}, contentTypeOverride?: string, apiPort?: number) {
     const uargs = Object.assign({}, apiArgs, args);
     let returnContent: any = null;
     let error;
     let tries = 0;
     while (tries < 5 && !returnContent) {
+        console.log(`http://127.0.0.1:${apiPort || this.apiPort}/api/v0${path}`)
         try {
-            let apiCall = await fetch(`http://127.0.0.1:${this.apiPort}/api/v0${path}`, uargs as any);
+            let apiCall = await fetch(`http://127.0.0.1:${apiPort || this.apiPort}/api/v0${path}`, uargs as any);
             let { ok, statusText, headers } = apiCall;
             let contentType = contentTypeOverride || headers.get("content-type");
             if (ok) {
@@ -216,7 +217,7 @@ const publishDirectory = async function (folder: string) {
     return folderHash;
 }
 
-export const startIPFS = async (gatewayPort: Number = 5002, apiPort: Number = 5001, folderPath: string = ""): Promise<any> => {
+export const startIPFS = async (gatewayPort: Number = defaultGatewayPort, apiPort: Number = defaultAPIPort, folderPath: string = ""): Promise<any> => {
 
     let IPFS_PATH = join(ipfsPath, folderPath.length ? folderPath : gatewayPort.toString());
 
@@ -240,10 +241,12 @@ export const startIPFS = async (gatewayPort: Number = 5002, apiPort: Number = 50
     }
 
     let iPSC = ipfsControllerCollection[gPS] = {
+        env,
         process: spawn(execPath, ["daemon"], { env }),
         gatewayPort,
         apiPort,
         api,
+        importKey,
         publishDirectory,
         isInstanceActive
     } as IPFSController;
@@ -253,17 +256,14 @@ export const startIPFS = async (gatewayPort: Number = 5002, apiPort: Number = 50
     //Create Default SpaceDataServer_Key if none exist
     const keys = await iPSC.api("/key/list");
     let key = getKeyId(keys, "SpaceDataServer_Key", "self");
-
     if (key.Name === "self") {
         let kC = new keyconverter(kCArgs, pKeyLength);
         let mm = bip39.generateMnemonic(pKeyLength);
         await kC.import(mm, "bip39");
-        IPFSUtilities.importKey(
+        await iPSC.importKey(
             await kC.export("ipfs:protobuf", "private") as ArrayBuffer,
             keyName);
     }
-
-
 
     return iPSC;
 }

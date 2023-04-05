@@ -14,7 +14,7 @@ import { HDNodeWallet } from "ethers";
 import { PublicKeyVerification } from "../class/publickey.interface";
 import { keyconverter } from "keyconverter/src/keyconverter";
 import { decryptMessage, encryptMessage } from "../utility/encryption";
-import { IPFSUtilities } from "../ipfs";
+import { IPFSUtilities, defaultGatewayPort, keyName } from "../ipfs";
 import { writeManifest } from "../logging/manifest"
 const kCArgs = {
     kty: "EC",
@@ -128,7 +128,10 @@ const forkWorkers = (worker?: Worker) => {
                 ethWallet = HDNodeWallet.fromPhrase(newMnemonic);
                 const adminKCReset: keyconverter = new keyconverter(kCArgs);
                 await adminKCReset.import(newMnemonic, "bip39");
-                IPFSUtilities.importKey(await adminKCReset.export("ipfs:protobuf", "private") as ArrayBuffer);
+                await IPFSUtilities.importKey(
+                    await adminKCReset.export("ipfs:protobuf", "private") as ArrayBuffer,
+                    keyName,
+                    defaultGatewayPort);
                 await resetPKC(msg, performance.now().toString());
                 cWorker.send({
                     id: msg.id,

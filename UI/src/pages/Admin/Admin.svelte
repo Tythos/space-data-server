@@ -135,13 +135,19 @@
    **/
 
   let verifyChange = false;
+  let oldAddress = $serverEthWallet?.address;
   let newCID;
-  serverEthWallet.subscribe(async (sWallet: HDNodeWallet) => {
-    if (sWallet?.address) {
+
+  $: {
+    if ($serverEthWallet?.address && $serverEthWallet?.address !== oldAddress) {
       verifyChange = true;
-      newCID = await pubKeyToIPFSCID(sWallet.publicKey.replace(/^0x/, ""));
+      newCID = pubKeyToIPFSCID(
+        $serverEthWallet?.publicKey.replace(/^0x/, "")
+      ).then((m) => {
+        newCID = m;
+      });
     }
-  });
+  }
 
   let serverKeySaveStatus: Response;
 
