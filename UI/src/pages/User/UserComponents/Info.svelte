@@ -12,7 +12,7 @@
 
   let ensAddress = "...",
     qrCodeImage,
-    balance,
+    balance = "0",
     etherscanLink,
     lastUpdated;
   const getData = async () => {
