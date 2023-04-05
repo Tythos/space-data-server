@@ -1,6 +1,6 @@
 {
     "info": {
-        "version": "23.3.3-0.1.1-1.22.0001+1680704314838",
+        "version": "23.3.3-0.1.1-1.23.0001+1680710681809",
         "title": "Space Data Server",
         "description": "MVP Space Data Service based on the data standards at: <a href=\"https://SpaceDataStandards.org\">SpaceDataStandards.org</a>, version undefined"
     },
@@ -192,18 +192,10 @@
                 "responses": {}
             }
         },
-        "/${spaceDataNetworkPath}/{provider}/{standard}/{cid?}": {
+        "/spacedatanetwork/{provider}/{standard}/{cid?}": {
             "get": {
                 "description": "Returns data by standard, provider, and optionally the Content Identifier (CID).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
                 "parameters": [
-                    {
-                        "name": "spaceDataNetworkPath",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "provider",
                         "in": "path",
@@ -217,33 +209,54 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "$ref": "#/definitions/STANDARDS"
                         }
                     },
                     {
                         "name": "cid?",
                         "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {}
-            }
-        },
-        "/${spaceDataNetworkPath}/{standard?}": {
-            "delete": {
-                "description": "Deletes a file by CID",
-                "parameters": [
-                    {
-                        "name": "spaceDataNetworkPath",
-                        "in": "path",
-                        "required": true,
+                        "required": false,
                         "schema": {
                             "type": "string"
                         }
                     },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "JSON",
+                                "FBS"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON Schema of standards.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            },
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "Buffer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/spacedatanetwork/{standard?}": {
+            "delete": {
+                "description": "Deletes a file by CID",
+                "parameters": [
                     {
                         "name": "standard?",
                         "in": "path",
@@ -256,18 +269,10 @@
                 "responses": {}
             }
         },
-        "/${spaceDataNetworkPath}/{standard}": {
+        "/spacedatanetwork/{standard}": {
             "post": {
                 "description": "",
                 "parameters": [
-                    {
-                        "name": "spaceDataNetworkPath",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "standard",
                         "in": "path",
@@ -424,67 +429,6 @@
                             "application/text": {
                                 "schema": {
                                     "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/spacedatanetwork/{provider}/{standard}/{cid?}": {
-            "get": {
-                "description": "Returns data by standard, provider, and optionally the Content Identifier (CID).  The CID is created using a Flatbuffer of the returned data, regardless of the serialization selected.  If no CID is specified, the most recent CID is used.  The CID is always returned in the header \"x-content-identifier\".",
-                "parameters": [
-                    {
-                        "name": "provider",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "standard",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "$ref": "#/definitions/STANDARDS"
-                        }
-                    },
-                    {
-                        "name": "cid?",
-                        "in": "path",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "format",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "JSON",
-                                "FBS"
-                            ]
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "JSON Schema of standards.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                }
-                            },
-                            "application/octet-stream": {
-                                "schema": {
-                                    "type": "Buffer"
                                 }
                             }
                         }

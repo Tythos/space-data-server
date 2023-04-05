@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { ethWallet, provider } from "@/UI/src/stores/user";
+  import {
+    ethWallet,
+    provider,
+    derivationPath,
+    useDefaultWallet,
+  } from "@/UI/src/stores/user";
   import { formatEther } from "ethers";
   import { onDestroy, onMount } from "svelte";
   import QRCode from "qrcode";
@@ -11,14 +16,12 @@
     etherscanLink,
     lastUpdated;
   const getData = async () => {
-    if ($ethWallet.address) {
+    if ($ethWallet?.address) {
       etherscanLink = `https://etherscan.io/address/${$ethWallet.address}`;
       QRCode.toDataURL(etherscanLink).then((qsrc) => {
         qrCodeImage = qsrc;
       });
-      balance = formatEther(
-        await $provider.getBalance($ethWallet.address)
-      );
+      balance = formatEther(await $provider.getBalance($ethWallet.address));
       $provider
         .lookupAddress($ethWallet.address)
         .then((a) => {
@@ -30,49 +33,88 @@
         });
       lastUpdated = new Date().toISOString();
     }
-    /*
-    let transaction = {
-      to: "0xa238b6008Bc2FBd9E386A5d4784511980cE504Cd",
-      value: ethers.utils.parseEther("1"),
-      gasLimit: "21000",
-      maxPriorityFeePerGas: ethers.utils.parseUnits("5", "gwei"),
-      maxFeePerGas: ethers.utils.parseUnits("20", "gwei"),
-      nonce: 1,
-      type: 2,
-      chainId: 3,
-      data: utils.RLP.encode(utils.toUtf8Bytes("hi")),
-    };
-
-    // sign and serialize the transaction
-    let rawTransaction = await wallet.signTransaction(transaction);
-
-    //.then((transaction)=>utils.serializeTransaction(transaction as any));//ethers.utils.serializeTransaction(transaction as any));
-
-    // print the raw transaction hash
-    console.log("Raw txhash string " + rawTransaction);
-    console.log("Serial txhash string " + utils.parseTransaction(rawTransaction));*/
   };
 
   onMount(async () => {
     try {
       getData();
-      // $provider.on("block", getData);
+      $provider.on("block", getData);
     } catch (e) {}
   });
   onDestroy(() => {
     try {
-      //  $provider.off(getData);
+      $provider.off("block", getData);
     } catch (e) {}
   });
+
+  /*
+  let addresses = [];
+
+  const recalculateAddresses = () => {
+    let hdWallet = $ethWallet;
+    let dPath = "m";
+    for (let d in $derivationPath) {
+      dPath += `/${$derivationPath[d].value}${$derivationPath[d].h}`;
+    }
+    addresses = [];
+    for (let i = 0; i < 100; i++) {
+      addresses.push(hdWallet.derivePath(`${dPath}/${i}`).address);
+    }
+  };
+
+  $: {
+    recalculateAddresses();
+  }*/
 </script>
 
+<div class="w-full flex flex-col text-gray-500">
+  <div class="p-2 flex gap-2 items-center justify-center w-full h-full border">
+    <label for="default-wallet">Use Default Wallet?</label>
+    <input
+      type="checkbox"
+      id="default-wallet"
+      class="form-checkbox h-4 w-4" 
+      bind:checked={$useDefaultWallet} />
+  </div>
+  {#if !$useDefaultWallet}
+    <div class="border-l border-r border-b flex items-center justify-center">
+      <div class="flex text-xs">
+        {#each Object.keys($derivationPath) as key}
+          <div class="flex flex-col m-2 gap-1">
+            <label for={key}>{key.split("_")[0]}:</label>
+            <div class="flex justify-center items-center">
+              <div class="text-xs pr-2 w-full">
+                {#if key === "purpose"}m {/if}/
+              </div>
+              <input
+                type="number"
+                id={key}
+                min="0"
+                class="w-12 border rounded p-1"
+                bind:value={$derivationPath[key].value}
+                disabled={$useDefaultWallet} />
+              <input
+                type="text"
+                class="w-3 rounded p-1"
+                readonly
+                bind:value={$derivationPath[key].h}
+                disabled={$useDefaultWallet} />
+            </div>
+          </div>
+        {/each}
+      </div>
+    </div>
+  {/if}
+</div>
 <section class="mb-32 text-gray-800 text-center md:text-left">
   <div class="block rounded-lg shadow-lg bg-white">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div
       class="cursor-pointer w-full flex flex-col items-start justify-start p-2 pl-4 gap-2 text-gray-400"
       on:click={(e) => cc($ethWallet.address)}>
-      <div class="break-all text-left text-[.5rem] md:text-xs">{$ethWallet.address}</div>
+      <div class="break-all text-left text-[.5rem] md:text-xs">
+        {$ethWallet.address}
+      </div>
       <div class="flex items-center justify-center gap-4">
         <a
           class="text-blue-800 text-base"

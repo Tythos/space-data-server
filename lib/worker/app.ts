@@ -27,7 +27,6 @@ let app: Express | https.Server = express();
 
 let publicKeyCache: any = {};
 
-export let spaceDataNetworkPath = "spacedatanetwork";
 
 app.use(compression({
     level: 6, minlevel: 6, threshold: 512, filter: (req, res) => {
@@ -116,7 +115,7 @@ The CID is always returned in the header "x-content-identifier".`;
     }
 });
 
-app.get(`/${spaceDataNetworkPath}/:provider/:standard/:cid?`, (req: any, res: any, next: any) => {
+app.get(`/spacedatanetwork/:provider/:standard/:cid?`, (req: any, res: any, next: any) => {
     /*
     #swagger.description = `Returns data by standard, provider,
 and optionally the Content Identifier (CID).  
@@ -127,7 +126,7 @@ The CID is always returned in the header "x-content-identifier".`;
     get(req, res, next);
 });
 
-app.delete(`/${spaceDataNetworkPath}/:standard?`, (req: any, res: any, next: any) => {
+app.delete(`/spacedatanetwork/:standard?`, (req: any, res: any, next: any) => {
     /*
     #swagger.description = `Deletes a file by CID`;
     */
@@ -138,7 +137,7 @@ app.post("/echo/:standard", (req: any, res: any, next: any) => {
     // #swagger.ignore = true
     echo(req, res, next);
 });
-app.post(`/${spaceDataNetworkPath}/:standard`, (req: any, res: any, next: any) => {
+app.post(`/spacedatanetwork/:standard`, (req: any, res: any, next: any) => {
     post(req, res, next);
 });
 app.get("/standards/:standard?", (req: any, res: any, next: any) => {

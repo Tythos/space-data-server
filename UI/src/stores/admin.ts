@@ -45,7 +45,6 @@ ethWallet.subscribe(async (wallet) => {
     let adminCheck = await (await fetch(
         getJSONPath("/admin/check")
     )).json();
-
     if (adminCheck && wallet?.address) {
         isAdmin
             .set(!!~adminCheck.indexOf(
@@ -56,7 +55,7 @@ ethWallet.subscribe(async (wallet) => {
 
 export const cwd: Writable<string> = writable();
 
-export const settings: Writable<Settings> = writable({
+export const settings: Writable<Settings | any> = writable({
     server: {
         port: 0,
         key: "",
