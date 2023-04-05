@@ -73,7 +73,7 @@
     <input
       type="checkbox"
       id="default-wallet"
-      class="form-checkbox h-4 w-4" 
+      class="form-checkbox h-4 w-4"
       bind:checked={$useDefaultWallet} />
   </div>
   {#if !$useDefaultWallet}
@@ -90,6 +90,7 @@
                 type="number"
                 id={key}
                 min="0"
+                readonly={~["purpose", "cointype"].indexOf(key) ? true : false}
                 class="w-12 border rounded p-1"
                 bind:value={$derivationPath[key].value}
                 disabled={$useDefaultWallet} />
@@ -147,7 +148,7 @@
                 $ethWallet = null;
               }}
               type="button"
-              class="inline-block px-7 py-3 bg-gray-800 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out">
+              class="inline-block px-7 py-3 bg-gray-800 text-white font-medium text-sm leading-snug uppercase shadow-md hover:bg-gray-900 hover:shadow-lg focus:bg-gray-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-900 active:shadow-lg transition duration-150 ease-in-out">
               Log Out
             </button>
           </div>
