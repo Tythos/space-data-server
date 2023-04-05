@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "23.3.3-0.1.1-1.21.0001+1680704314838",
+    "version": "23.3.3-0.1.1-1.22.0001+1680704383089",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -113,7 +113,6 @@
         "supertest": "^6.3.2",
         "swagger-autogen": "^2.22.0",
         "swagger-jsdoc": "^6.2.5",
-        "swagger-ui-express": "^4.6.0",
         "tedious": "^15.1.1",
         "tiny-secp256k1": "^2.2.1",
         "toposort": "^2.0.2",
