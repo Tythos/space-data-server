@@ -4,7 +4,7 @@
   let activeTab = 0;
 </script>
 
-<div class="flex flex-col w-2/3">
+<div class="flex flex-col w-full lg:w-2/3">
   <ul
     class="cursor-pointer mb-4 flex list-none border-b-0 pl-0"
     id="tabs-tab3"

@@ -4,7 +4,7 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="text-xs text-gray-600 mr-2">
+<div class="text-[.5rem] lg:text-xs text-gray-600 mr-2">
   {$ethWallet?.address
     ? `${$ethWallet.address.slice(0, 5)}...${$ethWallet.address.slice(-5)}`
     : ""}
@@ -19,8 +19,8 @@
       bg-gray-700
       text-white
       font-medium
-      text-xs
       uppercase
+      text-[.5rem] lg:text-xs
    ">
   {$ethWallet?.address ? "Account" : "Login"}
 </div>

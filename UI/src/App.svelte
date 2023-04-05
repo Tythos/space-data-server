@@ -25,7 +25,7 @@
   <nav
     class="sticky top-0 z-10 w-full font-sans navbar navbar-expand-lg shadow-md py-2 bg-white flex items-center justify-between">
     <div class="px-6 w-full flex items-center justify-between">
-      <ul class="navbar-nav mr-auto flex gap-4">
+      <ul class="navbar-nav mr-auto flex gap-4 text-[.5rem] lg:text-xs">
         {#each Object.entries(routes).filter((a) => a[1].navBar) as [route, value], i}
           {#if value.name !== "Admin" || $isAdmin}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -34,7 +34,7 @@
                 push(route);
               }}
               class:border-b-2={$location === route}
-              class="p-2 cursor-pointer text-sm">
+              class="p-2 cursor-pointer">
               {value.name}
             </li>
           {/if}

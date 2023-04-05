@@ -69,7 +69,7 @@
 
 <div class="w-full flex flex-col text-gray-500">
   <div class="p-2 flex gap-2 items-center justify-center w-full h-full border">
-    <label for="default-wallet">Use Default Wallet?</label>
+    <label for="default-wallet" class="text-[.85em] md:text-lg">Use Default Wallet?</label>
     <input
       type="checkbox"
       id="default-wallet"
@@ -78,12 +78,12 @@
   </div>
   {#if !$useDefaultWallet}
     <div class="border-l border-r border-b flex items-center justify-center">
-      <div class="flex text-xs">
+      <div class="flex text-[.5em] md:text-xs">
         {#each Object.keys($derivationPath) as key}
           <div class="flex flex-col m-2 gap-1">
             <label for={key}>{key.split("_")[0]}:</label>
             <div class="flex justify-center items-center">
-              <div class="text-xs pr-2 w-full">
+              <div class="pr-2 w-full">
                 {#if key === "purpose"}m {/if}/
               </div>
               <input
@@ -91,7 +91,7 @@
                 id={key}
                 min="0"
                 readonly={~["purpose", "cointype"].indexOf(key) ? true : false}
-                class="w-12 border rounded p-1"
+                class="w-6 lg:w-12 border rounded p-1"
                 bind:value={$derivationPath[key].value}
                 disabled={$useDefaultWallet} />
               <input
