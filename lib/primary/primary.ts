@@ -12,7 +12,7 @@ import standardsJSON from "../standards/schemas.json";
 import { COMMANDS, IPC } from "../class/ipc.interface";
 import { HDNodeWallet } from "ethers";
 import { PublicKeyVerification } from "../class/publickey.interface";
-import { keyconverter } from "keyconverter/src/keyconverter";
+import { keyconverter } from "../../../keyconverter/src/keyconverter";
 import { decryptMessage, encryptMessage } from "../utility/encryption";
 import { IPFSUtilities, defaultGatewayPort, keyName } from "../ipfs";
 import { writeManifest } from "../logging/manifest"
@@ -130,8 +130,7 @@ const forkWorkers = (worker?: Worker) => {
                 await adminKCReset.import(newMnemonic, "bip39");
                 await IPFSUtilities.importKey(
                     await adminKCReset.export("ipfs:protobuf", "private") as ArrayBuffer,
-                    keyName,
-                    defaultGatewayPort);
+                    keyName);
                 await resetPKC(msg, performance.now().toString());
                 cWorker.send({
                     id: msg.id,

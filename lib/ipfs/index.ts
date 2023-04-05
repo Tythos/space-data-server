@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 const execP = promisify(exec);
 import { existsSync, mkdirSync, writeFileSync, rmSync, readdirSync, readFileSync, chmodSync, writeFile } from "fs";
 import { execSync, spawn } from "child_process";
-import { FormatOptions, keyconverter } from "keyconverter/src/keyconverter";
+import { FormatOptions, keyconverter } from "../../../keyconverter/src/keyconverter";
 import * as bip39 from "bip39";
 
 const rootDir = process.cwd();
@@ -72,14 +72,13 @@ export interface IPFSController {
     isInstanceActive: Function
 }
 
-const importKey = async function (key: ArrayBuffer, inputKeyName: string = keyName, apiPort?: string) {
+const importKey = async function (key: ArrayBuffer, inputKeyName: string = keyName) {
 
     let fileName = `${keyPath}/${Date.now()}.proto`;
     writeFileSync(fileName, Buffer.from(key as ArrayBuffer));
     let output: any;
 
     const response = await api(`/key/rm?arg=${inputKeyName}`, undefined, undefined, defaultAPIPort);
-    console.log(response, env);
 
     output = execSync(`${ipfsPath}/ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
     rmSync(fileName);
