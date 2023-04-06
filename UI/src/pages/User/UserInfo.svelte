@@ -17,7 +17,7 @@
       }}>
       <div
         class:border-transparent={activeTab}
-        class="my-2 block border-x-0 border-t-0 border-b-2 px-7 pt-4 pb-3.5 text-xs font-medium uppercase leading-tight text-neutral-500 hover:isolate focus:isolate data-[te-nav-active]:border-primary data-[te-nav-active]:text-primary dark:text-neutral-400  dark:data-[te-nav-active]:border-primary-400 dark:data-[te-nav-active]:text-primary-400"
+        class="my-2 block border-x-0 border-t-0 border-b-2 px-7 pt-4 pb-3.5 text-xs font-medium uppercase leading-tight text-neutral-500 hover:isolate focus:isolate data-[te-nav-active]:border-primary data-[te-nav-active]:text-primary dark:text-neutral-400 dark:data-[te-nav-active]:border-primary-400 dark:data-[te-nav-active]:text-primary-400"
         id="tabs-home-tab3"
         role="tab"
         aria-controls="tabs-home3"
@@ -25,7 +25,7 @@
         User Info
       </div>
     </li>
-    <li
+    <!--<li
       role="presentation"
       on:click={(e) => {
         activeTab = 1;
@@ -39,7 +39,7 @@
         aria-selected="false">
         Address Book
       </div>
-    </li>
+    </li>-->
     <li
       role="presentation"
       on:click={(e) => {

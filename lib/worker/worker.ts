@@ -58,15 +58,15 @@ export default {
             folderPinWatch = await pinFolderInit(this.ipfsController) as FSWatcher;
 
             await writeServerInfo();
-            /*
+            
                         const testResolve = await this.ipfsController.api("/name/resolve?arg=kzwfwjn5ji4pupg0z6ywwdvjbe82554qaryjv9jxeencc77tqkdy9mfsxhb0qi6");
                         const testList = await this.ipfsController.api(`/ls?arg=${testResolve.Path.split("/").pop()}`);
-                        let manifestLink = testList.Objects[0].Links.filter(m => m.Name === "manifest.json");
+                        //let manifestLink = testList.Objects[0].Links.filter(m => m.Name === "manifest.json");
                         for (let link in testList.Objects[0].Links) {
                             let _link = testList.Objects[0].Links[link];
                             console.log(JSON.stringify(await this.ipfsController.api(`/ls?arg=${_link.Hash}`), null, 4));
                         }
-                        //console.log(JSON.stringify(testList, null, 4));
+                        /*//console.log(JSON.stringify(testList, null, 4));
                         if (manifestLink.length) {
                           console.log(manifestLink[0].Hash)
                           const manifest = await this.ipfsController.api(`/cat?arg=${manifestLink[0].Hash}`, null, "application/json");

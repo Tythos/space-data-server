@@ -156,7 +156,6 @@ const api = async function (path: string, args: object = {}, contentTypeOverride
     let error;
     let tries = 0;
     while (tries < 5 && !returnContent) {
-        console.log(`http://127.0.0.1:${apiPort || this.apiPort}/api/v0${path}`)
         try {
             let apiCall = await fetch(`http://127.0.0.1:${apiPort || this.apiPort}/api/v0${path}`, uargs as any);
             let { ok, statusText, headers } = apiCall;
@@ -190,7 +189,7 @@ const publishDirectory = async function (folder: string) {
 
     try {
         const options = { stdio: 'pipe' };
-        output = execSync(`cd ${folder} && ${ipfsPath}/ipfs add -w -r *`).toString();
+        output = execSync(`cd ${folder} && ${ipfsPath}/ipfs add -w -r *`, { env }).toString();
     } catch (error: any) {
         output = error.toString();
     }

@@ -18,6 +18,11 @@
   });
 </script>
 
-<section class="mb-32 text-gray-800 text-center md:text-left">
-  Tdasf
-</section>
+<div class="block rounded-lg shadow-lg bg-white">
+  <div class="w-full flex flex-col text-gray-500">
+    <div
+      class="p-2 flex gap-2 items-center justify-center w-full h-full border">
+      Tdasf
+    </div>
+  </div>
+</div>

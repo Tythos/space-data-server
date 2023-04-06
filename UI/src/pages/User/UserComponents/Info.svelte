@@ -35,6 +35,11 @@
     }
   };
 
+  $: {
+    if ($ethWallet?.address) {
+      getData();
+    }
+  }
   onMount(async () => {
     try {
       getData();
@@ -46,30 +51,12 @@
       $provider.off("block", getData);
     } catch (e) {}
   });
-
-  /*
-  let addresses = [];
-
-  const recalculateAddresses = () => {
-    let hdWallet = $ethWallet;
-    let dPath = "m";
-    for (let d in $derivationPath) {
-      dPath += `/${$derivationPath[d].value}${$derivationPath[d].h}`;
-    }
-    addresses = [];
-    for (let i = 0; i < 100; i++) {
-      addresses.push(hdWallet.derivePath(`${dPath}/${i}`).address);
-    }
-  };
-
-  $: {
-    recalculateAddresses();
-  }*/
 </script>
 
 <div class="w-full flex flex-col text-gray-500">
   <div class="p-2 flex gap-2 items-center justify-center w-full h-full border">
-    <label for="default-wallet" class="text-[.85em] md:text-lg">Use Default Wallet?</label>
+    <label for="default-wallet" class="text-[.85em] md:text-lg"
+      >Use Default Wallet?</label>
     <input
       type="checkbox"
       id="default-wallet"
@@ -113,7 +100,7 @@
     <div
       class="cursor-pointer w-full flex flex-col items-start justify-start p-2 pl-4 gap-2 text-gray-400"
       on:click={(e) => cc($ethWallet.address)}>
-      <div class="break-all text-left text-[.5rem] md:text-xs">
+      <div class="break-all text-left text-xs md:text-sm">
         {$ethWallet.address}
       </div>
       <div class="flex items-center justify-center gap-4">
