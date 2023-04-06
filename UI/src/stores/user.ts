@@ -3,6 +3,7 @@ import { CloudflareProvider, HDNodeWallet } from "ethers";
 import type { Bip32Path, Bip32Hardened } from "@/lib/class/utility/BIP32";
 import type { PersonCryptoKey } from "vcard-cryptoperson/src/class/class";
 import type { Organization, Occupation } from "schema-dts";
+import { SLIP_0044_TYPE } from "@/lib/class/utility/slip_0044";
 
 const recalculateEthWallet = (e) => {
     let _hdWallet = get(hdWallet);
@@ -28,6 +29,11 @@ const recalculateEthWallet = (e) => {
     } else {
         ethWallet.set(_hdWallet);
     }
+    vCard.update((vC: PersonCryptoKey) => {
+        vC.key[0].publicKey = _hdWallet.publicKey;
+        vC.key[0].keyAddress = _hdWallet.address;
+        return vC;
+    });
 
     return e;
 }
@@ -35,7 +41,12 @@ export const hdWallet: Writable<HDNodeWallet> = writable(null);
 export const ethWallet: Writable<HDNodeWallet> = writable(null);
 export const vCard: Writable<PersonCryptoKey> = writable({
     "@type": "Person",
-    "key": [],
+    "key": [{
+        "@type": "CryptoKey",
+        publicKey: "",
+        keyAddress: "",
+        keyType: SLIP_0044_TYPE.ETH
+    },],
     familyName: "",
     givenName: "",
     honorificPrefix: "",
@@ -43,7 +54,7 @@ export const vCard: Writable<PersonCryptoKey> = writable({
     additionalName: "",
     hasOccupation: {
         "@type": "Occupation",
-        name: "Occupation",
+        name: "",
     } as Occupation,
     affiliation: {
         "@type": "Organization",
@@ -60,6 +71,7 @@ export const vCard: Writable<PersonCryptoKey> = writable({
         addressCountry: "Country",
         postalCode: "00000",
     },
+    contactPoint: []
 });
 
 export const provider: Readable<any> = readable(new CloudflareProvider("homestead"));

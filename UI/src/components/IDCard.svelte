@@ -4,9 +4,6 @@
   import { onDestroy, onMount } from "svelte";
   import QRCode from "qrcode";
   import cc from "copy-to-clipboard";
-  import { createCSV, createV3, readVCARD } from "vcard-cryptoperson";
-  import type { PersonCryptoKey } from "vcard-cryptoperson/src/class/class";
-  import { SLIP_0044_TYPE } from "@/lib/class/utility/slip_0044";
   export let ethWallet;
   export let provider;
   export let vCard: Writable<any>;
@@ -82,10 +79,13 @@
       <div
         on:click={(e) => window.open(etherscanLink)}
         class="items-center justify-center grow-0 shrink-0 basis-auto block flex w-full lg:w-6/12 xl:w-4/12 p-6">
-        <img src={qrCodeImage} class="w-1/2 h-1/2" alt="qrcode" />
+        <img
+          src={qrCodeImage}
+          class="w-1/3 h-1/3 md:w-1/2 md:h-1/2"
+          alt="qrcode" />
       </div>
       <div
-        class="text-center grow-0 shrink-0 basis-auto w-full lg:w-6/12 xl:w-8/12">
+        class="text-center grow-0 shrink-0 basis-auto w-full lg:w-6/12 xl:w-8/12 text-xs md:text-sm">
         <div>
           {#if type === "Person"}
             {#if $vCard.honorificPrefix || $vCard.givenName || $vCard.familyName || $vCard.honorificSuffix}

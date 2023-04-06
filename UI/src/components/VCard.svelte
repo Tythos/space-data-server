@@ -1,16 +1,8 @@
 <script lang="ts">
-  import { HDNodeWallet, formatEther } from "ethers";
   import type { Writable } from "svelte/store";
-  import { onDestroy, onMount } from "svelte";
-  import QRCode from "qrcode";
-  import cc from "copy-to-clipboard";
-  import { createCSV, createV3, readVCARD } from "vcard-cryptoperson";
   import type { PersonCryptoKey } from "vcard-cryptoperson/src/class/class";
-  import { SLIP_0044_TYPE } from "@/lib/class/utility/slip_0044";
   export let vCard: Writable<PersonCryptoKey | any>;
-
   const handleSubmit = () => {};
-  const handleInputChange = () => {};
 </script>
 
 <section
@@ -27,8 +19,7 @@
             id="givenName"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="givenName"
-            bind:value={$vCard.givenName}
-            on:input={handleInputChange} />
+            bind:value={$vCard.givenName} />
         </div>
         <div class="mb-4">
           <label for="additionalName" class="block text-gray-700 font-bold mb-2"
@@ -38,8 +29,7 @@
             id="additionalName"
             class="shadow appearance-none border rounded w-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="additionalName"
-            bind:value={$vCard.additionalName}
-            on:input={handleInputChange} />
+            bind:value={$vCard.additionalName} />
         </div>
         <div class="mb-4">
           <label for="familyName" class="block text-gray-700 font-bold mb-2"
@@ -49,45 +39,41 @@
             id="familyName"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="familyName"
-            bind:value={$vCard.familyName}
-            on:input={handleInputChange} />
+            bind:value={$vCard.familyName} />
         </div>
       </div>
       <div class="flex gap-2">
         <div class="mb-4">
           <label
             for="honorificPrefix"
-            class="block text-gray-700 font-bold mb-2">Honorific Prefix</label>
+            class="block text-gray-700 font-bold mb-2">Prefix</label>
           <input
             type="text"
             id="honorificPrefix"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="honorificPrefix"
-            bind:value={$vCard.honorificPrefix}
-            on:input={handleInputChange} />
+            bind:value={$vCard.honorificPrefix} />
         </div>
         <div class="mb-4">
           <label
             for="honorificSuffix"
-            class="block text-gray-700 font-bold mb-2">Honorific Suffix</label>
+            class="block text-gray-700 font-bold mb-2">Suffix</label>
           <input
             type="text"
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            bind:value={$vCard.honorificSuffix}
-            on:input={handleInputChange} />
+            bind:value={$vCard.honorificSuffix} />
         </div>
       </div>
       <div class="mb-4">
         <label
           for="hasOccupationName"
-          class="block text-gray-700 font-bold mb-2">Occupation</label>
+          class="block text-gray-700 font-bold mb-2">Title</label>
         <input
           type="text"
           id="hasOccupationName"
           class="shadow appearance-none border rounded w-full md:w-2/3 lg:w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           name="hasOccupation.name"
-          bind:value={$vCard.hasOccupation.name}
-          on:input={handleInputChange} />
+          bind:value={$vCard.hasOccupation.name} />
       </div>
       <div class="border p-4">
         <div class="text-xl border-b-[1px] mb-4">Organization</div>
@@ -100,8 +86,7 @@
             id="affiliationLegalName"
             class="shadow appearance-none border rounded w-full md:w-2/3 lg:w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="affiliation.legalName"
-            bind:value={$vCard.affiliation.legalName}
-            on:input={handleInputChange} />
+            bind:value={$vCard.affiliation.legalName} />
         </div>
         <div class="mb-4">
           <label
@@ -112,8 +97,7 @@
             id="affiliationName"
             class="shadow appearance-none border rounded w-full md:w-2/3 lg:w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="affiliation.name"
-            bind:value={$vCard.affiliation.name}
-            on:input={handleInputChange} />
+            bind:value={$vCard.affiliation.name} />
         </div>
       </div>
       <div class="border p-4">
@@ -129,7 +113,7 @@
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="postOfficeBoxNumber"
             bind:value={$vCard.address.postOfficeBoxNumber}
-            on:input={handleInputChange} />
+            autocomplete="postal-code" />
         </div>
         <div class="mb-4">
           <label
@@ -141,7 +125,7 @@
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="streetAddress"
             bind:value={$vCard.address.streetAddress}
-            on:input={handleInputChange} />
+            autocomplete="street-address" />
         </div>
         <div class="mb-4">
           <label
@@ -153,7 +137,7 @@
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="addressLocality"
             bind:value={$vCard.address.addressLocality}
-            on:input={handleInputChange} />
+            autocomplete="address-level2" />
         </div>
         <div class="mb-4">
           <label for="addressRegion" class="block text-gray-700 font-bold mb-2"
@@ -164,7 +148,7 @@
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="addressRegion"
             bind:value={$vCard.address.addressRegion}
-            on:input={handleInputChange} />
+            autocomplete="address-level1" />
         </div>
         <div class="mb-4">
           <label for="addressCountry" class="block text-gray-700 font-bold mb-2"
@@ -175,23 +159,9 @@
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="addressCountry"
             bind:value={$vCard.address.addressCountry}
-            on:input={handleInputChange} />
-        </div>
-        <div class="mb-4">
-          <label
-            for="addressPostalCode"
-            class="block text-gray-700 font-bold mb-2">Postal Code</label>
-          <input
-            type="text"
-            id="addressPostalCode"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            name="postalCode"
-            bind:value={$vCard.address.postalCode}
-            on:input={handleInputChange} />
+            autocomplete="country" />
         </div>
       </div>
     </form>
   </div>
 </section>
-
-
