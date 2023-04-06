@@ -16,7 +16,7 @@
       "CAT": 2
     }
   },
-  "trustedAddresses": [
+  "trustedUsers": [
     {
       "address": "0x80b45ee18DEe9F4dE29FA52B348D50F10AD2AeA1",
       "trust": 255,

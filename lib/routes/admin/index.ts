@@ -3,7 +3,7 @@ import { config } from "@/lib/config/config";
 import { join } from "path";
 import * as ethers from "ethers";
 import { writeFileSync } from "node:fs";
-import { TrustedAddress } from "@/lib/class/settings.interface";
+import { TrustedAddress, TrustedUser } from "@/lib/class/settings.interface";
 import { COMMANDS, IPC } from "@/lib/class/ipc.interface";
 import { ipcRequest } from "@/lib/utility/ipc";
 import { writeServerInfo } from "@/lib/logging/serverinfo";
@@ -68,9 +68,9 @@ export const saveSettings: RequestHandler = async (req: Request, res: Response, 
 }
 
 export const adminCheck: RequestHandler = async (req: Request, res: Response, next: Function) => {
-    let admins = config.trustedAddresses
-        .filter((tA: TrustedAddress) => tA.isAdmin)
-        .map((tA: TrustedAddress) => ethers.sha256(tA.address.toLowerCase()).toLowerCase());
+    let admins = config.trustedUsers
+        .filter((tA: TrustedUser) => tA.isAdmin)
+        .map((tA: TrustedUser) => ethers.sha256(tA.address.toLowerCase()).toLowerCase());
     res.json(admins);
 };
 

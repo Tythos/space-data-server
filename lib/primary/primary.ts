@@ -45,7 +45,7 @@ const resetPKC = async (msg: IPC, nonce: any = performance.now().toString()) => 
     publicKeyCache.nonceSignature = (ethWallet as HDNodeWallet)?.signMessageSync(publicKeyCache.nonce);
 }
 
-const trustedAddresses = config.trustedAddresses.map(tA => tA.address);
+const trustedUsers = config.trustedUsers.map(tA => tA.address);
 
 const restartWorkers = () => {
     // Disconnect all workers
@@ -105,7 +105,7 @@ const forkWorkers = (worker?: Worker) => {
                 cWorker.send({
                     id: msg.id,
                     command: COMMANDS["ETH:DECRYPT:RESPONSE"],
-                    payload: await decryptMessage(ethWallet.privateKey, msg.payload, trustedAddresses)
+                    payload: await decryptMessage(ethWallet.privateKey, msg.payload, trustedUsers)
                 });
             } else if (msg.command === COMMANDS["ETH:ENCRYPT"] && ethWallet) {
                 let { publicKey, payload } = msg.payload;
@@ -118,7 +118,7 @@ const forkWorkers = (worker?: Worker) => {
                     payload: await encryptMessage(publicKey, payload, ethWallet)
                 });
             } else if (msg.command === COMMANDS["IPFS:CHANGEKEY"] && ethWallet) {
-                let newMnemonic = await decryptMessage(ethWallet.privateKey, msg.payload, trustedAddresses).catch(e => {
+                let newMnemonic = await decryptMessage(ethWallet.privateKey, msg.payload, trustedUsers).catch(e => {
                     cWorker.send({
                         id: msg.id,
                         command: COMMANDS["IPFS:CHANGEKEY:RESPONSE"],

@@ -8,6 +8,10 @@ export interface TrustedAddress {
     DN?: string,
     CN?: string,
     comment?: string,
+
+}
+
+export interface TrustedUser extends TrustedAddress {
     isAdmin?: boolean
 }
 
@@ -37,7 +41,8 @@ export interface Settings {
         "limit": StandardLimit,
     },
     "cronjobs": Array<cronJob>,
-    "trustedAddresses": Array<TrustedAddress>,
+    "trustedUsers": Array<TrustedAddress>,
+    "trustedServers": Array<TrustedAddress>,
     "database": {
         "path": string,
         "limits": {

@@ -4,16 +4,16 @@ import { app } from "@/lib/worker/app";
 import { config } from "@/lib/config/config";
 import crypto from "crypto";
 //@ts-ignore
-import { TrustedAddress } from "@/lib/class/settings.interface";
+import { TrustedAddress, TrustedUser } from "@/lib/class/settings.interface";
 import { ethWallet } from "@/test/utility/generate.crypto.wallets";
 import { AuthHeader } from "@/lib/class/authheader.json.interface";
 import eccrypto from "@toruslabs/eccrypto";
 
 describe('Test Admin Paths', () => {
     test('Identifies admin accounts', async () => {
-        let admins = config.trustedAddresses
-            .filter((tA: TrustedAddress) => tA.isAdmin)
-            .map((tA: TrustedAddress) => {
+        let admins = config.trustedUsers
+            .filter((tA: TrustedUser) => tA.isAdmin)
+            .map(((tA: TrustedUser) => {
                 const hasher = crypto.createHash('sha256');
                 hasher.update(tA.address);
                 return hasher.digest('hex');
@@ -24,9 +24,9 @@ describe('Test Admin Paths', () => {
         expect(adminCheck).toEqual(admins);
     });
     test('Retrieves configuration', async () => {
-        let admins = config.trustedAddresses
-            .filter((tA: TrustedAddress) => tA.isAdmin)
-            .map((tA: TrustedAddress) => {
+        let admins = config.trustedUsers
+            .filter((tA: TrustedUser) => tA.isAdmin)
+            .map((tA: TrustedUser) => {
                 const hasher = crypto.createHash('sha256');
                 hasher.update(tA.address);
                 return hasher.digest('hex');

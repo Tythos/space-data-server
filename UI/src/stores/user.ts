@@ -1,7 +1,8 @@
 import { readable, writable, type Readable, type Writable, get } from "svelte/store";
 import { CloudflareProvider, HDNodeWallet } from "ethers";
 import type { Bip32Path, Bip32Hardened } from "@/lib/class/utility/BIP32";
-
+import type { PersonCryptoKey } from "vcard-cryptoperson/src/class/class";
+import type { Organization, Occupation } from "schema-dts";
 
 const recalculateEthWallet = (e) => {
     let _hdWallet = get(hdWallet);
@@ -32,6 +33,34 @@ const recalculateEthWallet = (e) => {
 }
 export const hdWallet: Writable<HDNodeWallet> = writable(null);
 export const ethWallet: Writable<HDNodeWallet> = writable(null);
+export const vCard: Writable<PersonCryptoKey> = writable({
+    "@type": "Person",
+    "key": [],
+    familyName: "",
+    givenName: "",
+    honorificPrefix: "",
+    honorificSuffix: "",
+    additionalName: "",
+    hasOccupation: {
+        "@type": "Occupation",
+        name: "Occupation",
+    } as Occupation,
+    affiliation: {
+        "@type": "Organization",
+        legalName: "",
+        name: "",
+    } as Organization,
+    address: {
+        "@type": "PostalAddress",
+        name: "work",
+        postOfficeBoxNumber: "",
+        streetAddress: "Street",
+        addressLocality: "City",
+        addressRegion: "ST",
+        addressCountry: "Country",
+        postalCode: "00000",
+    },
+});
 
 export const provider: Readable<any> = readable(new CloudflareProvider("homestead"));
 export const useDefaultWallet: Writable<boolean> = writable(true);

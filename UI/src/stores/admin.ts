@@ -71,7 +71,8 @@ export const settings: Writable<Settings | any> = writable({
         verbose: undefined,
     },
     cronjobs: [],
-    trustedAddresses: [],
+    trustedUsers: [],
+    trustedServers: [],
     database: {
         path: "",
         limits: {

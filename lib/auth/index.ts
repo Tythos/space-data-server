@@ -2,10 +2,10 @@ import express, { Request, Response, NextFunction } from 'express';
 import { verifyMessage, hashMessage, SigningKey } from 'ethers';
 import { AuthCIDHeader, AuthSettingsHeader } from '../class/authheader.json.interface';
 import { config } from '../config/config';
-import { TrustedAddress } from '../class/settings.interface';
+import { TrustedAddress, TrustedUser } from '../class/settings.interface';
 
 const app = express();
-export const getTrustedAddress = (address) => config.trustedAddresses.find((obj: TrustedAddress) => obj.address.toLowerCase() === address.toLowerCase())
+export const getTrustedAddress = (address) => config.trustedUsers.find((obj: TrustedUser) => obj.address.toLowerCase() === address.toLowerCase())
 
 // Middleware
 export const validateHeaders = (req: Request, res: Response, next: NextFunction) => {

@@ -16,7 +16,7 @@
       "CAT": 2
     }
   },
-  "trustedAddresses": [],
+  "trustedUsers": [],
   "database": {
     "path": ".database",
     "limits": {

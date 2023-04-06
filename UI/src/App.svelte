@@ -21,11 +21,11 @@
   const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
 
-<div class="flex flex-col min-h-screen">
+<div class="text-[.5rem] md:text-xs lg:text-sm flex flex-col min-h-screen">
   <nav
-    class="sticky top-0 z-10 w-full font-sans navbar navbar-expand-lg shadow-md py-2 bg-white flex items-center justify-between">
+    class="sticky top-0 z-10 w-full font-sans shadow-md bg-white flex items-center justify-between">
     <div class="px-6 w-full flex items-center justify-between">
-      <ul class="navbar-nav mr-auto flex gap-2 text-[.5rem] lg:text-sm">
+      <ul class="navbar-nav mr-auto flex gap-2">
         {#each Object.entries(routes).filter((a) => a[1].navBar) as [route, value], i}
           {#if value.name !== "Admin" || $isAdmin}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -34,8 +34,8 @@
                 push(route);
               }}
               class:border-b-2={$location === route}
-              class="p-2 cursor-pointer">
-              {value.name}
+              class="p-2 cursor-pointer font-uppercase hover:bg-gray-100">
+              {value.name.toUpperCase()}
             </li>
           {/if}
         {/each}
@@ -47,3 +47,28 @@
     <Router {routes} />
   </div>
 </div>
+
+<style>
+  :global(::-webkit-scrollbar) {
+    width: 8px;
+    height: 8px;
+  }
+
+  :global(::-webkit-scrollbar-thumb) {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  :global(::-webkit-scrollbar-thumb:hover) {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  :global(::-webkit-scrollbar-track) {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+
+  :global(::-webkit-scrollbar-corner) {
+    background-color: transparent;
+  }
+</style>

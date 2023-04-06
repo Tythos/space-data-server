@@ -28,3 +28,4 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [ ] Data matrix
 - [ ] Home page & About Page
 - [ ] Data parser service
+- [ ] Use vCard for server
