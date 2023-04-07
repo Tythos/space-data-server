@@ -4,8 +4,8 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="text-gray-600 mr-2 h-12">
-  <div class="flex items-center h-full">
+<div class="text-gray-600 mr-2">
+  <div class="flex items-center">
     {$ethWallet?.address
       ? `${$ethWallet.address.slice(0, 5)}...${$ethWallet.address.slice(-5)}`
       : ""}
@@ -17,8 +17,12 @@
     push("/user");
   }}
   class="cursor-pointer
-      px-3
-      py-2
+      px-5
+      py-1
+      h-12
+      flex
+      items-center
+      justify-center
       bg-gray-700
       text-white
       uppercase">

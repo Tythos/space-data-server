@@ -23,9 +23,9 @@
 
 <div class="text-[.5rem] md:text-xs lg:text-sm flex flex-col min-h-screen">
   <nav
-    class="sticky top-0 z-10 w-full font-sans shadow-md bg-white flex items-center justify-between">
-    <div class="px-6 w-full flex items-center justify-between">
-      <ul class="navbar-nav mr-auto flex gap-2">
+    class="sticky navbar flex justify-between items-center shadow-md bg-white">
+    <div>
+      <ul class="flex cursor-pointer justify-center items-center gap-2 h-12">
         {#each Object.entries(routes).filter((a) => a[1].navBar) as [route, value], i}
           {#if value.name !== "Admin" || $isAdmin}
             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -33,15 +33,16 @@
               on:click={(e) => {
                 push(route);
               }}
-              class:border-b-2={$location === route}
-              class="p-2 cursor-pointer font-uppercase hover:bg-gray-100">
+              class:border-blue-400={$location === route}
+              class:border-white={$location !== route}
+              class="h-12 border-b-2 flex items-center justify-center p-2">
               {value.name.toUpperCase()}
             </li>
           {/if}
         {/each}
       </ul>
     </div>
-    <div class="mr-6 h-full flex items-center"><LoginButton /></div>
+    <div class="h-12"><LoginButton /></div>
   </nav>
   <div class="flex-grow">
     <Router {routes} />

@@ -161,6 +161,17 @@
             bind:value={$vCard.address.addressCountry}
             autocomplete="country" />
         </div>
+        <div class="mb-4">
+          <label for="addressCountry" class="block text-gray-700 font-bold mb-2"
+            >Postal Code</label>
+          <input
+            type="text"
+            id="addressZIP"
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name="addressZIP"
+            bind:value={$vCard.address.postalCode}
+            autocomplete="postal-code" />
+        </div>
       </div>
     </form>
   </div>

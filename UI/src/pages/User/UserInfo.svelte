@@ -6,7 +6,7 @@
   import { download, upload } from "svelte-awesome/icons";
   import { createCSV, createV3, readVCARD } from "vcard-cryptoperson";
   import { downloadFile } from "@/UI/src/lib/download";
- 
+
   let activeTab = 0;
 
   const exportToVCard = () => {
@@ -19,6 +19,7 @@
     fileReader.onload = (e) => {
       try {
         const vcard = readVCARD(fileReader.result as string);
+        console.log(vcard);
         $vCard = vcard;
       } catch (error) {
         console.error(error);
@@ -90,7 +91,7 @@
         aria-selected="false"
         on:click={importVCard}>
         Import
-        <Icon data={upload} scale={.65}/>
+        <Icon data={upload} scale={0.65} />
       </div>
       <div
         class="my-2 block px-4 pt-4 pb-3.5 font-medium uppercase leading-tight text-neutral-500 hover:isolate focus:isolate data-[te-nav-active]:text-primary dark:text-neutral-400 dark:data-[te-nav-active]:border-primary-400 dark:data-[te-nav-active]:text-primary-400 cursor-pointer"
@@ -100,7 +101,7 @@
         aria-selected="false"
         on:click={exportToVCard}>
         Export
-        <Icon data={download} scale={.65}/>
+        <Icon data={download} scale={0.65} />
       </div>
     </div>
   </div>

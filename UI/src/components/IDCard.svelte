@@ -96,7 +96,7 @@
             {/if}
           {/if}
           <div class="m-2 font">
-            {$vCard.affiliation.name || $vCard.affiliation.legalName}
+            {$vCard?.affiliation?.name || $vCard?.affiliation?.legalName}
           </div>
         </div>
         <div class="px-2 py-5 md:px-12">
