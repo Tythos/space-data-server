@@ -21,9 +21,9 @@
   const Router: any = Router_; ///HAAAAAAAAAAAAAAACK
 </script>
 
-<div class="text-[.5rem] md:text-xs lg:text-sm flex flex-col min-h-screen">
+<div class="text-[.5rem] md:text-xs lg:text-sm wrap-safe-pad flex flex-col min-h-screen">
   <nav
-    class="sticky navbar flex justify-between items-center shadow-md bg-white">
+    class="sticky top-0 z-10 w-full font-sans navbar navbar-expand-lg shadow-md bg-white flex items-center justify-between">
     <div>
       <ul class="flex cursor-pointer justify-center items-center gap-2 h-12">
         {#each Object.entries(routes).filter((a) => a[1].navBar) as [route, value], i}

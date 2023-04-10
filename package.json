@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "23.3.3-0.1.1-1.32.0001+1680883386614",
+    "version": "23.3.3-0.1.1-1.33.0001+1681160944932",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -128,6 +128,6 @@
         "ethers-cli": "^4.0.0",
         "jest-environment-jsdom": "^29.4.3",
         "keyconverter": "^2.0.5",
-        "vcard-cryptoperson": "^1.0.9"
+        "vcard-cryptoperson": "^1.1.1"
     }
 }

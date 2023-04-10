@@ -4,6 +4,7 @@
   import { onDestroy, onMount } from "svelte";
   import QRCode from "qrcode";
   import cc from "copy-to-clipboard";
+  import { createV3 } from "vcard-cryptoperson";
   export let ethWallet;
   export let provider;
   export let vCard: Writable<any>;
@@ -19,7 +20,7 @@
   const getData = async () => {
     if ($ethWallet?.address) {
       etherscanLink = `https://etherscan.io/address/${$ethWallet.address}`;
-      QRCode.toDataURL(etherscanLink).then((qsrc) => {
+      QRCode.toDataURL(createV3($vCard)).then((qsrc) => {
         qrCodeImage = qsrc;
       });
       balance = formatEther(await $provider.getBalance($ethWallet.address));

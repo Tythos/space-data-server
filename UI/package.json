@@ -46,6 +46,6 @@
     "swagger-ui": "^4.15.5",
     "swagger-ui-dist": "^4.15.5",
     "tw-elements": "^1.0.0-alpha13",
-    "vcard-cryptoperson": "^1.0.9"
+    "vcard-cryptoperson": "^1.1.1"
   }
 }

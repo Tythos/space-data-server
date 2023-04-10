@@ -21,7 +21,10 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [ ] Add an "export settings" button
 - [ ] Add export options for the user
 - [ ] IPFS network address node addition to config
-- [ ] API goes and gets file from IPFS network address
+- [ ] SPACEDATAPEERS.JSON - File that stores that nodes peers, and runs algo to determine trust of those peers and adds trusted nodes to network
+- [ ] Encrypt it!
+- [ ] Server goes and gets file from IPFS network address
+- [ ] Copies over relevant .vcf files (within config limit)
 - [ ] IPFS pinning / unpinning config
 - [ ] Data UI
 - [ ] Document ingest api {filename}.STD.fbs
