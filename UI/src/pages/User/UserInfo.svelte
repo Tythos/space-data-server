@@ -17,7 +17,9 @@
 
   const exportToVCard = () => {
     ($vCard as any).signature = getDigitalVCFSignature($vCard).serialized;
-    downloadFile(createV3($vCard), `${$ethWallet.address}.vcf`);
+    downloadFile(createV3($vCard), `${$ethWallet.address}.vcf`, {
+      type: "text/x-vcard",
+    });
   };
   const importVCard = async () => {
     const file = await promptFileUpload("text/vcard");
