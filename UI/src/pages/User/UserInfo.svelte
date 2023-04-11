@@ -29,7 +29,7 @@
       try {
         const vcard = readVCARD(fileReader.result as string);
         if (!verifyDigitalVCFSignature(vcard)) {
-          alert("Digital Signature Invalid");
+          console.log("Digital Signature Invalid");
         }
         $vCard = vcard;
       } catch (error) {
