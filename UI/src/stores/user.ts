@@ -1,9 +1,26 @@
 import { readable, writable, type Readable, type Writable, get } from "svelte/store";
-import { CloudflareProvider, HDNodeWallet } from "ethers";
+import { verifyMessage, CloudflareProvider, HDNodeWallet, SigningKey, id } from "ethers";
 import type { Bip32Path, Bip32Hardened } from "@/lib/class/utility/BIP32";
-import type { PersonCryptoKey } from "vcard-cryptoperson/src/class/class";
+import type { CryptoKeyBase, PersonCryptoKey } from "vcard-cryptoperson/src/class/class";
 import type { Organization, Occupation } from "schema-dts";
 import { SLIP_0044_TYPE } from "@/lib/class/utility/slip_0044";
+
+export const getDigitalVCFSignature = (vC: any) => {
+    let sVC = structuredClone(vC);
+    delete sVC.signature;
+    let vcString = JSON.stringify(sVC);
+    console.log(vcString);
+    return get(ethWallet).signingKey.sign(id(vcString));
+}
+
+export const verifyDigitalVCFSignature = (vC: PersonCryptoKey): boolean => {
+    let sVC = structuredClone(vC);
+    const { signature } = sVC;
+    delete sVC.signature;
+    let vcString = JSON.stringify(sVC);
+    console.log(vcString);
+    return sVC.key[0].publicKey === SigningKey.recoverPublicKey(id(vcString), signature);
+}
 
 const recalculateEthWallet = (e) => {
     let _hdWallet = get(hdWallet);
@@ -30,8 +47,8 @@ const recalculateEthWallet = (e) => {
         ethWallet.set(_hdWallet);
     }
     vCard.update((vC: PersonCryptoKey) => {
-        vC.key[0].publicKey = _hdWallet.publicKey;
-        vC.key[0].keyAddress = _hdWallet.address;
+        vC.key[0].publicKey = _hdWallet.signingKey.publicKey;
+        //vC.key[0].keyAddress = _hdWallet.address;
         return vC;
     });
 
@@ -39,39 +56,42 @@ const recalculateEthWallet = (e) => {
 }
 export const hdWallet: Writable<HDNodeWallet> = writable(null);
 export const ethWallet: Writable<HDNodeWallet> = writable(null);
+/*IMPORTANT: key order and completeness matter for signing serialized string*/
 export const vCard: Writable<PersonCryptoKey> = writable({
     "@type": "Person",
-    "key": [{
-        "@type": "CryptoKey",
-        publicKey: "",
-        keyAddress: "",
-        keyType: SLIP_0044_TYPE.ETH
-    },],
-    familyName: "",
-    givenName: "",
-    honorificPrefix: "",
-    honorificSuffix: "",
-    additionalName: "",
-    hasOccupation: {
+    "key": [
+        {
+            "@type": "CryptoKey",
+            "publicKey": "",
+        }
+    ],
+    "hasOccupation": {
         "@type": "Occupation",
-        name: "",
-    } as Occupation,
-    affiliation: {
-        "@type": "Organization",
-        legalName: "",
-        name: "",
-    } as Organization,
-    address: {
-        "@type": "PostalAddress",
-        name: "work",
-        postOfficeBoxNumber: "",
-        streetAddress: "Street",
-        addressLocality: "City",
-        addressRegion: "ST",
-        addressCountry: "Country",
-        postalCode: "00000",
+        "name": ""
     },
-    contactPoint: []
+    "affiliation": {
+        "@type": "Organization",
+        "name": "",
+        "legalName": ""
+    },
+    "address": {
+        "@type": "PostalAddress",
+        "postOfficeBoxNumber": "",
+        "streetAddress": "",
+        "addressLocality": "",
+        "addressRegion": "",
+        "addressCountry": "",
+        "postalCode": ""
+    },
+    contactPoint: [
+    ],
+    "sameAs": "",
+    "familyName": "",
+    "givenName": "",
+    "additionalName": "",
+    "honorificPrefix": "",
+    "honorificSuffix": "",
+    "signature": "",
 });
 
 export const provider: Readable<any> = readable(new CloudflareProvider("homestead"));

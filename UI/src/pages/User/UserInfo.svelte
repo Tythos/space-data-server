@@ -1,7 +1,13 @@
 <script lang="ts">
   import Info from "./UserComponents/Info.svelte";
   import VCard from "@/UI/src/components/VCard.svelte";
-  import { ethWallet, provider, vCard } from "@/UI/src/stores/user";
+  import {
+    ethWallet,
+    provider,
+    vCard,
+    getDigitalVCFSignature,
+    verifyDigitalVCFSignature,
+  } from "@/UI/src/stores/user";
   import { Icon } from "svelte-awesome";
   import { download, upload } from "svelte-awesome/icons";
   import { createCSV, createV3, readVCARD } from "vcard-cryptoperson";
@@ -10,6 +16,7 @@
   let activeTab = 0;
 
   const exportToVCard = () => {
+    ($vCard as any).signature = getDigitalVCFSignature($vCard).serialized;
     downloadFile(createV3($vCard), `${$ethWallet.address}.vcf`);
   };
   const importVCard = async () => {
@@ -19,7 +26,9 @@
     fileReader.onload = (e) => {
       try {
         const vcard = readVCARD(fileReader.result as string);
-        console.log(vcard);
+        if (!verifyDigitalVCFSignature(vcard)) {
+          alert("Digital Signature Invalid");
+        }
         $vCard = vcard;
       } catch (error) {
         console.error(error);
