@@ -14,9 +14,8 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [x] Add querystring formatting options
 - [x] Get IPFS folder hash published to IPFS and add it to server data
 - [x] Change server data to just read the 'serverinfo.json' file in root, maybe rename it
-- [ ] Host manifest.json in local API
-- [ ] Add code examples
-- [ ] Change to use default path for Ethereum wallet for compatibility
+- [x] Host manifest.json in local API
+- [x] Change to use default path for Ethereum wallet for compatibility
 - [ ] Add a "add default server key" to the Admin Settings UI if the server key isn't trusted yet
 - [ ] Add an "export settings" button
 - [ ] Add export options for the user
@@ -32,3 +31,4 @@ The SDS acts as a "waypoint" for ingestion / data services, allowing integrators
 - [ ] Home page & About Page
 - [ ] Data parser service
 - [ ] Use vCard for server
+- [ ] Add code examples

@@ -15,16 +15,26 @@
     ipfsPID: "",
     ipfsCID: "",
   };
+
   onMount(async () => {
-    console.log($serverPK);
     await getServerPK();
   });
 
-  $: {
+  const lastFetchTime = parseInt(localStorage.getItem("lastFetchTime"));
+  const currentTime = new Date().getTime();
+  const ONE_HOUR_IN_MS = 60 * 60 * 1000;
+
+  if (!lastFetchTime || currentTime - lastFetchTime > ONE_HOUR_IN_MS) {
     if ($serverPK.publicKey) {
       for (let x in displayPK) {
+        if (x === "ipfsCID") {
+          fetch(`https://ipfs.io/ipfs/${$serverPK[x]}`);
+        } else if (x === "ipnsCID") {
+          fetch(`https://ipfs.io/ipns/${$serverPK[x]}`);
+        }
         displayPK[x] = $serverPK[x];
       }
+      localStorage.setItem("lastFetchTime", currentTime.toString());
     }
   }
 </script>
@@ -44,7 +54,19 @@
                 </dt>
                 <dd
                   class="mt-2 sm:mt-0 ml-0 sm:ml-4 text-lg font-medium text-gray-900 break-all w-full sm:w-auto flex-grow">
-                  {value}
+                  {#if key === "ipfsCID"}
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      href="https://ipfs.io/ipfs/{value}">{value}</a>
+                  {:else if key === "ipnsCID"}
+                    <a
+                      target="_blank"
+                      rel="noreferrer"
+                      href="https://ipfs.io/ipns/{value}">{value}</a>
+                  {:else}
+                    {value}
+                  {/if}
                 </dd>
               </div>
             {/each}
