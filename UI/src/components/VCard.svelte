@@ -101,6 +101,20 @@
         </div>
       </div>
       <div class="border p-4">
+        <div class="text-xl border-b-[1px] mb-4">Phone</div>
+        <div class="mb-4">
+          <label for="phoneNumber" class="block text-gray-700 font-bold mb-2"
+            >Phone</label>
+          <input
+            type="tel"
+            id="phoneNumber"
+            class="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            name="phoneNumber"
+            bind:value={$vCard.phoneNumber}
+            autocomplete="tel" />
+        </div>
+      </div>
+      <div class="border p-4">
         <div class="text-xl border-b-[1px] mb-4">Address</div>
         <div class="mb-4">
           <label
@@ -110,7 +124,7 @@
           <input
             type="text"
             id="addressPostOfficeBoxNumber"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             name="postOfficeBoxNumber"
             bind:value={$vCard.address.postOfficeBoxNumber}
             autocomplete="postal-code" />

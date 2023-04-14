@@ -16,7 +16,7 @@
   let activeTab = 0;
 
   const exportToVCard = () => {
-    //($vCard as any).signature = getDigitalVCFSignature($vCard).serialized;
+    ($vCard as any).signature = getDigitalVCFSignature($vCard).serialized;
     downloadFile(createV3($vCard), `${$ethWallet.address}.vcf`, {
       type: "text/x-vcard",
     });
@@ -28,9 +28,9 @@
     fileReader.onload = (e) => {
       try {
         const vcard = readVCARD(fileReader.result as string);
-        /*if (!verifyDigitalVCFSignature(vcard)) {
+        if (!verifyDigitalVCFSignature(vcard)) {
           console.log("Digital Signature Invalid");
-        }*/
+        }
         $vCard = vcard;
       } catch (error) {
         console.error(error);
