@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "23.3.3-0.1.2-1.39.0003+1681486235090",
+    "version": "23.3.3-0.1.2-1.40.0003+1681505355579",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -17,7 +17,7 @@
         "build": "npm run build:standards && npm run build:celestrak:parsers && cp -R ./node_modules/better-sqlite3/build/Release/* build/ && npm run build:esbuild && node ./scripts/updateVersion.mjs",
         "build:cli": "esbuild cli.ts --bundle --platform=node --outfile=./build/cli.cjs",
         "build:ui": "cd UI && npm run build",
-        "build:esbuild": "esbuild index.ts --external:pg-native --external:better_sqlite3 --bundle --platform=node --external:fsevents --outfile=./build/server.cjs",
+        "build:esbuild": "esbuild index.ts --minify --external:pg-native --external:better_sqlite3 --bundle --platform=node --external:fsevents --outfile=./build/server.cjs",
         "build:celestrak:parsers": "npm run build:celestrak:parser:omm && npm run build:celestrak:parser:cat",
         "build:celestrak:parser:omm": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.omm.ts --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.omm.cjs",
         "build:celestrak:parser:cat": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.cat.ts --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.cat.cjs",
@@ -123,11 +123,13 @@
     "dependencies": {
         "@openzeppelin/contracts": "^4.8.1",
         "@toruslabs/eccrypto": "^2.1.0",
+        "@types/ws": "^8.5.4",
         "cron": "^2.1.0",
         "elliptic": "^6.5.4",
         "ethers-cli": "^4.0.0",
         "jest-environment-jsdom": "^29.4.3",
         "keyconverter": "^2.0.5",
-        "vcard-cryptoperson": "^1.1.4"
+        "vcard-cryptoperson": "^1.1.4",
+        "ws": "^8.13.0"
     }
 }

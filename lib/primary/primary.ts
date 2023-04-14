@@ -7,7 +7,7 @@ import { generateDatabase } from "../database/generateTables";
 import { config } from "../config/config";
 import { connection } from "../database/connection";
 import { JSONSchema4 } from "json-schema";
-import { existsSync } from "fs";
+import { existsSync, mkdirSync } from "fs";
 import standardsJSON from "../standards/schemas.json";
 import { COMMANDS, IPC } from "../class/ipc.interface";
 import { HDNodeWallet } from "ethers";
@@ -16,6 +16,7 @@ import { keyconverter } from "../../../keyconverter/src/keyconverter";
 import { decryptMessage, encryptMessage } from "../utility/encryption";
 import { IPFSUtilities, defaultGatewayPort, keyName } from "../ipfs";
 import { writeManifest } from "../logging/manifest"
+import { join } from "path";
 const kCArgs = {
     kty: "EC",
     name: "ECDSA",
@@ -146,8 +147,12 @@ const forkWorkers = (worker?: Worker) => {
 
 export default {
     init: async function () {
-        if (!existsSync(databaseConfig.connection.filename)) {
-            await generateDatabase(standardsArray, databaseConfig.connection.filename, `./${config.database.path}/standards.sql`, connection, databaseConfig.version);
+        if (!existsSync(config.database.path)) {
+            mkdirSync(config.database.path);
+        }
+        let dbPath = join(databaseConfig.connection.filename, databaseConfig.connection.filename);
+        if (!existsSync(dbPath)) {
+            await generateDatabase(standardsArray, dbPath, `./${config.database.path}/standards.sql`, connection, databaseConfig.version);
         }
 
         console.log(`Number of CPUs is ${totalCPUs}`);

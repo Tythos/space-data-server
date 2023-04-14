@@ -20,13 +20,13 @@ import { join } from "path";
 import { Http2SecureServer } from "http2";
 import { adminCheck, cwd, getSettings, saveSettings, getServerPublicKey, saveServerKey } from "../routes/admin";
 import { fileReadPath } from "@/lib/config/config";
+import WebSocket, { WebSocketServer } from "ws";
 
 const rawUI = Buffer.from(ui, "base64").toString();
 
 let app: Express | https.Server = express();
-
+let wss: WebSocketServer;
 let publicKeyCache: any = {};
-
 
 app.use(compression({
     level: 6, minlevel: 6, threshold: 512, filter: (req, res) => {
@@ -167,7 +167,8 @@ try {
         key = readFileSync(key, "utf8");
         cert = readFileSync(cert, "utf8");
         app = https.createServer({ key, cert }, app);
+        wss = new WebSocket.Server({ server: app })
     }
 } catch (e) { }
 
-export { app };
+export { app, wss };
