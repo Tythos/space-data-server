@@ -1,48 +1,49 @@
 {
-    "server": {
-        "port": 8080,
-        "key": "",
-        "cert": ""
+  "server": {
+    "port": 8080,
+    "key": "",
+    "cert": ""
+  },
+  "nonceTimeout": 30000,
+  "data": {
+    "ingest": ".data",
+    "fileSystemPath": "public",
+    "useDatabase": false,
+    "cache": "5 minutes",
+    "verbose": false,
+    "defaultLimit": 100,
+    "limit": {
+      "CAT": 2
     },
-    "nonceTimeout": 30000,
-    "data": {
-        "ingest": ".data",
-        "fileSystemPath": "public",
-        "useDatabase": false,
-        "cache": "5 minutes",
-        "verbose": false,
-        "defaultLimit": 100,
-        "limit": {
-            "CAT": 2
-        }
+    "ipfsTimeout": 10800000
+  },
+  "trustedUsers": [],
+  "database": {
+    "path": ".database",
+    "limits": {
+      "totalRecords": 500
     },
-    "trustedUsers": [],
-    "database": {
-        "path": ".database",
-        "limits": {
-            "totalRecords": 500
+    "config": {
+      "primary": "sqlite",
+      "sqlite": {
+        "client": "better-sqlite3",
+        "connection": {
+          "filename": "./.database/spacedatastandards.23.3.3-0.1.1+1679084152269.sqlite"
         },
-        "config": {
-            "primary": "sqlite",
-            "sqlite": {
-                "client": "better-sqlite3",
-                "connection": {
-                    "filename": "./.database/spacedatastandards.23.3.3-0.1.1+1679084152269.sqlite"
-                },
-                "useNullAsDefault": true,
-                "version": "23.3.3-0.1.1+1679084152269"
-            },
-            "pg": {
-                "client": "pg",
-                "connection": "postgresql://test@localhost/standards",
-                "pool": {
-                    "min": 2,
-                    "max": 10
-                },
-                "migrations": {
-                    "tableName": "knex_migrations"
-                }
-            }
+        "useNullAsDefault": true,
+        "version": "23.3.3-0.1.1+1679084152269"
+      },
+      "pg": {
+        "client": "pg",
+        "connection": "postgresql://test@localhost/standards",
+        "pool": {
+          "min": 2,
+          "max": 10
+        },
+        "migrations": {
+          "tableName": "knex_migrations"
         }
+      }
     }
+  }
 }

@@ -39,6 +39,7 @@ export interface Settings {
         "verbose": Boolean,
         "defaultLimit": number,
         "limit": StandardLimit,
+        "ipfsTimeout": number
     },
     "cronjobs": Array<cronJob>,
     "trustedUsers": Array<TrustedAddress>,

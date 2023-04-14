@@ -14,7 +14,8 @@
     "defaultLimit": 100,
     "limit": {
       "CAT": 2
-    }
+    },
+    "ipfsTimeout": 10800000
   },
   "trustedUsers": [
     {
