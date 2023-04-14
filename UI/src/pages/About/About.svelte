@@ -20,21 +20,9 @@
     await getServerPK();
   });
 
-  const lastFetchTime = parseInt(localStorage.getItem("lastFetchTime"));
-  const currentTime = new Date().getTime();
-  const ONE_HOUR_IN_MS = 60 * 60 * 1000;
-
-  if (!lastFetchTime || currentTime - lastFetchTime > ONE_HOUR_IN_MS) {
-    if ($serverPK.publicKey) {
-      for (let x in displayPK) {
-        if (x === "ipfsCID") {
-          fetch(`https://ipfs.io/ipfs/${$serverPK[x]}`);
-        } else if (x === "ipnsCID") {
-          fetch(`https://ipfs.io/ipns/${$serverPK[x]}`);
-        }
-        displayPK[x] = $serverPK[x];
-      }
-      localStorage.setItem("lastFetchTime", currentTime.toString());
+  if ($serverPK.publicKey) {
+    for (let x in displayPK) {
+      displayPK[x] = $serverPK[x];
     }
   }
 </script>

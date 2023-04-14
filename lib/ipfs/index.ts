@@ -78,9 +78,12 @@ const importKey = async function (key: ArrayBuffer, inputKeyName: string = keyNa
     writeFileSync(fileName, Buffer.from(key as ArrayBuffer));
     let output: any;
 
-    const response = await api(`/key/rm?arg=${inputKeyName}`, undefined, undefined, defaultAPIPort);
+    output = await api(`/key/rm?arg=${inputKeyName}`, undefined, undefined, defaultAPIPort);
 
-    output = execSync(`${ipfsPath}/ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
+    if (!output.error) {
+        output = execSync(`${ipfsPath}/ipfs key import ${inputKeyName} ${fileName} --allow-any-key-type`, { env }).toString();
+    }
+    
     rmSync(fileName);
 
     return output;
