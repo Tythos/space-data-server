@@ -26,11 +26,9 @@ static bufferHasIdentifier(bb:flatbuffers.ByteBuffer):boolean {
   return bb.__has_identifier('$CSM');
 }
 
-OBJECT_ID_1():string|null
-OBJECT_ID_1(optionalEncoding:flatbuffers.Encoding):string|Uint8Array|null
-OBJECT_ID_1(optionalEncoding?:any):string|Uint8Array|null {
+NORAD_CAT_ID_1():number {
   const offset = this.bb!.__offset(this.bb_pos, 4);
-  return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
+  return offset ? this.bb!.readUint32(this.bb_pos + offset) : 0;
 }
 
 OBJECT_NAME_1():string|null
@@ -45,11 +43,9 @@ DSE_1():number {
   return offset ? this.bb!.readFloat64(this.bb_pos + offset) : 0.0;
 }
 
-OBJECT_ID_2():string|null
-OBJECT_ID_2(optionalEncoding:flatbuffers.Encoding):string|Uint8Array|null
-OBJECT_ID_2(optionalEncoding?:any):string|Uint8Array|null {
+NORAD_CAT_ID_2():number {
   const offset = this.bb!.__offset(this.bb_pos, 10);
-  return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
+  return offset ? this.bb!.readUint32(this.bb_pos + offset) : 0;
 }
 
 OBJECT_NAME_2():string|null
@@ -79,27 +75,22 @@ TCA_RELATIVE_SPEED():number {
   return offset ? this.bb!.readFloat64(this.bb_pos + offset) : 0.0;
 }
 
-MIN_RANGE():number {
+MAX_PROB():number {
   const offset = this.bb!.__offset(this.bb_pos, 22);
   return offset ? this.bb!.readFloat64(this.bb_pos + offset) : 0.0;
 }
 
-MAX_PROB():number {
+DILUTION():number {
   const offset = this.bb!.__offset(this.bb_pos, 24);
   return offset ? this.bb!.readFloat64(this.bb_pos + offset) : 0.0;
 }
 
-DILUTION():number {
-  const offset = this.bb!.__offset(this.bb_pos, 26);
-  return offset ? this.bb!.readFloat64(this.bb_pos + offset) : 0.0;
-}
-
 static startCSM(builder:flatbuffers.Builder) {
-  builder.startObject(12);
+  builder.startObject(11);
 }
 
-static addObjectId1(builder:flatbuffers.Builder, OBJECT_ID_1Offset:flatbuffers.Offset) {
-  builder.addFieldOffset(0, OBJECT_ID_1Offset, 0);
+static addNoradCatId1(builder:flatbuffers.Builder, NORAD_CAT_ID_1:number) {
+  builder.addFieldInt32(0, NORAD_CAT_ID_1, 0);
 }
 
 static addObjectName1(builder:flatbuffers.Builder, OBJECT_NAME_1Offset:flatbuffers.Offset) {
@@ -110,8 +101,8 @@ static addDse1(builder:flatbuffers.Builder, DSE_1:number) {
   builder.addFieldFloat64(2, DSE_1, 0.0);
 }
 
-static addObjectId2(builder:flatbuffers.Builder, OBJECT_ID_2Offset:flatbuffers.Offset) {
-  builder.addFieldOffset(3, OBJECT_ID_2Offset, 0);
+static addNoradCatId2(builder:flatbuffers.Builder, NORAD_CAT_ID_2:number) {
+  builder.addFieldInt32(3, NORAD_CAT_ID_2, 0);
 }
 
 static addObjectName2(builder:flatbuffers.Builder, OBJECT_NAME_2Offset:flatbuffers.Offset) {
@@ -134,16 +125,12 @@ static addTcaRelativeSpeed(builder:flatbuffers.Builder, TCA_RELATIVE_SPEED:numbe
   builder.addFieldFloat64(8, TCA_RELATIVE_SPEED, 0.0);
 }
 
-static addMinRange(builder:flatbuffers.Builder, MIN_RANGE:number) {
-  builder.addFieldFloat64(9, MIN_RANGE, 0.0);
-}
-
 static addMaxProb(builder:flatbuffers.Builder, MAX_PROB:number) {
-  builder.addFieldFloat64(10, MAX_PROB, 0.0);
+  builder.addFieldFloat64(9, MAX_PROB, 0.0);
 }
 
 static addDilution(builder:flatbuffers.Builder, DILUTION:number) {
-  builder.addFieldFloat64(11, DILUTION, 0.0);
+  builder.addFieldFloat64(10, DILUTION, 0.0);
 }
 
 static endCSM(builder:flatbuffers.Builder):flatbuffers.Offset {
@@ -159,18 +146,17 @@ static finishSizePrefixedCSMBuffer(builder:flatbuffers.Builder, offset:flatbuffe
   builder.finish(offset, '$CSM', true);
 }
 
-static createCSM(builder:flatbuffers.Builder, OBJECT_ID_1Offset:flatbuffers.Offset, OBJECT_NAME_1Offset:flatbuffers.Offset, DSE_1:number, OBJECT_ID_2Offset:flatbuffers.Offset, OBJECT_NAME_2Offset:flatbuffers.Offset, DSE_2:number, TCA:number, TCA_RANGE:number, TCA_RELATIVE_SPEED:number, MIN_RANGE:number, MAX_PROB:number, DILUTION:number):flatbuffers.Offset {
+static createCSM(builder:flatbuffers.Builder, NORAD_CAT_ID_1:number, OBJECT_NAME_1Offset:flatbuffers.Offset, DSE_1:number, NORAD_CAT_ID_2:number, OBJECT_NAME_2Offset:flatbuffers.Offset, DSE_2:number, TCA:number, TCA_RANGE:number, TCA_RELATIVE_SPEED:number, MAX_PROB:number, DILUTION:number):flatbuffers.Offset {
   CSM.startCSM(builder);
-  CSM.addObjectId1(builder, OBJECT_ID_1Offset);
+  CSM.addNoradCatId1(builder, NORAD_CAT_ID_1);
   CSM.addObjectName1(builder, OBJECT_NAME_1Offset);
   CSM.addDse1(builder, DSE_1);
-  CSM.addObjectId2(builder, OBJECT_ID_2Offset);
+  CSM.addNoradCatId2(builder, NORAD_CAT_ID_2);
   CSM.addObjectName2(builder, OBJECT_NAME_2Offset);
   CSM.addDse2(builder, DSE_2);
   CSM.addTca(builder, TCA);
   CSM.addTcaRange(builder, TCA_RANGE);
   CSM.addTcaRelativeSpeed(builder, TCA_RELATIVE_SPEED);
-  CSM.addMinRange(builder, MIN_RANGE);
   CSM.addMaxProb(builder, MAX_PROB);
   CSM.addDilution(builder, DILUTION);
   return CSM.endCSM(builder);
@@ -178,16 +164,15 @@ static createCSM(builder:flatbuffers.Builder, OBJECT_ID_1Offset:flatbuffers.Offs
 
 unpack(): CSMT {
   return new CSMT(
-    this.OBJECT_ID_1(),
+    this.NORAD_CAT_ID_1(),
     this.OBJECT_NAME_1(),
     this.DSE_1(),
-    this.OBJECT_ID_2(),
+    this.NORAD_CAT_ID_2(),
     this.OBJECT_NAME_2(),
     this.DSE_2(),
     this.TCA(),
     this.TCA_RANGE(),
     this.TCA_RELATIVE_SPEED(),
-    this.MIN_RANGE(),
     this.MAX_PROB(),
     this.DILUTION()
   );
@@ -195,16 +180,15 @@ unpack(): CSMT {
 
 
 unpackTo(_o: CSMT): void {
-  _o.OBJECT_ID_1 = this.OBJECT_ID_1();
+  _o.NORAD_CAT_ID_1 = this.NORAD_CAT_ID_1();
   _o.OBJECT_NAME_1 = this.OBJECT_NAME_1();
   _o.DSE_1 = this.DSE_1();
-  _o.OBJECT_ID_2 = this.OBJECT_ID_2();
+  _o.NORAD_CAT_ID_2 = this.NORAD_CAT_ID_2();
   _o.OBJECT_NAME_2 = this.OBJECT_NAME_2();
   _o.DSE_2 = this.DSE_2();
   _o.TCA = this.TCA();
   _o.TCA_RANGE = this.TCA_RANGE();
   _o.TCA_RELATIVE_SPEED = this.TCA_RELATIVE_SPEED();
-  _o.MIN_RANGE = this.MIN_RANGE();
   _o.MAX_PROB = this.MAX_PROB();
   _o.DILUTION = this.DILUTION();
 }
@@ -212,38 +196,34 @@ unpackTo(_o: CSMT): void {
 
 export class CSMT implements flatbuffers.IGeneratedObject {
 constructor(
-  public OBJECT_ID_1: string|Uint8Array|null = null,
+  public NORAD_CAT_ID_1: number = 0,
   public OBJECT_NAME_1: string|Uint8Array|null = null,
   public DSE_1: number = 0.0,
-  public OBJECT_ID_2: string|Uint8Array|null = null,
+  public NORAD_CAT_ID_2: number = 0,
   public OBJECT_NAME_2: string|Uint8Array|null = null,
   public DSE_2: number = 0.0,
   public TCA: number = 0.0,
   public TCA_RANGE: number = 0.0,
   public TCA_RELATIVE_SPEED: number = 0.0,
-  public MIN_RANGE: number = 0.0,
   public MAX_PROB: number = 0.0,
   public DILUTION: number = 0.0
 ){}
 
 
 pack(builder:flatbuffers.Builder): flatbuffers.Offset {
-  const OBJECT_ID_1 = (this.OBJECT_ID_1 !== null ? builder.createString(this.OBJECT_ID_1!) : 0);
   const OBJECT_NAME_1 = (this.OBJECT_NAME_1 !== null ? builder.createString(this.OBJECT_NAME_1!) : 0);
-  const OBJECT_ID_2 = (this.OBJECT_ID_2 !== null ? builder.createString(this.OBJECT_ID_2!) : 0);
   const OBJECT_NAME_2 = (this.OBJECT_NAME_2 !== null ? builder.createString(this.OBJECT_NAME_2!) : 0);
 
   return CSM.createCSM(builder,
-    OBJECT_ID_1,
+    this.NORAD_CAT_ID_1,
     OBJECT_NAME_1,
     this.DSE_1,
-    OBJECT_ID_2,
+    this.NORAD_CAT_ID_2,
     OBJECT_NAME_2,
     this.DSE_2,
     this.TCA,
     this.TCA_RANGE,
     this.TCA_RELATIVE_SPEED,
-    this.MIN_RANGE,
     this.MAX_PROB,
     this.DILUTION
   );

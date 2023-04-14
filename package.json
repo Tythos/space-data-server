@@ -1,6 +1,6 @@
 {
     "name": "space-data-server",
-    "version": "23.3.3-0.1.1-1.38.0003+1681483393510",
+    "version": "23.3.3-0.1.2-1.38.0003+1681483636879",
     "description": "mvp for standards-based space data server",
     "main": "index.ts",
     "standardsPath": "./lib/class/standards",
@@ -21,7 +21,7 @@
         "build:celestrak:parsers": "npm run build:celestrak:parser:omm && npm run build:celestrak:parser:cat",
         "build:celestrak:parser:omm": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.omm.ts --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.omm.cjs",
         "build:celestrak:parser:cat": "esbuild ./scripts/data_fetch/celestrak/src/celestrak.cat.ts --bundle --platform=node --outfile=./scripts/data_fetch/celestrak/celestrak.cat.cjs",
-        "build:standards": "cd packages/spacedatastandards.org && git reset --hard && git fetch && git checkout v23.3.3-0.2.1 && cd ../../ && node ./lib/utility/generator.mjs",
+        "build:standards": "cd packages/spacedatastandards.org && git reset --hard && git fetch && git checkout origin/main && cd ../../ && node ./lib/utility/generator.mjs",
         "build:swagger": "node ./scripts/swagger.mjs",
         "build:docker": "docker build -t space-data-server .",
         "start": "node --max-old-space-size=4096 ./build/server.cjs",

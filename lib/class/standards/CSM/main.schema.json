@@ -4,8 +4,8 @@
     "CSM" : {
       "type" : "object",
       "properties" : {
-        "OBJECT_ID_1" : {
-                "type" : "string"
+        "NORAD_CAT_ID_1" : {
+                "type" : "integer", "minimum" : 0, "maximum" : 4294967295
               },
         "OBJECT_NAME_1" : {
                 "type" : "string"
@@ -13,8 +13,8 @@
         "DSE_1" : {
                 "type" : "number"
               },
-        "OBJECT_ID_2" : {
-                "type" : "string"
+        "NORAD_CAT_ID_2" : {
+                "type" : "integer", "minimum" : 0, "maximum" : 4294967295
               },
         "OBJECT_NAME_2" : {
                 "type" : "string"
@@ -29,9 +29,6 @@
                 "type" : "number"
               },
         "TCA_RELATIVE_SPEED" : {
-                "type" : "number"
-              },
-        "MIN_RANGE" : {
                 "type" : "number"
               },
         "MAX_PROB" : {
