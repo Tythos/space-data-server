@@ -19,10 +19,11 @@
   onMount(async () => {
     await getServerPK();
   });
-
-  if ($serverPK.publicKey) {
-    for (let x in displayPK) {
-      displayPK[x] = $serverPK[x];
+  $: {
+    if ($serverPK.publicKey) {
+      for (let x in displayPK) {
+        displayPK[x] = $serverPK[x];
+      }
     }
   }
 </script>
